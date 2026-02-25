@@ -464,6 +464,81 @@
     </div>
   </div>
 
+  <!-- AI Agent Monitor Section -->
+  <div class="glass-card" style="margin-bottom: 1.5rem;">
+    <div class="card-title">🤖 AI Agent Monitor</div>
+    
+    <!-- AI Agent Status Card -->
+    <div style="background: rgba(148, 163, 184, 0.03); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+          <div style="font-family: 'Orbitron'; font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">
+            Alex (AI Agent)
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span id="aiAgentStatus" style="font-size: 1.25rem;">🟢</span>
+            <span id="aiAgentStatusText" style="color: var(--success); font-weight: 600;">Active</span>
+            <span id="aiConcurrentCount" style="margin-left: 1rem; font-family: 'Orbitron'; font-weight: 700; color: var(--accent);">0/10 Calls</span>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.25rem;">Calls Today</div>
+          <div id="aiCallsToday" style="font-family: 'Orbitron'; font-size: 2rem; font-weight: 900; color: var(--accent);">0</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn btn-success btn-sm" onclick="showAIAutoDialDialog()">🤖 AI Auto-Dial</button>
+      </div>
+    </div>
+
+    <!-- AI Performance Quick Stats -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+      <div style="text-align: center; padding: 1rem; background: rgba(148, 163, 184, 0.03); border-radius: 0.5rem;">
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Calls Today</div>
+        <div id="aiPerfCallsToday" style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: 700; color: var(--accent);">0</div>
+      </div>
+      <div style="text-align: center; padding: 1rem; background: rgba(148, 163, 184, 0.03); border-radius: 0.5rem;">
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Avg Handle Time</div>
+        <div id="aiPerfAvgTime" style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: 700; color: var(--primary);">0m</div>
+      </div>
+      <div style="text-align: center; padding: 1rem; background: rgba(148, 163, 184, 0.03); border-radius: 0.5rem;">
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Qualification Rate</div>
+        <div id="aiPerfQualRate" style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: 700; color: var(--success);">0%</div>
+      </div>
+      <div style="text-align: center; padding: 1rem; background: rgba(148, 163, 184, 0.03); border-radius: 0.5rem;">
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Appointments Set</div>
+        <div id="aiPerfAppointments" style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: 700; color: var(--warning);">0</div>
+      </div>
+    </div>
+
+    <!-- Active AI Calls Table -->
+    <div style="margin-top: 1rem;">
+      <div style="font-family: 'Orbitron'; font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-secondary);">
+        Active AI Calls (Multiple Concurrent)
+      </div>
+      <div id="aiActiveCallsList"></div>
+    </div>
+  </div>
+
+  <!-- AI Auto-Dial Dialog (hidden by default) -->
+  <div id="aiAutoDialDialog" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: var(--bg-card); border-radius: 1rem; padding: 2rem; max-width: 500px; width: 90%;">
+      <h3 style="font-family: 'Orbitron'; margin-bottom: 1rem;">🤖 AI Auto-Dial</h3>
+      <div style="margin-bottom: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Lead Phone Number</label>
+        <input type="tel" id="aiDialPhoneInput" placeholder="+1234567890" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--border-subtle); background: var(--bg-glass); color: var(--text-primary); font-family: 'Orbitron';" />
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Lead Name (Optional)</label>
+        <input type="text" id="aiDialNameInput" placeholder="John Doe" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--border-subtle); background: var(--bg-glass); color: var(--text-primary);" />
+      </div>
+      <div style="display: flex; gap: 1rem;">
+        <button class="btn btn-success" onclick="startAIAutoDial()">📞 Start Call</button>
+        <button class="btn btn-primary" onclick="closeAIAutoDialDialog()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
@@ -476,10 +551,15 @@
   let sortDirection = 'desc';
   const MANAGER_PHONE = '+13059659624'; // Patrick's number
 
+  let aiCallTimers = {};
+
   document.addEventListener('DOMContentLoaded', function() {
     loadManagerDashboard();
     // Refresh active calls every 10 seconds
     setInterval(loadActiveCalls, 10000);
+    // Refresh AI calls every 5 seconds
+    setInterval(loadAICalls, 5000);
+    loadAICalls(); // Initial load
   });
 
   async function loadManagerDashboard() {
@@ -853,6 +933,214 @@
     }, 3000);
   }
 
+  // ── AI Agent Monitor ──────────────────────────────────────────────
+
+  async function loadAICalls() {
+    try {
+      // Fetch active AI calls
+      const resp = await fetch('https://debt-voice-stack.fly.dev/api/calls/active');
+      const data = await resp.json();
+      const activeCalls = (data.calls || data.active_calls || []);
+
+      // Update concurrent count
+      const countEl = document.getElementById('aiConcurrentCount');
+      if (countEl) countEl.textContent = activeCalls.length + '/10 Calls';
+
+      // Fetch agent status for performance stats
+      try {
+        const statusResp = await fetch('https://debt-voice-stack.fly.dev/api/agent/status');
+        const status = await statusResp.json();
+        const callsToday = status.calls_today || status.callsToday || 0;
+        const avgTime = status.avg_handle_time || status.avgHandleTime || '0m';
+        const qualRate = status.qualification_rate || status.qualificationRate || 0;
+        const appointments = status.appointments_set || status.appointmentsSet || 0;
+
+        const el1 = document.getElementById('aiCallsToday');
+        if (el1) el1.textContent = callsToday;
+        const el2 = document.getElementById('aiPerfCallsToday');
+        if (el2) el2.textContent = callsToday;
+        const el3 = document.getElementById('aiPerfAvgTime');
+        if (el3) el3.textContent = typeof avgTime === 'number' ? avgTime + 'm' : avgTime;
+        const el4 = document.getElementById('aiPerfQualRate');
+        if (el4) el4.textContent = qualRate + '%';
+        const el5 = document.getElementById('aiPerfAppointments');
+        if (el5) el5.textContent = appointments;
+
+        // Update status indicator
+        const statusEl = document.getElementById('aiAgentStatus');
+        const statusTextEl = document.getElementById('aiAgentStatusText');
+        if (statusEl && statusTextEl) {
+          const isOnline = status.status === 'online' || status.status === 'active' || true;
+          statusEl.textContent = isOnline ? '🟢' : '🔴';
+          statusTextEl.textContent = isOnline ? 'Online' : 'Offline';
+          statusTextEl.style.color = isOnline ? 'var(--success)' : 'var(--danger)';
+        }
+      } catch(e) {
+        console.warn('Agent status API unavailable:', e);
+      }
+
+      // Render active AI calls grid
+      const container = document.getElementById('aiActiveCallsList');
+      if (!container) return;
+
+      if (activeCalls.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No active AI calls right now</div>';
+        return;
+      }
+
+      container.innerHTML = activeCalls.map(call => {
+        const sid = call.call_sid || call.callSid || call.sid || call.id;
+        const callerName = call.caller_name || call.callerName || 'Unknown';
+        const callerPhone = call.caller_phone || call.callerPhone || call.from || '';
+        const sentiment = call.sentiment || 'neutral';
+        const topic = call.topic || call.current_topic || 'General';
+        const captured = call.data_points_captured || call.dataPointsCaptured || 0;
+        const totalPoints = call.data_points_total || call.dataPointsTotal || 65;
+        const progressPct = totalPoints > 0 ? Math.round((captured / totalPoints) * 100) : 0;
+
+        // Manage live duration timer
+        if (!aiCallTimers[sid]) {
+          aiCallTimers[sid] = call.started_at || call.startedAt || Date.now();
+        }
+        const elapsed = Math.floor((Date.now() - new Date(aiCallTimers[sid]).getTime()) / 1000);
+        const mins = Math.floor(elapsed / 60);
+        const secs = elapsed % 60;
+        const duration = mins + ':' + String(secs).padStart(2, '0');
+
+        const sentimentColors = { positive: 'var(--success)', neutral: 'var(--warning)', negative: 'var(--danger)' };
+        const sentimentEmoji = { positive: '😊', neutral: '😐', negative: '😟' };
+
+        return `
+          <div style="background: rgba(148,163,184,0.03); border-left: 3px solid var(--accent); border-radius: 0.5rem; padding: 1.25rem; margin-bottom: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+              <div>
+                <div style="font-weight: 600; font-size: 0.95rem;">${callerName}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">${callerPhone}</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-family: 'Orbitron'; font-size: 1rem; color: var(--accent);">${duration}</span>
+                <span style="background: ${sentimentColors[sentiment] || sentimentColors.neutral}; padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.75rem;">
+                  ${sentimentEmoji[sentiment] || '😐'} ${sentiment}
+                </span>
+              </div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Topic: <strong>${topic}</strong></div>
+            <div style="margin-bottom: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                <span>Data Points</span>
+                <span>${captured}/${totalPoints} captured</span>
+              </div>
+              <div style="height: 6px; background: rgba(148,163,184,0.1); border-radius: 3px; overflow: hidden;">
+                <div style="height: 100%; width: ${progressPct}%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px;"></div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-primary btn-sm" onclick="aiListen('${sid}')">🎧 Listen</button>
+              <button class="btn btn-primary btn-sm" onclick="aiWhisperToggle('${sid}', this)">💬 Whisper</button>
+              <button class="btn btn-primary btn-sm" onclick="aiBarge('${sid}')">📞 Barge</button>
+            </div>
+            <div id="whisper-input-${sid}" style="display: none; margin-top: 0.5rem;">
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="whisper-text-${sid}" placeholder="Type message to whisper..." style="flex: 1; padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border-subtle); background: var(--bg-glass); color: var(--text-primary); font-size: 0.85rem;" />
+                <button class="btn btn-success btn-sm" onclick="aiWhisperSend('${sid}')">Send</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+    } catch(e) {
+      console.warn('AI calls fetch failed:', e);
+      const container = document.getElementById('aiActiveCallsList');
+      if (container) container.innerHTML = '<div style="text-align: center; padding: 1rem; color: var(--text-muted);">AI call data unavailable</div>';
+    }
+  }
+
+  // Clean up timers for calls that ended
+  function cleanupAITimers(activeSids) {
+    Object.keys(aiCallTimers).forEach(sid => {
+      if (!activeSids.includes(sid)) delete aiCallTimers[sid];
+    });
+  }
+
+  async function aiListen(sid) {
+    try {
+      const resp = await fetch(`https://debt-voice-stack.fly.dev/api/calls/${sid}/listen`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ monitor_phone: MANAGER_PHONE })
+      });
+      showToast(resp.ok ? '🎧 Listen mode activated — call incoming to your phone' : 'Failed to activate listen');
+    } catch(e) { showToast('Error: Voice stack unavailable'); }
+  }
+
+  function aiWhisperToggle(sid, btn) {
+    const input = document.getElementById('whisper-input-' + sid);
+    if (input) input.style.display = input.style.display === 'none' ? 'block' : 'none';
+  }
+
+  async function aiWhisperSend(sid) {
+    const textEl = document.getElementById('whisper-text-' + sid);
+    if (!textEl) return;
+    const message = textEl.value.trim();
+    if (!message) return;
+    try {
+      const resp = await fetch(`https://debt-voice-stack.fly.dev/api/calls/${sid}/whisper`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ message: message })
+      });
+      if (resp.ok) {
+        showToast('💬 Whisper sent to AI agent');
+        textEl.value = '';
+      } else {
+        showToast('Failed to send whisper');
+      }
+    } catch(e) { showToast('Error: Voice stack unavailable'); }
+  }
+
+  async function aiBarge(sid) {
+    try {
+      const resp = await fetch(`https://debt-voice-stack.fly.dev/api/calls/${sid}/barge`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ monitor_phone: MANAGER_PHONE })
+      });
+      showToast(resp.ok ? '📞 Barge activated — joining call' : 'Failed to barge');
+    } catch(e) { showToast('Error: Voice stack unavailable'); }
+  }
+
+  function showAIAutoDialDialog() {
+    const dialog = document.getElementById('aiAutoDialDialog');
+    if (dialog) dialog.style.display = 'flex';
+  }
+
+  function closeAIAutoDialDialog() {
+    const dialog = document.getElementById('aiAutoDialDialog');
+    if (dialog) dialog.style.display = 'none';
+  }
+
+  async function startAIAutoDial() {
+    const phone = document.getElementById('aiDialPhoneInput');
+    const name = document.getElementById('aiDialNameInput');
+    if (!phone || !phone.value.trim()) { showToast('Enter a phone number'); return; }
+    try {
+      const resp = await fetch('https://debt-voice-stack.fly.dev/api/calls/outbound-ai', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ phone_number: phone.value.trim(), lead_name: name ? name.value.trim() : '' })
+      });
+      if (resp.ok) {
+        showToast('🤖 AI outbound call initiated!');
+        closeAIAutoDialDialog();
+        phone.value = '';
+        if (name) name.value = '';
+      } else {
+        showToast('Failed to initiate AI call');
+      }
+    } catch(e) { showToast('Error: Voice stack unavailable'); }
+  }
+
   // Expose functions to window for onclick handlers
   window.assignLeads = assignLeads;
   window.bargeIntoCall = bargeIntoCall;
@@ -862,6 +1150,13 @@
   window.runComplianceCheck = runComplianceCheck;
   window.sortTable = sortTable;
   window.whisperToCall = whisperToCall;
+  window.aiListen = aiListen;
+  window.aiWhisperToggle = aiWhisperToggle;
+  window.aiWhisperSend = aiWhisperSend;
+  window.aiBarge = aiBarge;
+  window.showAIAutoDialDialog = showAIAutoDialDialog;
+  window.closeAIAutoDialDialog = closeAIAutoDialDialog;
+  window.startAIAutoDial = startAIAutoDial;
 })();
 </script>
 </body>

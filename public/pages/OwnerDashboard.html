@@ -508,6 +508,123 @@
     </div>
   </div>
 
+  <!-- 🤖 AI Operations -->
+  <div class="glass-card" style="margin-top: 2rem;">
+    <div class="card-title">🤖 AI Operations — Alex (AI Agent)</div>
+
+    <!-- Row 1: ROI + AI vs Human -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+      <!-- AI ROI Card -->
+      <div style="background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(6,182,212,0.1)); border: 1px solid var(--success); border-radius: 1rem; padding: 1.5rem;">
+        <div style="font-family: 'Orbitron'; font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">💰 AI ROI</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Cost Per Call</div>
+            <div style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: 900; color: var(--success);">$0.22</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem;">$0.15 Claude + $0.05 ElevenLabs + $0.02 Deepgram</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Est. Revenue Generated</div>
+            <div id="aiRevenueGenerated" style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: 900; color: var(--accent);">$0</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Total AI Cost</div>
+            <div id="aiTotalCost" style="font-family: 'Orbitron'; font-size: 1.25rem; font-weight: 700; color: var(--warning);">$0</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">ROI</div>
+            <div id="aiROI" style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: 900; color: var(--success);">0%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI vs Human Comparison -->
+      <div style="background: rgba(148,163,184,0.03); border: 1px solid var(--border-subtle); border-radius: 1rem; padding: 1.5rem;">
+        <div style="font-family: 'Orbitron'; font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">⚡ AI vs Human</div>
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="text-align: left; padding: 0.5rem; font-size: 0.7rem; color: var(--text-muted); border-bottom: 1px solid var(--border-subtle);">Metric</th>
+              <th style="text-align: center; padding: 0.5rem; font-size: 0.7rem; color: var(--accent); border-bottom: 1px solid var(--border-subtle);">🤖 AI</th>
+              <th style="text-align: center; padding: 0.5rem; font-size: 0.7rem; color: var(--primary); border-bottom: 1px solid var(--border-subtle);">👤 Human</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding: 0.5rem; font-size: 0.85rem;">Calls/Day</td><td style="text-align: center; font-family: 'Orbitron'; font-weight: 700; color: var(--success);">∞</td><td style="text-align: center; font-family: 'Orbitron'; font-weight: 700;">~80</td></tr>
+            <tr><td style="padding: 0.5rem; font-size: 0.85rem;">Cost/Lead</td><td style="text-align: center; font-family: 'Orbitron'; font-weight: 700; color: var(--success);">$0.22</td><td style="text-align: center; font-family: 'Orbitron'; font-weight: 700;">$8-15</td></tr>
+            <tr><td style="padding: 0.5rem; font-size: 0.85rem;">Handle Time</td><td id="aiCompareHandle" style="text-align: center; font-family: 'Orbitron'; font-weight: 700; color: var(--success);">~4m</td><td style="text-align: center; font-family: 'Orbitron'; font-weight: 700;">~12m</td></tr>
+            <tr><td style="padding: 0.5rem; font-size: 0.85rem;">Conversion</td><td id="aiCompareConversion" style="text-align: center; font-family: 'Orbitron'; font-weight: 700;">--%</td><td style="text-align: center; font-family: 'Orbitron'; font-weight: 700;">~15%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Row 2: Capacity Gauge + Caller Intelligence -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+      <!-- AI Capacity Gauge -->
+      <div style="background: rgba(148,163,184,0.03); border: 1px solid var(--border-subtle); border-radius: 1rem; padding: 1.5rem; text-align: center;">
+        <div style="font-family: 'Orbitron'; font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">📡 AI Capacity</div>
+        <div style="position: relative; width: 160px; height: 160px; margin: 0 auto;">
+          <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(148,163,184,0.1)" stroke-width="3" />
+            <path id="aiCapacityArc" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="0, 100" stroke-linecap="round" />
+          </svg>
+          <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+            <div id="aiCapacityCount" style="font-family: 'Orbitron'; font-size: 1.75rem; font-weight: 900; color: var(--accent);">0</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">/ 10 max</div>
+          </div>
+        </div>
+        <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">Active concurrent calls</div>
+      </div>
+
+      <!-- Caller Intelligence -->
+      <div style="background: rgba(148,163,184,0.03); border: 1px solid var(--border-subtle); border-radius: 1rem; padding: 1.5rem;">
+        <div style="font-family: 'Orbitron'; font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">🧠 Caller Intelligence</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div style="text-align: center; padding: 1rem; background: rgba(148,163,184,0.05); border-radius: 0.5rem;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Unique Callers</div>
+            <div id="aiUniqueCaller" style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: 900; color: var(--primary);">0</div>
+          </div>
+          <div style="text-align: center; padding: 1rem; background: rgba(148,163,184,0.05); border-radius: 0.5rem;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Repeat %</div>
+            <div id="aiRepeatPct" style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: 900; color: var(--accent);">0%</div>
+          </div>
+          <div style="text-align: center; padding: 1rem; background: rgba(148,163,184,0.05); border-radius: 0.5rem;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Avg Calls/Caller</div>
+            <div id="aiAvgCallsPerCaller" style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: 900; color: var(--warning);">0</div>
+          </div>
+          <div style="text-align: center; padding: 1rem; background: rgba(148,163,184,0.05); border-radius: 0.5rem;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">AI Status</div>
+            <div id="aiOwnerStatus" style="font-family: 'Orbitron'; font-size: 1.5rem; font-weight: 900; color: var(--success);">🟢</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Active AI Calls with Listen/Whisper/Barge -->
+    <div style="margin-bottom: 1rem;">
+      <div style="font-family: 'Orbitron'; font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-secondary);">
+        Active AI Calls — Monitor & Intervene
+      </div>
+      <div id="ownerAICallsList"></div>
+    </div>
+  </div>
+
+  <!-- AI Auto-Dial Dialog (Owner) -->
+  <div id="ownerAIDialDialog" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: var(--bg-card); border-radius: 1rem; padding: 2rem; max-width: 500px; width: 90%;">
+      <h3 style="font-family: 'Orbitron'; margin-bottom: 1rem;">🤖 AI Quick Dial</h3>
+      <div style="margin-bottom: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Phone Number</label>
+        <input type="tel" id="ownerDialPhone" placeholder="+1234567890" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--border-subtle); background: var(--bg-glass); color: var(--text-primary); font-family: 'Orbitron';" />
+      </div>
+      <div style="display: flex; gap: 1rem;">
+        <button class="btn btn-success" onclick="ownerStartAIDial()">📞 Call</button>
+        <button class="btn btn-primary" onclick="document.getElementById('ownerAIDialDialog').style.display='none'">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Quick Actions -->
   <div class="action-bar">
     <button class="btn btn-primary" onclick="goToAnalytics()">📊 View All Analytics</button>
@@ -784,10 +901,208 @@
     }
   }
 
+  // ── AI Operations ──────────────────────────────────────────────
+
+  const OWNER_PHONE = '+13059659624';
+  let ownerAITimers = {};
+
+  // Start AI polling
+  setInterval(loadOwnerAICalls, 5000);
+  loadOwnerAICalls();
+  loadCallerIntelligence();
+  setInterval(loadCallerIntelligence, 30000);
+
+  async function loadOwnerAICalls() {
+    try {
+      const resp = await fetch('https://debt-voice-stack.fly.dev/api/calls/active');
+      const data = await resp.json();
+      const calls = data.calls || data.active_calls || [];
+
+      // Capacity gauge
+      const count = calls.length;
+      const max = 10;
+      const pct = Math.round((count / max) * 100);
+      const arcEl = document.getElementById('aiCapacityArc');
+      if (arcEl) arcEl.setAttribute('stroke-dasharray', pct + ', 100');
+      const countEl = document.getElementById('aiCapacityCount');
+      if (countEl) countEl.textContent = count;
+
+      // Agent status
+      try {
+        const sResp = await fetch('https://debt-voice-stack.fly.dev/api/agent/status');
+        const s = await sResp.json();
+        const callsToday = s.calls_today || s.callsToday || 0;
+        const qualRate = s.qualification_rate || s.qualificationRate || 0;
+        const avgTime = s.avg_handle_time || s.avgHandleTime || '4m';
+
+        // ROI calculations
+        const costPerCall = 0.22;
+        const totalCost = (callsToday * costPerCall);
+        const estRevPerQualified = 500;
+        const qualifiedCount = Math.round(callsToday * (qualRate / 100));
+        const estRevenue = qualifiedCount * estRevPerQualified;
+        const roi = totalCost > 0 ? Math.round(((estRevenue - totalCost) / totalCost) * 100) : 0;
+
+        const el1 = document.getElementById('aiTotalCost');
+        if (el1) el1.textContent = '$' + totalCost.toFixed(2);
+        const el2 = document.getElementById('aiRevenueGenerated');
+        if (el2) el2.textContent = '$' + estRevenue.toLocaleString();
+        const el3 = document.getElementById('aiROI');
+        if (el3) el3.textContent = roi + '%';
+        const el4 = document.getElementById('aiCompareConversion');
+        if (el4) el4.textContent = qualRate + '%';
+        const el5 = document.getElementById('aiCompareHandle');
+        if (el5) el5.textContent = typeof avgTime === 'number' ? '~' + avgTime + 'm' : '~' + avgTime;
+      } catch(e) { console.warn('Agent status unavailable:', e); }
+
+      // Render active calls
+      const container = document.getElementById('ownerAICallsList');
+      if (!container) return;
+
+      if (calls.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No active AI calls</div>';
+        return;
+      }
+
+      container.innerHTML = calls.map(call => {
+        const sid = call.call_sid || call.callSid || call.sid || call.id;
+        const callerName = call.caller_name || call.callerName || 'Unknown';
+        const callerPhone = call.caller_phone || call.callerPhone || call.from || '';
+        const sentiment = call.sentiment || 'neutral';
+        const topic = call.topic || call.current_topic || 'General';
+        const captured = call.data_points_captured || call.dataPointsCaptured || 0;
+        const total = call.data_points_total || call.dataPointsTotal || 65;
+        const pct = total > 0 ? Math.round((captured / total) * 100) : 0;
+
+        if (!ownerAITimers[sid]) ownerAITimers[sid] = call.started_at || call.startedAt || Date.now();
+        const elapsed = Math.floor((Date.now() - new Date(ownerAITimers[sid]).getTime()) / 1000);
+        const dur = Math.floor(elapsed / 60) + ':' + String(elapsed % 60).padStart(2, '0');
+
+        const sColors = { positive: 'var(--success)', neutral: 'var(--warning)', negative: 'var(--danger)' };
+        const sEmoji = { positive: '😊', neutral: '😐', negative: '😟' };
+
+        return `
+          <div style="background: rgba(148,163,184,0.03); border-left: 3px solid var(--accent); border-radius: 0.5rem; padding: 1.25rem; margin-bottom: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+              <div>
+                <div style="font-weight: 600;">${callerName}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">${callerPhone}</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-family: 'Orbitron'; color: var(--accent);">${dur}</span>
+                <span style="background: ${sColors[sentiment] || sColors.neutral}; padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.75rem;">${sEmoji[sentiment] || '😐'} ${sentiment}</span>
+              </div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Topic: <strong>${topic}</strong></div>
+            <div style="margin-bottom: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                <span>Data Points</span><span>${captured}/${total}</span>
+              </div>
+              <div style="height: 6px; background: rgba(148,163,184,0.1); border-radius: 3px; overflow: hidden;">
+                <div style="height: 100%; width: ${pct}%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px;"></div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.75rem;" onclick="ownerAIListen('${sid}')">🎧 Listen</button>
+              <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.75rem;" onclick="ownerAIWhisperToggle('${sid}')">💬 Whisper</button>
+              <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.75rem;" onclick="ownerAIBarge('${sid}')">📞 Barge</button>
+            </div>
+            <div id="owner-whisper-${sid}" style="display: none; margin-top: 0.5rem;">
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="owner-whisper-text-${sid}" placeholder="Whisper message..." style="flex: 1; padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border-subtle); background: var(--bg-glass); color: var(--text-primary);" />
+                <button class="btn btn-success" style="padding: 0.5rem 1rem; font-size: 0.75rem;" onclick="ownerAIWhisperSend('${sid}')">Send</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    } catch(e) {
+      console.warn('AI calls fetch failed:', e);
+    }
+  }
+
+  async function loadCallerIntelligence() {
+    try {
+      const resp = await fetch('https://debt-voice-stack.fly.dev/api/callers');
+      const data = await resp.json();
+      const callers = data.callers || data || [];
+      const total = callers.length;
+      const repeats = callers.filter(c => (c.call_count || c.callCount || 1) > 1).length;
+      const repeatPct = total > 0 ? Math.round((repeats / total) * 100) : 0;
+      const totalCalls = callers.reduce((s, c) => s + (c.call_count || c.callCount || 1), 0);
+      const avg = total > 0 ? (totalCalls / total).toFixed(1) : 0;
+
+      const el1 = document.getElementById('aiUniqueCaller');
+      if (el1) el1.textContent = total;
+      const el2 = document.getElementById('aiRepeatPct');
+      if (el2) el2.textContent = repeatPct + '%';
+      const el3 = document.getElementById('aiAvgCallsPerCaller');
+      if (el3) el3.textContent = avg;
+    } catch(e) { console.warn('Callers API unavailable:', e); }
+  }
+
+  async function ownerAIListen(sid) {
+    try {
+      const r = await fetch(`https://debt-voice-stack.fly.dev/api/calls/${sid}/listen`, {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ monitor_phone: OWNER_PHONE })
+      });
+      alert(r.ok ? '🎧 Listen mode — call incoming' : 'Failed');
+    } catch(e) { alert('Voice stack unavailable'); }
+  }
+
+  function ownerAIWhisperToggle(sid) {
+    const el = document.getElementById('owner-whisper-' + sid);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+
+  async function ownerAIWhisperSend(sid) {
+    const el = document.getElementById('owner-whisper-text-' + sid);
+    if (!el || !el.value.trim()) return;
+    try {
+      const r = await fetch(`https://debt-voice-stack.fly.dev/api/calls/${sid}/whisper`, {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ message: el.value.trim() })
+      });
+      if (r.ok) { el.value = ''; alert('💬 Whisper sent'); }
+    } catch(e) { alert('Voice stack unavailable'); }
+  }
+
+  async function ownerAIBarge(sid) {
+    try {
+      const r = await fetch(`https://debt-voice-stack.fly.dev/api/calls/${sid}/barge`, {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ monitor_phone: OWNER_PHONE })
+      });
+      alert(r.ok ? '📞 Barge activated' : 'Failed');
+    } catch(e) { alert('Voice stack unavailable'); }
+  }
+
+  async function ownerStartAIDial() {
+    const ph = document.getElementById('ownerDialPhone');
+    if (!ph || !ph.value.trim()) return;
+    try {
+      const r = await fetch('https://debt-voice-stack.fly.dev/api/calls/outbound-ai', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ phone_number: ph.value.trim() })
+      });
+      if (r.ok) {
+        alert('🤖 AI call initiated');
+        document.getElementById('ownerAIDialDialog').style.display = 'none';
+        ph.value = '';
+      }
+    } catch(e) { alert('Voice stack unavailable'); }
+  }
+
   // Expose functions to window for onclick handlers
   window.exportFullReport = exportFullReport;
   window.goToAnalytics = goToAnalytics;
   window.goToSettings = goToSettings;
+  window.ownerAIListen = ownerAIListen;
+  window.ownerAIWhisperToggle = ownerAIWhisperToggle;
+  window.ownerAIWhisperSend = ownerAIWhisperSend;
+  window.ownerAIBarge = ownerAIBarge;
+  window.ownerStartAIDial = ownerStartAIDial;
 })();
 </script>
 </body>
