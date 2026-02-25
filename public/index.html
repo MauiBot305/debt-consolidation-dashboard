@@ -640,6 +640,23 @@
     window.Toast = Toast;
   </script>
   <script>
+    // DBHelpers shim — bridges index.html references to DebtDB
+    const DBHelpers = {
+      getAgentById(id) {
+        if (typeof DebtDB !== 'undefined' && DebtDB.getAgents) {
+          const agents = DebtDB.getAgents();
+          const agent = agents.find(a => a.id === id || a.agentId === id);
+          if (agent) return agent;
+        }
+        // Fallback defaults so the ticker never crashes
+        return { name: 'Agent', stats: { callsToday: 0, enrollments: 0, revenue: 0, commission: 0, conversionRate: 0 } };
+      },
+      formatCurrency(val) {
+        const n = parseFloat(val) || 0;
+        return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+      }
+    };
+
     // App State
     const App = {
       currentPage: 'dashboard',
