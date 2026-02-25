@@ -798,7 +798,10 @@
     let selectedDeal = null;
 
     // Initialize
+    let _pipelineInitialized = false;
     function initDealPipeline() {
+      if (_pipelineInitialized) return;
+      _pipelineInitialized = true;
       loadDeals();
       loadAgentsForFilter();
       renderPipeline();
@@ -919,17 +922,25 @@
       const agents = window.DebtDB.getAgents() || [];
       const filterSelect = document.getElementById('agentFilter');
       const dealSelect = document.getElementById('dealAgentSelect');
+
+      // Clear existing dynamic options to prevent duplicates on re-init
+      if (filterSelect) filterSelect.innerHTML = '<option value="">All Agents</option>';
+      if (dealSelect) dealSelect.innerHTML = '<option value="">Select Agent</option>';
       
       agents.forEach(agent => {
-        const filterOption = document.createElement('option');
-        filterOption.value = agent.id;
-        filterOption.textContent = agent.name;
-        filterSelect.appendChild(filterOption);
+        if (filterSelect) {
+          const filterOption = document.createElement('option');
+          filterOption.value = agent.id;
+          filterOption.textContent = agent.name;
+          filterSelect.appendChild(filterOption);
+        }
 
-        const dealOption = document.createElement('option');
-        dealOption.value = agent.id;
-        dealOption.textContent = agent.name;
-        dealSelect.appendChild(dealOption);
+        if (dealSelect) {
+          const dealOption = document.createElement('option');
+          dealOption.value = agent.id;
+          dealOption.textContent = agent.name;
+          dealSelect.appendChild(dealOption);
+        }
       });
     }
 

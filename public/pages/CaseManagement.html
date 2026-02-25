@@ -1119,7 +1119,10 @@
     let selectedFilter = 'all';
 
     // Initialize
+    let _caseManagementInitialized = false;
     function initCaseManagement() {
+      if (_caseManagementInitialized) return;
+      _caseManagementInitialized = true;
       loadCases();
       loadAgents();
       renderCaseList();
@@ -1203,8 +1206,11 @@
     function loadAgents() {
       const agents = window.DebtDB.getAgents() || [];
       const select = document.getElementById('agentSelect');
+
+      if (select) select.innerHTML = '<option value="">Select Agent</option>';
       
       agents.forEach(agent => {
+        if (!select) return;
         const option = document.createElement('option');
         option.value = agent.id;
         option.textContent = agent.name;
