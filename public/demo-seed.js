@@ -469,14 +469,14 @@
   // ==================== CAMPAIGNS ====================
   
   const campaigns = [
-    { name: 'Google Search Ads - Debt Relief', type: 'Google Ads', budget: 5000, spent: 3200, leads: 45, status: 'active' },
-    { name: 'Chicago TV Commercial', type: 'TV Ad', budget: 15000, spent: 15000, leads: 78, status: 'completed' },
-    { name: 'FM Radio - Drive Time', type: 'Radio', budget: 3000, spent: 2100, leads: 28, status: 'active' },
-    { name: 'Facebook Lead Gen', type: 'Facebook', budget: 2000, spent: 1850, leads: 52, status: 'active' },
-    { name: 'Direct Mail - IL Residents', type: 'Direct Mail', budget: 8000, spent: 8000, leads: 34, status: 'completed' },
-    { name: 'Referral Program', type: 'Referral', budget: 1000, spent: 650, leads: 19, status: 'active' },
-    { name: 'Website SEO', type: 'Website', budget: 2500, spent: 2500, leads: 41, status: 'ongoing' },
-    { name: 'Instagram Stories', type: 'Social Media', budget: 1500, spent: 980, leads: 23, status: 'active' }
+    { name: 'Google Search Ads - Debt Relief', type: 'Google Ads', budget: 5000, spent: 3200, leads: 45, conversions: Math.floor(45 * (0.1 + Math.random() * 0.25)), status: 'active' },
+    { name: 'Chicago TV Commercial', type: 'TV Ad', budget: 15000, spent: 15000, leads: 78, conversions: Math.floor(78 * (0.1 + Math.random() * 0.25)), status: 'completed' },
+    { name: 'FM Radio - Drive Time', type: 'Radio', budget: 3000, spent: 2100, leads: 28, conversions: Math.floor(28 * (0.1 + Math.random() * 0.25)), status: 'active' },
+    { name: 'Facebook Lead Gen', type: 'Facebook', budget: 2000, spent: 1850, leads: 52, conversions: Math.floor(52 * (0.1 + Math.random() * 0.25)), status: 'active' },
+    { name: 'Direct Mail - IL Residents', type: 'Direct Mail', budget: 8000, spent: 8000, leads: 34, conversions: Math.floor(34 * (0.1 + Math.random() * 0.25)), status: 'completed' },
+    { name: 'Referral Program', type: 'Referral', budget: 1000, spent: 650, leads: 19, conversions: Math.floor(19 * (0.1 + Math.random() * 0.25)), status: 'active' },
+    { name: 'Website SEO', type: 'Website', budget: 2500, spent: 2500, leads: 41, conversions: Math.floor(41 * (0.1 + Math.random() * 0.25)), status: 'ongoing' },
+    { name: 'Instagram Stories', type: 'Social Media', budget: 1500, spent: 980, leads: 23, conversions: Math.floor(23 * (0.1 + Math.random() * 0.25)), status: 'active' }
   ];
   
   campaigns.forEach((campaign, i) => {
