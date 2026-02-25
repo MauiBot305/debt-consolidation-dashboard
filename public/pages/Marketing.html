@@ -1,5 +1,15 @@
-<!-- Functionality verified by Agent 2 -->
-<div class="marketing-page">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketing Command Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950">
+<div class="marketing-page p-6 max-w-7xl mx-auto">
   <!-- Header -->
   <div class="flex items-center justify-between mb-8">
     <div>
@@ -12,701 +22,367 @@
     </button>
   </div>
 
-  <!-- Campaign Overview Cards -->
+  <!-- Stats Cards -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div class="relative bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-2xl p-6 border border-blue-500/20 overflow-hidden group hover:border-blue-500/40 transition-all duration-300">
-      <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-500"></div>
-      <div class="relative flex items-center justify-between mb-4">
+    <div class="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-blue-500/20">
+      <div class="flex items-center justify-between mb-4">
         <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
           <i data-lucide="megaphone" class="w-6 h-6 text-blue-400"></i>
         </div>
-        <span class="text-xs font-medium text-emerald-400 flex items-center gap-1">
-          <i data-lucide="trending-up" class="w-3 h-3"></i> +12%
-        </span>
       </div>
-      <div class="relative">
-        <p class="text-gray-400 text-sm mb-1">Active Campaigns</p>
-        <p class="text-3xl font-bold text-white font-mono" id="activeCampaigns">0</p>
-      </div>
+      <p class="text-gray-400 text-sm mb-1">Active Campaigns</p>
+      <p class="text-3xl font-bold text-white font-mono" style="font-family: 'Orbitron', monospace;" id="activeCampaigns">0</p>
     </div>
 
-    <div class="relative bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-2xl p-6 border border-cyan-500/20 overflow-hidden group hover:border-cyan-500/40 transition-all duration-300">
-      <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-400 to-cyan-500"></div>
-      <div class="relative flex items-center justify-between mb-4">
+    <div class="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-cyan-500/20">
+      <div class="flex items-center justify-between mb-4">
         <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center">
           <i data-lucide="users" class="w-6 h-6 text-cyan-400"></i>
         </div>
-        <span class="text-xs font-medium text-emerald-400 flex items-center gap-1">
-          <i data-lucide="trending-up" class="w-3 h-3"></i> +28%
-        </span>
       </div>
-      <div class="relative">
-        <p class="text-gray-400 text-sm mb-1">Total Leads Generated</p>
-        <p class="text-3xl font-bold text-white font-mono" id="totalLeads">0</p>
-      </div>
+      <p class="text-gray-400 text-sm mb-1">Total Leads Generated</p>
+      <p class="text-3xl font-bold text-white font-mono" style="font-family: 'Orbitron', monospace;" id="totalLeads">0</p>
     </div>
 
-    <div class="relative bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-2xl p-6 border border-emerald-500/20 overflow-hidden group hover:border-emerald-500/40 transition-all duration-300">
-      <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-500"></div>
-      <div class="relative flex items-center justify-between mb-4">
+    <div class="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-emerald-500/20">
+      <div class="flex items-center justify-between mb-4">
         <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
           <i data-lucide="dollar-sign" class="w-6 h-6 text-emerald-400"></i>
         </div>
-        <span class="text-xs font-medium text-emerald-400 flex items-center gap-1">
-          <i data-lucide="trending-down" class="w-3 h-3"></i> -8%
-        </span>
       </div>
-      <div class="relative">
-        <p class="text-gray-400 text-sm mb-1">Cost Per Acquisition</p>
-        <p class="text-3xl font-bold text-white font-mono" id="avgCPA">$0</p>
-      </div>
+      <p class="text-gray-400 text-sm mb-1">Avg Cost Per Lead</p>
+      <p class="text-3xl font-bold text-white font-mono" style="font-family: 'Orbitron', monospace;" id="avgCPL">$0</p>
     </div>
 
-    <div class="relative bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-2xl p-6 border border-purple-500/20 overflow-hidden group hover:border-purple-500/40 transition-all duration-300">
-      <div class="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-400 to-purple-500"></div>
-      <div class="relative flex items-center justify-between mb-4">
+    <div class="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20">
+      <div class="flex items-center justify-between mb-4">
         <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
           <i data-lucide="percent" class="w-6 h-6 text-purple-400"></i>
         </div>
-        <span class="text-xs font-medium text-emerald-400 flex items-center gap-1">
-          <i data-lucide="trending-up" class="w-3 h-3"></i> +5%
-        </span>
       </div>
-      <div class="relative">
-        <p class="text-gray-400 text-sm mb-1">Conversion Rate</p>
-        <p class="text-3xl font-bold text-white font-mono" id="conversionRate">0%</p>
-      </div>
+      <p class="text-gray-400 text-sm mb-1">Conversion Rate</p>
+      <p class="text-3xl font-bold text-white font-mono" style="font-family: 'Orbitron', monospace;" id="conversionRate">0%</p>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
-    <!-- Campaign List -->
-    <div class="xl:col-span-2 space-y-6">
-      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
-        <div class="p-6 border-b border-slate-700/50 flex items-center justify-between">
-          <h2 class="text-xl font-semibold text-white flex items-center gap-2">
-            <i data-lucide="target" class="w-5 h-5 text-blue-400"></i>
-            Active Campaigns
-          </h2>
-          <div class="flex gap-2">
-            <button onclick="filterCampaigns('all')" class="px-3 py-1.5 text-sm rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors">All</button>
-            <button onclick="filterCampaigns('email')" class="px-3 py-1.5 text-sm rounded-lg hover:bg-slate-700/50 text-gray-400 transition-colors">Email</button>
-            <button onclick="filterCampaigns('sms')" class="px-3 py-1.5 text-sm rounded-lg hover:bg-slate-700/50 text-gray-400 transition-colors">SMS</button>
-            <button onclick="filterCampaigns('social')" class="px-3 py-1.5 text-sm rounded-lg hover:bg-slate-700/50 text-gray-400 transition-colors">Social</button>
-          </div>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="bg-slate-900/50">
-              <tr>
-                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Campaign</th>
-                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Budget</th>
-                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Spent</th>
-                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Leads</th>
-                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">CPA</th>
-                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">ROI</th>
-              </tr>
-            </thead>
-            <tbody id="campaignTableBody" class="divide-y divide-slate-700/50">
-              <!-- Populated by JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- A/B Test Results -->
-      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
-        <h2 class="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-          <i data-lucide="split" class="w-5 h-5 text-purple-400"></i>
-          A/B Test Results
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="abTestContainer">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
-      <!-- Landing Page Performance -->
-      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
-        <h2 class="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-          <i data-lucide="globe" class="w-5 h-5 text-cyan-400"></i>
-          Landing Page Performance
-        </h2>
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="bg-slate-900/50">
-              <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Page URL</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Visits</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Conversions</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Rate</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Trend</th>
-              </tr>
-            </thead>
-            <tbody id="landingPageTable" class="divide-y divide-slate-700/50">
-              <!-- Populated by JS -->
-            </tbody>
-          </table>
-        </div>
+  <!-- Campaign List -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="p-6 border-b border-slate-700/50 flex items-center justify-between">
+      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="target" class="w-5 h-5 text-blue-400"></i>
+        Active Campaigns
+      </h2>
+      <div class="flex gap-2">
+        <button onclick="filterCampaigns('all')" id="filterAll" class="px-3 py-1.5 text-sm rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors">All</button>
+        <button onclick="filterCampaigns('email')" id="filterEmail" class="px-3 py-1.5 text-sm rounded-lg hover:bg-slate-700/50 text-gray-400 transition-colors">Email</button>
+        <button onclick="filterCampaigns('sms')" id="filterSMS" class="px-3 py-1.5 text-sm rounded-lg hover:bg-slate-700/50 text-gray-400 transition-colors">SMS</button>
+        <button onclick="filterCampaigns('social')" id="filterSocial" class="px-3 py-1.5 text-sm rounded-lg hover:bg-slate-700/50 text-gray-400 transition-colors">Social</button>
       </div>
     </div>
-
-    <!-- Right Sidebar -->
-    <div class="space-y-6">
-      <!-- Lead Source Attribution -->
-      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
-        <h2 class="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-          <i data-lucide="pie-chart" class="w-5 h-5 text-pink-400"></i>
-          Lead Sources
-        </h2>
-        <div class="relative w-48 h-48 mx-auto mb-6">
-          <svg id="leadSourceChart" viewBox="0 0 100 100" class="w-full h-full transform -rotate-90">
-            <!-- Populated by JS -->
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <div class="text-center">
-              <p class="text-2xl font-bold text-white font-mono" id="totalLeadCount">0</p>
-              <p class="text-xs text-gray-400">Total</p>
-            </div>
-          </div>
-        </div>
-        <div id="leadSourceLegend" class="space-y-2">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-slate-700/50">
+            <th class="text-left p-4 text-gray-400 font-medium">Campaign</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Type</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Status</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Budget</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Leads</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Conversions</th>
+            <th class="text-left p-4 text-gray-400 font-medium">ROI</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="campaignTableBody">
           <!-- Populated by JS -->
-        </div>
-      </div>
-
-      <!-- Email Campaign Builder -->
-      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
-        <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <i data-lucide="mail" class="w-5 h-5 text-blue-400"></i>
-          Email Builder
-        </h2>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Subject Line</label>
-            <input type="text" id="emailSubject" placeholder="Enter subject..." 
-              class="w-full px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none transition-colors"
-              oninput="updateEmailPreview()">
-          </div>
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Body Content</label>
-            <textarea id="emailBody" rows="4" placeholder="Enter email content... Use {first_name} and {total_debt} as merge tags"
-              class="w-full px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none transition-colors resize-none"
-              oninput="updateEmailPreview()"></textarea>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <button onclick="insertMergeTag('{first_name}')" class="px-2 py-1 text-xs bg-blue-500/20 text-blue-400 rounded hover:bg-blue-500/30 transition-colors">{first_name}</button>
-            <button onclick="insertMergeTag('{total_debt}')" class="px-2 py-1 text-xs bg-blue-500/20 text-blue-400 rounded hover:bg-blue-500/30 transition-colors">{total_debt}</button>
-            <button onclick="insertMergeTag('{company_name}')" class="px-2 py-1 text-xs bg-blue-500/20 text-blue-400 rounded hover:bg-blue-500/30 transition-colors">{company_name}</button>
-          </div>
-        </div>
-        
-        <!-- Live Preview -->
-        <div class="mt-4 p-4 bg-slate-900/50 rounded-lg border border-slate-700">
-          <p class="text-xs text-gray-500 mb-2 uppercase tracking-wide">Preview</p>
-          <p class="text-sm text-gray-300 font-medium mb-2" id="previewSubject">Subject preview...</p>
-          <p class="text-sm text-gray-400 whitespace-pre-wrap" id="previewBody">Body preview...</p>
-        </div>
-      </div>
-
-      <!-- SMS Campaign Builder -->
-      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
-        <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <i data-lucide="message-square" class="w-5 h-5 text-green-400"></i>
-          SMS Builder
-        </h2>
-        <div class="space-y-4">
-          <div>
-            <textarea id="smsBody" rows="3" placeholder="Enter SMS message..." maxlength="160"
-              class="w-full px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:border-green-500 focus:outline-none transition-colors resize-none"
-              oninput="updateSMSCounter()"></textarea>
-            <div class="flex justify-between mt-2">
-              <span class="text-xs text-gray-500">160 characters max</span>
-              <span id="smsCounter" class="text-xs font-mono">0/160</span>
-            </div>
-          </div>
-          <button class="w-full py-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors flex items-center justify-center gap-2">
-            <i data-lucide="send" class="w-4 h-4"></i>
-            Schedule SMS
-          </button>
-        </div>
-      </div>
-
-      <!-- Social Media Scheduler -->
-      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
-        <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <i data-lucide="share-2" class="w-5 h-5 text-purple-400"></i>
-          Social Composer
-        </h2>
-        <div class="space-y-4">
-          <div>
-            <textarea id="socialPost" rows="3" placeholder="What's on your mind?"
-              class="w-full px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition-colors resize-none"></textarea>
-          </div>
-          <div class="flex gap-3">
-            <label class="flex items-center gap-2 cursor-pointer group">
-              <input type="checkbox" class="peer hidden" checked>
-              <div class="w-10 h-10 rounded-xl bg-slate-700/50 flex items-center justify-center peer-checked:bg-blue-500/20 peer-checked:border-blue-500 border border-transparent transition-all group-hover:scale-110">
-                <i data-lucide="facebook" class="w-5 h-5 text-gray-400 peer-checked:text-blue-400"></i>
-              </div>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer group">
-              <input type="checkbox" class="peer hidden">
-              <div class="w-10 h-10 rounded-xl bg-slate-700/50 flex items-center justify-center peer-checked:bg-pink-500/20 peer-checked:border-pink-500 border border-transparent transition-all group-hover:scale-110">
-                <i data-lucide="instagram" class="w-5 h-5 text-gray-400 peer-checked:text-pink-400"></i>
-              </div>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer group">
-              <input type="checkbox" class="peer hidden">
-              <div class="w-10 h-10 rounded-xl bg-slate-700/50 flex items-center justify-center peer-checked:bg-sky-500/20 peer-checked:border-sky-500 border border-transparent transition-all group-hover:scale-110">
-                <i data-lucide="twitter" class="w-5 h-5 text-gray-400 peer-checked:text-sky-400"></i>
-              </div>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer group">
-              <input type="checkbox" class="peer hidden">
-              <div class="w-10 h-10 rounded-xl bg-slate-700/50 flex items-center justify-center peer-checked:bg-blue-600/20 peer-checked:border-blue-600 border border-transparent transition-all group-hover:scale-110">
-                <i data-lucide="linkedin" class="w-5 h-5 text-gray-400 peer-checked:text-blue-500"></i>
-              </div>
-            </label>
-          </div>
-          <button class="w-full py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 transition-colors flex items-center justify-center gap-2">
-            <i data-lucide="calendar" class="w-4 h-4"></i>
-            Schedule Post
-          </button>
-        </div>
-      </div>
-
-      <!-- Marketing Spend Tracker -->
-      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
-        <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <i data-lucide="wallet" class="w-5 h-5 text-emerald-400"></i>
-          Spend Tracker
-        </h2>
-        <div class="space-y-4" id="spendTracker">
-          <!-- Populated by JS -->
-        </div>
-      </div>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- Create Campaign Modal -->
-  <div id="campaignModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center">
-    <div class="bg-slate-800 rounded-2xl border border-slate-700 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-      <div class="p-6 border-b border-slate-700 flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-white">Create New Campaign</h2>
-        <button onclick="closeCampaignModal()" class="w-8 h-8 rounded-lg hover:bg-slate-700 flex items-center justify-center transition-colors">
-          <i data-lucide="x" class="w-5 h-5 text-gray-400"></i>
-        </button>
+  <!-- Lead Source ROI -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="trending-up" class="w-5 h-5 text-emerald-400"></i>
+        Lead Source ROI
+      </h2>
+    </div>
+    <div class="p-6">
+      <table class="w-full" id="leadSourceTable">
+        <thead>
+          <tr class="border-b border-slate-700/50">
+            <th class="text-left p-2 text-gray-400 font-medium">Source</th>
+            <th class="text-left p-2 text-gray-400 font-medium">Leads</th>
+            <th class="text-left p-2 text-gray-400 font-medium">Conversions</th>
+            <th class="text-left p-2 text-gray-400 font-medium">Conv %</th>
+            <th class="text-left p-2 text-gray-400 font-medium">Cost</th>
+            <th class="text-left p-2 text-gray-400 font-medium">Revenue</th>
+            <th class="text-left p-2 text-gray-400 font-medium">ROI</th>
+          </tr>
+        </thead>
+        <tbody id="leadSourceBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Create Campaign Modal -->
+<div id="campaignModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center">
+  <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-md w-full mx-4">
+    <h2 class="text-2xl font-bold text-white mb-6">Create New Campaign</h2>
+    
+    <div class="space-y-4">
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Campaign Name</label>
+        <input type="text" id="newCampaignName" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500" placeholder="Summer Sale 2026">
       </div>
-      <div class="p-6 space-y-6">
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Campaign Name</label>
-            <input type="text" id="newCampaignName" placeholder="Spring Debt Relief 2026"
-              class="w-full px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Campaign Type</label>
-            <select id="newCampaignType" class="w-full px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:border-blue-500 focus:outline-none">
-              <option value="email">Email</option>
-              <option value="sms">SMS</option>
-              <option value="social">Social Media</option>
-              <option value="ppc">PPC (Google/Facebook)</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Audience Segment</label>
-            <select id="newCampaignAudience" class="w-full px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:border-blue-500 focus:outline-none">
-              <option value="all">All Leads</option>
-              <option value="high_debt">High Debt ($50k+)</option>
-              <option value="new_leads">New Leads (Last 7 Days)</option>
-              <option value="qualified">Qualified Only</option>
-              <option value="cold">Cold Leads</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Budget</label>
-            <input type="number" id="newCampaignBudget" placeholder="5000"
-              class="w-full px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none">
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Start Date</label>
-            <input type="date" id="newCampaignStart"
-              class="w-full px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:border-blue-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">End Date</label>
-            <input type="date" id="newCampaignEnd"
-              class="w-full px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:border-blue-500 focus:outline-none">
-          </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Type</label>
+        <select id="newCampaignType" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+          <option value="email">Email</option>
+          <option value="sms">SMS</option>
+          <option value="facebook">Facebook</option>
+          <option value="google">Google Ads</option>
+          <option value="tv">TV</option>
+          <option value="radio">Radio</option>
+          <option value="direct-mail">Direct Mail</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Budget ($)</label>
+        <input type="number" id="newCampaignBudget" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500" placeholder="5000">
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-gray-400 text-sm mb-2">Start Date</label>
+          <input type="date" id="newCampaignStart" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
         </div>
         <div>
-          <label class="block text-sm text-gray-400 mb-2">Campaign Content</label>
-          <textarea id="newCampaignContent" rows="4" placeholder="Describe your campaign..."
-            class="w-full px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none resize-none"></textarea>
+          <label class="block text-gray-400 text-sm mb-2">End Date</label>
+          <input type="date" id="newCampaignEnd" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
         </div>
-      </div>
-      <div class="p-6 border-t border-slate-700 flex justify-end gap-3">
-        <button onclick="closeCampaignModal()" class="px-4 py-2 text-gray-400 hover:text-white transition-colors">Cancel</button>
-        <button onclick="createCampaign()" class="px-6 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-blue-500/25 transition-all">
-          Create Campaign
-        </button>
       </div>
     </div>
+    
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeCampaignModal()" class="flex-1 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">Cancel</button>
+      <button onclick="createCampaign()" class="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:shadow-lg transition-all">Create</button>
+    </div>
   </div>
+</div>
 
-  <style>
-    .marketing-page {
-      animation: fadeIn 0.5s ease-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .donut-segment {
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-    .donut-segment:hover {
-      filter: brightness(1.2);
-      transform: scale(1.02);
-    }
-    .sms-counter-warning {
-      color: #fbbf24 !important;
-    }
-    .sms-counter-danger {
-      color: #ef4444 !important;
-    }
-    .winner-glow {
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), inset 0 0 20px rgba(34, 197, 94, 0.1);
-      border-color: rgba(34, 197, 94, 0.5) !important;
-    }
-  </style>
-
-  <script>
-    // Marketing Data
-    let marketingData = JSON.parse(localStorage.getItem('marketingData')) || {
-      campaigns: [
-        { id: 'C001', name: 'Spring Debt Relief', type: 'email', status: 'active', budget: 5000, spent: 3240, leads: 156, conversions: 23, roi: 285 },
-        { id: 'C002', name: 'Google Ads - Debt Help', type: 'ppc', status: 'active', budget: 10000, spent: 8750, leads: 342, conversions: 41, roi: 156 },
-        { id: 'C003', name: 'Facebook Retargeting', type: 'social', status: 'active', budget: 3000, spent: 2100, leads: 89, conversions: 12, roi: 198 },
-        { id: 'C004', name: 'SMS Blast - Qualified', type: 'sms', status: 'paused', budget: 1500, spent: 900, leads: 67, conversions: 8, roi: 142 },
-        { id: 'C005', name: 'TV Commercial - Local', type: 'ppc', status: 'active', budget: 15000, spent: 12000, leads: 234, conversions: 31, roi: 98 }
-      ],
-      leadSources: [
-        { name: 'Google Ads', value: 342, color: '#4285F4' },
-        { name: 'Facebook', value: 189, color: '#1877F2' },
-        { name: 'Referral', value: 156, color: '#22C55E' },
-        { name: 'Direct Mail', value: 98, color: '#F97316' },
-        { name: 'TV', value: 87, color: '#8B5CF6' },
-        { name: 'Radio', value: 54, color: '#EC4899' },
-        { name: 'Website', value: 234, color: '#06B6D4' },
-        { name: 'Partner', value: 76, color: '#EAB308' }
-      ],
-      abTests: [
-        { id: 'AB001', name: 'Email Subject Test', variantA: { name: 'Subject A', rate: 24.5 }, variantB: { name: 'Subject B', rate: 31.2 }, winner: 'B', sampleSize: 5000 },
-        { id: 'AB002', name: 'Landing Page CTA', variantA: { name: 'Blue Button', rate: 12.3 }, variantB: { name: 'Green Button', rate: 15.7 }, winner: 'B', sampleSize: 8000 },
-        { id: 'AB003', name: 'SMS Timing', variantA: { name: 'Morning', rate: 8.2 }, variantB: { name: 'Evening', rate: 11.5 }, winner: 'B', sampleSize: 3000 }
-      ],
-      landingPages: [
-        { url: '/debt-relief', visits: 12450, conversions: 892, rate: 7.16 },
-        { url: '/get-help-now', visits: 8934, conversions: 567, rate: 6.35 },
-        { url: '/free-consultation', visits: 6721, conversions: 489, rate: 7.28 },
-        { url: '/debt-calculator', visits: 15234, conversions: 423, rate: 2.78 }
-      ],
-      spendByChannel: [
-        { name: 'Google Ads', budget: 10000, spent: 8750, color: '#4285F4' },
-        { name: 'Facebook', budget: 5000, spent: 4200, color: '#1877F2' },
-        { name: 'Email', budget: 3000, spent: 2100, color: '#3B82F6' },
-        { name: 'TV/Radio', budget: 15000, spent: 12000, color: '#8B5CF6' },
-        { name: 'Direct Mail', budget: 2000, spent: 1100, color: '#F97316' }
-      ]
+<script>
+  // Toast Function
+  function showToast(msg, type='info') {
+    const toast = document.createElement('div');
+    const colors = {
+      success: 'bg-emerald-500',
+      error: 'bg-red-500',
+      info: 'bg-blue-500'
     };
+    toast.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in`;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  }
 
-    function saveMarketingData() {
-      localStorage.setItem('marketingData', JSON.stringify(marketingData));
+  // Check if DebtDB is loaded
+  if (!window.DebtDB) {
+    showToast('DebtDB not loaded!', 'error');
+  }
+
+  let currentFilter = 'all';
+
+  function calculateMetrics() {
+    const campaigns = window.DebtDB.getCampaigns();
+    const leads = window.DebtDB.getLeads();
+    
+    const active = campaigns.filter(c => c.status === 'active').length;
+    const totalLeadsFromCampaigns = campaigns.reduce((sum, c) => sum + (c.leads || 0), 0);
+    const totalSpent = campaigns.reduce((sum, c) => sum + (c.spent || 0), 0);
+    const totalConversions = campaigns.reduce((sum, c) => sum + (c.conversions || 0), 0);
+    
+    const avgCPL = totalLeadsFromCampaigns > 0 ? (totalSpent / totalLeadsFromCampaigns).toFixed(2) : 0;
+    const conversionRate = totalLeadsFromCampaigns > 0 ? ((totalConversions / totalLeadsFromCampaigns) * 100).toFixed(1) : 0;
+    
+    document.getElementById('activeCampaigns').textContent = active;
+    document.getElementById('totalLeads').textContent = totalLeadsFromCampaigns;
+    document.getElementById('avgCPL').textContent = '$' + avgCPL;
+    document.getElementById('conversionRate').textContent = conversionRate + '%';
+  }
+
+  function renderCampaignTable(filter = 'all') {
+    currentFilter = filter;
+    let campaigns = window.DebtDB.getCampaigns();
+    
+    if (filter !== 'all') {
+      campaigns = campaigns.filter(c => c.type === filter);
     }
-
-    function calculateMetrics() {
-      const active = marketingData.campaigns.filter(c => c.status === 'active').length;
-      const totalLeads = marketingData.campaigns.reduce((sum, c) => sum + c.leads, 0);
-      const totalSpent = marketingData.campaigns.reduce((sum, c) => sum + c.spent, 0);
-      const totalConversions = marketingData.campaigns.reduce((sum, c) => sum + c.conversions, 0);
-      const cpa = totalConversions > 0 ? totalSpent / totalConversions : 0;
-      const convRate = totalLeads > 0 ? (totalConversions / totalLeads) * 100 : 0;
-
-      document.getElementById('activeCampaigns').textContent = active;
-      document.getElementById('totalLeads').textContent = totalLeads.toLocaleString();
-      document.getElementById('avgCPA').textContent = '$' + cpa.toFixed(0);
-      document.getElementById('conversionRate').textContent = convRate.toFixed(1) + '%';
-    }
-
-    function renderCampaignTable(filter = 'all') {
-      const tbody = document.getElementById('campaignTableBody');
-      let campaigns = marketingData.campaigns;
-      if (filter !== 'all') {
-        campaigns = campaigns.filter(c => c.type === filter);
-      }
-
-      tbody.innerHTML = campaigns.map(c => {
-        const cpa = c.conversions > 0 ? (c.spent / c.conversions).toFixed(0) : 0;
-        const statusColors = {
-          active: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-          paused: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-          draft: 'bg-gray-500/20 text-gray-400 border-gray-500/30'
-        };
-        const typeIcons = {
-          email: 'mail',
-          sms: 'message-square',
-          social: 'share-2',
-          ppc: 'mouse-pointer'
-        };
-        return `
-          <tr class="hover:bg-slate-800/50 transition-colors">
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center">
-                  <i data-lucide="${typeIcons[c.type]}" class="w-4 h-4 text-gray-400"></i>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-white">${c.name}</p>
-                  <p class="text-xs text-gray-500 capitalize">${c.type}</p>
-                </div>
-              </div>
-            </td>
-            <td class="px-6 py-4">
-              <span class="px-2 py-1 text-xs rounded-full border ${statusColors[c.status]}">
-                ${c.status}
-              </span>
-            </td>
-            <td class="px-6 py-4 text-sm text-white font-mono">$${c.budget.toLocaleString()}</td>
-            <td class="px-6 py-4">
-              <div class="text-sm text-white font-mono">$${c.spent.toLocaleString()}</div>
-              <div class="w-20 h-1.5 bg-slate-700 rounded-full mt-1">
-                <div class="h-full bg-blue-500 rounded-full" style="width: ${(c.spent/c.budget)*100}%"></div>
-              </div>
-            </td>
-            <td class="px-6 py-4 text-sm text-white font-mono">${c.leads}</td>
-            <td class="px-6 py-4 text-sm text-gray-400 font-mono">$${cpa}</td>
-            <td class="px-6 py-4">
-              <span class="text-sm font-medium ${c.roi > 150 ? 'text-emerald-400' : c.roi > 100 ? 'text-blue-400' : 'text-amber-400'}">
-                ${c.roi}%
-              </span>
-            </td>
-          </tr>
-        `;
-      }).join('');
-      lucide.createIcons();
-    }
-
-    function renderLeadSourceChart() {
-      const total = marketingData.leadSources.reduce((sum, s) => sum + s.value, 0);
-      document.getElementById('totalLeadCount').textContent = total.toLocaleString();
-
-      let cumulativePercent = 0;
-      const svg = document.getElementById('leadSourceChart');
-      svg.innerHTML = marketingData.leadSources.map((source, i) => {
-        const percent = source.value / total;
-        const startPercent = cumulativePercent;
-        cumulativePercent += percent;
-        
-        const x1 = 50 + 40 * Math.cos(2 * Math.PI * startPercent);
-        const y1 = 50 + 40 * Math.sin(2 * Math.PI * startPercent);
-        const x2 = 50 + 40 * Math.cos(2 * Math.PI * cumulativePercent);
-        const y2 = 50 + 40 * Math.sin(2 * Math.PI * cumulativePercent);
-        
-        const largeArc = percent > 0.5 ? 1 : 0;
-        
-        return `
-          <circle cx="50" cy="50" r="40" fill="none" stroke="${source.color}" stroke-width="12"
-            stroke-dasharray="${percent * 251.2} 251.2"
-            stroke-dashoffset="-${startPercent * 251.2}"
-            class="donut-segment"
-            style="animation: dash 1s ease-out ${i * 0.1}s both;">
-          </circle>
-        `;
-      }).join('');
-
-      document.getElementById('leadSourceLegend').innerHTML = marketingData.leadSources.map(s => `
-        <div class="flex items-center justify-between text-sm">
-          <div class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full" style="background-color: ${s.color}"></div>
-            <span class="text-gray-400">${s.name}</span>
-          </div>
-          <span class="text-white font-mono">${((s.value/total)*100).toFixed(1)}%</span>
-        </div>
-      `).join('');
-    }
-
-    function renderABTests() {
-      document.getElementById('abTestContainer').innerHTML = marketingData.abTests.map(test => {
-        const isWinnerA = test.winner === 'A';
-        const isWinnerB = test.winner === 'B';
-        return `
-          <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700 ${isWinnerB ? 'winner-glow' : ''}">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="font-medium text-white">${test.name}</h3>
-              <span class="text-xs text-gray-500">n=${test.sampleSize.toLocaleString()}</span>
-            </div>
-            <div class="space-y-3">
-              <div class="flex items-center justify-between p-2 rounded-lg ${isWinnerA ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-slate-800/50'}">
-                <div class="flex items-center gap-2">
-                  ${isWinnerA ? '<i data-lucide="trophy" class="w-4 h-4 text-emerald-400"></i>' : ''}
-                  <span class="text-sm text-gray-300">${test.variantA.name}</span>
-                </div>
-                <span class="text-sm font-mono ${isWinnerA ? 'text-emerald-400' : 'text-gray-400'}">${test.variantA.rate}%</span>
-              </div>
-              <div class="flex items-center justify-between p-2 rounded-lg ${isWinnerB ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-slate-800/50'}">
-                <div class="flex items-center gap-2">
-                  ${isWinnerB ? '<i data-lucide="trophy" class="w-4 h-4 text-emerald-400"></i>' : ''}
-                  <span class="text-sm text-gray-300">${test.variantB.name}</span>
-                </div>
-                <span class="text-sm font-mono ${isWinnerB ? 'text-emerald-400' : 'text-gray-400'}">${test.variantB.rate}%</span>
-              </div>
-            </div>
-            <div class="mt-3 pt-3 border-t border-slate-700">
-              <p class="text-xs text-emerald-400">Winner: Variant ${test.winner} (+${(Math.abs(test.variantA.rate - test.variantB.rate)).toFixed(1)}%)</p>
-            </div>
-          </div>
-        `;
-      }).join('');
-      lucide.createIcons();
-    }
-
-    function renderLandingPages() {
-      document.getElementById('landingPageTable').innerHTML = marketingData.landingPages.map(page => `
-        <tr class="hover:bg-slate-800/30 transition-colors">
-          <td class="px-4 py-3 text-sm text-blue-400">${page.url}</td>
-          <td class="px-4 py-3 text-sm text-white font-mono">${page.visits.toLocaleString()}</td>
-          <td class="px-4 py-3 text-sm text-white font-mono">${page.conversions.toLocaleString()}</td>
-          <td class="px-4 py-3">
-            <span class="text-sm font-medium ${page.rate > 6 ? 'text-emerald-400' : page.rate > 4 ? 'text-blue-400' : 'text-amber-400'}">
-              ${page.rate.toFixed(2)}%
-            </span>
-          </td>
-          <td class="px-4 py-3">
-            <div class="flex items-center gap-1 text-emerald-400">
-              <i data-lucide="trending-up" class="w-4 h-4"></i>
-              <span class="text-xs">+${(Math.random() * 10 + 2).toFixed(1)}%</span>
-            </div>
+    
+    const tbody = document.getElementById('campaignTableBody');
+    tbody.innerHTML = campaigns.map(c => {
+      const roi = c.spent > 0 ? (((c.conversions * 1000) - c.spent) / c.spent * 100).toFixed(1) : 0;
+      const statusColors = {
+        active: 'bg-emerald-500/20 text-emerald-400',
+        paused: 'bg-yellow-500/20 text-yellow-400',
+        completed: 'bg-gray-500/20 text-gray-400'
+      };
+      
+      return `
+        <tr class="border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+          <td class="p-4 text-white font-medium">${c.name}</td>
+          <td class="p-4 text-gray-300 capitalize">${c.type}</td>
+          <td class="p-4"><span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColors[c.status] || statusColors.active}">${c.status}</span></td>
+          <td class="p-4 text-gray-300">$${(c.budget || 0).toLocaleString()}</td>
+          <td class="p-4 text-gray-300 font-mono" style="font-family: 'Orbitron', monospace;">${c.leads || 0}</td>
+          <td class="p-4 text-gray-300 font-mono" style="font-family: 'Orbitron', monospace;">${c.conversions || 0}</td>
+          <td class="p-4 ${roi > 0 ? 'text-emerald-400' : 'text-red-400'} font-mono" style="font-family: 'Orbitron', monospace;">${roi}%</td>
+          <td class="p-4">
+            <button onclick="toggleCampaignStatus('${c.id}')" class="text-blue-400 hover:text-blue-300 mr-2">
+              <i data-lucide="${c.status === 'active' ? 'pause' : 'play'}" class="w-4 h-4"></i>
+            </button>
           </td>
         </tr>
-      `).join('');
-      lucide.createIcons();
-    }
-
-    function renderSpendTracker() {
-      document.getElementById('spendTracker').innerHTML = marketingData.spendByChannel.map(channel => {
-        const percent = (channel.spent / channel.budget) * 100;
-        return `
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-sm text-gray-400">${channel.name}</span>
-              <span class="text-xs text-gray-500">$${channel.spent.toLocaleString()} / $${channel.budget.toLocaleString()}</span>
-            </div>
-            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
-              <div class="h-full rounded-full transition-all duration-500" 
-                style="width: ${percent}%; background-color: ${channel.color}; box-shadow: 0 0 10px ${channel.color}50">
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function filterCampaigns(type) {
-      renderCampaignTable(type);
-    }
-
-    function openCampaignModal() {
-      document.getElementById('campaignModal').classList.remove('hidden');
-      document.getElementById('campaignModal').classList.add('flex');
-    }
-
-    function closeCampaignModal() {
-      document.getElementById('campaignModal').classList.add('hidden');
-      document.getElementById('campaignModal').classList.remove('flex');
-    }
-
-    function createCampaign() {
-      const name = document.getElementById('newCampaignName').value;
-      const type = document.getElementById('newCampaignType').value;
-      const budget = parseInt(document.getElementById('newCampaignBudget').value) || 0;
-      
-      if (!name) return;
-
-      const newCampaign = {
-        id: 'C' + String(marketingData.campaigns.length + 1).padStart(3, '0'),
-        name,
-        type,
-        status: 'active',
-        budget,
-        spent: 0,
-        leads: 0,
-        conversions: 0,
-        roi: 0
-      };
-
-      marketingData.campaigns.push(newCampaign);
-      saveMarketingData();
-      renderCampaignTable();
-      calculateMetrics();
-      closeCampaignModal();
-    }
-
-    function insertMergeTag(tag) {
-      const body = document.getElementById('emailBody');
-      const start = body.selectionStart;
-      const end = body.selectionEnd;
-      const value = body.value;
-      body.value = value.substring(0, start) + tag + value.substring(end);
-      updateEmailPreview();
-    }
-
-    function updateEmailPreview() {
-      const subject = document.getElementById('emailSubject').value || 'Subject preview...';
-      const body = document.getElementById('emailBody').value || 'Body preview...';
-      
-      document.getElementById('previewSubject').textContent = subject
-        .replace(/{first_name}/g, 'John')
-        .replace(/{total_debt}/g, '$45,000')
-        .replace(/{company_name}/g, 'Debt Relief Pro');
-      
-      document.getElementById('previewBody').textContent = body
-        .replace(/{first_name}/g, 'John')
-        .replace(/{total_debt}/g, '$45,000')
-        .replace(/{company_name}/g, 'Debt Relief Pro');
-    }
-
-    function updateSMSCounter() {
-      const body = document.getElementById('smsBody');
-      const counter = document.getElementById('smsCounter');
-      const length = body.value.length;
-      counter.textContent = `${length}/160`;
-      
-      counter.classList.remove('sms-counter-warning', 'sms-counter-danger');
-      if (length > 140) {
-        counter.classList.add('sms-counter-danger');
-      } else if (length > 120) {
-        counter.classList.add('sms-counter-warning');
-      }
-    }
-
-    // Initialize
-    calculateMetrics();
-    renderCampaignTable();
-    renderLeadSourceChart();
-    renderABTests();
-    renderLandingPages();
-    renderSpendTracker();
+      `;
+    }).join('');
+    
     lucide.createIcons();
-  </script>
-</div>
+  }
+
+  function renderLeadSourceROI() {
+    const leads = window.DebtDB.getLeads();
+    const campaigns = window.DebtDB.getCampaigns();
+    
+    // Aggregate by source
+    const sources = {};
+    leads.forEach(lead => {
+      const source = lead.source || 'Direct';
+      if (!sources[source]) {
+        sources[source] = { leads: 0, conversions: 0, cost: 0, revenue: 0 };
+      }
+      sources[source].leads++;
+      if (lead.stage === 'Enrolled' || lead.stage === 'In Program') {
+        sources[source].conversions++;
+        sources[source].revenue += (lead.estimatedValue || 500);
+      }
+    });
+    
+    // Add campaign costs
+    campaigns.forEach(c => {
+      const source = c.type || 'other';
+      if (sources[source]) {
+        sources[source].cost += (c.spent || 0);
+      }
+    });
+    
+    const tbody = document.getElementById('leadSourceBody');
+    tbody.innerHTML = Object.entries(sources).map(([source, data]) => {
+      const convRate = data.leads > 0 ? ((data.conversions / data.leads) * 100).toFixed(1) : 0;
+      const roi = data.cost > 0 ? (((data.revenue - data.cost) / data.cost) * 100).toFixed(1) : 0;
+      
+      return `
+        <tr class="border-b border-slate-700/30">
+          <td class="p-2 text-white font-medium capitalize">${source}</td>
+          <td class="p-2 text-gray-300 font-mono" style="font-family: 'Orbitron', monospace;">${data.leads}</td>
+          <td class="p-2 text-gray-300 font-mono" style="font-family: 'Orbitron', monospace;">${data.conversions}</td>
+          <td class="p-2 text-gray-300 font-mono" style="font-family: 'Orbitron', monospace;">${convRate}%</td>
+          <td class="p-2 text-gray-300">$${data.cost.toLocaleString()}</td>
+          <td class="p-2 text-gray-300">$${data.revenue.toLocaleString()}</td>
+          <td class="p-2 ${roi > 0 ? 'text-emerald-400' : 'text-red-400'} font-mono font-bold" style="font-family: 'Orbitron', monospace;">${roi}%</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function filterCampaigns(type) {
+    // Update button styles
+    ['All', 'Email', 'SMS', 'Social'].forEach(t => {
+      const btn = document.getElementById('filter' + t);
+      if (btn) {
+        if (type === t.toLowerCase() || (type === 'all' && t === 'All')) {
+          btn.className = 'px-3 py-1.5 text-sm rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors';
+        } else {
+          btn.className = 'px-3 py-1.5 text-sm rounded-lg hover:bg-slate-700/50 text-gray-400 transition-colors';
+        }
+      }
+    });
+    
+    renderCampaignTable(type);
+  }
+
+  function openCampaignModal() {
+    document.getElementById('campaignModal').classList.remove('hidden');
+    document.getElementById('campaignModal').classList.add('flex');
+  }
+
+  function closeCampaignModal() {
+    document.getElementById('campaignModal').classList.add('hidden');
+    document.getElementById('campaignModal').classList.remove('flex');
+  }
+
+  function createCampaign() {
+    const name = document.getElementById('newCampaignName').value;
+    const type = document.getElementById('newCampaignType').value;
+    const budget = parseInt(document.getElementById('newCampaignBudget').value) || 0;
+    const startDate = document.getElementById('newCampaignStart').value;
+    const endDate = document.getElementById('newCampaignEnd').value;
+    
+    if (!name) {
+      showToast('Campaign name is required', 'error');
+      return;
+    }
+    
+    const newCampaign = {
+      name,
+      type,
+      status: 'active',
+      budget,
+      spent: 0,
+      leads: 0,
+      conversions: 0,
+      startDate,
+      endDate
+    };
+    
+    window.DebtDB.addCampaign(newCampaign);
+    showToast('Campaign created successfully!', 'success');
+    
+    calculateMetrics();
+    renderCampaignTable(currentFilter);
+    renderLeadSourceROI();
+    closeCampaignModal();
+    
+    // Clear form
+    document.getElementById('newCampaignName').value = '';
+    document.getElementById('newCampaignBudget').value = '';
+    document.getElementById('newCampaignStart').value = '';
+    document.getElementById('newCampaignEnd').value = '';
+  }
+
+  function toggleCampaignStatus(id) {
+    const campaign = window.DebtDB.getCampaigns().find(c => c.id === id);
+    if (!campaign) return;
+    
+    const newStatus = campaign.status === 'active' ? 'paused' : 'active';
+    window.DebtDB.updateCampaign(id, { status: newStatus });
+    
+    showToast(`Campaign ${newStatus}!`, 'success');
+    renderCampaignTable(currentFilter);
+  }
+
+  // Initialize
+  calculateMetrics();
+  renderCampaignTable();
+  renderLeadSourceROI();
+  lucide.createIcons();
+</script>
+</body>
+</html>

@@ -1,10 +1,12 @@
-<!-- Functionality verified by Agent 2 -->
-<div id="compliance-page" class="page-content">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compliance Center - Debt Consolidation Empire</title>
   <style>
-    /* Orbitron Font Import */
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
-    /* Root Variables */
     :root {
       --bg-primary: #0a0f1a;
       --bg-card: rgba(15, 23, 42, 0.8);
@@ -26,42 +28,82 @@
       --border-hover: rgba(148, 163, 184, 0.2);
     }
 
-    #compliance-page {
-      font-family: 'Inter', sans-serif;
-      color: var(--text-primary);
-      min-height: 100vh;
-      padding: 1.5rem;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    /* Header */
-    .compliance-header {
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
       padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border-subtle);
+      border-bottom: 2px solid var(--border-subtle);
     }
 
-    .compliance-header h1 {
+    .header h1 {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.75rem;
+      font-size: 2rem;
       font-weight: 700;
       background: linear-gradient(135deg, var(--success), var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 1rem;
     }
 
-    /* Glass Card */
+    .competitive-edge {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(245, 158, 11, 0.1));
+      border: 1px solid var(--danger);
+      border-radius: 0.75rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .competitive-edge-text {
+      flex: 1;
+    }
+
+    .competitive-edge-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--danger);
+      margin-bottom: 0.25rem;
+    }
+
+    .competitive-edge-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .competitive-edge-amount {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--danger);
+    }
+
     .glass-card {
       background: var(--bg-glass);
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-subtle);
       border-radius: 1rem;
+      padding: 1.5rem;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -70,102 +112,191 @@
       box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
     }
 
-    /* Dashboard Grid */
-    .compliance-grid {
+    .top-section {
       display: grid;
-      grid-template-columns: 1fr 2fr;
+      grid-template-columns: 350px 1fr;
       gap: 1.5rem;
       margin-bottom: 1.5rem;
     }
 
-    /* Gauge Visualization */
-    .gauge-container {
-      padding: 2rem;
+    /* Compliance Score Gauge */
+    .score-gauge {
       text-align: center;
-      position: relative;
+      padding: 2rem 1rem;
     }
 
-    .gauge-title {
+    .score-title {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.125rem;
+      font-size: 1.25rem;
       margin-bottom: 1.5rem;
+      color: var(--text-secondary);
+    }
+
+    .gauge-wrapper {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 1rem;
+    }
+
+    .gauge-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(
+        var(--success) 0% var(--score-percent),
+        rgba(148, 163, 184, 0.1) var(--score-percent) 100%
+      );
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
+      position: relative;
     }
 
-    .gauge-svg {
-      width: 200px;
-      height: 120px;
-      margin: 0 auto;
-    }
-
-    .gauge-bg {
-      fill: none;
-      stroke: var(--border-subtle);
-      stroke-width: 20;
-    }
-
-    .gauge-fill {
-      fill: none;
-      stroke: url(#gaugeGradient);
-      stroke-width: 20;
-      stroke-linecap: round;
-      stroke-dasharray: 251;
-      stroke-dashoffset: 251;
-      transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    .gauge-circle::before {
+      content: '';
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      background: var(--bg-card);
+      border-radius: 50%;
     }
 
     .gauge-value {
+      position: relative;
+      z-index: 1;
       font-family: 'Orbitron', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-top: 1rem;
-    }
-
-    .gauge-label {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-      margin-top: 0.25rem;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--success);
     }
 
     .gauge-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 2rem;
-      font-size: 0.875rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
       font-weight: 600;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
     }
 
-    .status-excellent { background: rgba(34, 197, 94, 0.2); color: var(--success); }
-    .status-good { background: rgba(6, 182, 212, 0.2); color: var(--accent); }
-    .status-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-    .status-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-
-    /* Live Pulse */
-    .live-indicator {
-      width: 8px;
-      height: 8px;
-      background: var(--success);
-      border-radius: 50%;
-      animation: live-pulse 2s ease-in-out infinite;
+    .alert-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
     }
 
-    @keyframes live-pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-      50% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+    .alert-box {
+      text-align: center;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      background: rgba(148, 163, 184, 0.05);
     }
 
-    /* Alerts Section */
-    .alerts-section {
+    .alert-box-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .alert-box-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* License Grid */
+    .license-grid-wrapper {
       padding: 1.5rem;
     }
 
-    .alerts-title {
+    .license-grid-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .license-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 0.5rem;
+    }
+
+    .license-cell {
+      aspect-ratio: 1;
+      background: rgba(148, 163, 184, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .license-cell:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .license-cell.active {
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+      box-shadow: 0 0 15px var(--success-glow);
+    }
+
+    .license-cell.pending {
+      background: var(--warning);
+      color: white;
+      border-color: var(--warning);
+    }
+
+    .license-cell.expired {
+      background: var(--danger);
+      color: white;
+      border-color: var(--danger);
+    }
+
+    .license-cell.not-required {
+      background: rgba(148, 163, 184, 0.1);
+      color: var(--text-muted);
+    }
+
+    .license-legend {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* Main Content Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Checklist */
+    .checklist-section h3 {
       font-family: 'Orbitron', sans-serif;
       font-size: 1rem;
       margin-bottom: 1rem;
@@ -174,369 +305,104 @@
       gap: 0.5rem;
     }
 
-    .alert-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
-      margin-bottom: 0.75rem;
-      transition: all 0.3s ease;
-      animation: slideIn 0.4s ease backwards;
-    }
-
-    .alert-item:nth-child(2) { animation-delay: 0.1s; }
-    .alert-item:nth-child(3) { animation-delay: 0.2s; }
-    .alert-item:nth-child(4) { animation-delay: 0.3s; }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    .alert-item:hover {
-      border-color: var(--border-hover);
-      transform: translateX(4px);
-    }
-
-    .alert-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-    }
-
-    .alert-danger .alert-icon { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-    .alert-warning .alert-icon { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-    .alert-info .alert-icon { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
-
-    .alert-content {
-      flex: 1;
-    }
-
-    .alert-content h4 {
-      font-weight: 600;
-      font-size: 0.875rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .alert-content p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .alert-time {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    /* State Licensing Grid */
-    .licensing-section {
+    .checklist-category {
       margin-bottom: 1.5rem;
     }
 
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .section-header h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.125rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .state-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 0.5rem;
-    }
-
-    .state-cell {
-      aspect-ratio: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-
-    .state-cell:hover {
-      transform: scale(1.1);
-      z-index: 10;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .state-cell.active {
-      background: rgba(34, 197, 94, 0.15);
-      border-color: var(--success);
-    }
-
-    .state-cell.pending {
-      background: rgba(245, 158, 11, 0.15);
-      border-color: var(--warning);
-    }
-
-    .state-cell.expired {
-      background: rgba(239, 68, 68, 0.15);
-      border-color: var(--danger);
-    }
-
-    .state-cell.not-licensed {
-      background: var(--bg-glass);
-      opacity: 0.5;
-    }
-
-    .state-code {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 600;
+    .category-title {
       font-size: 0.875rem;
-    }
-
-    .state-status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      margin-top: 0.25rem;
-    }
-
-    .state-cell.active .state-status-dot { background: var(--success); box-shadow: 0 0 6px var(--success); }
-    .state-cell.pending .state-status-dot { background: var(--warning); box-shadow: 0 0 6px var(--warning); }
-    .state-cell.expired .state-status-dot { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
-    .state-cell.not-licensed .state-status-dot { background: var(--text-muted); }
-
-    /* Tooltip */
-    .state-cell:hover::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 0.5rem 0.75rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.5rem;
-      font-size: 0.75rem;
-      white-space: nowrap;
-      z-index: 20;
+      font-weight: 600;
+      color: var(--accent);
       margin-bottom: 0.5rem;
-    }
-
-    /* Checklist */
-    .checklist-section {
-      margin-bottom: 1.5rem;
-    }
-
-    .checklist {
-      display: grid;
-      gap: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .checklist-item {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      padding: 1rem 1.25rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      background: rgba(148, 163, 184, 0.03);
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s;
     }
 
     .checklist-item:hover {
-      border-color: var(--primary);
+      background: rgba(148, 163, 184, 0.08);
     }
 
     .checklist-checkbox {
-      width: 24px;
-      height: 24px;
-      border: 2px solid var(--text-muted);
-      border-radius: 6px;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-subtle);
+      border-radius: 0.25rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transition: all 0.2s;
     }
 
-    .checklist-item.checked .checklist-checkbox {
+    .checklist-item.completed .checklist-checkbox {
       background: var(--success);
       border-color: var(--success);
-      transform: scale(1.1);
     }
 
-    .checklist-checkbox svg {
-      width: 16px;
-      height: 16px;
+    .checklist-item.completed .checklist-checkbox::after {
+      content: '✓';
       color: white;
-      opacity: 0;
-      transform: scale(0);
-      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      font-size: 14px;
+      font-weight: bold;
     }
 
-    .checklist-item.checked .checklist-checkbox svg {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .checklist-content {
+    .checklist-label {
       flex: 1;
-    }
-
-    .checklist-content h4 {
-      font-weight: 600;
       font-size: 0.875rem;
-      margin-bottom: 0.25rem;
-      transition: all 0.3s ease;
     }
 
-    .checklist-item.checked .checklist-content h4 {
-      text-decoration: line-through;
-      color: var(--text-muted);
-    }
-
-    .checklist-content p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .checklist-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .checklist-badge {
-      padding: 0.35rem 0.75rem;
-      border-radius: 2rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    /* Risk Matrix */
-    .risk-section {
-      margin-bottom: 1.5rem;
-    }
-
-    .risk-matrix {
-      display: grid;
-      grid-template-columns: auto repeat(3, 1fr);
-      gap: 0.5rem;
-      padding: 1rem;
-    }
-
-    .risk-header {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-align: center;
-      padding: 0.5rem;
-    }
-
-    .risk-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding-right: 0.75rem;
-    }
-
-    .risk-cell {
-      aspect-ratio: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-radius: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .risk-cell:hover {
-      transform: scale(1.05);
-      z-index: 10;
-    }
-
-    .risk-cell.low-low { background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1)); }
-    .risk-cell.low-med { background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(6, 182, 212, 0.1)); }
-    .risk-cell.low-high { background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(245, 158, 11, 0.1)); }
-    .risk-cell.med-low { background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(6, 182, 212, 0.1)); }
-    .risk-cell.med-med { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1)); }
-    .risk-cell.med-high { background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(239, 68, 68, 0.1)); }
-    .risk-cell.high-low { background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(245, 158, 11, 0.1)); }
-    .risk-cell.high-med { background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(239, 68, 68, 0.1)); }
-    .risk-cell.high-high { background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1)); }
-
-    .risk-cell.active {
-      box-shadow: 0 0 20px currentColor;
-      border: 2px solid currentColor;
-    }
-
-    .risk-count {
+    /* TCPA Tracker */
+    .tcpa-section h3 {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-
-    /* Audit Log */
-    .audit-section {
-      margin-bottom: 1.5rem;
-    }
-
-    .audit-toolbar {
+      font-size: 1rem;
+      margin-bottom: 1rem;
       display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tcpa-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 0.75rem;
       margin-bottom: 1rem;
     }
 
-    .audit-search {
-      flex: 1;
-      position: relative;
+    .tcpa-stat {
+      text-align: center;
+      padding: 0.75rem;
+      background: rgba(148, 163, 184, 0.05);
+      border-radius: 0.5rem;
     }
 
-    .audit-search input {
-      width: 100%;
-      padding: 0.75rem 1rem 0.75rem 2.5rem;
-      background: var(--bg-glass);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
-      color: var(--text-primary);
-      font-size: 0.875rem;
-      transition: all 0.3s ease;
+    .tcpa-stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
     }
 
-    .audit-search input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-glow);
-    }
-
-    .audit-search i {
-      position: absolute;
-      left: 0.875rem;
-      top: 50%;
-      transform: translateY(-50%);
+    .tcpa-stat-label {
+      font-size: 0.75rem;
       color: var(--text-muted);
+      margin-top: 0.25rem;
     }
 
-    .audit-table {
-      overflow-x: auto;
+    .tcpa-table {
+      max-height: 300px;
+      overflow-y: auto;
     }
 
     table {
@@ -546,780 +412,974 @@
 
     th {
       text-align: left;
-      padding: 0.75rem 1rem;
+      padding: 0.75rem;
       font-size: 0.75rem;
       font-weight: 600;
       color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
       border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
     }
 
     td {
-      padding: 1rem;
+      padding: 0.75rem;
       font-size: 0.875rem;
       border-bottom: 1px solid var(--border-subtle);
     }
 
-    tr:nth-child(even) {
-      background: rgba(255, 255, 255, 0.02);
-    }
-
     tr:hover {
-      background: rgba(59, 130, 246, 0.05);
+      background: rgba(148, 163, 184, 0.05);
     }
 
-    .audit-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.35rem 0.75rem;
-      background: var(--bg-glass);
-      border-radius: 0.5rem;
-      font-size: 0.75rem;
-    }
-
-    .audit-user {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .user-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
       font-size: 0.75rem;
       font-weight: 600;
     }
 
-    /* Disclosure Tracking */
-    .disclosure-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1rem;
+    .status-badge.verified {
+      background: var(--success-glow);
+      color: var(--success);
     }
 
-    .disclosure-card {
-      padding: 1.25rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
-      transition: all 0.3s ease;
+    .status-badge.pending {
+      background: var(--warning-glow);
+      color: var(--warning);
     }
 
-    .disclosure-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
-
-    .disclosure-header {
+    /* DNC Section */
+    .dnc-section h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 1rem;
       display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .dnc-header {
+      display: flex;
+      gap: 0.75rem;
       margin-bottom: 1rem;
     }
 
-    .disclosure-header h4 {
-      font-weight: 600;
+    .dnc-input {
+      flex: 1;
+      padding: 0.75rem;
+      background: rgba(148, 163, 184, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.5rem;
+      color: var(--text-primary);
       font-size: 0.875rem;
     }
 
-    .disclosure-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+    .dnc-input:focus {
+      outline: none;
+      border-color: var(--primary);
     }
 
-    .disclosure-item {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.35rem 0.5rem;
-      background: var(--bg-glass);
-      border-radius: 0.25rem;
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      box-shadow: 0 0 20px var(--success-glow);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1rem;
       font-size: 0.75rem;
     }
 
-    .disclosure-item.signed { background: rgba(34, 197, 94, 0.15); color: var(--success); }
-    .disclosure-item.unsigned { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .dnc-list {
+      max-height: 200px;
+      overflow-y: auto;
+    }
 
-    /* Attorney Queue */
-    .queue-item {
+    .dnc-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      background: rgba(148, 163, 184, 0.03);
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .dnc-phone {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.875rem;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    /* Audit Log */
+    .audit-section h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .audit-log {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .audit-entry {
+      padding: 0.75rem;
+      background: rgba(148, 163, 184, 0.03);
+      border-left: 3px solid var(--accent);
+      border-radius: 0.25rem;
       margin-bottom: 0.75rem;
-      transition: all 0.3s ease;
     }
 
-    .queue-item:hover {
-      border-color: var(--primary);
-      transform: translateX(4px);
-    }
-
-    .queue-priority {
-      width: 4px;
-      height: 40px;
-      border-radius: 2px;
-    }
-
-    .priority-high { background: var(--danger); box-shadow: 0 0 10px var(--danger-glow); }
-    .priority-medium { background: var(--warning); box-shadow: 0 0 10px var(--warning-glow); }
-    .priority-low { background: var(--success); box-shadow: 0 0 10px var(--success-glow); }
-
-    .queue-content {
-      flex: 1;
-    }
-
-    .queue-content h4 {
-      font-weight: 600;
-      font-size: 0.875rem;
+    .audit-timestamp {
+      font-size: 0.75rem;
+      color: var(--text-muted);
       margin-bottom: 0.25rem;
     }
 
-    .queue-content p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .queue-meta {
-      text-align: right;
-    }
-
-    .queue-days {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.125rem;
+    .audit-action {
+      font-size: 0.875rem;
       font-weight: 600;
-      color: var(--danger);
+      margin-bottom: 0.25rem;
     }
 
-    .queue-label {
+    .audit-user {
       font-size: 0.75rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
     }
 
-    /* Export Button */
-    .export-btn {
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    .modal-header {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      background: rgba(148, 163, 184, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.5rem;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 0.75rem;
+      background: rgba(148, 163, 184, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.5rem;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-secondary {
+      background: rgba(148, 163, 184, 0.2);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(148, 163, 184, 0.3);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      z-index: 2000;
+    }
+
+    .toast.active {
+      display: flex;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast-success {
+      border-left: 4px solid var(--success);
+    }
+
+    .toast-error {
+      border-left: 4px solid var(--danger);
+    }
+
+    /* Action Bar */
+    .action-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-icon {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      background: linear-gradient(135deg, var(--success), var(--accent));
-      border: none;
-      border-radius: 0.75rem;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
     }
 
-    .export-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
     }
 
-    /* Two Column Layout */
-    .two-column {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
+    ::-webkit-scrollbar-track {
+      background: rgba(148, 163, 184, 0.05);
+      border-radius: 4px;
     }
 
-    @media (max-width: 1200px) {
-      .compliance-grid { grid-template-columns: 1fr; }
-      .two-column { grid-template-columns: 1fr; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.3);
     }
   </style>
-
-  <!-- SVG Definitions for Gradient -->
-  <svg width="0" height="0">
-    <defs>
-      <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style="stop-color:#EF4444" />
-        <stop offset="50%" style="stop-color:#F59E0B" />
-        <stop offset="100%" style="stop-color:#22C55E" />
-      </linearGradient>
-    </defs>
-  </svg>
-
-  <div class="compliance-header">
-    <h1><i data-lucide="shield-check"></i> Compliance Dashboard</h1>
-    <div style="display: flex; gap: 0.75rem;">
-      <button class="export-btn" onclick="exportReport()">
-        <i data-lucide="download"></i> Export Report
-      </button>
-    </div>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>
+      🛡️ Compliance Center
+    </h1>
+    <button class="btn btn-success btn-icon" onclick="generateReport()">
+      📄 Generate Report
+    </button>
   </div>
 
-  <div class="compliance-grid">
+  <!-- Competitive Edge Alert -->
+  <div class="competitive-edge">
+    <div class="competitive-edge-text">
+      <div class="competitive-edge-title">⚠️ YOUR COMPETITIVE ADVANTAGE</div>
+      <div class="competitive-edge-subtitle">StratusBK & Talkt have ZERO compliance certifications. You're exposed to:</div>
+    </div>
+    <div class="competitive-edge-amount">$3.5M - $14.9M</div>
+  </div>
+
+  <!-- Top Section: Score + License Grid -->
+  <div class="top-section">
     <!-- Compliance Score Gauge -->
-    <div class="glass-card gauge-container">
-      <h2 class="gauge-title"><i data-lucide="activity"></i> Compliance Score</h2>
-      <svg class="gauge-svg" viewBox="0 0 200 120">
-        <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" />
-        <path id="gaugeArc" class="gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100" />
-      </svg>
-      <div class="gauge-value" id="gaugeValue">0</div>
-      <div class="gauge-label">Overall Compliance Rating</div>
-      <div class="gauge-status status-excellent" id="gaugeStatus">
-        <span class="live-indicator"></span> Excellent
+    <div class="glass-card score-gauge">
+      <div class="score-title">Compliance Score</div>
+      <div class="gauge-wrapper">
+        <div class="gauge-circle" id="gaugeCircle">
+          <div class="gauge-value" id="gaugeValue">0%</div>
+        </div>
+      </div>
+      <div class="gauge-status" id="gaugeStatus">Calculating...</div>
+      
+      <div class="alert-summary">
+        <div class="alert-box">
+          <div class="alert-box-value" style="color: var(--success);" id="completedCount">0</div>
+          <div class="alert-box-label">Completed</div>
+        </div>
+        <div class="alert-box">
+          <div class="alert-box-value" style="color: var(--warning);" id="pendingCount">0</div>
+          <div class="alert-box-label">Pending</div>
+        </div>
+        <div class="alert-box">
+          <div class="alert-box-value" style="color: var(--danger);" id="expiringCount">0</div>
+          <div class="alert-box-label">Expiring</div>
+        </div>
       </div>
     </div>
 
-    <!-- Alerts Panel -->
-    <div class="glass-card alerts-section">
-      <h2 class="alerts-title"><i data-lucide="bell"></i> Compliance Alerts</h2>
-      <div id="alertsList">
-        <!-- Alerts rendered here -->
-      </div>
-    </div>
-  </div>
-
-  <!-- State Licensing Grid -->
-  <div class="glass-card licensing-section" style="padding: 1.5rem;">
-    <div class="section-header">
-      <h2><i data-lucide="map"></i> State Licensing Status</h2>
-      <div style="display: flex; gap: 1rem; font-size: 0.875rem;">
-        <span style="display: flex; align-items: center; gap: 0.35rem;">
-          <span style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></span> Active
-        </span>
-        <span style="display: flex; align-items: center; gap: 0.35rem;">
-          <span style="width: 8px; height: 8px; background: var(--warning); border-radius: 50%;"></span> Pending
-        </span>
-        <span style="display: flex; align-items: center; gap: 0.35rem;">
-          <span style="width: 8px; height: 8px; background: var(--danger); border-radius: 50%;"></span> Expired
-        </span>
-      </div>
-    </div>
-    <div class="state-grid" id="stateGrid">
-      <!-- States rendered here -->
-    </div>
-  </div>
-
-  <div class="two-column">
-    <!-- TSR/FTC Checklist -->
-    <div class="glass-card checklist-section" style="padding: 1.5rem;">
-      <div class="section-header">
-        <h2><i data-lucide="clipboard-check"></i> TSR/FTC Compliance</h2>
-        <span id="checklistProgress" style="font-family: 'Orbitron', sans-serif; color: var(--accent);">0/8</span>
-      </div>
-      <div class="checklist" id="checklist">
-        <!-- Checklist items rendered here -->
-      </div>
-    </div>
-
-    <!-- Risk Assessment Matrix -->
-    <div class="glass-card risk-section" style="padding: 1.5rem;">
-      <div class="section-header">
-        <h2><i data-lucide="grid"></i> Risk Assessment Matrix</h2>
-        <span style="font-size: 0.875rem; color: var(--text-muted);">Click cells to filter</span>
-      </div>
-      <div class="risk-matrix">
-        <div></div>
-        <div class="risk-header">Low Impact</div>
-        <div class="risk-header">Medium Impact</div>
-        <div class="risk-header">High Impact</div>
-        
-        <div class="risk-label">High Probability</div>
-        <div class="risk-cell high-low" data-risk="high-low" onclick="filterByRisk('high-low')">
-          <span class="risk-count">3</span>
-          <span>Medium</span>
+    <!-- State License Grid -->
+    <div class="glass-card license-grid-wrapper">
+      <div class="license-grid-title">📋 State Licensing (50 States)</div>
+      <div class="license-grid" id="licenseGrid"></div>
+      <div class="license-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background: var(--success);"></div>
+          <span>Active ✅</span>
         </div>
-        <div class="risk-cell high-med" data-risk="high-med" onclick="filterByRisk('high-med')">
-          <span class="risk-count">1</span>
-          <span>High</span>
+        <div class="legend-item">
+          <div class="legend-dot" style="background: var(--warning);"></div>
+          <span>Pending 🟡</span>
         </div>
-        <div class="risk-cell high-high" data-risk="high-high" onclick="filterByRisk('high-high')">
-          <span class="risk-count">0</span>
-          <span>Critical</span>
+        <div class="legend-item">
+          <div class="legend-dot" style="background: var(--danger);"></div>
+          <span>Expired 🔴</span>
         </div>
-        
-        <div class="risk-label">Medium Probability</div>
-        <div class="risk-cell med-low" data-risk="med-low" onclick="filterByRisk('med-low')">
-          <span class="risk-count">5</span>
-          <span>Low</span>
-        </div>
-        <div class="risk-cell med-med" data-risk="med-med" onclick="filterByRisk('med-med')">
-          <span class="risk-count">2</span>
-          <span>Medium</span>
-        </div>
-        <div class="risk-cell med-high" data-risk="med-high" onclick="filterByRisk('med-high')">
-          <span class="risk-count">1</span>
-          <span>High</span>
-        </div>
-        
-        <div class="risk-label">Low Probability</div>
-        <div class="risk-cell low-low" data-risk="low-low" onclick="filterByRisk('low-low')">
-          <span class="risk-count">8</span>
-          <span>Low</span>
-        </div>
-        <div class="risk-cell low-med" data-risk="low-med" onclick="filterByRisk('low-med')">
-          <span class="risk-count">4</span>
-          <span>Low</span>
-        </div>
-        <div class="risk-cell low-high" data-risk="low-high" onclick="filterByRisk('low-high')">
-          <span class="risk-count">2</span>
-          <span>Medium</span>
+        <div class="legend-item">
+          <div class="legend-dot" style="background: rgba(148, 163, 184, 0.2);"></div>
+          <span>Not Required ⚪</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Client Disclosure Tracking -->
-  <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
-    <div class="section-header">
-      <h2><i data-lucide="file-check"></i> Client Disclosure Tracking</h2>
-      <div class="audit-toolbar" style="margin-bottom: 0;">
-        <div class="audit-search" style="width: 250px;">
-          <i data-lucide="search"></i>
-          <input type="text" id="disclosureSearch" placeholder="Search clients..." onkeyup="filterDisclosures()">
+  <!-- Main Content Grid -->
+  <div class="main-grid">
+    <!-- Left Column: Compliance Checklist -->
+    <div class="glass-card checklist-section">
+      <h3>✅ Compliance Checklist</h3>
+      <div id="checklistContainer"></div>
+    </div>
+
+    <!-- Right Column: TCPA Tracker -->
+    <div class="glass-card tcpa-section">
+      <h3>📞 TCPA Consent Tracker</h3>
+      <div class="tcpa-stats">
+        <div class="tcpa-stat">
+          <div class="tcpa-stat-value" id="tcpaTotal">0</div>
+          <div class="tcpa-stat-label">Total Consents</div>
+        </div>
+        <div class="tcpa-stat">
+          <div class="tcpa-stat-value" id="tcpaVerified">0</div>
+          <div class="tcpa-stat-label">Verified</div>
+        </div>
+        <div class="tcpa-stat">
+          <div class="tcpa-stat-value" id="tcpaPending">0</div>
+          <div class="tcpa-stat-label">Pending</div>
         </div>
       </div>
-    </div>
-    <div class="disclosure-grid" id="disclosureGrid">
-      <!-- Disclosures rendered here -->
+      <div class="dnc-header">
+        <input type="text" class="dnc-input" id="tcpaLeadName" placeholder="Lead Name">
+        <input type="text" class="dnc-input" id="tcpaPhone" placeholder="Phone">
+        <button class="btn btn-primary btn-sm" onclick="addTCPAConsent()">Add</button>
+      </div>
+      <div class="tcpa-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Lead</th>
+              <th>Phone</th>
+              <th>Date</th>
+              <th>Method</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tcpaTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <!-- Attorney Review Queue -->
-  <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
-    <div class="section-header">
-      <h2><i data-lucide="scale"></i> Attorney Review Queue</h2>
-      <span id="queueCount" style="font-family: 'Orbitron', sans-serif; color: var(--warning);">3 Pending</span>
+  <!-- DNC + Audit Grid -->
+  <div class="main-grid">
+    <!-- DNC List -->
+    <div class="glass-card dnc-section">
+      <h3>🚫 Do Not Call (DNC) List</h3>
+      <div class="dnc-header">
+        <input type="text" class="dnc-input" id="dncPhone" placeholder="Phone Number">
+        <button class="btn btn-primary" onclick="addDNC()">Add to DNC</button>
+        <button class="btn btn-secondary" onclick="importDNC()">Import CSV</button>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <span style="font-family: 'Orbitron'; font-size: 1.25rem; color: var(--accent);" id="dncCount">0</span>
+        <span style="color: var(--text-muted); font-size: 0.875rem;"> numbers on DNC list</span>
+      </div>
+      <div class="dnc-list" id="dncList"></div>
     </div>
-    <div id="attorneyQueue">
-      <!-- Queue items rendered here -->
+
+    <!-- Audit Log -->
+    <div class="glass-card audit-section">
+      <h3>📝 Audit Log</h3>
+      <div class="audit-log" id="auditLog"></div>
     </div>
   </div>
 
-  <!-- Audit Log -->
-  <div class="glass-card audit-section" style="padding: 1.5rem;">
-    <div class="section-header">
-      <h2><i data-lucide="history"></i> Audit Log</h2>
-      <div class="audit-toolbar" style="margin-bottom: 0;">
-        <div class="audit-search">
-          <i data-lucide="search"></i>
-          <input type="text" id="auditSearch" placeholder="Search audit log..." onkeyup="filterAuditLog()">
-        </div>
-        <select style="padding: 0.75rem; background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: 0.5rem; color: var(--text-primary);">
-          <option>All Actions</option>
-          <option>Case Updates</option>
-          <option>Document Access</option>
-          <option>Payments</option>
-          <option>Compliance</option>
+  <!-- License Edit Modal -->
+  <div class="modal" id="licenseModal">
+    <div class="modal-content">
+      <div class="modal-header">Edit License: <span id="modalState"></span></div>
+      <div class="form-group">
+        <label class="form-label">License Number</label>
+        <input type="text" class="form-input" id="licenseNumber" placeholder="e.g., IL-12345">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Expiry Date</label>
+        <input type="date" class="form-input" id="licenseExpiry">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="licenseStatus">
+          <option value="active">Active ✅</option>
+          <option value="pending">Pending 🟡</option>
+          <option value="expired">Expired 🔴</option>
+          <option value="not-required">Not Required ⚪</option>
         </select>
       </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <input type="text" class="form-input" id="licenseNotes" placeholder="Additional notes">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeLicenseModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveLicense()">Save License</button>
+      </div>
     </div>
-    
-    <div class="audit-table">
-      <table>
-        <thead>
-          <tr>
-            <th>Timestamp</th>
-            <th>User</th>
-            <th>Action</th>
-            <th>Details</th>
-            <th>IP Address</th>
-          </tr>
-        </thead>
-        <tbody id="auditTableBody">
-          <!-- Audit rows rendered here -->
-        </tbody>
-      </table>
-    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <span id="toastMessage"></span>
   </div>
 
   <script>
-    // State
-    let complianceScore = 94;
-    let selectedRisk = null;
-
-    // Data
-    const states = [
-      { code: 'AL', name: 'Alabama', status: 'active', expiry: '2025-06-30' },
-      { code: 'AK', name: 'Alaska', status: 'active', expiry: '2025-12-31' },
-      { code: 'AZ', name: 'Arizona', status: 'active', expiry: '2025-09-15' },
-      { code: 'AR', name: 'Arkansas', status: 'pending', expiry: null },
-      { code: 'CA', name: 'California', status: 'active', expiry: '2026-01-31' },
-      { code: 'CO', name: 'Colorado', status: 'active', expiry: '2025-08-20' },
-      { code: 'CT', name: 'Connecticut', status: 'active', expiry: '2025-11-30' },
-      { code: 'DE', name: 'Delaware', status: 'active', expiry: '2025-07-15' },
-      { code: 'FL', name: 'Florida', status: 'active', expiry: '2025-10-31' },
-      { code: 'GA', name: 'Georgia', status: 'active', expiry: '2025-12-31' },
-      { code: 'HI', name: 'Hawaii', status: 'not-licensed', expiry: null },
-      { code: 'ID', name: 'Idaho', status: 'active', expiry: '2025-09-30' },
-      { code: 'IL', name: 'Illinois', status: 'active', expiry: '2025-08-31' },
-      { code: 'IN', name: 'Indiana', status: 'active', expiry: '2025-11-15' },
-      { code: 'IA', name: 'Iowa', status: 'active', expiry: '2025-06-15' },
-      { code: 'KS', name: 'Kansas', status: 'expired', expiry: '2024-12-31' },
-      { code: 'KY', name: 'Kentucky', status: 'active', expiry: '2025-10-15' },
-      { code: 'LA', name: 'Louisiana', status: 'pending', expiry: null },
-      { code: 'ME', name: 'Maine', status: 'active', expiry: '2025-07-31' },
-      { code: 'MD', name: 'Maryland', status: 'active', expiry: '2025-12-15' },
-      { code: 'MA', name: 'Massachusetts', status: 'active', expiry: '2025-09-30' },
-      { code: 'MI', name: 'Michigan', status: 'active', expiry: '2025-08-15' },
-      { code: 'MN', name: 'Minnesota', status: 'active', expiry: '2025-11-30' },
-      { code: 'MS', name: 'Mississippi', status: 'active', expiry: '2025-06-30' },
-      { code: 'MO', name: 'Missouri', status: 'active', expiry: '2025-10-31' },
-      { code: 'MT', name: 'Montana', status: 'not-licensed', expiry: null },
-      { code: 'NE', name: 'Nebraska', status: 'active', expiry: '2025-09-15' },
-      { code: 'NV', name: 'Nevada', status: 'active', expiry: '2025-07-31' },
-      { code: 'NH', name: 'New Hampshire', status: 'active', expiry: '2025-12-31' },
-      { code: 'NJ', name: 'New Jersey', status: 'active', expiry: '2025-08-31' },
-      { code: 'NM', name: 'New Mexico', status: 'active', expiry: '2025-10-15' },
-      { code: 'NY', name: 'New York', status: 'active', expiry: '2026-01-15' },
-      { code: 'NC', name: 'North Carolina', status: 'active', expiry: '2025-09-30' },
-      { code: 'ND', name: 'North Dakota', status: 'active', expiry: '2025-07-15' },
-      { code: 'OH', name: 'Ohio', status: 'active', expiry: '2025-11-30' },
-      { code: 'OK', name: 'Oklahoma', status: 'active', expiry: '2025-08-20' },
-      { code: 'OR', name: 'Oregon', status: 'active', expiry: '2025-12-15' },
-      { code: 'PA', name: 'Pennsylvania', status: 'active', expiry: '2025-10-31' },
-      { code: 'RI', name: 'Rhode Island', status: 'active', expiry: '2025-06-30' },
-      { code: 'SC', name: 'South Carolina', status: 'active', expiry: '2025-09-15' },
-      { code: 'SD', name: 'South Dakota', status: 'active', expiry: '2025-07-31' },
-      { code: 'TN', name: 'Tennessee', status: 'active', expiry: '2025-11-15' },
-      { code: 'TX', name: 'Texas', status: 'active', expiry: '2025-08-31' },
-      { code: 'UT', name: 'Utah', status: 'active', expiry: '2025-12-31' },
-      { code: 'VT', name: 'Vermont', status: 'active', expiry: '2025-09-30' },
-      { code: 'VA', name: 'Virginia', status: 'active', expiry: '2025-10-15' },
-      { code: 'WA', name: 'Washington', status: 'active', expiry: '2025-07-31' },
-      { code: 'WV', name: 'West Virginia', status: 'active', expiry: '2025-11-30' },
-      { code: 'WI', name: 'Wisconsin', status: 'active', expiry: '2025-08-15' },
-      { code: 'WY', name: 'Wyoming', status: 'not-licensed', expiry: null }
+    // State abbreviations
+    const US_STATES = [
+      'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+      'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+      'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+      'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+      'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
     ];
 
-    const checklistItems = [
-      { id: 1, title: 'Advance Fee Prohibition', desc: 'No fees collected before settlement', checked: true, category: 'TSR' },
-      { id: 2, title: 'Required Disclosures', desc: 'All mandatory disclosures provided', checked: true, category: 'TSR' },
-      { id: 3, title: 'Cancellation Rights', desc: 'Right to cancel within 3 days', checked: true, category: 'TSR' },
-      { id: 4, title: 'Truth in Advertising', desc: 'No misleading claims in marketing', checked: true, category: 'FTC' },
-      { id: 5, title: 'Debt Relief Outcomes', desc: 'Realistic outcome estimates provided', checked: true, category: 'FTC' },
-      { id: 6, title: 'Fee Structure Clarity', desc: 'Fee calculation clearly explained', checked: true, category: 'FTC' },
-      { id: 7, title: 'Privacy Compliance', desc: 'GLBA and state privacy laws', checked: false, category: 'Privacy' },
-      { id: 8, title: 'HIPAA Readiness', desc: 'Medical debt handling procedures', checked: true, category: 'Healthcare' }
+    // Operating states for DebtStoppers
+    const OPERATING_STATES = ['IL', 'MI', 'GA', 'FL', 'TX'];
+
+    // Compliance checklist structure
+    const COMPLIANCE_CHECKLIST = [
+      {
+        category: '🏛️ Federal Compliance',
+        items: [
+          { id: 'tsr', label: 'Telemarketing Sales Rule (TSR) compliance documented' },
+          { id: 'tcpa', label: 'TCPA consent management system active' },
+          { id: 'fdcpa', label: 'Fair Debt Collection Practices Act (FDCPA) training completed' },
+          { id: 'ftc', label: 'FTC Act Section 5 consumer protection review' },
+          { id: 'cfpb', label: 'CFPB debt collection rules implemented' }
+        ]
+      },
+      {
+        category: '🏢 State Compliance',
+        items: [
+          { id: 'state_lic', label: 'All operating state licenses current' },
+          { id: 'state_bond', label: 'Surety bonds filed in required states' },
+          { id: 'state_reg', label: 'State registration documents on file' },
+          { id: 'state_annual', label: 'Annual state reports submitted' }
+        ]
+      },
+      {
+        category: '🔐 Data Protection (HIPAA Readiness)',
+        items: [
+          { id: 'hipaa_policy', label: 'HIPAA policies and procedures documented' },
+          { id: 'phi_encryption', label: 'PHI (Protected Health Information) encrypted at rest' },
+          { id: 'phi_transit', label: 'PHI encrypted in transit (TLS 1.3)' },
+          { id: 'access_control', label: 'Role-based access controls (RBAC) implemented' },
+          { id: 'breach_plan', label: 'Breach notification plan documented' },
+          { id: 'baa', label: 'Business Associate Agreements (BAA) signed' },
+          { id: 'audit_trail', label: 'Comprehensive audit logging active' }
+        ]
+      },
+      {
+        category: '🎯 SOC 2 Control Framework',
+        items: [
+          { id: 'soc2_security', label: 'Security controls documented' },
+          { id: 'soc2_availability', label: 'Availability monitoring in place' },
+          { id: 'soc2_integrity', label: 'Data integrity checks automated' },
+          { id: 'soc2_confidentiality', label: 'Confidentiality policies enforced' },
+          { id: 'soc2_privacy', label: 'Privacy controls implemented' }
+        ]
+      },
+      {
+        category: '⚖️ Operations',
+        items: [
+          { id: 'call_recording', label: 'Call recording consent protocols active' },
+          { id: 'fee_disclosure', label: 'Fee disclosure templates current' },
+          { id: 'contract_req', label: 'Contract requirements checklist complete' },
+          { id: 'complaint_proc', label: 'Complaint handling procedures documented' },
+          { id: 'qc_calls', label: 'Quality control call audits scheduled' }
+        ]
+      }
     ];
 
-    const alerts = [
-      { type: 'danger', icon: 'alert-circle', title: 'License Expiring Soon', desc: 'Kansas license expires in 5 days', time: '2h ago' },
-      { type: 'warning', icon: 'file-warning', title: 'Unsigned Disclosure', desc: 'DC-2024-002 missing TSR disclosure', time: '5h ago' },
-      { type: 'info', icon: 'calendar', title: 'Upcoming Renewal', desc: 'Florida license renewal due in 30 days', time: '1d ago' },
-      { type: 'warning', icon: 'clock', title: 'Pending Review', desc: '3 cases in attorney review queue', time: '2d ago' }
-    ];
-
-    const disclosures = [
-      { client: 'John Doe', caseId: 'DC-2024-001', items: [{ name: 'TSR Disclosure', status: 'signed' }, { name: 'Fee Agreement', status: 'signed' }, { name: 'Privacy Notice', status: 'signed' }] },
-      { client: 'Jane Smith', caseId: 'DC-2024-002', items: [{ name: 'TSR Disclosure', status: 'unsigned' }, { name: 'Fee Agreement', status: 'unsigned' }, { name: 'Privacy Notice', status: 'pending' }] },
-      { client: 'Bob Johnson', caseId: 'DC-2024-003', items: [{ name: 'TSR Disclosure', status: 'signed' }, { name: 'Fee Agreement', status: 'signed' }, { name: 'Privacy Notice', status: 'signed' }] },
-      { client: 'Alice Williams', caseId: 'DC-2024-004', items: [{ name: 'TSR Disclosure', status: 'signed' }, { name: 'Fee Agreement', status: 'unsigned' }, { name: 'Privacy Notice', status: 'signed' }] }
-    ];
-
-    const attorneyQueue = [
-      { caseId: 'DC-2024-015', title: 'Settlement Review - Chase Bank', reason: 'Counter-offer requires review', priority: 'high', days: 2 },
-      { caseId: 'DC-2024-012', title: 'Legal Threat Response', reason: 'Creditor threatening litigation', priority: 'high', days: 5 },
-      { caseId: 'DC-2024-008', title: 'Contract Amendment', reason: 'Client requested changes', priority: 'medium', days: 12 }
-    ];
-
-    const auditLog = [
-      { time: '2024-02-24 14:32:15', user: 'Sarah Johnson', action: 'Case Update', details: 'Updated creditor status for DC-2024-001', ip: '192.168.1.45' },
-      { time: '2024-02-24 13:15:42', user: 'Mike Chen', action: 'Document Upload', details: 'Uploaded settlement letter to DC-2024-003', ip: '192.168.1.52' },
-      { time: '2024-02-24 12:48:09', user: 'System', action: 'Payment Processed', details: 'Monthly payment received for DC-2024-002', ip: '10.0.0.5' },
-      { time: '2024-02-24 11:22:33', user: 'Jessica Davis', action: 'Compliance Check', details: 'Reviewed TSR compliance for 5 cases', ip: '192.168.1.38' },
-      { time: '2024-02-24 10:05:17', user: 'Sarah Johnson', action: 'Note Added', details: 'Added client communication note', ip: '192.168.1.45' },
-      { time: '2024-02-24 09:45:51', user: 'System', action: 'Alert Triggered', details: 'License expiration warning for Kansas', ip: '10.0.0.5' },
-      { time: '2024-02-24 08:30:22', user: 'Mike Chen', action: 'Case Created', details: 'New case enrolled: DC-2024-018', ip: '192.168.1.52' },
-      { time: '2024-02-23 17:15:08', user: 'Sarah Johnson', action: 'Settlement Logged', details: 'Recorded Capital One settlement', ip: '192.168.1.45' }
-    ];
+    let currentLicenseState = null;
+    let tcpaConsents = [];
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      loadData();
-      renderAll();
-      animateGauge();
-      lucide.createIcons();
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeCompliance();
+      renderLicenseGrid();
+      renderChecklist();
+      renderTCPATable();
+      renderDNCList();
+      renderAuditLog();
+      updateComplianceScore();
     });
 
-    function loadData() {
-      const stored = localStorage.getItem('debtDB_compliance');
-      if (stored) {
-        const data = JSON.parse(stored);
-        complianceScore = data.score || 94;
-        checklistItems.forEach((item, i) => {
-          if (data.checklist?.[i] !== undefined) {
-            item.checked = data.checklist[i];
-          }
+    function initializeCompliance() {
+      // Initialize compliance data if not exists
+      if (!window.DebtDB.getComplianceChecklist().length) {
+        COMPLIANCE_CHECKLIST.forEach(cat => {
+          cat.items.forEach(item => {
+            window.DebtDB.updateComplianceItem(item.id, {
+              id: item.id,
+              label: item.label,
+              category: cat.category,
+              completed: false
+            });
+          });
         });
       }
-    }
 
-    function saveData() {
-      localStorage.setItem('debtDB_compliance', JSON.stringify({
-        score: complianceScore,
-        checklist: checklistItems.map(i => i.checked)
-      }));
-    }
+      // Initialize licenses for operating states
+      const existingLicenses = window.DebtDB.getLicenses();
+      OPERATING_STATES.forEach(state => {
+        if (!existingLicenses.find(l => l.state === state)) {
+          window.DebtDB.updateLicense(state, {
+            status: 'active',
+            licenseNumber: `${state}-ACTIVE-2026`,
+            expiryDate: '2027-12-31',
+            notes: 'Primary operating state'
+          });
+        }
+      });
 
-    function renderAll() {
-      renderGauge();
-      renderAlerts();
-      renderStates();
-      renderChecklist();
-      renderDisclosures();
-      renderAttorneyQueue();
-      renderAuditLog();
-      window.lucide?.createIcons();
-    }
-
-    // Gauge Animation
-    function animateGauge() {
-      setTimeout(() => {
-        const arc = document.getElementById('gaugeArc');
-        const value = document.getElementById('gaugeValue');
-        const offset = 251 - (251 * complianceScore / 100);
-        arc.style.strokeDashoffset = offset;
-        
-        // Count up animation
-        let current = 0;
-        const increment = complianceScore / 50;
-        const timer = setInterval(() => {
-          current += increment;
-          if (current >= complianceScore) {
-            current = complianceScore;
-            clearInterval(timer);
-          }
-          value.textContent = Math.round(current);
-        }, 30);
-      }, 300);
-    }
-
-    function renderGauge() {
-      const statusEl = document.getElementById('gaugeStatus');
-      if (complianceScore >= 90) {
-        statusEl.className = 'gauge-status status-excellent';
-        statusEl.innerHTML = '<span class="live-indicator"></span> Excellent';
-      } else if (complianceScore >= 75) {
-        statusEl.className = 'gauge-status status-good';
-        statusEl.innerHTML = '<span class="live-indicator" style="background: var(--accent);"></span> Good';
-      } else if (complianceScore >= 60) {
-        statusEl.className = 'gauge-status status-warning';
-        statusEl.innerHTML = '<span class="live-indicator" style="background: var(--warning);"></span> Needs Attention';
-      } else {
-        statusEl.className = 'gauge-status status-danger';
-        statusEl.innerHTML = '<span class="live-indicator" style="background: var(--danger);"></span> Critical';
+      // Load TCPA consents from storage
+      const stored = localStorage.getItem('tcpa_consents');
+      if (stored) {
+        tcpaConsents = JSON.parse(stored);
       }
     }
 
-    function renderAlerts() {
-      const container = document.getElementById('alertsList');
-      container.innerHTML = alerts.map(a => `
-        <div class="alert-item alert-${a.type}">
-          <div class="alert-icon">
-            <i data-lucide="${a.icon}"></i>
-          </div>
-          <div class="alert-content">
-            <h4>${a.title}</h4>
-            <p>${a.desc}</p>
-          </div>
-          <div class="alert-time">${a.time}</div>
-        </div>
-      `).join('');
+    function renderLicenseGrid() {
+      const grid = document.getElementById('licenseGrid');
+      const licenses = window.DebtDB.getLicenses();
+      
+      grid.innerHTML = US_STATES.map(state => {
+        const license = licenses.find(l => l.state === state);
+        let statusClass = 'not-required';
+        
+        if (license) {
+          statusClass = license.status || 'not-required';
+        } else if (OPERATING_STATES.includes(state)) {
+          statusClass = 'active';
+        }
+        
+        return `<div class="license-cell ${statusClass}" onclick="openLicenseModal('${state}')">${state}</div>`;
+      }).join('');
+
+      updateExpiringCount();
     }
 
-    function renderStates() {
-      const container = document.getElementById('stateGrid');
-      container.innerHTML = states.map(s => {
-        const tooltip = s.status === 'active' ? `${s.name}: Expires ${s.expiry}` :
-                       s.status === 'pending' ? `${s.name}: Application pending` :
-                       s.status === 'expired' ? `${s.name}: EXPIRED - Action required` :
-                       `${s.name}: Not licensed`;
+    function renderChecklist() {
+      const container = document.getElementById('checklistContainer');
+      const checklist = window.DebtDB.getComplianceChecklist();
+      
+      container.innerHTML = COMPLIANCE_CHECKLIST.map(cat => {
+        const items = cat.items.map(item => {
+          const dbItem = checklist.find(c => c.id === item.id);
+          const completed = dbItem?.completed || false;
+          return `
+            <div class="checklist-item ${completed ? 'completed' : ''}" onclick="toggleChecklistItem('${item.id}')">
+              <div class="checklist-checkbox"></div>
+              <div class="checklist-label">${item.label}</div>
+            </div>
+          `;
+        }).join('');
+        
         return `
-          <div class="state-cell ${s.status}" data-tooltip="${tooltip}" onclick="showStateDetails('${s.code}')">
-            <span class="state-code">${s.code}</span>
-            <span class="state-status-dot"></span>
+          <div class="checklist-category">
+            <div class="category-title">${cat.category}</div>
+            ${items}
           </div>
         `;
       }).join('');
     }
 
-    function renderChecklist() {
-      const container = document.getElementById('checklist');
-      const checked = checklistItems.filter(i => i.checked).length;
-      document.getElementById('checklistProgress').textContent = `${checked}/${checklistItems.length}`;
+    function renderTCPATable() {
+      const tbody = document.getElementById('tcpaTableBody');
       
-      container.innerHTML = checklistItems.map(item => `
-        <div class="checklist-item ${item.checked ? 'checked' : ''}" onclick="toggleChecklist(${item.id})">
-          <div class="checklist-checkbox">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-          </div>
-          <div class="checklist-content">
-            <h4>${item.title}</h4>
-            <p>${item.desc}</p>
-          </div>
-          <div class="checklist-meta">
-            <span class="checklist-badge">${item.category}</span>
-          </div>
-        </div>
-      `).join('');
+      tbody.innerHTML = tcpaConsents.map(consent => {
+        const statusClass = consent.status === 'verified' ? 'verified' : 'pending';
+        return `
+          <tr>
+            <td>${consent.leadName}</td>
+            <td style="font-family: 'Orbitron';">${consent.phone}</td>
+            <td>${consent.date}</td>
+            <td>${consent.method}</td>
+            <td><span class="status-badge ${statusClass}">${consent.status}</span></td>
+          </tr>
+        `;
+      }).join('');
+
+      // Update stats
+      document.getElementById('tcpaTotal').textContent = tcpaConsents.length;
+      document.getElementById('tcpaVerified').textContent = tcpaConsents.filter(c => c.status === 'verified').length;
+      document.getElementById('tcpaPending').textContent = tcpaConsents.filter(c => c.status === 'pending').length;
     }
 
-    function toggleChecklist(id) {
-      const item = checklistItems.find(i => i.id === id);
-      if (item) {
-        item.checked = !item.checked;
-        const checked = checklistItems.filter(i => i.checked).length;
-        complianceScore = Math.round((checked / checklistItems.length) * 100);
-        saveData();
-        renderChecklist();
-        renderGauge();
-        
-        // Re-animate gauge
-        const arc = document.getElementById('gaugeArc');
-        const offset = 251 - (251 * complianceScore / 100);
-        arc.style.strokeDashoffset = offset;
-        document.getElementById('gaugeValue').textContent = complianceScore;
-      }
-    }
-
-    function renderDisclosures() {
-      const container = document.getElementById('disclosureGrid');
-      container.innerHTML = disclosures.map(d => `
-        <div class="disclosure-card">
-          <div class="disclosure-header">
-            <h4>${d.client}</h4>
-            <span style="font-size: 0.75rem; color: var(--text-muted);">${d.caseId}</span>
-          </div>
-          <div class="disclosure-meta">
-            ${d.items.map(i => `
-              <span class="disclosure-item ${i.status}">
-                <i data-lucide="${i.status === 'signed' ? 'check' : i.status === 'unsigned' ? 'x' : 'clock'}" style="width: 12px; height: 12px;"></i>
-                ${i.name}
-              </span>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderAttorneyQueue() {
-      const container = document.getElementById('attorneyQueue');
-      container.innerHTML = attorneyQueue.map(q => `
-        <div class="queue-item">
-          <div class="queue-priority priority-${q.priority}"></div>
-          <div class="queue-content">
-            <h4>${q.title}</h4>
-            <p>${q.caseId} • ${q.reason}</p>
-          </div>
-          <div class="queue-meta">
-            <div class="queue-days">${q.days}d</div>
-            <div class="queue-label">In queue</div>
-          </div>
+    function renderDNCList() {
+      const list = document.getElementById('dncList');
+      const dncNumbers = window.DebtDB.getDNCList();
+      
+      document.getElementById('dncCount').textContent = dncNumbers.length;
+      
+      list.innerHTML = dncNumbers.map(phone => `
+        <div class="dnc-item">
+          <div class="dnc-phone">${phone}</div>
+          <button class="btn btn-danger" onclick="removeDNC('${phone}')">Remove</button>
         </div>
       `).join('');
     }
 
     function renderAuditLog() {
-      const tbody = document.getElementById('auditTableBody');
-      tbody.innerHTML = auditLog.map(a => `
-        <tr>
-          <td>${a.time}</td>
-          <td>
-            <div class="audit-user">
-              <div class="user-avatar">${a.user.split(' ').map(n => n[0]).join('')}</div>
-              ${a.user}
-            </div>
-          </td>
-          <td>
-            <span class="audit-action">
-              <i data-lucide="${getActionIcon(a.action)}" style="width: 14px; height: 14px;"></i>
-              ${a.action}
-            </span>
-          </td>
-          <td>${a.details}</td>
-          <td>${a.ip}</td>
-        </tr>
-      `).join('');
+      const log = document.getElementById('auditLog');
+      const entries = window.DebtDB.getAuditLog().slice(0, 20);
+      
+      log.innerHTML = entries.map(entry => {
+        const date = new Date(entry.timestamp);
+        return `
+          <div class="audit-entry">
+            <div class="audit-timestamp">${date.toLocaleString()}</div>
+            <div class="audit-action">${formatAuditAction(entry)}</div>
+            <div class="audit-user">by ${entry.user}</div>
+          </div>
+        `;
+      }).join('');
     }
 
-    function getActionIcon(action) {
-      const icons = {
-        'Case Update': 'edit-3',
-        'Document Upload': 'upload',
-        'Payment Processed': 'credit-card',
-        'Compliance Check': 'shield',
-        'Note Added': 'message-square',
-        'Alert Triggered': 'bell',
-        'Case Created': 'plus-circle',
-        'Settlement Logged': 'handshake'
+    function formatAuditAction(entry) {
+      const actions = {
+        'dnc_added': `Added ${entry.phone} to DNC list`,
+        'dnc_removed': `Removed ${entry.phone} from DNC list`,
+        'compliance_updated': `Updated compliance item`,
+        'license_updated': `Updated license for ${entry.state}`
       };
-      return icons[action] || 'activity';
+      return actions[entry.action] || entry.action;
     }
 
-    function showStateDetails(code) {
-      const state = states.find(s => s.code === code);
-      if (!state) return;
+    function updateComplianceScore() {
+      const checklist = window.DebtDB.getComplianceChecklist();
+      const completed = checklist.filter(item => item.completed).length;
+      const total = checklist.length;
+      const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
       
-      const statusText = state.status === 'active' ? 'Active' :
-                        state.status === 'pending' ? 'Pending' :
-                        state.status === 'expired' ? 'EXPIRED' : 'Not Licensed';
+      // Update gauge
+      const gauge = document.getElementById('gaugeCircle');
+      gauge.style.setProperty('--score-percent', percentage + '%');
+      document.getElementById('gaugeValue').textContent = percentage + '%';
       
-      const message = `<strong>${state.name} (${state.code})</strong><br>Status: ${statusText}<br>${state.expiry ? `Expiry: ${state.expiry}` : 'No license information'}`;
-      Toast.info(message, 6000);
+      // Update status
+      const statusEl = document.getElementById('gaugeStatus');
+      if (percentage >= 80) {
+        statusEl.textContent = '✅ Excellent';
+        statusEl.style.color = 'var(--success)';
+      } else if (percentage >= 60) {
+        statusEl.textContent = '⚠️ Good';
+        statusEl.style.color = 'var(--warning)';
+      } else {
+        statusEl.textContent = '🔴 Needs Attention';
+        statusEl.style.color = 'var(--danger)';
+      }
+      
+      // Update counts
+      document.getElementById('completedCount').textContent = completed;
+      document.getElementById('pendingCount').textContent = total - completed;
     }
 
-    function filterByRisk(risk) {
-      document.querySelectorAll('.risk-cell').forEach(cell => {
-        cell.classList.toggle('active', cell.dataset.risk === risk);
+    function updateExpiringCount() {
+      const licenses = window.DebtDB.getLicenses();
+      const today = new Date();
+      const thirtyDaysFromNow = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+      
+      const expiring = licenses.filter(license => {
+        if (!license.expiryDate) return false;
+        const expiryDate = new Date(license.expiryDate);
+        return expiryDate <= thirtyDaysFromNow && expiryDate >= today;
+      }).length;
+      
+      document.getElementById('expiringCount').textContent = expiring;
+    }
+
+    function toggleChecklistItem(id) {
+      const checklist = window.DebtDB.getComplianceChecklist();
+      const item = checklist.find(c => c.id === id);
+      
+      if (item) {
+        window.DebtDB.updateComplianceItem(id, { completed: !item.completed });
+        window.DebtDB.addAuditEntry({ 
+          action: 'compliance_updated', 
+          data: { item: id, completed: !item.completed }
+        });
+        renderChecklist();
+        updateComplianceScore();
+        showToast('Compliance item updated', 'success');
+      }
+    }
+
+    function openLicenseModal(state) {
+      currentLicenseState = state;
+      const licenses = window.DebtDB.getLicenses();
+      const license = licenses.find(l => l.state === state);
+      
+      document.getElementById('modalState').textContent = state;
+      document.getElementById('licenseNumber').value = license?.licenseNumber || '';
+      document.getElementById('licenseExpiry').value = license?.expiryDate || '';
+      document.getElementById('licenseStatus').value = license?.status || 'not-required';
+      document.getElementById('licenseNotes').value = license?.notes || '';
+      
+      document.getElementById('licenseModal').classList.add('active');
+    }
+
+    function closeLicenseModal() {
+      document.getElementById('licenseModal').classList.remove('active');
+      currentLicenseState = null;
+    }
+
+    function saveLicense() {
+      if (!currentLicenseState) return;
+      
+      const data = {
+        licenseNumber: document.getElementById('licenseNumber').value,
+        expiryDate: document.getElementById('licenseExpiry').value,
+        status: document.getElementById('licenseStatus').value,
+        notes: document.getElementById('licenseNotes').value
+      };
+      
+      window.DebtDB.updateLicense(currentLicenseState, data);
+      window.DebtDB.addAuditEntry({ 
+        action: 'license_updated', 
+        state: currentLicenseState,
+        data 
       });
-      selectedRisk = risk;
+      
+      renderLicenseGrid();
+      renderAuditLog();
+      closeLicenseModal();
+      showToast(`License updated for ${currentLicenseState}`, 'success');
     }
 
-    function filterDisclosures() {
-      const search = document.getElementById('disclosureSearch').value.toLowerCase();
-      const cards = document.querySelectorAll('.disclosure-card');
-      cards.forEach((card, i) => {
-        const visible = disclosures[i].client.toLowerCase().includes(search) ||
-                       disclosures[i].caseId.toLowerCase().includes(search);
-        card.style.display = visible ? 'block' : 'none';
+    function addTCPAConsent() {
+      const leadName = document.getElementById('tcpaLeadName').value.trim();
+      const phone = document.getElementById('tcpaPhone').value.trim();
+      
+      if (!leadName || !phone) {
+        showToast('Please enter lead name and phone', 'error');
+        return;
+      }
+      
+      tcpaConsents.push({
+        leadName,
+        phone,
+        date: new Date().toISOString().split('T')[0],
+        method: 'verbal',
+        status: 'verified'
       });
+      
+      localStorage.setItem('tcpa_consents', JSON.stringify(tcpaConsents));
+      
+      document.getElementById('tcpaLeadName').value = '';
+      document.getElementById('tcpaPhone').value = '';
+      
+      renderTCPATable();
+      showToast('TCPA consent recorded', 'success');
     }
 
-    function filterAuditLog() {
-      const search = document.getElementById('auditSearch').value.toLowerCase();
-      const rows = document.querySelectorAll('#auditTableBody tr');
-      rows.forEach((row, i) => {
-        const visible = Object.values(auditLog[i]).some(v => 
-          String(v).toLowerCase().includes(search)
-        );
-        row.style.display = visible ? '' : 'none';
-      });
+    function addDNC() {
+      const phone = document.getElementById('dncPhone').value.trim();
+      
+      if (!phone) {
+        showToast('Please enter a phone number', 'error');
+        return;
+      }
+      
+      window.DebtDB.addToDNC(phone);
+      document.getElementById('dncPhone').value = '';
+      renderDNCList();
+      renderAuditLog();
+      showToast('Added to DNC list', 'success');
     }
 
-    function exportReport() {
+    function removeDNC(phone) {
+      window.DebtDB.removeFromDNC(phone);
+      renderDNCList();
+      renderAuditLog();
+      showToast('Removed from DNC list', 'success');
+    }
+
+    function importDNC() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.csv';
+      input.onchange = function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const csv = event.target.result;
+          const lines = csv.split('\n');
+          let count = 0;
+          lines.forEach(line => {
+            const phone = line.trim();
+            if (phone) {
+              window.DebtDB.addToDNC(phone);
+              count++;
+            }
+          });
+          renderDNCList();
+          showToast(`Imported ${count} numbers to DNC list`, 'success');
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+
+    function generateReport() {
+      const checklist = window.DebtDB.getComplianceChecklist();
+      const licenses = window.DebtDB.getLicenses();
+      const dncList = window.DebtDB.getDNCList();
+      const auditLog = window.DebtDB.getAuditLog();
+      
+      const completed = checklist.filter(item => item.completed).length;
+      const total = checklist.length;
+      const percentage = Math.round((completed / total) * 100);
+      
       const report = {
-        generated: new Date().toISOString(),
-        complianceScore,
-        states: states.filter(s => s.status === 'active').length,
-        checklist: checklistItems,
-        alerts: alerts.length
+        generatedAt: new Date().toISOString(),
+        complianceScore: percentage,
+        checklist: checklist,
+        licenses: licenses,
+        dncCount: dncList.length,
+        tcpaConsents: tcpaConsents.length,
+        auditEntries: auditLog.length,
+        operatingStates: OPERATING_STATES,
+        summary: {
+          totalItems: total,
+          completed: completed,
+          pending: total - completed,
+          activeLicenses: licenses.filter(l => l.status === 'active').length
+        }
       };
       
+      // Download as JSON
       const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `compliance-report-${new Date().toISOString().split('T')[0]}.json`;
       a.click();
-      URL.revokeObjectURL(url);
+      
+      showToast('Compliance report generated', 'success');
     }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      
+      toastMessage.textContent = message;
+      toast.className = `toast toast-${type} active`;
+      
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 3000);
+    }
+
+    // Close modal on outside click
+    document.getElementById('licenseModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeLicenseModal();
+      }
+    });
   </script>
-</div>
+</body>
+</html>
