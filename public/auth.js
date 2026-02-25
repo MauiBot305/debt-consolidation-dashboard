@@ -206,11 +206,24 @@ window.Auth = window.Auth || {
     const result = this.login(email, password);
     
     if (result.success) {
-      // Show success and redirect
+      // Show success and render dashboard without full reload
       Toast.success('Login successful!');
       setTimeout(() => {
         window.location.hash = '#dashboard';
-        window.location.reload();
+        const app = document.getElementById('app');
+        if (app) {
+          app.innerHTML = '<div class="flex items-center justify-center min-h-screen"><div class="text-center"><div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p class="text-gray-400">Loading dashboard...</p></div></div>';
+        }
+        if (window.App && typeof window.App.init === 'function') {
+          try {
+            window.App.init();
+          } catch (e) {
+            console.error('App.init() after login failed:', e);
+            window.location.reload();
+          }
+        } else {
+          window.location.reload();
+        }
       }, 500);
     } else {
       // Show error
