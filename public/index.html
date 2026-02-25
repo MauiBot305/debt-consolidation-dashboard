@@ -1032,17 +1032,23 @@
               // Scripts loaded via innerHTML don't execute automatically
               const scripts = pageContent.querySelectorAll('script');
               scripts.forEach(oldScript => {
+                // Skip external scripts — they're already loaded in the parent document
+                // Re-loading them causes "Identifier already declared" errors
+                if (oldScript.src) {
+                  oldScript.remove();
+                  return;
+                }
                 const newScript = document.createElement('script');
                 // Copy all attributes
                 Array.from(oldScript.attributes).forEach(attr => {
                   newScript.setAttribute(attr.name, attr.value);
                 });
-                // Copy content for inline scripts (IIFE-wrapped to avoid redeclaration errors)
-                if (!oldScript.src) {
-                  newScript.textContent = `(function(){${oldScript.textContent}})();`;
-                }
+                // IIFE-wrap inline scripts to avoid redeclaration errors
+                newScript.textContent = `(function(){${oldScript.textContent}})();`;
                 // Replace old script with new one to trigger execution
-                oldScript.parentNode.replaceChild(newScript, oldScript);
+                if (oldScript.parentNode) {
+                  oldScript.parentNode.replaceChild(newScript, oldScript);
+                }
               });
               
               lucide.createIcons();

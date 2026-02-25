@@ -54,13 +54,13 @@ test('dashboard pages load cleanly twice with no console errors or dead buttons'
       });
     });
 
-    async function navigateAndScan(pageName: string, waitMs: number) {
+    async function navigateAndScan(pageName: string, waitMs: number, loadName?: string) {
       (window as any).__currentPage = pageName;
       const loadPage = (window as typeof window & { __loadPage?: (page: string) => Promise<void> }).__loadPage;
       if (typeof loadPage !== 'function') {
         throw new Error('loadPage bridge is not available');
       }
-      await loadPage(pageName);
+      await loadPage(loadName || pageName);
       await new Promise((resolve) => setTimeout(resolve, waitMs));
 
       const buttons = document.querySelectorAll('#pageContent [onclick]');
@@ -97,7 +97,7 @@ test('dashboard pages load cleanly twice with no console errors or dead buttons'
       await navigateAndScan(name, 1500);
     }
     for (const name of pages) {
-      await navigateAndScan(`${name}_round2`, 800);
+      await navigateAndScan(`${name}_round2`, 800, name);
     }
 
     return { errors, deadButtons };
