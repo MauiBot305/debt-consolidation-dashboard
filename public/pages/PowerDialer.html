@@ -709,6 +709,93 @@
       animation: shimmer 1.5s infinite;
       border-radius: 8px;
     }
+
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+      .dialer-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dialer-card {
+        padding: 20px;
+      }
+
+      .keypad-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .keypad-button {
+        padding: 16px;
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dialer-grid {
+        gap: 16px;
+      }
+
+      .stats-grid {
+        gap: 12px;
+      }
+
+      .mode-buttons {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .mode-btn {
+        width: 100%;
+      }
+
+      .control-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .disposition-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .call-history-item {
+        padding: 12px;
+      }
+
+      .script-item {
+        padding: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dialer-card {
+        padding: 16px;
+        border-radius: 16px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .control-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .disposition-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .keypad-button {
+        padding: 12px;
+        font-size: 18px;
+      }
+    }
   </style>
 
   <!-- Stats Bar -->
