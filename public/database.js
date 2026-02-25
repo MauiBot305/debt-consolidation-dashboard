@@ -816,8 +816,19 @@ window.DebtDB = (function() {
   
   function getCurrentUser() {
     try {
+      // Try debt_empire_session first (auth.js login), then currentUser fallback
+      const sessionData = localStorage.getItem('debt_empire_session');
+      if (sessionData) {
+        const session = JSON.parse(sessionData);
+        // Check expiry (24h)
+        if (session.timestamp && Date.now() - session.timestamp > 24 * 60 * 60 * 1000) return null;
+        return session;
+      }
       const authData = localStorage.getItem('currentUser');
-      return authData ? JSON.parse(authData) : null;
+      if (authData) return JSON.parse(authData);
+      const legacyData = localStorage.getItem('debt_current_user');
+      if (legacyData) return JSON.parse(legacyData);
+      return null;
     } catch (e) {
       return null;
     }
