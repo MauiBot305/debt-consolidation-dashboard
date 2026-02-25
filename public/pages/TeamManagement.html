@@ -1,0 +1,798 @@
+<div class="team-container" style="padding: 24px; max-width: 1600px; margin: 0 auto;">
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+    <div>
+      <h1 style="font-size: 32px; font-weight: 700; color: #fff; margin: 0 0 8px 0; font-family: 'Orbitron', monospace; text-transform: uppercase; letter-spacing: 2px;">
+        <i data-lucide="users" style="width: 32px; height: 32px; color: #06B6D4; vertical-align: middle; margin-right: 12px;"></i>
+        Team Management
+      </h1>
+      <p style="color: #94a3b8; margin: 0; font-size: 14px;">Manage your agents, schedules, performance, and training</p>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button id="addAgentBtn" style="padding: 12px 20px; background: linear-gradient(135deg, #3B82F6, #06B6D4); border: none; border-radius: 10px; color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
+        <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i>
+        Add Agent
+      </button>
+      <button id="scheduleBtn" style="padding: 12px 20px; background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.3); border-radius: 10px; color: #3B82F6; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s;">
+        <i data-lucide="calendar" style="width: 18px; height: 18px;"></i>
+        Schedule
+      </button>
+    </div>
+  </div>
+
+  <!-- Team Metrics Bar -->
+  <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 32px;">
+    <div class="metric-card" style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 20px; text-align: center; transition: all 0.3s;">
+      <div style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Team Size</div>
+      <div style="color: #fff; font-size: 28px; font-weight: 800; font-family: 'Orbitron', monospace;">12</div>
+      <div style="color: #22C55E; font-size: 12px; margin-top: 4px;">+2 this month</div>
+    </div>
+    
+    <div class="metric-card" style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 20px; text-align: center; transition: all 0.3s;">
+      <div style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Avg Calls/Agent</div>
+      <div style="color: #fff; font-size: 28px; font-weight: 800; font-family: 'Orbitron', monospace;">47</div>
+      <div style="color: #22C55E; font-size: 12px; margin-top: 4px;">+8% vs last week</div>
+    </div>
+    
+    <div class="metric-card" style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 20px; text-align: center; transition: all 0.3s;">
+      <div style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Avg Enrollments</div>
+      <div style="color: #fff; font-size: 28px; font-weight: 800; font-family: 'Orbitron', monospace;">8.5</div>
+      <div style="color: #22C55E; font-size: 12px; margin-top: 4px;">+12% vs last week</div>
+    </div>
+    
+    <div class="metric-card" style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 20px; text-align: center; transition: all 0.3s;">
+      <div style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Top Performer</div>
+      <div style="color: #fff; font-size: 18px; font-weight: 700;">Maria G.</div>
+      <div style="color: #eab308; font-size: 12px; margin-top: 4px;">⭐ $72K revenue</div>
+    </div>
+    
+    <div class="metric-card" style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 20px; text-align: center; transition: all 0.3s;">
+      <div style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Team Revenue</div>
+      <div style="color: #fff; font-size: 28px; font-weight: 800; font-family: 'Orbitron', monospace;">$645K</div>
+      <div style="color: #22C55E; font-size: 12px; margin-top: 4px;">98% of target</div>
+    </div>
+  </div>
+
+  <!-- Activity Monitor -->
+  <div style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h3 style="margin: 0; color: #fff; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+        <i data-lucide="activity" style="width: 18px; height: 18px; color: #22C55E;"></i>
+        Live Activity Monitor
+        <span style="margin-left: 12px; padding: 4px 10px; background: rgba(34,197,94,0.2); color: #22C55E; border-radius: 20px; font-size: 11px;">● 8 Online</span>
+      </h3>
+      <div style="display: flex; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #94a3b8;">
+          <span style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></span> 3 On Call
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #94a3b8;">
+          <span style="width: 8px; height: 8px; background: #eab308; border-radius: 50%;"></span> 2 ACW
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #94a3b8;">
+          <span style="width: 8px; height: 8px; background: #3B82F6; border-radius: 50%;"></span> 3 Available
+        </div>
+      </div>
+    </div>
+    
+    <div id="activityMonitor" style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px;">
+      <!-- Activity items rendered here -->
+    </div>
+  </div>
+
+  <!-- Team Roster -->
+  <div style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 style="margin: 0; color: #fff; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+        <i data-lucide="users" style="width: 20px; height: 20px; color: #3B82F6;"></i>
+        Team Roster
+      </h3>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" placeholder="Search agents..." id="searchAgents" style="padding: 10px 16px; background: rgba(10,15,26,0.8); border: 1px solid rgba(148,163,184,0.2); border-radius: 8px; color: #fff; font-size: 13px; width: 200px;">
+        <select id="filterRole" style="padding: 10px 16px; background: rgba(10,15,26,0.8); border: 1px solid rgba(148,163,184,0.2); border-radius: 8px; color: #fff; font-size: 13px;">
+          <option value="all">All Roles</option>
+          <option value="agent">Agent</option>
+          <option value="senior">Senior Agent</option>
+          <option value="lead">Team Lead</option>
+          <option value="manager">Manager</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="agentsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+      <!-- Agent cards rendered here -->
+    </div>
+  </div>
+
+  <!-- Bottom Section: 2-Column Grid -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <!-- Training Tracker -->
+    <div style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0; color: #fff; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="graduation-cap" style="width: 18px; height: 18px; color: #8b5cf6;"></i>
+          Training Tracker
+        </h3>
+        <button style="background: none; border: none; color: #3B82F6; font-size: 12px; cursor: pointer;">View All →</button>
+      </div>
+      
+      <div id="trainingList" style="display: flex; flex-direction: column; gap: 14px;">
+        <!-- Training items rendered here -->
+      </div>
+    </div>
+
+    <!-- Onboarding Checklist -->
+    <div style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0; color: #fff; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="clipboard-check" style="width: 18px; height: 18px; color: #06B6D4;"></i>
+          New Hire Onboarding
+        </h3>
+        <span style="padding: 4px 12px; background: rgba(234,179,8,0.2); color: #eab308; border-radius: 20px; font-size: 11px;">3 In Progress</span>
+      </div>
+      
+      <div id="onboardingList" style="display: flex; flex-direction: column; gap: 12px;">
+        <!-- Onboarding items rendered here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent Detail Modal -->
+  <div id="agentModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: rgba(15,23,42,0.98); border: 1px solid rgba(59,130,246,0.3); border-radius: 24px; padding: 32px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto;">
+      <div id="agentModalContent">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule Modal -->
+  <div id="scheduleModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: rgba(15,23,42,0.98); border: 1px solid rgba(59,130,246,0.3); border-radius: 24px; padding: 32px; max-width: 1000px; width: 95%; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 style="margin: 0; color: #fff; font-size: 24px; font-weight: 700;">Weekly Schedule</h2>
+        <button id="closeScheduleModal" style="background: none; border: none; color: #94a3b8; cursor: pointer; padding: 8px; border-radius: 8px;">
+          <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+        </button>
+      </div>
+
+      <div id="scheduleGrid" style="display: grid; grid-template-columns: 100px repeat(7, 1fr); gap: 8px;">
+        <!-- Schedule grid rendered here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Performance Review Modal -->
+  <div id="reviewModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: rgba(15,23,42,0.98); border: 1px solid rgba(59,130,246,0.3); border-radius: 24px; padding: 32px; max-width: 600px; width: 90%;">
+      <h3 style="margin: 0 0 24px 0; color: #fff; font-size: 20px; font-weight: 700;">Performance Review</h3>
+      
+      <div id="reviewContent">
+        <!-- Radar chart and ratings -->
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 24px;">
+        <button id="closeReviewBtn" style="flex: 1; padding: 12px; background: rgba(148,163,184,0.2); border: none; border-radius: 10px; color: #94a3b8; font-weight: 600; cursor: pointer;">Close</button>
+        <button id="saveReviewBtn" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #3B82F6, #06B6D4); border: none; border-radius: 10px; color: white; font-weight: 600; cursor: pointer;">Save Review</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(59,130,246,0.4);
+  box-shadow: 0 10px 40px rgba(59,130,246,0.1);
+}
+
+.agent-card {
+  background: rgba(10,15,26,0.6);
+  border: 1px solid rgba(59,130,246,0.1);
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  animation: slideIn 0.4s ease forwards;
+}
+
+.agent-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(59,130,246,0.3);
+  box-shadow: 0 10px 30px rgba(59,130,246,0.15);
+}
+
+.status-ring {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 18px;
+  pointer-events: none;
+}
+
+.status-ring.online { border: 3px solid #22C55E; }
+.status-ring.busy { border: 3px solid #ef4444; }
+.status-ring.away { border: 3px solid #eab308; }
+.status-ring.offline { border: 3px solid #64748b; }
+
+.activity-item {
+  flex-shrink: 0;
+  width: 160px;
+  background: rgba(10,15,26,0.8);
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid rgba(59,130,246,0.1);
+  transition: all 0.3s;
+}
+
+.activity-item:hover {
+  border-color: rgba(59,130,246,0.3);
+}
+
+.activity-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.training-module {
+  background: rgba(10,15,26,0.6);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.3s;
+}
+
+.training-module:hover {
+  background: rgba(10,15,26,0.8);
+}
+
+.progress-bar {
+  height: 8px;
+  background: rgba(10,15,26,0.8);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s ease;
+}
+
+.onboarding-item {
+  background: rgba(10,15,26,0.6);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s;
+}
+
+.onboarding-item:hover {
+  background: rgba(10,15,26,0.8);
+}
+
+.checkbox-custom {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(59,130,246,0.4);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox-custom.checked {
+  background: #22C55E;
+  border-color: #22C55E;
+}
+
+.schedule-cell {
+  background: rgba(10,15,26,0.6);
+  border-radius: 8px;
+  padding: 8px;
+  min-height: 60px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.schedule-cell:hover {
+  background: rgba(59,130,246,0.1);
+}
+
+.shift-block {
+  background: linear-gradient(135deg, rgba(59,130,246,0.4), rgba(6,182,212,0.3));
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.radar-container {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+.role-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.role-agent { background: rgba(59,130,246,0.2); color: #3B82F6; }
+.role-senior { background: rgba(139,92,246,0.2); color: #8b5cf6; }
+.role-lead { background: rgba(234,179,8,0.2); color: #eab308; }
+.role-manager { background: rgba(239,68,68,0.2); color: #ef4444; }
+</style>
+
+<script>
+(function() {
+  // Extended Agent Data
+  const agents = [
+    { id: 'AGT001', name: 'John Smith', role: 'agent', status: 'online', avatar: 'https://ui-avatars.com/api/?name=John+Smith&background=3B82F6&color=fff', calls: 47, enrollments: 8, revenue: 48500, streak: 12 },
+    { id: 'AGT002', name: 'Maria Garcia', role: 'senior', status: 'busy', avatar: 'https://ui-avatars.com/api/?name=Maria+Garcia&background=06B6D4&color=fff', calls: 52, enrollments: 12, revenue: 72000, streak: 18 },
+    { id: 'AGT003', name: 'David Kim', role: 'agent', status: 'online', avatar: 'https://ui-avatars.com/api/?name=David+Kim&background=8b5cf6&color=fff', calls: 38, enrollments: 6, revenue: 36000, streak: 5 },
+    { id: 'AGT004', name: 'Sarah Johnson', role: 'lead', status: 'away', avatar: 'https://ui-avatars.com/api/?name=Sarah+Johnson&background=22C55E&color=fff', calls: 0, enrollments: 0, revenue: 0, streak: 0 },
+    { id: 'AGT005', name: 'Mike Brown', role: 'agent', status: 'busy', avatar: 'https://ui-avatars.com/api/?name=Mike+Brown&background=f97316&color=fff', calls: 41, enrollments: 7, revenue: 42000, streak: 8 },
+    { id: 'AGT006', name: 'Lisa Chen', role: 'agent', status: 'online', avatar: 'https://ui-avatars.com/api/?name=Lisa+Chen&background=ec4899&color=fff', calls: 45, enrollments: 9, revenue: 54000, streak: 15 },
+    { id: 'AGT007', name: 'James Wilson', role: 'senior', status: 'offline', avatar: 'https://ui-avatars.com/api/?name=James+Wilson&background=64748b&color=fff', calls: 0, enrollments: 0, revenue: 0, streak: 0 },
+    { id: 'AGT008', name: 'Amanda Perez', role: 'agent', status: 'online', avatar: 'https://ui-avatars.com/api/?name=Amanda+Perez&background=14b8a6&color=fff', calls: 43, enrollments: 8, revenue: 48000, streak: 10 }
+  ];
+
+  const activities = [
+    { agent: 'John Smith', status: 'on-call', client: 'Sarah M.', time: '8:32', avatar: 'https://ui-avatars.com/api/?name=John+Smith&background=3B82F6&color=fff' },
+    { agent: 'Maria Garcia', status: 'on-call', client: 'Michael C.', time: '12:15', avatar: 'https://ui-avatars.com/api/?name=Maria+Garcia&background=06B6D4&color=fff' },
+    { agent: 'Mike Brown', status: 'on-call', client: 'Jessica R.', time: '5:47', avatar: 'https://ui-avatars.com/api/?name=Mike+Brown&background=f97316&color=fff' },
+    { agent: 'Lisa Chen', status: 'available', client: null, time: null, avatar: 'https://ui-avatars.com/api/?name=Lisa+Chen&background=ec4899&color=fff' },
+    { agent: 'David Kim', status: 'available', client: null, time: null, avatar: 'https://ui-avatars.com/api/?name=David+Kim&background=8b5cf6&color=fff' },
+    { agent: 'Amanda Perez', status: 'acw', client: null, time: '2:30', avatar: 'https://ui-avatars.com/api/?name=Amanda+Perez&background=14b8a6&color=fff' }
+  ];
+
+  const trainingModules = [
+    { name: 'Debt Relief Fundamentals', assigned: 12, completed: 10, avgScore: 92 },
+    { name: 'Objection Handling Mastery', assigned: 12, completed: 8, avgScore: 88 },
+    { name: 'Compliance & Disclosure', assigned: 12, completed: 12, avgScore: 95 },
+    { name: 'Closing Techniques', assigned: 8, completed: 5, avgScore: 85 },
+    { name: 'CRM Navigation', assigned: 12, completed: 11, avgScore: 90 }
+  ];
+
+  const onboardingChecklist = [
+    { agent: 'Carlos Rodriguez', task: 'Complete HR paperwork', due: '2026-02-25', completed: true },
+    { agent: 'Carlos Rodriguez', task: 'IT setup & system access', due: '2026-02-25', completed: true },
+    { agent: 'Carlos Rodriguez', task: 'Compliance training', due: '2026-02-26', completed: false },
+    { agent: 'Carlos Rodriguez', task: 'Shadow senior agent (Day 1)', due: '2026-02-27', completed: false },
+    { agent: 'Emily Watson', task: 'Complete HR paperwork', due: '2026-02-26', completed: false },
+    { agent: 'Emily Watson', task: 'IT setup & system access', due: '2026-02-26', completed: false }
+  ];
+
+  function init() {
+    renderAgents();
+    renderActivityMonitor();
+    renderTraining();
+    renderOnboarding();
+    setupEventListeners();
+  }
+
+  function renderAgents(filter = {}) {
+    const grid = document.getElementById('agentsGrid');
+    grid.innerHTML = '';
+    
+    let filteredAgents = agents;
+    if (filter.search) {
+      filteredAgents = filteredAgents.filter(a => a.name.toLowerCase().includes(filter.search.toLowerCase()));
+    }
+    if (filter.role && filter.role !== 'all') {
+      filteredAgents = filteredAgents.filter(a => a.role === filter.role);
+    }
+    
+    filteredAgents.forEach((agent, index) => {
+      const card = document.createElement('div');
+      card.className = 'agent-card';
+      card.style.animationDelay = (index * 0.05) + 's';
+      
+      const statusColors = { online: '#22C55E', busy: '#ef4444', away: '#eab308', offline: '#64748b' };
+      
+      card.innerHTML = `
+        <div class="status-ring ${agent.status}"></div>
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+          <div style="position: relative;">
+            <img src="${agent.avatar}" alt="${agent.name}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover;">
+            <span style="position: absolute; bottom: 2px; right: 2px; width: 14px; height: 14px; background: ${statusColors[agent.status]}; border-radius: 50%; border: 2px solid #0f172a;"></span>
+          </div>
+          <div style="flex: 1;">
+            <div style="color: #fff; font-weight: 600; font-size: 15px;">${agent.name}</div>
+            <span class="role-badge role-${agent.role}">${agent.role}</span>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
+          <div style="text-align: center;">
+            <div style="color: #64748b; font-size: 10px; text-transform: uppercase;">Calls</div>
+            <div style="color: #fff; font-weight: 700; font-family: 'Orbitron', monospace; font-size: 16px;">${agent.calls}</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="color: #64748b; font-size: 10px; text-transform: uppercase;">Sales</div>
+            <div style="color: #22C55E; font-weight: 700; font-family: 'Orbitron', monospace; font-size: 16px;">${agent.enrollments}</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="color: #64748b; font-size: 10px; text-transform: uppercase;">Revenue</div>
+            <div style="color: #3B82F6; font-weight: 700; font-family: 'Orbitron', monospace; font-size: 14px;">$${(agent.revenue/1000).toFixed(1)}K</div>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 8px;">
+          <button class="view-profile-btn" data-id="${agent.id}" style="flex: 1; padding: 8px; background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.3); border-radius: 8px; color: #3B82F6; font-size: 12px; cursor: pointer; transition: all 0.2s;">Profile</button>
+          <button class="review-btn" data-id="${agent.id}" style="flex: 1; padding: 8px; background: rgba(34,197,94,0.2); border: 1px solid rgba(34,197,94,0.3); border-radius: 8px; color: #22C55E; font-size: 12px; cursor: pointer; transition: all 0.2s;">Review</button>
+        </div>
+      `;
+      
+      grid.appendChild(card);
+    });
+    
+    // Add listeners
+    grid.querySelectorAll('.view-profile-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openAgentModal(btn.dataset.id);
+      });
+    });
+    
+    grid.querySelectorAll('.review-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openReviewModal(btn.dataset.id);
+      });
+    });
+  }
+
+  function renderActivityMonitor() {
+    const container = document.getElementById('activityMonitor');
+    container.innerHTML = '';
+    
+    const statusColors = { 'on-call': '#ef4444', 'acw': '#eab308', 'available': '#22C55E' };
+    const statusLabels = { 'on-call': 'On Call', 'acw': 'After Call', 'available': 'Available' };
+    
+    activities.forEach((activity, index) => {
+      const item = document.createElement('div');
+      item.className = 'activity-item';
+      item.style.animationDelay = (index * 0.05) + 's';
+      
+      item.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+          <img src="${activity.avatar}" style="width: 36px; height: 36px; border-radius: 50%;">
+          <div class="activity-dot" style="background: ${statusColors[activity.status]};"></div>
+        </div>
+        <div style="color: #fff; font-weight: 600; font-size: 13px; margin-bottom: 4px;">${activity.agent}</div>
+        <div style="color: ${statusColors[activity.status]}; font-size: 11px; font-weight: 600; margin-bottom: 6px;">${statusLabels[activity.status]}</div>
+        
+        ${activity.client ? `
+          <div style="color: #94a3b8; font-size: 11px;">With: ${activity.client}</div>
+          <div style="color: #64748b; font-size: 10px; margin-top: 2px;">⏱ ${activity.time}</div>
+        ` : ''}
+      `;
+      
+      container.appendChild(item);
+    });
+  }
+
+  function renderTraining() {
+    const container = document.getElementById('trainingList');
+    container.innerHTML = '';
+    
+    trainingModules.forEach((module, index) => {
+      const completion = Math.round((module.completed / module.assigned) * 100);
+      
+      const item = document.createElement('div');
+      item.className = 'training-module';
+      item.style.animationDelay = (index * 0.05) + 's';
+      
+      item.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span style="color: #fff; font-weight: 600; font-size: 13px;">${module.name}</span>
+          <span style="color: #3B82F6; font-weight: 700; font-family: 'Orbitron', monospace; font-size: 14px;">${completion}%</span>
+        </div>
+        
+        <div class="progress-bar" style="margin-bottom: 10px;">
+          <div class="progress-fill" style="width: ${completion}%; background: linear-gradient(90deg, #3B82F6, #06B6D4);"></div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; font-size: 11px;">
+          <span style="color: #94a3b8;">${module.completed}/${module.assigned} completed</span>
+          <span style="color: #22C55E; font-weight: 600;">Avg: ${module.avgScore}%</span>
+        </div>
+      `;
+      
+      container.appendChild(item);
+    });
+  }
+
+  function renderOnboarding() {
+    const container = document.getElementById('onboardingList');
+    container.innerHTML = '';
+    
+    const grouped = {};
+    onboardingChecklist.forEach(item => {
+      if (!grouped[item.agent]) grouped[item.agent] = [];
+      grouped[item.agent].push(item);
+    });
+    
+    Object.entries(grouped).forEach(([agent, tasks], groupIndex) => {
+      const completed = tasks.filter(t => t.completed).length;
+      const total = tasks.length;
+      
+      const group = document.createElement('div');
+      group.style.cssText = 'background: rgba(10,15,26,0.6); border-radius: 12px; padding: 16px; margin-bottom: 12px;';
+      group.style.animationDelay = (groupIndex * 0.1) + 's';
+      
+      group.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="color: #fff; font-weight: 600;">${agent}</span>
+          <span style="color: #94a3b8; font-size: 12px;">${completed}/${total} done</span>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          ${tasks.map(task => `
+            <div class="onboarding-item">
+              <div class="checkbox-custom ${task.completed ? 'checked' : ''}" data-task="${task.task}">
+                ${task.completed ? '<i data-lucide="check" style="width: 14px; height: 14px; color: #fff;"></i>' : ''}
+              </div>
+              <div style="flex: 1;">
+                <div style="color: ${task.completed ? '#64748b' : '#e2e8f0'}; font-size: 13px; ${task.completed ? 'text-decoration: line-through;' : ''}">${task.task}</div>
+                <div style="color: #64748b; font-size: 10px;">Due: ${new Date(task.due).toLocaleDateString()}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      
+      container.appendChild(group);
+    });
+    
+    // Add checkbox listeners
+    container.querySelectorAll('.checkbox-custom').forEach(cb => {
+      cb.addEventListener('click', () => {
+        cb.classList.toggle('checked');
+        const isChecked = cb.classList.contains('checked');
+        cb.innerHTML = isChecked ? '<i data-lucide="check" style="width: 14px; height: 14px; color: #fff;"></i>' : '';
+        if (window.lucide) window.lucide.createIcons();
+      });
+    });
+  }
+
+  function openAgentModal(agentId) {
+    const agent = agents.find(a => a.id === agentId);
+    if (!agent) return;
+    
+    const modal = document.getElementById('agentModal');
+    const content = document.getElementById('agentModalContent');
+    
+    content.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; gap: 20px;">
+          <img src="${agent.avatar}" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #3B82F6;">
+          <div>
+            <h2 style="margin: 0 0 8px 0; color: #fff; font-size: 24px;">${agent.name}</h2>
+            <span class="role-badge role-${agent.role}">${agent.role}</span>
+            <div style="color: #94a3b8; font-size: 13px; margin-top: 8px;">${agent.id} • Joined Jan 2024</div>
+          </div>
+        </div>
+        <button id="closeAgentModal" style="background: none; border: none; color: #94a3b8; cursor: pointer; padding: 8px;">
+          <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+        </button>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+        <div style="background: rgba(10,15,26,0.6); border-radius: 12px; padding: 16px; text-align: center;">
+          <div style="color: #64748b; font-size: 11px;">Today's Calls</div>
+          <div style="color: #fff; font-size: 24px; font-weight: 700; font-family: 'Orbitron', monospace;">${agent.calls}</div>
+        </div>
+        <div style="background: rgba(10,15,26,0.6); border-radius: 12px; padding: 16px; text-align: center;">
+          <div style="color: #64748b; font-size: 11px;">Enrollments</div>
+          <div style="color: #22C55E; font-size: 24px; font-weight: 700; font-family: 'Orbitron', monospace;">${agent.enrollments}</div>
+        </div>
+        <div style="background: rgba(10,15,26,0.6); border-radius: 12px; padding: 16px; text-align: center;">
+          <div style="color: #64748b; font-size: 11px;">Revenue</div>
+          <div style="color: #3B82F6; font-size: 24px; font-weight: 700; font-family: 'Orbitron', monospace;">$${agent.revenue.toLocaleString()}</div>
+        </div>
+        <div style="background: rgba(10,15,26,0.6); border-radius: 12px; padding: 16px; text-align: center;">
+          <div style="color: #64748b; font-size: 11px;">🔥 Streak</div>
+          <div style="color: #eab308; font-size: 24px; font-weight: 700; font-family: 'Orbitron', monospace;">${agent.streak} days</div>
+        </div>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div>
+          <h4 style="color: #fff; margin: 0 0 12px 0;">Performance History</h4>
+          <div style="background: rgba(10,15,26,0.6); border-radius: 12px; padding: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #94a3b8; font-size: 13px;">This Week</span>
+                <span style="color: #fff; font-weight: 600;">${agent.calls * 5} calls, ${agent.enrollments * 5} sales</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #94a3b8; font-size: 13px;">This Month</span>
+                <span style="color: #fff; font-weight: 600;">${agent.calls * 22} calls, ${agent.enrollments * 22} sales</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #94a3b8; font-size: 13px;">Conversion Rate</span>
+                <span style="color: #22C55E; font-weight: 600;">${(agent.enrollments / agent.calls * 100).toFixed(1)}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <h4 style="color: #fff; margin: 0 0 12px 0;">Notes</h4>
+          <div style="background: rgba(10,15,26,0.6); border-radius: 12px; padding: 16px; min-height: 120px;">
+            <textarea placeholder="Add notes about this agent..." style="width: 100%; background: transparent; border: none; color: #e2e8f0; font-size: 13px; resize: none; min-height: 100px; font-family: inherit;"></textarea>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    modal.style.display = 'flex';
+    
+    document.getElementById('closeAgentModal').addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+    
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function openReviewModal(agentId) {
+    const modal = document.getElementById('reviewModal');
+    const content = document.getElementById('reviewContent');
+    
+    content.innerHTML = `
+      <!-- Radar Chart Placeholder -->
+      <div class="radar-container" style="margin-bottom: 24px;">
+        <svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+          <polygon points="100,20 170,70 150,160 50,160 30,70" fill="none" stroke="#3B82F6" stroke-width="2" opacity="0.3"/>
+          <polygon points="100,40 150,75 135,140 65,140 50,75" fill="rgba(59,130,246,0.3)" stroke="#3B82F6" stroke-width="2"/>
+          
+          <text x="100" y="15" text-anchor="middle" fill="#94a3b8" font-size="10">Calls</text>
+          <text x="180" y="70" text-anchor="start" fill="#94a3b8" font-size="10">Enrollments</text>
+          <text x="160" y="175" text-anchor="middle" fill="#94a3b8" font-size="10">Compliance</text>
+          <text x="40" y="175" text-anchor="middle" fill="#94a3b8" font-size="10">Teamwork</text>
+          <text x="20" y="70" text-anchor="end" fill="#94a3b8" font-size="10">Attendance</text>
+        </svg>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+        <div>
+          <label style="color: #94a3b8; font-size: 12px;">Call Quality (1-10)</label>
+          <input type="range" min="1" max="10" value="8" style="width: 100%; margin-top: 6px;">
+        </div>
+        <div>
+          <label style="color: #94a3b8; font-size: 12px;">Closing Rate (1-10)</label>
+          <input type="range" min="1" max="10" value="7" style="width: 100%; margin-top: 6px;">
+        </div>
+        <div>
+          <label style="color: #94a3b8; font-size: 12px;">Compliance (1-10)</label>
+          <input type="range" min="1" max="10" value="9" style="width: 100%; margin-top: 6px;">
+        </div>
+        <div>
+          <label style="color: #94a3b8; font-size: 12px;">Teamwork (1-10)</label>
+          <input type="range" min="1" max="10" value="8" style="width: 100%; margin-top: 6px;">
+        </div>
+      </div>
+      
+      <div style="margin-top: 16px;">
+        <label style="color: #94a3b8; font-size: 12px;">Comments</label>
+        <textarea placeholder="Enter performance feedback..." style="width: 100%; background: rgba(10,15,26,0.6); border: 1px solid rgba(59,130,246,0.2); border-radius: 8px; padding: 12px; color: #e2e8f0; font-size: 13px; margin-top: 6px; resize: vertical; min-height: 80px; font-family: inherit;"></textarea>
+      </div>
+    `;
+    
+    modal.style.display = 'flex';
+  }
+
+  function setupEventListeners() {
+    // Search and filter
+    document.getElementById('searchAgents').addEventListener('input', (e) => {
+      renderAgents({ search: e.target.value, role: document.getElementById('filterRole').value });
+    });
+    
+    document.getElementById('filterRole').addEventListener('change', (e) => {
+      renderAgents({ search: document.getElementById('searchAgents').value, role: e.target.value });
+    });
+    
+    // Schedule modal
+    document.getElementById('scheduleBtn').addEventListener('click', () => {
+      document.getElementById('scheduleModal').style.display = 'flex';
+      renderSchedule();
+    });
+    
+    document.getElementById('closeScheduleModal').addEventListener('click', () => {
+      document.getElementById('scheduleModal').style.display = 'none';
+    });
+    
+    // Review modal
+    document.getElementById('closeReviewBtn').addEventListener('click', () => {
+      document.getElementById('reviewModal').style.display = 'none';
+    });
+    
+    document.getElementById('saveReviewBtn').addEventListener('click', () => {
+      document.getElementById('reviewModal').style.display = 'none';
+      alert('Performance review saved!');
+    });
+    
+    // Close modals on outside click
+    document.getElementById('agentModal').addEventListener('click', (e) => {
+      if (e.target.id === 'agentModal') document.getElementById('agentModal').style.display = 'none';
+    });
+    document.getElementById('scheduleModal').addEventListener('click', (e) => {
+      if (e.target.id === 'scheduleModal') document.getElementById('scheduleModal').style.display = 'none';
+    });
+    document.getElementById('reviewModal').addEventListener('click', (e) => {
+      if (e.target.id === 'reviewModal') document.getElementById('reviewModal').style.display = 'none';
+    });
+  }
+
+  function renderSchedule() {
+    const grid = document.getElementById('scheduleGrid');
+    const days = ['Time', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const times = ['9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM'];
+    
+    grid.innerHTML = '';
+    
+    // Header
+    days.forEach(day => {
+      const cell = document.createElement('div');
+      cell.style.cssText = 'color: #94a3b8; font-size: 12px; font-weight: 600; text-align: center; padding: 8px;';
+      cell.textContent = day;
+      grid.appendChild(cell);
+    });
+    
+    // Time slots
+    times.forEach(time => {
+      // Time label
+      const timeCell = document.createElement('div');
+      timeCell.style.cssText = 'color: #64748b; font-size: 11px; text-align: right; padding: 8px;';
+      timeCell.textContent = time;
+      grid.appendChild(timeCell);
+      
+      // Day cells
+      for (let i = 0; i < 7; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'schedule-cell';
+        
+        // Random shift data
+        if (Math.random() > 0.6) {
+          const agents = ['John', 'Maria', 'David'];
+          const agent = agents[Math.floor(Math.random() * agents.length)];
+          cell.innerHTML = `<div class="shift-block">${agent}</div>`;
+        }
+        
+        grid.appendChild(cell);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
