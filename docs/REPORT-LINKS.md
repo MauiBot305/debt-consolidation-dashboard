@@ -4,6 +4,32 @@
 
 ---
 
+## 🎯 Investor Presentation (HTML)
+
+**Live URL:** https://debt.alldayautomations.ai/presentation.html
+
+**Google Drive:** https://drive.google.com/file/d/1i_Q2oNW-xqKbG3_PaEzJOXtFilwjt9MZ/view?usp=drivesdk
+
+**Local Path:** `docs/presentation.html`
+
+**Format:** Self-contained HTML presentation using reveal.js
+
+**Features:**
+- 15 slides covering complete platform analysis
+- Dark theme with glass morphism effects
+- Professional animations and transitions
+- Gradient accents (#3B82F6 → #06B6D4)
+- Orbitron font for headlines, Inter for body
+- Inline charts and comparison tables
+- Responsive design (works on mobile, tablet, desktop)
+
+**Navigation:**
+- Arrow keys or click arrows to navigate
+- Press ESC for slide overview
+- Press F for fullscreen
+
+---
+
 ## Google Sheets - Complete Analysis
 
 **Sheet Name:** Debt Consolidation Empire Dashboard - Complete Analysis

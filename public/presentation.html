@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debt Consolidation Empire Dashboard - Complete Platform Analysis</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/theme/black.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0a0f1a;
+            --bg-card: rgba(15, 23, 42, 0.8);
+            --accent-blue: #3B82F6;
+            --accent-cyan: #06B6D4;
+            --text-white: #ffffff;
+            --text-gray: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            background: var(--bg-dark);
+            background-image: 
+                radial-gradient(ellipse at top, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(6, 182, 212, 0.15) 0%, transparent 50%);
+        }
+        
+        .reveal {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-white);
+        }
+        
+        .reveal h1, .reveal h2, .reveal h3 {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .reveal h1 { font-size: 2.8em; font-weight: 900; margin-bottom: 0.3em; }
+        .reveal h2 { font-size: 2.2em; font-weight: 700; margin-bottom: 0.5em; }
+        .reveal h3 { font-size: 1.6em; font-weight: 700; margin-bottom: 0.4em; }
+        
+        .reveal p, .reveal li {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: var(--text-gray);
+        }
+        
+        .reveal strong {
+            color: var(--text-white);
+            font-weight: 700;
+        }
+        
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2em;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5em;
+            margin: 2em 0;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1));
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5em;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.2em;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .feature-list {
+            text-align: left;
+            columns: 2;
+            column-gap: 2em;
+            font-size: 0.95em;
+        }
+        
+        .feature-list li {
+            margin-bottom: 0.8em;
+            break-inside: avoid;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5em 0;
+            font-size: 0.85em;
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(6, 182, 212, 0.3));
+            padding: 1em;
+            border: 1px solid var(--glass-border);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .comparison-table td {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 0.8em;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .comparison-table .highlight {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2));
+            font-weight: 700;
+            color: #10b981;
+        }
+        
+        .price-tier {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2));
+            border: 2px solid var(--accent-cyan);
+            border-radius: 12px;
+            padding: 1em 2em;
+            margin: 0.5em;
+            font-size: 1.1em;
+        }
+        
+        .price-tier .tier-name {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.2em;
+            color: var(--accent-cyan);
+            margin-bottom: 0.3em;
+        }
+        
+        .price-tier .tier-price {
+            font-size: 1.8em;
+            font-weight: 900;
+            color: var(--text-white);
+        }
+        
+        .alert-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
+            border-left: 4px solid #ef4444;
+            padding: 1.5em;
+            border-radius: 8px;
+            margin: 1.5em 0;
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2));
+            border-left: 4px solid #10b981;
+            padding: 1.5em;
+            border-radius: 8px;
+            margin: 1.5em 0;
+        }
+        
+        .contact-info {
+            margin-top: 2em;
+            padding: 2em;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.15));
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .contact-info h3 {
+            margin-bottom: 0.8em;
+        }
+        
+        .contact-info p {
+            font-size: 1.2em;
+            margin: 0.5em 0;
+            color: var(--text-white);
+        }
+        
+        .chart-container {
+            margin: 2em 0;
+        }
+        
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            height: 300px;
+            gap: 1em;
+            padding: 1em;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-blue));
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 1em 0.5em;
+        }
+        
+        .bar-label {
+            position: absolute;
+            bottom: -2.5em;
+            font-size: 0.8em;
+            color: var(--text-gray);
+            text-align: center;
+            width: 100%;
+        }
+        
+        .bar-value {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.1em;
+            color: var(--text-white);
+            margin-bottom: 0.5em;
+        }
+        
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1em;
+            margin: 2em 0;
+            font-size: 0.85em;
+        }
+        
+        .module-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 1em;
+            text-align: center;
+        }
+        
+        .risk-badge {
+            display: inline-block;
+            padding: 0.3em 0.8em;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .risk-critical {
+            background: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+        
+        .risk-low {
+            background: rgba(34, 197, 94, 0.3);
+            color: #10b981;
+            border: 1px solid #10b981;
+        }
+        
+        .reveal .slides section {
+            text-align: left;
+        }
+        
+        .reveal .slides section.center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Title -->
+            <section class="center">
+                <h1 style="font-size: 3.5em; margin-bottom: 0.5em;">Debt Consolidation<br>Empire Dashboard</h1>
+                <h2 style="font-size: 1.8em; margin-bottom: 1em; opacity: 0.9;">Complete Platform Analysis</h2>
+                <div style="margin-top: 3em;">
+                    <p style="font-size: 1.4em; color: var(--accent-cyan);">By CCT Consulting LLC</p>
+                    <p style="font-size: 1.2em; margin-top: 0.5em;">February 2026</p>
+                </div>
+            </section>
+
+            <!-- Slide 2: Executive Summary -->
+            <section>
+                <h2>Executive Summary</h2>
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <div class="stat-number">$50K</div>
+                        <div class="stat-label">SaaS-Quality Platform<br>Built in Hours</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">17</div>
+                        <div class="stat-label">Integrated Modules<br>19 Pages Total</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">82-98%</div>
+                        <div class="stat-label">Cost Savings vs<br>Competitors</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">$71M</div>
+                        <div class="stat-label">ARR Market<br>Opportunity</div>
+                    </div>
+                </div>
+                <div class="success-box">
+                    <strong>Bottom Line:</strong> Enterprise-grade platform at startup-friendly pricing, delivered 99% faster than traditional development.
+                </div>
+            </section>
+
+            <!-- Slide 3: The Problem -->
+            <section>
+                <h2>The Problem</h2>
+                <div class="glass-card">
+                    <div class="alert-box">
+                        <h3 style="margin-top: 0;">Current State of Debt Consolidation Software</h3>
+                    </div>
+                    <ul style="margin-top: 2em; font-size: 1.1em;">
+                        <li><strong>Fragmented Tools:</strong> Companies juggle 6-8 separate platforms daily</li>
+                        <li><strong>High Costs:</strong> StratusBK + Talkt = $2,800+/mo for basic functionality</li>
+                        <li><strong>No Unified Solution:</strong> CRM + Dialer + Case Management + Compliance all separate</li>
+                        <li><strong>Compliance Gaps:</strong> Zero HIPAA, zero SOC 2, Bulgaria-hosted data</li>
+                        <li><strong>Massive Legal Exposure:</strong> Companies exposed to $3.5M-$14.9M in annual regulatory fines</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 4: Our Solution -->
+            <section>
+                <h2>Our Solution</h2>
+                <div class="glass-card">
+                    <h3 style="color: var(--accent-cyan); margin-top: 0;">All-in-One Platform That Actually Works</h3>
+                    <ul style="margin-top: 1.5em; font-size: 1.1em;">
+                        <li><strong>Unified Dashboard:</strong> CRM + Power Dialer + Case Management + Compliance + Analytics</li>
+                        <li><strong>Real Twilio Integration:</strong> Live calling from browser with AI-powered coaching</li>
+                        <li><strong>AI-Powered Automation:</strong> 9-tier call scoring, conversational AI agent (Maui)</li>
+                        <li><strong>Built-In Compliance:</strong> TCPA, TSR, FDCPA, state licensing tracking</li>
+                        <li><strong>Client Self-Service Portal:</strong> Debt progress tracking, payment processing, documents</li>
+                        <li><strong>Gamification Engine:</strong> Leaderboards, badges, challenges — increase agent productivity 20-30%</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 5: Platform Overview -->
+            <section>
+                <h2>Platform Overview</h2>
+                <h3 style="text-align: center; margin-bottom: 1.5em;">17 Integrated Modules</h3>
+                <div class="module-grid">
+                    <div class="module-item">📊 Agent Dashboard</div>
+                    <div class="module-item">📞 Power Dialer</div>
+                    <div class="module-item">👥 CRM Leads</div>
+                    <div class="module-item">🎯 Deal Pipeline</div>
+                    <div class="module-item">⚖️ Compliance Hub</div>
+                    <div class="module-item">📈 Analytics</div>
+                    <div class="module-item">🏆 Gamification</div>
+                    <div class="module-item">🤖 AI Call Scoring</div>
+                    <div class="module-item">💬 Client Portal</div>
+                    <div class="module-item">📧 Marketing Center</div>
+                    <div class="module-item">📁 Document Manager</div>
+                    <div class="module-item">💳 Payments</div>
+                    <div class="module-item">👤 User Management</div>
+                    <div class="module-item">⚙️ System Settings</div>
+                    <div class="module-item">📊 Real-Time Reports</div>
+                    <div class="module-item">🔔 Notification System</div>
+                    <div class="module-item">🗺️ State Licensing Grid</div>
+                </div>
+            </section>
+
+            <!-- Slide 6: Competitive Comparison -->
+            <section>
+                <h2>Competitive Comparison</h2>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>StratusBK</th>
+                            <th>Talkt</th>
+                            <th>Our Dashboard</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>AI Call Coaching</strong></td>
+                            <td>❌ No</td>
+                            <td>❌ No</td>
+                            <td class="highlight">✅ 9-tier system</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gamification</strong></td>
+                            <td>❌ No</td>
+                            <td>❌ No</td>
+                            <td class="highlight">✅ Full engine</td>
+                        </tr>
+                        <tr>
+                            <td><strong>UCaaS (Built-in Dialer)</strong></td>
+                            <td>❌ No</td>
+                            <td>✅ Yes</td>
+                            <td class="highlight">✅ Twilio</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HIPAA Certified</strong></td>
+                            <td>❌ No</td>
+                            <td>❌ No</td>
+                            <td class="highlight">🚧 Q2 2026</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SOC 2 Type II</strong></td>
+                            <td>❌ No</td>
+                            <td>❌ No</td>
+                            <td class="highlight">🚧 Q2 2026</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Residency</strong></td>
+                            <td>❓ Unknown</td>
+                            <td>❌ Bulgaria</td>
+                            <td class="highlight">✅ US (Cloudflare)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost (50 agents)</strong></td>
+                            <td>~$40K/mo</td>
+                            <td>~$3K/mo</td>
+                            <td class="highlight">$516/mo</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Slide 7: Cost Savings -->
+            <section>
+                <h2>Cost Savings</h2>
+                <h3 style="text-align: center; margin-bottom: 1em;">3-Year Total Cost of Ownership</h3>
+                <div class="chart-container">
+                    <div class="bar-chart">
+                        <div class="bar" style="height: 8%;">
+                            <div class="bar-value">$18.6K</div>
+                            <div class="bar-label">10 Agents<br>(Us)</div>
+                        </div>
+                        <div class="bar" style="height: 100%;">
+                            <div class="bar-value">$101K</div>
+                            <div class="bar-label">10 Agents<br>(Them)</div>
+                        </div>
+                        <div class="bar" style="height: 7%;">
+                            <div class="bar-value">$18.6K</div>
+                            <div class="bar-label">50 Agents<br>(Us)</div>
+                        </div>
+                        <div class="bar" style="height: 100%;">
+                            <div class="bar-value">$506K</div>
+                            <div class="bar-label">50 Agents<br>(Them)</div>
+                        </div>
+                        <div class="bar" style="height: 6%;">
+                            <div class="bar-value">$18.6K</div>
+                            <div class="bar-label">100 Agents<br>(Us)</div>
+                        </div>
+                        <div class="bar" style="height: 100%;">
+                            <div class="bar-value">$1M</div>
+                            <div class="bar-label">100 Agents<br>(Them)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-grid" style="margin-top: 2em;">
+                    <div class="stat-box">
+                        <div class="stat-number">$82K</div>
+                        <div class="stat-label">Saved (10 agents) — 82%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">$487K</div>
+                        <div class="stat-label">Saved (50 agents) — 96%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">$984K</div>
+                        <div class="stat-label">Saved (100 agents) — 98%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">27-80%</div>
+                        <div class="stat-label">Cost Reduction Range</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 8: Infrastructure Costs -->
+            <section>
+                <h2>Infrastructure Costs</h2>
+                <div class="glass-card">
+                    <h3 style="color: var(--accent-cyan); margin-top: 0;">Monthly: ~$516 Flat (No Per-Seat)</h3>
+                    <table class="comparison-table" style="margin-top: 1.5em;">
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Purpose</th>
+                                <th>Monthly Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Cloudflare Pages</strong></td>
+                                <td>Static hosting</td>
+                                <td>$0</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cloudflare Workers</strong></td>
+                                <td>Serverless functions</td>
+                                <td>$5</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Twilio (Voice + SMS)</strong></td>
+                                <td>Calls + texting</td>
+                                <td>~$440</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SendGrid</strong></td>
+                                <td>Email delivery</td>
+                                <td>$20</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PostgreSQL (Supabase)</strong></td>
+                                <td>Database</td>
+                                <td>$25</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Redis (Upstash)</strong></td>
+                                <td>Caching/real-time</td>
+                                <td>$10</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Storage (R2)</strong></td>
+                                <td>Documents/files</td>
+                                <td>$15</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td colspan="2"><strong>TOTAL</strong></td>
+                                <td><strong>$516/mo</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 1.5em; text-align: center;"><em>Scales without per-seat licensing. Cost stays flat as you grow.</em></p>
+                </div>
+            </section>
+
+            <!-- Slide 9: Legal Protection Value -->
+            <section>
+                <h2>Legal Protection Value</h2>
+                <div class="glass-card">
+                    <h3 style="color: var(--accent-cyan); margin-top: 0;">$3.5M-$14.9M in Annual Fines Avoided</h3>
+                    <table class="comparison-table" style="margin-top: 1.5em; font-size: 0.8em;">
+                        <thead>
+                            <tr>
+                                <th>Compliance Area</th>
+                                <th>Penalty Without</th>
+                                <th>Our Protection</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>TCPA (Call Consent)</strong></td>
+                                <td>$500-$1,500/call</td>
+                                <td>✅ Consent tracking</td>
+                            </tr>
+                            <tr>
+                                <td><strong>TSR (Advance Fees)</strong></td>
+                                <td>$50K/violation</td>
+                                <td>✅ Fee disclosure + e-sign</td>
+                            </tr>
+                            <tr>
+                                <td><strong>FDCPA (Call Recording)</strong></td>
+                                <td>$1K/violation + lawsuits</td>
+                                <td>✅ Unlimited recording</td>
+                            </tr>
+                            <tr>
+                                <td><strong>State Licensing</strong></td>
+                                <td>$10K-$100K/state + criminal</td>
+                                <td>✅ Licensing grid + geo-block</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Breach</strong></td>
+                                <td>$200-$500/customer</td>
+                                <td>✅ AES-256 + backups</td>
+                            </tr>
+                            <tr>
+                                <td><strong>HIPAA (Medical Debt)</strong></td>
+                                <td>$100-$50K/violation</td>
+                                <td>🚧 HIPAA-ready (Q2 2026)</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td colspan="2"><strong>TOTAL EXPOSURE</strong></td>
+                                <td><strong>$3.5M-$14.9M/year</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="success-box" style="margin-top: 1.5em;">
+                    <strong>Key Features That Protect Your Business:</strong> TCPA consent tracking, TSR compliance dashboard, state licensing grid, call recording, audit trails, data encryption.
+                </div>
+            </section>
+
+            <!-- Slide 10: Pricing Strategy -->
+            <section>
+                <h2>Pricing Strategy</h2>
+                <div style="text-align: center; margin-top: 2em;">
+                    <h3 style="margin-bottom: 1.5em;">SaaS Model (Per User/Month)</h3>
+                    <div class="price-tier">
+                        <div class="tier-name">Starter</div>
+                        <div class="tier-price">$39</div>
+                        <p style="margin-top: 0.5em; font-size: 0.9em;">Basic features + support</p>
+                    </div>
+                    <div class="price-tier">
+                        <div class="tier-name">Professional</div>
+                        <div class="tier-price">$79</div>
+                        <p style="margin-top: 0.5em; font-size: 0.9em;">AI + Gamification + Analytics</p>
+                    </div>
+                    <div class="price-tier">
+                        <div class="tier-name">Enterprise</div>
+                        <div class="tier-price">$119</div>
+                        <p style="margin-top: 0.5em; font-size: 0.9em;">Custom + White-label + SLA</p>
+                    </div>
+                </div>
+                <div class="glass-card" style="margin-top: 2em;">
+                    <h3 style="color: var(--accent-cyan); margin-top: 0;">Enterprise Package (Self-Hosted)</h3>
+                    <ul style="font-size: 1.1em;">
+                        <li><strong>One-Time:</strong> $85K-$125K (complete build + deployment)</li>
+                        <li><strong>Monthly Retainer:</strong> $2.5K-$7.5K (ongoing support)</li>
+                        <li><strong>Total Year 1:</strong> $115K-$215K (42-64% savings vs typical agencies)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 11: Revenue Projections -->
+            <section>
+                <h2>Revenue Projections</h2>
+                <div class="glass-card">
+                    <h3 style="color: var(--accent-cyan); margin-top: 0;">Total Addressable Market (TAM)</h3>
+                    <div class="stat-grid" style="margin-top: 1.5em;">
+                        <div class="stat-box">
+                            <div class="stat-number">3,000+</div>
+                            <div class="stat-label">Target Companies<br>(US Debt Consolidation)</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">25</div>
+                            <div class="stat-label">Avg Agents<br>Per Company</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">$79</div>
+                            <div class="stat-label">ARPU<br>(Professional Tier)</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">$71M</div>
+                            <div class="stat-label">ARR<br>Market Size</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card" style="margin-top: 1.5em;">
+                    <h3 style="margin-top: 0;">Penetration Scenarios</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Customers</th>
+                                <th>MRR</th>
+                                <th>ARR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Conservative</strong></td>
+                                <td>50 (1.7%)</td>
+                                <td>$98,750</td>
+                                <td>$1.2M</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Moderate</strong></td>
+                                <td>200 (6.7%)</td>
+                                <td>$395,000</td>
+                                <td>$4.7M</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td><strong>Aggressive</strong></td>
+                                <td>500 (16.7%)</td>
+                                <td>$987,500</td>
+                                <td>$11.9M</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Slide 12: Gap Analysis -->
+            <section>
+                <h2>Gap Analysis</h2>
+                <div class="glass-card">
+                    <h3 style="color: var(--accent-cyan); margin-top: 0;">10 Critical Requirements Identified</h3>
+                    <div class="stat-grid" style="margin-top: 1.5em;">
+                        <div class="stat-box">
+                            <div class="stat-number">$83K</div>
+                            <div class="stat-label">Must-Have Features<br>(Phase 1)</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">$229K</div>
+                            <div class="stat-label">Total Feature Set<br>(All Phases)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card" style="margin-top: 1.5em;">
+                    <h3 style="margin-top: 0;">Phased Implementation Roadmap</h3>
+                    <table class="comparison-table" style="font-size: 0.8em;">
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Timeline</th>
+                                <th>Features</th>
+                                <th>Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Phase 1</strong></td>
+                                <td>Weeks 1-4</td>
+                                <td>State regs, trust accounts, client comms</td>
+                                <td>$83K</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phase 2</strong></td>
+                                <td>Weeks 5-8</td>
+                                <td>Creditor portal, disaster recovery</td>
+                                <td>$71K</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phase 3</strong></td>
+                                <td>Weeks 9-12</td>
+                                <td>Auditing, CFPB, training, tax tracking</td>
+                                <td>$75K</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Slide 13: Risk Assessment -->
+            <section>
+                <h2>Risk Assessment</h2>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Risk Factor</th>
+                            <th>StratusBK</th>
+                            <th>Talkt</th>
+                            <th>Our Dashboard</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Financial Stability</strong></td>
+                            <td><span class="risk-critical">Critical</span><br>2020 bankruptcy</td>
+                            <td><span class="risk-critical">Critical</span><br>2023 Chapter 11</td>
+                            <td><span class="risk-low">Low</span><br>Self-hosted</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Security</strong></td>
+                            <td><span class="risk-critical">Critical</span><br>No public docs</td>
+                            <td><span class="risk-critical">Critical</span><br>No SOC 2</td>
+                            <td><span class="risk-low">Low</span><br>AES-256 + TLS 1.3</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Compliance</strong></td>
+                            <td><span class="risk-critical">Critical</span><br>No HIPAA/SOC 2</td>
+                            <td><span class="risk-critical">Critical</span><br>Bulgaria hosting</td>
+                            <td><span class="risk-low">Low</span><br>HIPAA-ready, SOC 2 Q2</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vendor Lock-In</strong></td>
+                            <td><span class="risk-critical">High</span><br>Proprietary</td>
+                            <td><span class="risk-critical">High</span><br>Proprietary</td>
+                            <td><span class="risk-low">Low</span><br>Exportable data</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="alert-box" style="margin-top: 1.5em;">
+                    <strong>Key Findings:</strong> StratusBK tied to DebtStoppers' 2020 bankruptcy. Talkt Bulgaria-hosted with zero compliance certs. Both lack HIPAA, SOC 2, and published security docs.
+                </div>
+                <div class="success-box">
+                    <strong>Our Advantage:</strong> US-hosted (Cloudflare), HIPAA-ready architecture, SOC 2 roadmap, published security whitepaper, no vendor dependency.
+                </div>
+            </section>
+
+            <!-- Slide 14: Next Steps -->
+            <section>
+                <h2>Next Steps</h2>
+                <div class="glass-card">
+                    <ul style="font-size: 1.2em; line-height: 2;">
+                        <li><strong>✅ Beta Program:</strong> Launch with 3-5 pilot companies (30-day trial)</li>
+                        <li><strong>🔒 SOC 2 Certification:</strong> Complete independent audit by Q2 2026</li>
+                        <li><strong>🏥 HIPAA Certification:</strong> Unlock medical debt market (40% of industry)</li>
+                        <li><strong>📱 Mobile App Development:</strong> Native iOS/Android apps by Q3 2026</li>
+                        <li><strong>🎨 White-Label Options:</strong> Rebrand for agency partners</li>
+                        <li><strong>🤖 AI Enhancements:</strong> Predictive analytics, sentiment analysis</li>
+                        <li><strong>🌐 International Expansion:</strong> Multi-currency, multi-language support</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 15: Contact -->
+            <section class="center">
+                <h2 style="font-size: 3em; margin-bottom: 0.5em;">Let's Talk</h2>
+                <div class="contact-info">
+                    <h3 style="margin-top: 0;">CCT Consulting LLC</h3>
+                    <p><strong>Patrick Chinery</strong></p>
+                    <p>📧 patrick@consultingcct.com</p>
+                    <p>📞 (305) 965-9624</p>
+                    <p style="margin-top: 1.5em;"><strong>🌐 Live Demo:</strong></p>
+                    <p style="font-size: 1.4em; color: var(--accent-cyan);">https://debt.alldayautomations.ai</p>
+                </div>
+                <div style="margin-top: 2em; padding: 2em; background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.15)); border-radius: 12px;">
+                    <p style="font-size: 1.2em; color: var(--text-white);">Schedule a demo to see the platform in action.<br>Zero-failure data migration guaranteed.</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            backgroundTransition: 'fade',
+            controls: true,
+            progress: true,
+            center: true,
+            slideNumber: 'c/t',
+            showSlideNumber: 'all',
+            width: 1280,
+            height: 720,
+            margin: 0.04,
+            minScale: 0.2,
+            maxScale: 2.0
+        });
+    </script>
+</body>
+</html>
