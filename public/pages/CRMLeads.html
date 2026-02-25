@@ -817,6 +817,7 @@
       const paginated = paginateLeads();
       
       const tbody = document.getElementById('leadsTableBody');
+      if (!tbody) return; // Guard against SPA race condition
       
       if (paginated.length === 0) {
         tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; color: #64748B; padding: 40px;">No leads found</td></tr>';

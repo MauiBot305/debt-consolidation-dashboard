@@ -355,6 +355,7 @@
 
   function renderTemplates() {
     const grid = document.getElementById('templatesGrid');
+    if (!grid) return;
     grid.innerHTML = templates.map((t, i) => `
       <div onclick="useTemplate(${i})" class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 hover:border-purple-500/50 transition-all cursor-pointer group">
         <div class="flex items-start gap-3">
@@ -398,6 +399,7 @@
   function renderAutomations() {
     const automations = getAutomations();
     const tbody = document.getElementById('automationsTableBody');
+    if (!tbody) return;
     
     if (automations.length === 0) {
       tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">No automations yet. Create one above!</td></tr>';
@@ -489,6 +491,7 @@
   function renderExecutionLog() {
     const log = getExecutionLog();
     const tbody = document.getElementById('executionLogBody');
+    if (!tbody) return;
     
     if (log.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">No executions yet</td></tr>';

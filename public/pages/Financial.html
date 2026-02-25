@@ -860,6 +860,7 @@
     // Render revenue chart
     function renderRevenueChart() {
       const chart = document.getElementById('revenueChart');
+      if (!chart) return;
       const months = [];
       const now = new Date();
 
@@ -901,6 +902,7 @@
     // Render payments table
     function renderPaymentsTable() {
       const tbody = document.getElementById('paymentsTableBody');
+      if (!tbody) return;
       
       // Show last 10 payments
       const recentPayments = payments

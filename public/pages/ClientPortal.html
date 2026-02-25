@@ -322,6 +322,7 @@
 
   function renderClientSelector() {
     const container = document.getElementById('clientSelector');
+    if (!container) return;
     
     container.innerHTML = demoClients.map(client => `
       <div onclick="selectClient('${client.id}')" class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 hover:border-blue-500/50 transition-all cursor-pointer group">
@@ -356,6 +357,7 @@
     const saved = totalDebt - remaining;
     const progress = ((saved / totalDebt) * 100).toFixed(1);
     
+    if (!document.getElementById('totalDebt')) return;
     document.getElementById('totalDebt').textContent = '$' + totalDebt.toLocaleString();
     document.getElementById('remainingBalance').textContent = '$' + remaining.toLocaleString();
     document.getElementById('amountSaved').textContent = '$' + saved.toLocaleString();
@@ -391,6 +393,7 @@
     ];
     
     const tbody = document.getElementById('paymentHistoryBody');
+    if (!tbody) return;
     
     tbody.innerHTML = payments.map(p => `
       <tr class="border-b border-slate-700/30">
@@ -414,6 +417,7 @@
     ];
     
     const grid = document.getElementById('documentsGrid');
+    if (!grid) return;
     
     grid.innerHTML = documents.map(doc => `
       <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 hover:border-blue-500/50 transition-all cursor-pointer">
@@ -443,6 +447,7 @@
     ];
     
     const container = document.getElementById('messagesList');
+    if (!container) return;
     
     container.innerHTML = messages.map(msg => `
       <div class="flex ${msg.fromClient ? 'justify-end' : 'justify-start'}">

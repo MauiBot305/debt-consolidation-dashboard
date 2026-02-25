@@ -289,6 +289,7 @@
   function populateAgentFilter() {
     const agents = window.DebtDB ? window.DebtDB.getAgents() : [];
     const select = document.getElementById('filterAgent');
+    if (!select) return; // Guard against SPA race condition
     
     select.innerHTML = '<option value="">All Agents</option>' + 
       agents.map(agent => `<option value="${agent.id}">${agent.name}</option>`).join('');
@@ -378,6 +379,7 @@
 
   function renderTable() {
     const tbody = document.getElementById('callTableBody');
+    if (!tbody) return; // Guard against SPA race condition
     const start = (currentPage - 1) * perPage;
     const end = start + perPage;
     const page = filteredCalls.slice(start, end);

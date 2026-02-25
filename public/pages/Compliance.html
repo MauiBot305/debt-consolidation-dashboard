@@ -1049,6 +1049,7 @@
 
     function renderLicenseGrid() {
       const grid = document.getElementById('licenseGrid');
+      if (!grid) return; // Guard against SPA race condition
       const licenses = window.DebtDB.getLicenses();
       
       grid.innerHTML = US_STATES.map(state => {
@@ -1069,6 +1070,7 @@
 
     function renderChecklist() {
       const container = document.getElementById('checklistContainer');
+      if (!container) return;
       const checklist = window.DebtDB.getComplianceChecklist();
       
       container.innerHTML = COMPLIANCE_CHECKLIST.map(cat => {
@@ -1094,6 +1096,7 @@
 
     function renderTCPATable() {
       const tbody = document.getElementById('tcpaTableBody');
+      if (!tbody) return;
       
       tbody.innerHTML = tcpaConsents.map(consent => {
         const statusClass = consent.status === 'verified' ? 'verified' : 'pending';
@@ -1116,6 +1119,7 @@
 
     function renderDNCList() {
       const list = document.getElementById('dncList');
+      if (!list) return;
       const dncNumbers = window.DebtDB.getDNCList();
       
       document.getElementById('dncCount').textContent = dncNumbers.length;
@@ -1130,6 +1134,7 @@
 
     function renderAuditLog() {
       const log = document.getElementById('auditLog');
+      if (!log) return;
       const entries = window.DebtDB.getAuditLog().slice(0, 20);
       
       log.innerHTML = entries.map(entry => {
@@ -1162,6 +1167,7 @@
       
       // Update gauge
       const gauge = document.getElementById('gaugeCircle');
+      if (!gauge) return;
       gauge.style.setProperty('--score-percent', percentage + '%');
       document.getElementById('gaugeValue').textContent = percentage + '%';
       
