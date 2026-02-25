@@ -1,910 +1,436 @@
-<!-- Functionality verified by Agent 3 -->
-<div class="ai-coach-container" style="padding: 24px; max-width: 1600px; margin: 0 auto;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Sales Coach</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght:400;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950">
+<div class="ai-coach-page p-6 max-w-7xl mx-auto">
   <!-- Header -->
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
-    <div>
-      <h1 style="font-size: 32px; font-weight: 700; color: #fff; margin: 0 0 8px 0; font-family: 'Orbitron', monospace; text-transform: uppercase; letter-spacing: 2px;">
-        <i data-lucide="brain-circuit" style="width: 32px; height: 32px; color: #06B6D4; vertical-align: middle; margin-right: 12px;"></i>
-        AI Sales Coach
-      </h1>
-      <p style="color: #94a3b8; margin: 0; font-size: 14px;">Analyze calls, practice scenarios, and improve your close rate</p>
-    </div>
-    <div style="display: flex; gap: 16px;">
-      <button id="practiceModeBtn" style="padding: 12px 24px; background: linear-gradient(135deg, #3B82F6, #06B6D4); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);">
-        <i data-lucide="gamepad-2" style="width: 18px; height: 18px;"></i>
-        Practice Mode
-      </button>
-    </div>
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-white mb-1">🧠 AI Sales Coach</h1>
+    <p class="text-gray-400">Analyze calls, practice scenarios, and improve your close rate</p>
   </div>
 
-  <!-- Main Grid -->
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <!-- Left Column -->
-    <div style="display: flex; flex-direction: column; gap: 24px;">
-      <!-- Call Selector -->
-      <div style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 20px;">
-        <h3 style="margin: 0 0 16px 0; color: #fff; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-          <i data-lucide="phone" style="width: 18px; height: 18px; color: #3B82F6;"></i>
-          Select Call to Analyze
-          <span style="margin-left: auto; padding: 4px 12px; background: rgba(34,197,94,0.2); color: #22C55E; border-radius: 20px; font-size: 12px; animation: pulse 2s infinite;">● Live</span>
-        </h3>
-        <select id="callSelector" style="width: 100%; padding: 12px 16px; background: rgba(10,15,26,0.8); border: 1px solid rgba(148,163,184,0.2); border-radius: 10px; color: #fff; font-size: 14px; cursor: pointer;">
-          <option value="">Choose a recent call...</option>
-        </select>
+  <!-- Tab Navigation -->
+  <div class="flex gap-2 mb-6 border-b border-slate-700">
+    <button onclick="switchTab('chat')" id="tabChat" class="px-6 py-3 text-white font-semibold border-b-2 border-blue-500">Chat</button>
+    <button onclick="switchTab('callAnalysis')" id="tabCallAnalysis" class="px-6 py-3 text-gray-400 hover:text-white">Call Analysis</button>
+    <button onclick="switchTab('scripts')" id="tabScripts" class="px-6 py-3 text-gray-400 hover:text-white">Scripts</button>
+    <button onclick="switchTab('objections')" id="tabObjections" class="px-6 py-3 text-gray-400 hover:text-white">Objections</button>
+    <button onclick="switchTab('training')" id="tabTraining" class="px-6 py-3 text-gray-400 hover:text-white">Training</button>
+  </div>
+
+  <!-- Chat Tab -->
+  <div id="chatTab" class="tab-content">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+          <i data-lucide="message-circle" class="w-5 h-5 text-blue-400"></i>
+          AI Coach Chat
+        </h2>
       </div>
-
-      <!-- 9-Tier Scoring Panel -->
-      <div id="scoringPanel" style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 24px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <h3 style="margin: 0; color: #fff; font-size: 18px; font-weight: 600;">Performance Analysis</h3>
-          <div id="overallGrade" style="width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; font-family: 'Orbitron', monospace; box-shadow: 0 0 30px currentColor; animation: glowPulse 3s ease-in-out infinite;">-</div>
+      <div class="p-6">
+        <div id="chatMessages" class="h-96 overflow-y-auto mb-4 space-y-3 bg-slate-900/50 rounded-xl p-4">
+          <div class="text-gray-500 text-center text-sm">Ask me anything about sales, objection handling, or scripts!</div>
         </div>
-
-        <div id="tierScores" style="display: flex; flex-direction: column; gap: 16px;">
-          <!-- Tier 1: Goal Achievement -->
-          <div class="tier-item" data-tier="1">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span style="color: #e2e8f0; font-size: 13px; font-weight: 500;">1. Goal Achievement</span>
-              <span class="tier-score" style="color: #3B82F6; font-weight: 700; font-family: 'Orbitron', monospace;">-</span>
-            </div>
-            <div style="height: 8px; background: rgba(10,15,26,0.8); border-radius: 4px; overflow: hidden;">
-              <div class="tier-bar" style="height: 100%; width: 0%; border-radius: 4px; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%);"></div>
-            </div>
-            <p class="tier-feedback" style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8; font-style: italic;"></p>
-          </div>
-
-          <!-- Tier 2: Qualification Quality -->
-          <div class="tier-item" data-tier="2">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span style="color: #e2e8f0; font-size: 13px; font-weight: 500;">2. Qualification Quality</span>
-              <span class="tier-score" style="color: #3B82F6; font-weight: 700; font-family: 'Orbitron', monospace;">-</span>
-            </div>
-            <div style="height: 8px; background: rgba(10,15,26,0.8); border-radius: 4px; overflow: hidden;">
-              <div class="tier-bar" style="height: 100%; width: 0%; border-radius: 4px; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%);"></div>
-            </div>
-            <p class="tier-feedback" style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8; font-style: italic;"></p>
-          </div>
-
-          <!-- Tier 3: Empathy & Rapport -->
-          <div class="tier-item" data-tier="3">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span style="color: #e2e8f0; font-size: 13px; font-weight: 500;">3. Empathy & Rapport</span>
-              <span class="tier-score" style="color: #3B82F6; font-weight: 700; font-family: 'Orbitron', monospace;">-</span>
-            </div>
-            <div style="height: 8px; background: rgba(10,15,26,0.8); border-radius: 4px; overflow: hidden;">
-              <div class="tier-bar" style="height: 100%; width: 0%; border-radius: 4px; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%);"></div>
-            </div>
-            <p class="tier-feedback" style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8; font-style: italic;"></p>
-          </div>
-
-          <!-- Tier 4: Objection Handling -->
-          <div class="tier-item" data-tier="4">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span style="color: #e2e8f0; font-size: 13px; font-weight: 500;">4. Objection Handling</span>
-              <span class="tier-score" style="color: #3B82F6; font-weight: 700; font-family: 'Orbitron', monospace;">-</span>
-            </div>
-            <div style="height: 8px; background: rgba(10,15,26,0.8); border-radius: 4px; overflow: hidden;">
-              <div class="tier-bar" style="height: 100%; width: 0%; border-radius: 4px; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%);"></div>
-            </div>
-            <p class="tier-feedback" style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8; font-style: italic;"></p>
-          </div>
-
-          <!-- Tier 5: Compliance Adherence -->
-          <div class="tier-item" data-tier="5">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span style="color: #e2e8f0; font-size: 13px; font-weight: 500;">5. Compliance Adherence</span>
-              <span class="tier-score" style="color: #3B82F6; font-weight: 700; font-family: 'Orbitron', monospace;">-</span>
-            </div>
-            <div style="height: 8px; background: rgba(10,15,26,0.8); border-radius: 4px; overflow: hidden;">
-              <div class="tier-bar" style="height: 100%; width: 0%; border-radius: 4px; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%);"></div>
-            </div>
-            <p class="tier-feedback" style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8; font-style: italic;"></p>
-          </div>
-
-          <!-- Tier 6: Program Explanation -->
-          <div class="tier-item" data-tier="6">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span style="color: #e2e8f0; font-size: 13px; font-weight: 500;">6. Program Explanation</span>
-              <span class="tier-score" style="color: #3B82F6; font-weight: 700; font-family: 'Orbitron', monospace;">-</span>
-            </div>
-            <div style="height: 8px; background: rgba(10,15,26,0.8); border-radius: 4px; overflow: hidden;">
-              <div class="tier-bar" style="height: 100%; width: 0%; border-radius: 4px; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%);"></div>
-            </div>
-            <p class="tier-feedback" style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8; font-style: italic;"></p>
-          </div>
-
-          <!-- Tier 7: Urgency Creation -->
-          <div class="tier-item" data-tier="7">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span style="color: #e2e8f0; font-size: 13px; font-weight: 500;">7. Urgency Creation</span>
-              <span class="tier-score" style="color: #3B82F6; font-weight: 700; font-family: 'Orbitron', monospace;">-</span>
-            </div>
-            <div style="height: 8px; background: rgba(10,15,26,0.8); border-radius: 4px; overflow: hidden;">
-              <div class="tier-bar" style="height: 100%; width: 0%; border-radius: 4px; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%);"></div>
-            </div>
-            <p class="tier-feedback" style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8; font-style: italic;"></p>
-          </div>
-
-          <!-- Tier 8: Closing Technique -->
-          <div class="tier-item" data-tier="8">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span style="color: #e2e8f0; font-size: 13px; font-weight: 500;">8. Closing Technique</span>
-              <span class="tier-score" style="color: #3B82F6; font-weight: 700; font-family: 'Orbitron', monospace;">-</span>
-            </div>
-            <div style="height: 8px; background: rgba(10,15,26,0.8); border-radius: 4px; overflow: hidden;">
-              <div class="tier-bar" style="height: 100%; width: 0%; border-radius: 4px; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%);"></div>
-            </div>
-            <p class="tier-feedback" style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8; font-style: italic;"></p>
-          </div>
-
-          <!-- Tier 9: Follow-up Planning -->
-          <div class="tier-item" data-tier="9">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span style="color: #e2e8f0; font-size: 13px; font-weight: 500;">9. Follow-up Planning</span>
-              <span class="tier-score" style="color: #3B82F6; font-weight: 700; font-family: 'Orbitron', monospace;">-</span>
-            </div>
-            <div style="height: 8px; background: rgba(10,15,26,0.8); border-radius: 4px; overflow: hidden;">
-              <div class="tier-bar" style="height: 100%; width: 0%; border-radius: 4px; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%);"></div>
-            </div>
-            <p class="tier-feedback" style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8; font-style: italic;"></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- AI Recommendations -->
-      <div style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 24px;">
-        <h3 style="margin: 0 0 16px 0; color: #fff; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-          <i data-lucide="lightbulb" style="width: 20px; height: 20px; color: #eab308;"></i>
-          AI Coaching Recommendations
-        </h3>
-        <div id="recommendationsList" style="display: flex; flex-direction: column; gap: 12px;">
-          <!-- Dynamically populated -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Column -->
-    <div style="display: flex; flex-direction: column; gap: 24px;">
-      <!-- Call Transcript Viewer -->
-      <div style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 20px; flex: 1; min-height: 400px;">
-        <h3 style="margin: 0 0 16px 0; color: #fff; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-          <i data-lucide="message-square" style="width: 20px; height: 20px; color: #3B82F6;"></i>
-          Call Transcript
-        </h3>
-        <div id="transcriptViewer" style="max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 8px;">
-          <!-- Color-coded speaker bubbles -->
-        </div>
-      </div>
-
-      <!-- Performance Trend -->
-      <div style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 20px;">
-        <h3 style="margin: 0 0 16px 0; color: #fff; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-          <i data-lucide="trending-up" style="width: 20px; height: 20px; color: #22C55E;"></i>
-          Performance Trend (Last 20 Calls)
-        </h3>
-        <div id="performanceSparkline" style="height: 100px; position: relative;">
-          <!-- Animated sparkline SVG -->
+        <div class="flex gap-2">
+          <input type="text" id="chatInput" placeholder="Ask a question..." class="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-blue-500" onkeypress="if(event.key==='Enter') sendChatMessage()">
+          <button onclick="sendChatMessage()" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl hover:shadow-lg transition-all">
+            <i data-lucide="send" class="w-5 h-5"></i>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Practice Mode Modal -->
-  <div id="practiceModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: rgba(15,23,42,0.95); border: 1px solid rgba(59,130,246,0.3); border-radius: 24px; padding: 32px; max-width: 900px; width: 90%; max-height: 80vh; overflow-y: auto;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h2 style="margin: 0; color: #fff; font-size: 24px; font-weight: 700;">Training Practice Mode</h2>
-        <button id="closePracticeModal" style="background: none; border: none; color: #94a3b8; cursor: pointer; padding: 8px; border-radius: 8px; transition: all 0.2s;">
-          <i data-lucide="x" style="width: 24px; height: 24px;"></i>
-        </button>
+  <!-- Call Analysis Tab -->
+  <div id="callAnalysisTab" class="tab-content" style="display: none;">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+        <div class="p-6 border-b border-slate-700/50">
+          <h2 class="text-xl font-semibold text-white">Select Call</h2>
+        </div>
+        <div class="p-6">
+          <select id="callSelector" onchange="analyzeCall()" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-blue-500">
+            <option value="">Choose a recent call...</option>
+          </select>
+        </div>
       </div>
       
-      <p style="color: #94a3b8; margin-bottom: 24px;">Select a client persona to practice your sales skills</p>
-      
-      <div id="personaGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
-        <!-- Persona cards -->
-      </div>
-
-      <!-- Scenario Display -->
-      <div id="scenarioDisplay" style="display: none; margin-top: 24px; padding: 24px; background: rgba(10,15,26,0.8); border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);">
-        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
-          <div id="scenarioAvatar" style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #3B82F6, #06B6D4); display: flex; align-items: center; justify-content: center; font-size: 24px;">👤</div>
+      <div id="callScoring" class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden" style="display: none;">
+        <div class="p-6 border-b border-slate-700/50">
+          <h2 class="text-xl font-semibold text-white">Performance Analysis</h2>
+        </div>
+        <div class="p-6 space-y-4">
           <div>
-            <h4 id="scenarioName" style="margin: 0; color: #fff; font-size: 18px;"></h4>
-            <span id="scenarioDifficulty" style="padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;"></span>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-400 text-sm">Energy</span>
+              <span id="scoreEnergy" class="text-blue-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">0/10</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div id="barEnergy" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-400 text-sm">Objection Handling</span>
+              <span id="scoreObjection" class="text-blue-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">0/10</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div id="barObjection" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-400 text-sm">Closing</span>
+              <span id="scoreClosing" class="text-blue-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">0/10</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div id="barClosing" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-400 text-sm">Rapport</span>
+              <span id="scoreRapport" class="text-blue-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">0/10</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div id="barRapport" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-400 text-sm">Compliance</span>
+              <span id="scoreCompliance" class="text-blue-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">0/10</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div id="barCompliance" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full transition-all" style="width: 0%"></div>
+            </div>
           </div>
         </div>
-        <p id="scenarioDescription" style="color: #e2e8f0; line-height: 1.6; margin-bottom: 16px;"></p>
-        <div id="scenarioGuidance" style="background: rgba(59,130,246,0.1); border-left: 4px solid #3B82F6; padding: 16px; border-radius: 8px;">
-          <h5 style="margin: 0 0 8px 0; color: #3B82F6; font-size: 13px;">💡 Coaching Guidance</h5>
-          <p id="scenarioTips" style="margin: 0; color: #94a3b8; font-size: 13px; line-height: 1.5;"></p>
+      </div>
+    </div>
+    
+    <div id="callTranscript" class="mt-6 bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden" style="display: none;">
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white">Call Transcript</h2>
+      </div>
+      <div class="p-6">
+        <div id="transcriptContent" class="space-y-2 max-h-96 overflow-y-auto">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts Tab -->
+  <div id="scriptsTab" class="tab-content" style="display: none;">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white">Script Generator</h2>
+      </div>
+      <div class="p-6">
+        <div class="mb-4">
+          <label class="block text-gray-400 text-sm mb-2">Select Scenario</label>
+          <select id="scenarioSelector" onchange="loadScript()" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-blue-500">
+            <option value="">Choose a scenario...</option>
+            <option value="cold_call">Cold Call</option>
+            <option value="follow_up">Follow Up</option>
+            <option value="objection">Handling Objections</option>
+            <option value="closing">Closing the Deal</option>
+            <option value="referral">Asking for Referrals</option>
+          </select>
+        </div>
+        
+        <div id="scriptContent" class="bg-slate-900/50 rounded-xl p-6 min-h-64">
+          <div class="text-gray-500 text-center">Select a scenario to view the script</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Objections Tab -->
+  <div id="objectionsTab" class="tab-content" style="display: none;">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white">Objection Handler</h2>
+      </div>
+      <div class="p-6">
+        <div class="mb-6">
+          <input type="text" id="objectionSearch" placeholder="Search objections..." class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-blue-500" oninput="filterObjections()">
+        </div>
+        
+        <div id="objectionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Training Tab -->
+  <div id="trainingTab" class="tab-content" style="display: none;">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+        <div class="p-6 border-b border-slate-700/50">
+          <h2 class="text-xl font-semibold text-white">Training Modules</h2>
+        </div>
+        <div class="p-6">
+          <div id="trainingModules" class="space-y-3">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+        <div class="p-6 border-b border-slate-700/50">
+          <h2 class="text-xl font-semibold text-white">Performance Tips</h2>
+        </div>
+        <div class="p-6">
+          <div id="performanceTips" class="space-y-3">
+            <!-- Populated by JS -->
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<style>
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-@keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 20px currentColor; }
-  50% { box-shadow: 0 0 40px currentColor, 0 0 60px currentColor; }
-}
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes drawLine {
-  to { stroke-dashoffset: 0; }
-}
-
-.tier-item {
-  animation: slideIn 0.3s ease forwards;
-  animation-delay: calc(var(--tier-index) * 0.1s);
-  opacity: 0;
-}
-
-#transcriptViewer::-webkit-scrollbar {
-  width: 6px;
-}
-
-#transcriptViewer::-webkit-scrollbar-track {
-  background: rgba(10,15,26,0.5);
-  border-radius: 3px;
-}
-
-#transcriptViewer::-webkit-scrollbar-thumb {
-  background: rgba(59,130,246,0.5);
-  border-radius: 3px;
-}
-
-.speaker-bubble {
-  animation: slideIn 0.3s ease forwards;
-  max-width: 85%;
-  padding: 12px 16px;
-  border-radius: 16px;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.speaker-agent {
-  background: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(6,182,212,0.2));
-  border: 1px solid rgba(59,130,246,0.3);
-  color: #e2e8f0;
-  align-self: flex-end;
-  border-bottom-right-radius: 4px;
-}
-
-.speaker-client {
-  background: rgba(30,41,59,0.8);
-  border: 1px solid rgba(148,163,184,0.2);
-  color: #e2e8f0;
-  align-self: flex-start;
-  border-bottom-left-radius: 4px;
-}
-
-.speaker-system {
-  background: rgba(234,179,8,0.1);
-  border: 1px solid rgba(234,179,8,0.3);
-  color: #eab308;
-  align-self: center;
-  font-style: italic;
-  font-size: 11px;
-  max-width: 60%;
-  text-align: center;
-}
-
-.recommendation-card {
-  background: rgba(10,15,26,0.6);
-  border: 1px solid rgba(59,130,246,0.2);
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  transition: all 0.3s ease;
-  animation: slideIn 0.4s ease forwards;
-}
-
-.recommendation-card:hover {
-  border-color: rgba(59,130,246,0.5);
-  transform: translateX(4px);
-}
-
-.recommendation-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.recommendation-high { background: rgba(239,68,68,0.2); color: #ef4444; }
-.recommendation-medium { background: rgba(234,179,8,0.2); color: #eab308; }
-.recommendation-low { background: rgba(34,197,94,0.2); color: #22c55e; }
-
-.persona-card {
-  background: rgba(10,15,26,0.8);
-  border: 1px solid rgba(59,130,246,0.2);
-  border-radius: 16px;
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.persona-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(59,130,246,0.5);
-  box-shadow: 0 10px 40px rgba(59,130,246,0.2);
-}
-
-.persona-card.selected {
-  border-color: #3B82F6;
-  background: rgba(59,130,246,0.1);
-}
-
-.persona-avatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  margin: 0 auto 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  background: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(6,182,212,0.2));
-  border: 3px solid rgba(59,130,246,0.5);
-}
-
-.persona-name {
-  color: #fff;
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-.difficulty-badge {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.difficulty-easy { background: rgba(34,197,94,0.2); color: #22C55E; }
-.difficulty-medium { background: rgba(234,179,8,0.2); color: #eab308; }
-.difficulty-hard { background: rgba(239,68,68,0.2); color: #ef4444; }
-
-.sparkline-path {
-  fill: none;
-  stroke: #3B82F6;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: drawLine 2s ease forwards;
-}
-
-.sparkline-area {
-  fill: url(#sparklineGradient);
-  opacity: 0.3;
-}
-
-.sparkline-dot {
-  fill: #06B6D4;
-  stroke: #fff;
-  stroke-width: 2;
-  r: 4;
-  transition: all 0.3s ease;
-}
-
-.sparkline-dot:hover {
-  r: 6;
-  fill: #22C55E;
-}
-</style>
-
 <script>
-(function() {
-  // Training Personas Data
-  const personas = [
-    {
-      id: 'overwhelmed-parent',
-      name: 'Overwhelmed Single Parent',
-      avatar: '👩‍👧',
-      difficulty: 'medium',
-      description: 'Sarah is a single mother of two, working two jobs, with $45K in credit card debt. She\'s stressed, barely sleeping, and desperate for help but worried about scams. She needs empathy and reassurance.',
-      tips: 'Acknowledge her stress immediately. Use phrases like "I hear you" and "You\'re not alone." Focus on the peace of mind she\'ll get. Be patient with objections about cost.'
-    },
-    {
-      id: 'skeptical-pro',
-      name: 'Skeptical Professional',
-      avatar: '👔',
-      difficulty: 'hard',
-      description: 'Michael is a software engineer with $60K in debt. He\'s researched extensively, knows industry terminology, and will challenge you with technical questions. Needs data and proof.',
-      tips: 'Lead with statistics and case studies. Don\'t use fluff or sales language. He\'ll respect you more if you admit when you don\'t know something. Show him the math.'
-    },
-    {
-      id: 'aggressive-caller',
-      name: 'Aggressive Creditor-Caller',
-      avatar: '😤',
-      difficulty: 'hard',
-      description: 'Robert has been harassed by debt collectors daily. He\'s angry, defensive, and ready to hang up. He\'s skeptical of everyone and everything after being burned before.',
-      tips: 'Let him vent first without interrupting. Validate his frustration with creditors. Establish trust before pitching. Be direct and confident. Show how you stop the calls.'
-    },
-    {
-      id: 'medical-debt',
-      name: 'Medical Debt Sufferer',
-      avatar: '🏥',
-      difficulty: 'medium',
-      description: 'Jennifer has $80K from an unexpected surgery. She\'s embarrassed, feels it\'s "not her fault," and is overwhelmed by medical billing complexity. She needs education.',
-      tips: 'Remove shame - medical debt is common. Explain that hospitals often settle for less. Walk her through the process step by step. Medical debt has unique negotiation leverage.'
-    },
-    {
-      id: 'student-loans',
-      name: 'Student Loan Drowning',
-      avatar: '🎓',
-      difficulty: 'easy',
-      description: 'David has $35K in student loans plus $20K credit cards. He feels betrayed by the education system. He\'s younger, responsive to tech, wants everything digital.',
-      tips: 'Acknowledge the broken student loan system. Position consolidation as taking control of his financial future. Use app/digital references. He wants speed and convenience.'
-    },
-    {
-      id: 'recently-divorced',
-      name: 'Recently Divorced',
-      avatar: '💔',
-      difficulty: 'medium',
-      description: 'Amanda has $55K debt from the divorce process. She\'s emotionally raw, rebuilding her life, and needs to feel empowered and in control of her finances.',
-      tips: 'Empowerment language is key. "Fresh start," "new chapter," "taking control." She needs to feel like she\'s making progress. Avoid anything that feels like losing more control.'
-    },
-    {
-      id: 'small-business',
-      name: 'Small Business Owner',
-      avatar: '🏪',
-      difficulty: 'hard',
-      description: 'Carlos has $90K in business/personal debt mixed. He\'s proud, independent, and views debt as a business tool gone wrong. He\'s analytical but prideful.',
-      tips: 'Respect his business acumen. Frame it as a strategic business decision to consolidate. Use business terminology. He needs to feel like this is his decision, not something pushed on him.'
-    },
-    {
-      id: 'retired-fixed',
-      name: 'Retired on Fixed Income',
-      avatar: '👴',
-      difficulty: 'medium',
-      description: 'Margaret has $25K debt on Social Security. She\'s worried about leaving debt to her children. She\'s slower to decide, needs repetition, very polite.',
-      tips: 'Speak clearly, avoid jargon. Focus on the legacy aspect - not burdening children. She\'ll want to think about it, so set up the next call before hanging up. Family-focused messaging.'
-    },
-    {
-      id: 'recently-unemployed',
-      name: 'Recently Unemployed',
-      avatar: '😰',
-      difficulty: 'hard',
-      description: 'Tom lost his tech job 3 months ago. He has $50K debt and no income. He\'s panicking, ashamed, and needs immediate relief options. Urgent but fragile mindset.',
-      tips: 'Urgency is real here - emphasize immediate relief. But also be gentle with shame. Explain options for those with reduced income. He needs hope, not pressure.'
-    },
-    {
-      id: 'repeat-caller',
-      name: 'Repeat Caller',
-      avatar: '🔄',
-      difficulty: 'easy',
-      description: 'Lisa called 6 months ago but didn\'t enroll. She\'s back because her situation worsened. She remembers the program and just needs a nudge and updated info.',
-      tips: 'Acknowledge her previous call. Don\'t restart from scratch - build on what she knows. Address why she didn\'t enroll before. Create urgency around waiting longer.'
-    }
-  ];
+  // Toast Function
+  function showToast(msg, type='info') {
+    const toast = document.createElement('div');
+    const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-blue-500' };
+    toast.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
 
-  // Mock Call Data
-  const mockCalls = [
-    {
-      id: 'CALL001',
-      leadName: 'Sarah Mitchell',
-      date: '2026-02-24T10:30:00',
-      duration: 845,
-      enrolled: true,
-      scores: { 1: 10, 2: 8, 3: 9, 4: 7, 5: 10, 6: 8, 7: 6, 8: 9, 9: 8 },
-      transcript: [
-        { speaker: 'agent', text: 'Hi Sarah, this is John from Debt Relief Solutions. How are you doing today?', time: '00:00' },
-        { speaker: 'client', text: 'I\'ve been better, honestly. I\'m really stressed about my bills.', time: '00:08' },
-        { speaker: 'agent', text: 'I completely understand, and I\'m glad you reached out. You\'re not alone in this - we help people in situations like yours every day. Can you tell me a bit about what\'s going on?', time: '00:15' },
-        { speaker: 'system', text: '⚡ Strong empathy opening - acknowledged stress, provided reassurance', time: '00:35' },
-        { speaker: 'client', text: 'I have about $45,000 in credit cards and I\'m barely making minimum payments. I\'m a single mom and I work two jobs.', time: '00:40' },
-        { speaker: 'agent', text: 'That sounds incredibly tough, Sarah. Working two jobs while raising kids is hard enough without debt hanging over you. Let me ask - are those credit cards with Chase, Capital One, or other major banks?', time: '00:55' },
-        { speaker: 'client', text: 'Yes, mostly Chase and Capital One. And some medical debt too.', time: '01:10' },
-        { speaker: 'agent', text: 'Perfect, we work with those creditors all the time. And just to make sure we can help you - what\'s your approximate monthly income after taxes?', time: '01:18' },
-        { speaker: 'client', text: 'Around $4,200. But my minimum payments are eating up almost everything.', time: '01:28' },
-        { speaker: 'system', text: '✓ Debt-to-income ratio: 89% - qualifies for program', time: '01:35' },
-        { speaker: 'agent', text: 'I hear you. Here\'s what we can do - our program typically reduces total debt by 40-60%, and your monthly payment would be around $650 instead of what you\'re paying now. Does that sound like it could help?', time: '01:40' },
-        { speaker: 'client', text: 'That would be amazing, but... I\'ve heard debt settlement can hurt my credit.', time: '02:05' },
-        { speaker: 'system', text: '⚠ Objection raised: Credit impact concern', time: '02:12' },
-        { speaker: 'agent', text: 'That\'s a smart question, Sarah. Yes, there can be a temporary impact, but let me ask you - what\'s your credit score doing right now while you\'re maxed out and barely making minimums?', time: '02:15' },
-        { speaker: 'client', text: 'It\'s already dropped to 580...', time: '02:30' },
-        { speaker: 'agent', text: 'Exactly. The truth is, your credit is already suffering, and staying in this cycle won\'t fix it. Our goal is to get you debt-free in 24-36 months, and then you can rebuild stronger. Would you rather be debt-free in 3 years or still be struggling with minimum payments?', time: '02:35' },
-        { speaker: 'system', text: '✓ Excellent reframing - turned objection into urgency', time: '02:58' },
-        { speaker: 'client', text: 'When you put it that way... I just want this stress to end.', time: '03:05' },
-        { speaker: 'agent', text: 'I know, Sarah. And I can help make that happen. I\'m going to send you an email with your personalized savings estimate, and then we\'ll schedule a 15-minute call to review everything and get you enrolled. What email should I use?', time: '03:12' },
-        { speaker: 'client', text: 'sarah.mitchell@email.com', time: '03:28' },
-        { speaker: 'agent', text: 'Perfect! You\'ll have that email in 2 minutes. I\'m putting you down for tomorrow at 2 PM to go over the details. Sarah, you made a great decision today. I\'ll talk to you then!', time: '03:32' },
-        { speaker: 'system', text: '🎉 ENROLLMENT SECURED - Strong close with clear follow-up', time: '03:45' }
-      ],
-      feedback: {
-        1: 'Enrollment secured - clear value proposition delivered',
-        2: 'Good qualification of debt types and income verification',
-        3: 'Excellent empathy throughout - strong rapport building',
-        4: 'Handled credit objection well with reframing technique',
-        5: 'All required disclosures mentioned appropriately',
-        6: 'Program explained clearly with specific numbers',
-        7: 'Could have created more urgency earlier in the call',
-        8: 'Strong assumptive close with next steps',
-        9: 'Clear follow-up scheduled with specific time'
-      }
-    },
-    {
-      id: 'CALL002',
-      leadName: 'Michael Chen',
-      date: '2026-02-23T14:20:00',
-      duration: 642,
-      enrolled: false,
-      scores: { 1: 3, 2: 9, 3: 5, 4: 4, 5: 10, 6: 9, 7: 5, 8: 2, 9: 6 },
-      transcript: [
-        { speaker: 'agent', text: 'Hi Michael, this is John calling about the debt consolidation inquiry. Got a minute?', time: '00:00' },
-        { speaker: 'client', text: 'Yeah, I have some time. But I\'ve researched a lot of these programs. I know how they work.', time: '00:05' },
-        { speaker: 'agent', text: 'That\'s great, Michael. The more you know, the better. So what\'s your current situation?', time: '00:12' },
-        { speaker: 'client', text: 'I have $32K across Discover and Wells Fargo. My DTI is 48%, which I know is manageable, but I want to see if I can save money.', time: '00:20' },
-        { speaker: 'system', text: '✓ Well-informed prospect - knows terminology', time: '00:35' },
-        { speaker: 'agent', text: 'Absolutely. With $32K, you\'re looking at potential savings of $12-15K. What\'s your monthly income?', time: '00:40' },
-        { speaker: 'client', text: '$5,500 after taxes. Look, I need to know exactly what your fees are and what the timeline looks like. I\'ve seen programs that take 4-5 years.', time: '00:48' },
-        { speaker: 'agent', text: 'Our fee is 15% of enrolled debt, and most programs run 24-36 months. It really depends on your creditors.', time: '01:00' },
-        { speaker: 'client', text: 'I see. And what\'s your success rate? What percentage of people actually complete the program?', time: '01:08' },
-        { speaker: 'agent', text: 'We have a very high success rate. Most of our clients complete and save significant money.', time: '01:15' },
-        { speaker: 'system', text: '❌ Vague answer - prospect needed specific data', time: '01:22' },
-        { speaker: 'client', text: '"Very high" doesn\'t mean anything to me. I need numbers. Also, what happens if a creditor sues me during the program?', time: '01:25' },
-        { speaker: 'agent', text: 'We have legal protection included. You\'d be covered.', time: '01:38' },
-        { speaker: 'client', text: 'Covered how? What specifically does that mean? Do you have attorneys on staff?', time: '01:45' },
-        { speaker: 'agent', text: 'Yes, we work with attorneys. But honestly Michael, you seem like you\'re not ready to commit. Maybe you should think about it more.', time: '01:55' },
-        { speaker: 'system', text: '❌ Gave up too easily - should have addressed concerns', time: '02:05' },
-        { speaker: 'client', text: 'I\'m ready to commit to the right program. You just haven\'t convinced me yours is it. I need more specifics.', time: '02:10' },
-        { speaker: 'agent', text: 'Well, like I said, our program works. If you want to move forward, I can send you the enrollment docs.', time: '02:22' },
-        { speaker: 'client', text: 'I\'ll pass for now. Thanks for the call.', time: '02:35' }
-      ],
-      feedback: {
-        1: 'No enrollment - failed to build sufficient trust',
-        2: 'Excellent qualification - gathered all key data points',
-        3: 'Rapport weak - treated informed prospect as obstacle rather than opportunity',
-        4: 'Poor objection handling - vague responses to specific questions',
-        5: 'Full compliance maintained throughout',
-        6: 'Good program explanation with specific fee structure',
-        7: 'Missed opportunity to create urgency around creditor actions',
-        8: 'Weak closing - essentially gave up on the prospect',
-        9: 'No concrete follow-up plan established'
-      }
-    }
-  ];
+  // Check DebtDB
+  if (!window.DebtDB) {
+    showToast('DebtDB not loaded!', 'error');
+  }
 
-  // AI Recommendations based on weak scores
-  const recommendationTemplates = {
-    empathy: {
-      icon: 'heart',
-      priority: 'high',
-      title: 'Build Stronger Empathy',
-      text: 'Practice active listening phrases like "I hear you" and "That sounds difficult." Connect emotionally before moving to solutions.'
-    },
-    urgency: {
-      icon: 'clock',
-      priority: 'medium',
-      title: 'Create Earlier Urgency',
-      text: 'Introduce time-sensitive elements within the first 5 minutes. Mention creditor escalation risks or limited program availability.'
-    },
-    closing: {
-      icon: 'target',
-      priority: 'high',
-      title: 'Strengthen Your Close',
-      text: 'Use assumptive language: "When we get you enrolled..." instead of "If you decide to enroll." Reduce escape routes.'
-    },
-    objections: {
-      icon: 'shield',
-      priority: 'high',
-      title: 'Master Objection Handling',
-      text: 'Prepare specific responses to common objections. Use the "feel, felt, found" technique. Never get defensive.'
-    },
-    followup: {
-      icon: 'calendar',
-      priority: 'medium',
-      title: 'Lock in Follow-ups',
-      text: 'Always schedule the next touch before ending the call. Send calendar invites immediately. Confirm contact preferences.'
-    }
+  // Tab Switching
+  function switchTab(tab) {
+    ['chat', 'callAnalysis', 'scripts', 'objections', 'training'].forEach(t => {
+      document.getElementById(t + 'Tab').style.display = t === tab ? 'block' : 'none';
+      const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (btn) {
+        btn.className = t === tab 
+          ? 'px-6 py-3 text-white font-semibold border-b-2 border-blue-500'
+          : 'px-6 py-3 text-gray-400 hover:text-white';
+      }
+    });
+  }
+
+  // Chat Functionality
+  const chatResponses = {
+    'how do i handle objections': 'Great question! The key to handling objections is to listen carefully, acknowledge the concern, and reframe it. For example: "I understand cost is a concern. Let me show you how this actually saves you money in the long run..."',
+    'what is a good opening': 'A strong opening builds rapport quickly: "Hi [Name], this is [Your Name] from Debt Relief Pro. I know you\'re busy, so I\'ll be brief. We help people like you reduce their debt by up to 50%. Do you have 2 minutes?"',
+    'how do i close': 'The assumptive close works best: "Great! Let\'s get your enrollment started. I have an opening at 2pm today or 10am tomorrow — which works better for you?"',
+    default: 'That\'s a great question! Based on your performance data, I recommend focusing on active listening and asking open-ended questions. Would you like specific examples?'
   };
 
-  // Initialize
-  function init() {
-    populateCallSelector();
-    setupEventListeners();
-    renderSparkline();
+  function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    if (!message) return;
+    
+    const container = document.getElementById('chatMessages');
+    
+    // User message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'flex justify-end';
+    userMsg.innerHTML = `<div class="bg-blue-500 text-white px-4 py-2 rounded-xl max-w-md">${message}</div>`;
+    container.appendChild(userMsg);
+    
+    input.value = '';
+    
+    // AI response (simulated)
+    setTimeout(() => {
+      const aiMsg = document.createElement('div');
+      aiMsg.className = 'flex justify-start';
+      const response = chatResponses[message.toLowerCase()] || chatResponses.default;
+      aiMsg.innerHTML = `<div class="bg-slate-700 text-white px-4 py-2 rounded-xl max-w-md">${response}</div>`;
+      container.appendChild(aiMsg);
+      container.scrollTop = container.scrollHeight;
+    }, 500);
   }
 
+  // Call Analysis
   function populateCallSelector() {
+    const calls = window.DebtDB.getCalls();
     const selector = document.getElementById('callSelector');
-    mockCalls.forEach(call => {
-      const option = document.createElement('option');
-      option.value = call.id;
-      option.textContent = `${call.leadName} - ${new Date(call.date).toLocaleDateString()} (${Math.floor(call.duration/60)}:${String(call.duration%60).padStart(2,'0')})`;
-      selector.appendChild(option);
-    });
+    
+    selector.innerHTML = '<option value="">Choose a recent call...</option>' + 
+      calls.slice(0, 20).map(call => `
+        <option value="${call.id}">${call.leadName || 'Unknown'} - ${new Date(call.createdAt).toLocaleDateString()} (${call.disposition})</option>
+      `).join('');
   }
 
-  function setupEventListeners() {
-    document.getElementById('callSelector').addEventListener('change', handleCallSelect);
-    document.getElementById('practiceModeBtn').addEventListener('click', openPracticeModal);
-    document.getElementById('closePracticeModal').addEventListener('click', closePracticeModal);
-  }
-
-  function handleCallSelect(e) {
-    const callId = e.target.value;
+  function analyzeCall() {
+    const callId = document.getElementById('callSelector').value;
     if (!callId) {
-      resetDisplay();
+      document.getElementById('callScoring').style.display = 'none';
+      document.getElementById('callTranscript').style.display = 'none';
       return;
     }
-    const call = mockCalls.find(c => c.id === callId);
-    if (call) {
-      displayCallAnalysis(call);
+    
+    const call = window.DebtDB.getCalls().find(c => c.id === callId);
+    if (!call) return;
+    
+    // Simulated scoring
+    const scores = {
+      energy: Math.floor(Math.random() * 4) + 7,
+      objection: Math.floor(Math.random() * 3) + 6,
+      closing: Math.floor(Math.random() * 4) + 6,
+      rapport: Math.floor(Math.random() * 3) + 7,
+      compliance: Math.floor(Math.random() * 2) + 8
+    };
+    
+    document.getElementById('scoreEnergy').textContent = scores.energy + '/10';
+    document.getElementById('barEnergy').style.width = (scores.energy * 10) + '%';
+    
+    document.getElementById('scoreObjection').textContent = scores.objection + '/10';
+    document.getElementById('barObjection').style.width = (scores.objection * 10) + '%';
+    
+    document.getElementById('scoreClosing').textContent = scores.closing + '/10';
+    document.getElementById('barClosing').style.width = (scores.closing * 10) + '%';
+    
+    document.getElementById('scoreRapport').textContent = scores.rapport + '/10';
+    document.getElementById('barRapport').style.width = (scores.rapport * 10) + '%';
+    
+    document.getElementById('scoreCompliance').textContent = scores.compliance + '/10';
+    document.getElementById('barCompliance').style.width = (scores.compliance * 10) + '%';
+    
+    document.getElementById('callScoring').style.display = 'block';
+    
+    // Transcript
+    const transcript = call.transcript || "Agent: Hello, this is calling from Debt Relief Pro.\nLead: Hi.\nAgent: How are you today?\nLead: Good, what's this about?\nAgent: We help people reduce their debt by up to 50%. Do you currently have any credit card debt?\nLead: Yeah, about $15,000.\nAgent: Great, we can definitely help with that. When would be a good time to discuss your options?";
+    
+    document.getElementById('transcriptContent').innerHTML = transcript.split('\n').map(line => {
+      const isAgent = line.startsWith('Agent:');
+      return `<div class="${isAgent ? 'text-blue-400' : 'text-gray-300'}">${line}</div>`;
+    }).join('');
+    
+    document.getElementById('callTranscript').style.display = 'block';
+  }
+
+  // Scripts
+  const scripts = {
+    cold_call: `<strong>Opening:</strong><br>"Hi [Name], this is [Your Name] from Debt Relief Pro. I know you're busy, so I'll be brief."<br><br><strong>Hook:</strong><br>"We help people reduce their debt by up to 50% without filing for bankruptcy. Do you currently have any credit card or personal loan debt?"<br><br><strong>Qualification:</strong><br>"How much total debt are you carrying right now?"<br>"What are your monthly minimum payments?"<br>"Have you missed any payments recently?"`,
+    
+    follow_up: `<strong>Opening:</strong><br>"Hi [Name], it's [Your Name] from Debt Relief Pro. We spoke last [day/week] about your debt situation."<br><br><strong>Callback:</strong><br>"You mentioned you had about $[amount] in debt. I wanted to follow up because we just had a spot open up in our program."<br><br><strong>Close:</strong><br>"Are you ready to get started today?"`,
+    
+    objection: `<strong>"I need to think about it"</strong><br>"I totally understand. What specifically would you like to think about? Is it the timeline, the cost, or something else?"<br><br><strong>"It's too expensive"</strong><br>"I hear you. But consider this — you're currently paying [X] per month in minimums. Our program gets you debt-free in 2-4 years instead of 20+. Which saves you money?"<br><br><strong>"I need to talk to my spouse"</strong><br>"Absolutely! Can we set up a quick call with both of you? I'm free today at 2pm or tomorrow at 10am."`,
+    
+    closing: `<strong>Assumptive Close:</strong><br>"Great! Let's get your enrollment started. I have an opening at 2pm today or 10am tomorrow — which works better?"<br><br><strong>Alternative Close:</strong><br>"Would you prefer to start with the 3-year plan or the 4-year plan?"<br><br><strong>Urgency Close:</strong><br>"We only have 2 spots left this month, and I'd hate for you to miss out. Can we lock you in today?"`,
+    
+    referral: `<strong>After Success:</strong><br>"I'm so glad we could help you! Do you know anyone else struggling with debt who might benefit from our program?"<br><br><strong>Specific Ask:</strong><br>"Who in your family or friend circle has mentioned credit card debt to you?"<br><br><strong>Incentive:</strong><br>"For every referral who enrolls, we'll give you a $50 Visa gift card as a thank you."`
+  };
+
+  function loadScript() {
+    const scenario = document.getElementById('scenarioSelector').value;
+    const content = document.getElementById('scriptContent');
+    
+    if (!scenario) {
+      content.innerHTML = '<div class="text-gray-500 text-center">Select a scenario to view the script</div>';
+      return;
+    }
+    
+    content.innerHTML = `<div class="text-white space-y-4">${scripts[scenario]}</div>`;
+  }
+
+  // Objections
+  const objections = [
+    { objection: "I need to think about it", rebuttal: "I understand. What specifically would you like to think about?" },
+    { objection: "It's too expensive", rebuttal: "Compared to 20 years of minimum payments, this actually saves you money." },
+    { objection: "I need to talk to my spouse", rebuttal: "Great! Can we schedule a call with both of you?" },
+    { objection: "I'm not interested", rebuttal: "I totally get it. Can I ask — are you not interested in reducing your debt, or just not sure about our program?" },
+    { objection: "Call me back later", rebuttal: "Absolutely. What day/time works best for you?" },
+    { objection: "I'll do it myself", rebuttal: "That's admirable! Have you tried negotiating with creditors before?" }
+  ];
+
+  function filterObjections() {
+    renderObjections();
+  }
+
+  function renderObjections() {
+    const search = document.getElementById('objectionSearch').value.toLowerCase();
+    const filtered = objections.filter(o => 
+      o.objection.toLowerCase().includes(search) || 
+      o.rebuttal.toLowerCase().includes(search)
+    );
+    
+    const grid = document.getElementById('objectionsGrid');
+    grid.innerHTML = filtered.map(o => `
+      <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 hover:border-blue-500/50 transition-all">
+        <div class="text-red-400 font-semibold mb-2">❌ "${o.objection}"</div>
+        <div class="text-emerald-400 text-sm">✅ ${o.rebuttal}</div>
+      </div>
+    `).join('');
+  }
+
+  // Training
+  const modules = [
+    { name: 'Sales Fundamentals', completed: true },
+    { name: 'Objection Handling', completed: true },
+    { name: 'Closing Techniques', completed: false },
+    { name: 'Compliance & Legal', completed: false },
+    { name: 'Product Knowledge', completed: true },
+  ];
+
+  function renderTraining() {
+    const container = document.getElementById('trainingModules');
+    container.innerHTML = modules.map(m => `
+      <div class="flex items-center justify-between p-3 rounded-lg ${m.completed ? 'bg-emerald-500/20 border border-emerald-500/50' : 'bg-slate-800/50 border border-slate-700'}">
+        <span class="text-white">${m.name}</span>
+        <input type="checkbox" ${m.completed ? 'checked' : ''} onchange="toggleModule(this, '${m.name}')" class="w-5 h-5">
+      </div>
+    `).join('');
+  }
+
+  function toggleModule(checkbox, name) {
+    const module = modules.find(m => m.name === name);
+    if (module) {
+      module.completed = checkbox.checked;
+      renderTraining();
+      showToast(checkbox.checked ? 'Module completed!' : 'Module unmarked', 'success');
     }
   }
 
-  function resetDisplay() {
-    document.getElementById('tierScores').querySelectorAll('.tier-score').forEach(el => el.textContent = '-');
-    document.getElementById('tierScores').querySelectorAll('.tier-bar').forEach(el => el.style.width = '0%');
-    document.getElementById('tierScores').querySelectorAll('.tier-feedback').forEach(el => el.textContent = '');
-    document.getElementById('overallGrade').textContent = '-';
-    document.getElementById('overallGrade').style.color = '#94a3b8';
-    document.getElementById('overallGrade').style.border = '3px solid #94a3b8';
-    document.getElementById('transcriptViewer').innerHTML = '';
-    document.getElementById('recommendationsList').innerHTML = '';
+  // Performance Tips
+  function renderPerformanceTips() {
+    const tips = [
+      "🎯 Your objection handling score is 6/10. Try the 'Feel, Felt, Found' technique.",
+      "📈 You close 30% better in the morning. Schedule more calls before noon.",
+      "🗣️ You talk 70% of the time. Aim for 50/50 or less.",
+      "⏱️ Your average call is 8 minutes. Top performers average 12 minutes."
+    ];
+    
+    document.getElementById('performanceTips').innerHTML = tips.map(tip => `
+      <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 text-white text-sm">
+        ${tip}
+      </div>
+    `).join('');
   }
 
-  function displayCallAnalysis(call) {
-    // Animate tier scores
-    let totalScore = 0;
-    Object.entries(call.scores).forEach(([tier, score]) => {
-      totalScore += score;
-      const tierEl = document.querySelector(`.tier-item[data-tier="${tier}"]`);
-      if (tierEl) {
-        const scoreEl = tierEl.querySelector('.tier-score');
-        const barEl = tierEl.querySelector('.tier-bar');
-        const feedbackEl = tierEl.querySelector('.tier-feedback');
-        
-        scoreEl.textContent = score + '/10';
-        scoreEl.style.color = score >= 8 ? '#22C55E' : score >= 6 ? '#eab308' : '#ef4444';
-        
-        setTimeout(() => {
-          barEl.style.width = (score * 10) + '%';
-        }, tier * 100);
-        
-        feedbackEl.textContent = call.feedback[tier];
-      }
-    });
-
-    // Calculate and display overall grade
-    const avgScore = totalScore / 9;
-    const grade = avgScore >= 9 ? 'A+' : avgScore >= 8.5 ? 'A' : avgScore >= 8 ? 'A-' : 
-                  avgScore >= 7.5 ? 'B+' : avgScore >= 7 ? 'B' : avgScore >= 6.5 ? 'B-' :
-                  avgScore >= 6 ? 'C+' : avgScore >= 5.5 ? 'C' : avgScore >= 5 ? 'C-' : 
-                  avgScore >= 4 ? 'D' : 'F';
-    
-    const gradeEl = document.getElementById('overallGrade');
-    gradeEl.textContent = grade;
-    const gradeColor = avgScore >= 8 ? '#22C55E' : avgScore >= 6 ? '#eab308' : '#ef4444';
-    gradeEl.style.color = gradeColor;
-    gradeEl.style.border = `3px solid ${gradeColor}`;
-
-    // Display transcript
-    displayTranscript(call.transcript);
-
-    // Generate recommendations
-    generateRecommendations(call.scores);
-  }
-
-  function displayTranscript(transcript) {
-    const container = document.getElementById('transcriptViewer');
-    container.innerHTML = '';
-    
-    transcript.forEach((line, index) => {
-      const bubble = document.createElement('div');
-      bubble.className = `speaker-bubble speaker-${line.speaker}`;
-      bubble.style.animationDelay = (index * 0.05) + 's';
-      
-      const speakerLabel = line.speaker === 'agent' ? 'You' : line.speaker === 'client' ? 'Client' : 'AI Coach';
-      const labelColor = line.speaker === 'agent' ? '#3B82F6' : line.speaker === 'client' ? '#94a3b8' : '#eab308';
-      
-      bubble.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-          <span style="font-size: 11px; font-weight: 600; color: ${labelColor};">${speakerLabel}</span>
-          <span style="font-size: 10px; color: #64748b;">${line.time}</span>
-        </div>
-        <div>${line.text}</div>
-      `;
-      
-      container.appendChild(bubble);
-    });
-    
-    container.scrollTop = container.scrollHeight;
-  }
-
-  function generateRecommendations(scores) {
-    const container = document.getElementById('recommendationsList');
-    container.innerHTML = '';
-    
-    const weakAreas = [];
-    if (scores[3] < 7) weakAreas.push('empathy');
-    if (scores[7] < 7) weakAreas.push('urgency');
-    if (scores[8] < 7) weakAreas.push('closing');
-    if (scores[4] < 7) weakAreas.push('objections');
-    if (scores[9] < 7) weakAreas.push('followup');
-    
-    // Always include at least 3 recommendations
-    const areas = weakAreas.length >= 3 ? weakAreas : ['empathy', 'closing', 'objections'];
-    
-    areas.slice(0, 5).forEach((area, index) => {
-      const rec = recommendationTemplates[area];
-      const card = document.createElement('div');
-      card.className = 'recommendation-card';
-      card.style.animationDelay = (index * 0.1) + 's';
-      
-      card.innerHTML = `
-        <div class="recommendation-icon recommendation-${rec.priority}">
-          <i data-lucide="${rec.icon}" style="width: 20px; height: 20px;"></i>
-        </div>
-        <div style="flex: 1;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-            <span style="color: #fff; font-weight: 600; font-size: 14px;">${rec.title}</span>
-            <span style="padding: 2px 8px; border-radius: 12px; font-size: 10px; text-transform: uppercase; font-weight: 700; ${rec.priority === 'high' ? 'background: rgba(239,68,68,0.2); color: #ef4444;' : 'background: rgba(234,179,8,0.2); color: #eab308;'}">${rec.priority}</span>
-          </div>
-          <p style="margin: 0; color: #94a3b8; font-size: 12px; line-height: 1.5;">${rec.text}</p>
-        </div>
-      `;
-      
-      container.appendChild(card);
-    });
-    
-    if (window.lucide) window.lucide.createIcons();
-  }
-
-  function renderSparkline() {
-    const container = document.getElementById('performanceSparkline');
-    const scores = [6.5, 7.2, 6.8, 7.5, 8.1, 7.8, 8.3, 8.5, 8.2, 8.8, 8.6, 9.1, 8.9, 9.2, 9.0, 9.3, 9.1, 9.4, 9.2, 9.5];
-    
-    const width = container.offsetWidth;
-    const height = 100;
-    const padding = 10;
-    
-    const maxScore = 10;
-    const minScore = 5;
-    const range = maxScore - minScore;
-    
-    const points = scores.map((score, i) => {
-      const x = padding + (i / (scores.length - 1)) * (width - 2 * padding);
-      const y = height - padding - ((score - minScore) / range) * (height - 2 * padding);
-      return `${x},${y}`;
-    }).join(' ');
-    
-    const areaPoints = `${padding},${height - padding} ${points} ${width - padding},${height - padding}`;
-    
-    container.innerHTML = `
-      <svg width="100%" height="100%" style="overflow: visible;">
-        <defs>
-          <linearGradient id="sparklineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:0.5" />
-            <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:0" />
-          </linearGradient>
-        </defs>
-        <polygon class="sparkline-area" points="${areaPoints}" />
-        <polyline class="sparkline-path" points="${points}" />
-        ${scores.map((score, i) => {
-          const x = padding + (i / (scores.length - 1)) * (width - 2 * padding);
-          const y = height - padding - ((score - minScore) / range) * (height - 2 * padding);
-          return `<circle class="sparkline-dot" cx="${x}" cy="${y}" data-score="${score}" data-call="${i + 1}" />`;
-        }).join('')}
-      </svg>
-    `;
-    
-    // Add tooltip behavior
-    container.querySelectorAll('.sparkline-dot').forEach(dot => {
-      dot.addEventListener('mouseenter', (e) => {
-        const score = e.target.dataset.score;
-        const call = e.target.dataset.call;
-        showTooltip(e, `Call ${call}: ${score}/10`);
-      });
-      dot.addEventListener('mouseleave', hideTooltip);
-    });
-  }
-
-  function showTooltip(e, text) {
-    const tooltip = document.createElement('div');
-    tooltip.id = 'sparkline-tooltip';
-    tooltip.style.cssText = `
-      position: fixed;
-      background: rgba(15,23,42,0.95);
-      border: 1px solid rgba(59,130,246,0.5);
-      border-radius: 8px;
-      padding: 8px 12px;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      z-index: 1000;
-      pointer-events: none;
-      transform: translate(-50%, -120%);
-    `;
-    tooltip.textContent = text;
-    document.body.appendChild(tooltip);
-    
-    const rect = e.target.getBoundingClientRect();
-    tooltip.style.left = rect.left + rect.width/2 + 'px';
-    tooltip.style.top = rect.top + 'px';
-  }
-
-  function hideTooltip() {
-    const tooltip = document.getElementById('sparkline-tooltip');
-    if (tooltip) tooltip.remove();
-  }
-
-  function openPracticeModal() {
-    document.getElementById('practiceModal').style.display = 'flex';
-    renderPersonas();
-  }
-
-  function closePracticeModal() {
-    document.getElementById('practiceModal').style.display = 'none';
-    document.getElementById('scenarioDisplay').style.display = 'none';
-  }
-
-  function renderPersonas() {
-    const grid = document.getElementById('personaGrid');
-    grid.innerHTML = '';
-    
-    personas.forEach((persona, index) => {
-      const card = document.createElement('div');
-      card.className = 'persona-card';
-      card.style.animationDelay = (index * 0.05) + 's';
-      card.innerHTML = `
-        <div class="persona-avatar">${persona.avatar}</div>
-        <div class="persona-name">${persona.name}</div>
-        <span class="difficulty-badge difficulty-${persona.difficulty}">${persona.difficulty.toUpperCase()}</span>
-      `;
-      card.addEventListener('click', () => selectPersona(persona, card));
-      grid.appendChild(card);
-    });
-  }
-
-  function selectPersona(persona, cardElement) {
-    document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('selected'));
-    cardElement.classList.add('selected');
-    
-    const display = document.getElementById('scenarioDisplay');
-    document.getElementById('scenarioName').textContent = persona.name;
-    document.getElementById('scenarioAvatar').textContent = persona.avatar;
-    document.getElementById('scenarioDifficulty').textContent = persona.difficulty.toUpperCase();
-    document.getElementById('scenarioDifficulty').className = `difficulty-badge difficulty-${persona.difficulty}`;
-    document.getElementById('scenarioDescription').textContent = persona.description;
-    document.getElementById('scenarioTips').textContent = persona.tips;
-    
-    display.style.display = 'block';
-    display.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  // Close modal on outside click
-  document.getElementById('practiceModal').addEventListener('click', (e) => {
-    if (e.target.id === 'practiceModal') closePracticeModal();
-  });
-
-  // Run init
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
+  // Initialize
+  populateCallSelector();
+  renderObjections();
+  renderTraining();
+  renderPerformanceTips();
+  lucide.createIcons();
 </script>
+</body>
+</html>

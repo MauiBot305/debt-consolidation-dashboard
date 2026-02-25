@@ -1,1281 +1,455 @@
-<!-- Data Import - Enterprise Import Wizard -->
-<div class="space-y-6">
-  <!-- Page Header -->
-  <div class="flex items-center justify-between mb-8 fade-in-up stagger-1">
-    <div>
-      <h1 class="text-3xl font-bold text-white mb-2 font-orbitron">Data Import Center</h1>
-      <p class="text-gray-400">Import your entire CRM and database with zero data loss</p>
-    </div>
-    <div class="flex gap-3">
-      <button onclick="viewImportHistory()" class="btn text-white px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600">
-        <i data-lucide="history" class="w-4 h-4 inline mr-2"></i>
-        Import History
-      </button>
-      <button onclick="resetWizard()" class="btn text-white px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700">
-        <i data-lucide="x-circle" class="w-4 h-4 inline mr-2"></i>
-        Start Over
-      </button>
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Import</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght:400;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-slate-950">
+<div class="data-import-page p-6 max-w-6xl mx-auto">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-white mb-1">📥 Data Import</h1>
+    <p class="text-gray-400">Import leads and cases from CSV files</p>
   </div>
 
-  <!-- Wizard Progress -->
-  <div class="glass-card rounded-2xl p-6 fade-in-up stagger-2">
-    <div class="flex items-center justify-between mb-6">
-      <div class="wizard-step active" data-step="1">
-        <div class="wizard-step-circle">1</div>
-        <div class="wizard-step-label">Upload</div>
+  <!-- Step Wizard -->
+  <div class="flex items-center justify-center mb-8">
+    <div class="flex items-center">
+      <div id="step1Indicator" class="flex items-center">
+        <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">1</div>
+        <div class="ml-2 text-white font-semibold">Upload</div>
       </div>
-      <div class="wizard-connector"></div>
-      <div class="wizard-step" data-step="2">
-        <div class="wizard-step-circle">2</div>
-        <div class="wizard-step-label">Field Mapping</div>
+      <div class="w-16 h-1 bg-slate-700 mx-4"></div>
+      <div id="step2Indicator" class="flex items-center opacity-50">
+        <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold">2</div>
+        <div class="ml-2 text-gray-400 font-semibold">Map Fields</div>
       </div>
-      <div class="wizard-connector"></div>
-      <div class="wizard-step" data-step="3">
-        <div class="wizard-step-circle">3</div>
-        <div class="wizard-step-label">Validation</div>
+      <div class="w-16 h-1 bg-slate-700 mx-4"></div>
+      <div id="step3Indicator" class="flex items-center opacity-50">
+        <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold">3</div>
+        <div class="ml-2 text-gray-400 font-semibold">Preview</div>
       </div>
-      <div class="wizard-connector"></div>
-      <div class="wizard-step" data-step="4">
-        <div class="wizard-step-circle">4</div>
-        <div class="wizard-step-label">Duplicates</div>
-      </div>
-      <div class="wizard-connector"></div>
-      <div class="wizard-step" data-step="5">
-        <div class="wizard-step-circle">5</div>
-        <div class="wizard-step-label">Import</div>
-      </div>
-      <div class="wizard-connector"></div>
-      <div class="wizard-step" data-step="6">
-        <div class="wizard-step-circle">6</div>
-        <div class="wizard-step-label">Report</div>
+      <div class="w-16 h-1 bg-slate-700 mx-4"></div>
+      <div id="step4Indicator" class="flex items-center opacity-50">
+        <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold">4</div>
+        <div class="ml-2 text-gray-400 font-semibold">Import</div>
       </div>
     </div>
   </div>
 
-  <!-- Wizard Content Container -->
-  <div id="wizardContent" class="fade-in-up stagger-3">
-    <!-- Steps will be rendered here -->
-  </div>
-</div>
-
-<style>
-/* Wizard Progress Styles */
-.wizard-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  position: relative;
-  flex: 0 0 auto;
-}
-
-.wizard-step-circle {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(75, 85, 99, 0.3);
-  border: 2px solid rgba(75, 85, 99, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 18px;
-  color: #9CA3AF;
-  transition: all 0.3s;
-}
-
-.wizard-step.active .wizard-step-circle {
-  background: linear-gradient(135deg, #3B82F6, #06B6D4);
-  border-color: #3B82F6;
-  color: #fff;
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-}
-
-.wizard-step.completed .wizard-step-circle {
-  background: rgba(34, 197, 94, 0.2);
-  border-color: #22C55E;
-  color: #22C55E;
-}
-
-.wizard-step.completed .wizard-step-circle::after {
-  content: '✓';
-  position: absolute;
-  font-size: 24px;
-}
-
-.wizard-step-label {
-  font-size: 13px;
-  color: #9CA3AF;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.wizard-step.active .wizard-step-label {
-  color: #3B82F6;
-}
-
-.wizard-step.completed .wizard-step-label {
-  color: #22C55E;
-}
-
-.wizard-connector {
-  flex: 1;
-  height: 2px;
-  background: rgba(75, 85, 99, 0.3);
-  min-width: 40px;
-}
-
-/* Drag & Drop Zone */
-.drop-zone {
-  border: 3px dashed rgba(59, 130, 246, 0.3);
-  border-radius: 16px;
-  padding: 60px 40px;
-  text-align: center;
-  background: rgba(59, 130, 246, 0.05);
-  transition: all 0.3s;
-  cursor: pointer;
-}
-
-.drop-zone:hover {
-  border-color: rgba(59, 130, 246, 0.6);
-  background: rgba(59, 130, 246, 0.1);
-}
-
-.drop-zone.drag-over {
-  border-color: #3B82F6;
-  background: rgba(59, 130, 246, 0.15);
-  box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
-}
-
-.drop-zone-icon {
-  font-size: 64px;
-  margin-bottom: 20px;
-  color: #3B82F6;
-}
-
-/* Field Mapping Interface */
-.mapping-container {
-  display: grid;
-  grid-template-columns: 1fr 100px 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
-.mapping-column {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(59, 130, 246, 0.1);
-  border-radius: 12px;
-  padding: 20px;
-  min-height: 400px;
-}
-
-.mapping-column h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-}
-
-.field-item {
-  padding: 12px 16px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: 8px;
-  margin-bottom: 8px;
-  cursor: move;
-  transition: all 0.2s;
-}
-
-.field-item:hover {
-  background: rgba(59, 130, 246, 0.2);
-  transform: translateX(4px);
-}
-
-.field-item.required::after {
-  content: '*';
-  color: #EF4444;
-  margin-left: 4px;
-}
-
-.field-item.mapped {
-  background: rgba(34, 197, 94, 0.1);
-  border-color: rgba(34, 197, 94, 0.3);
-}
-
-.mapping-connector-area {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Validation Results */
-.validation-summary {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.validation-stat {
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-}
-
-.validation-stat.success {
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-}
-
-.validation-stat.warning {
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-}
-
-.validation-stat.error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.validation-stat-number {
-  font-size: 32px;
-  font-weight: bold;
-  font-family: 'Orbitron', monospace;
-  margin-bottom: 8px;
-}
-
-.validation-stat.success .validation-stat-number {
-  color: #22C55E;
-}
-
-.validation-stat.warning .validation-stat-number {
-  color: #F59E0B;
-}
-
-.validation-stat.error .validation-stat-number {
-  color: #EF4444;
-}
-
-.validation-stat-label {
-  font-size: 14px;
-  color: #94A3B8;
-}
-
-/* Preview Table */
-.preview-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-}
-
-.preview-table th {
-  background: rgba(59, 130, 246, 0.1);
-  padding: 12px;
-  text-align: left;
-  font-weight: 600;
-  color: #3B82F6;
-  border-bottom: 2px solid rgba(59, 130, 246, 0.3);
-}
-
-.preview-table td {
-  padding: 12px;
-  border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-  color: #E2E8F0;
-}
-
-.preview-table tr:hover {
-  background: rgba(59, 130, 246, 0.05);
-}
-
-.preview-table tr.has-error {
-  background: rgba(239, 68, 68, 0.1);
-}
-
-.preview-table tr.has-warning {
-  background: rgba(245, 158, 11, 0.1);
-}
-
-/* Duplicate Resolution */
-.duplicate-item {
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
-}
-
-.duplicate-comparison {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 16px;
-}
-
-.duplicate-record {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 8px;
-  padding: 16px;
-}
-
-.duplicate-record h4 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #3B82F6;
-  margin-bottom: 12px;
-}
-
-.duplicate-record-field {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-}
-
-.duplicate-record-field:last-child {
-  border-bottom: none;
-}
-
-.duplicate-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.duplicate-actions button {
-  flex: 1;
-}
-
-/* Progress Bar */
-.import-progress {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 24px;
-}
-
-.progress-bar-container {
-  width: 100%;
-  height: 24px;
-  background: rgba(75, 85, 99, 0.3);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-
-.progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #3B82F6, #06B6D4);
-  border-radius: 12px;
-  transition: width 0.3s;
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-}
-
-.progress-stats {
-  display: flex;
-  justify-content: space-between;
-  color: #94A3B8;
-  font-size: 14px;
-}
-
-/* Import Log */
-.import-log {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 12px;
-  padding: 16px;
-  max-height: 300px;
-  overflow-y: auto;
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-}
-
-.import-log-entry {
-  padding: 4px 0;
-  color: #94A3B8;
-}
-
-.import-log-entry.success {
-  color: #22C55E;
-}
-
-.import-log-entry.error {
-  color: #EF4444;
-}
-
-/* File Upload Button */
-.file-upload-btn {
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-}
-
-.file-upload-btn input[type="file"] {
-  position: absolute;
-  left: -9999px;
-}
-
-/* Supported Formats */
-.format-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.format-badge {
-  padding: 6px 12px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: 20px;
-  font-size: 12px;
-  color: #3B82F6;
-  font-weight: 500;
-}
-</style>
-
-<script>
-// Initialize Data Import Engine
-let importEngine;
-let currentStep = 1;
-let uploadedFile = null;
-let parsedData = null;
-let fieldMapping = {};
-let validationResults = [];
-let duplicateRecords = [];
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-  importEngine = new DataImportEngine();
-  renderStep1();
-});
-
-// Render Step 1: Upload
-function renderStep1() {
-  currentStep = 1;
-  updateWizardProgress();
-  
-  const content = `
-    <div class="glass-card rounded-2xl p-8">
-      <h2 class="text-2xl font-bold text-white mb-6 font-orbitron">Step 1: Upload Your Data</h2>
-      
-      <!-- Drag & Drop Zone -->
-      <div id="dropZone" class="drop-zone">
-        <div class="drop-zone-icon">📁</div>
-        <h3 class="text-xl font-bold text-white mb-3">Drag & Drop Your File Here</h3>
-        <p class="text-gray-400 mb-4">or click to browse</p>
-        
-        <div class="file-upload-btn">
-          <label for="fileInput" class="btn btn-primary cursor-pointer">
-            <i data-lucide="upload" class="w-4 h-4 inline mr-2"></i>
-            Choose File
-          </label>
-          <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json,.xml,.vcf,.tsv,.txt" onchange="handleFileSelect(event)">
-        </div>
-        
-        <div class="format-badges">
-          <span class="format-badge">CSV</span>
-          <span class="format-badge">XLSX/XLS</span>
-          <span class="format-badge">JSON</span>
-          <span class="format-badge">XML</span>
-          <span class="format-badge">VCF</span>
-          <span class="format-badge">TSV</span>
-          <span class="format-badge">Google Sheets URL</span>
-        </div>
-        
-        <p class="text-sm text-gray-500 mt-4">Maximum file size: 500MB</p>
-      </div>
-      
-      <!-- File Preview (hidden initially) -->
-      <div id="filePreview" class="mt-6" style="display: none;">
-        <div class="flex items-center justify-between p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-          <div class="flex items-center gap-3">
-            <i data-lucide="file-check" class="w-6 h-6 text-green-500"></i>
-            <div>
-              <div class="font-semibold text-white" id="fileName"></div>
-              <div class="text-sm text-gray-400" id="fileStats"></div>
-            </div>
-          </div>
-          <button onclick="clearFile()" class="btn bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
-            <i data-lucide="x" class="w-4 h-4 inline mr-2"></i>
-            Remove
-          </button>
-        </div>
-        
-        <div class="mt-4">
-          <h4 class="text-sm font-semibold text-white mb-2">Data Preview (First 5 Rows)</h4>
-          <div id="dataPreviewTable" class="overflow-x-auto"></div>
-        </div>
-        
-        <div class="flex justify-end mt-6">
-          <button onclick="proceedToMapping()" class="btn btn-primary">
-            Next: Field Mapping
-            <i data-lucide="arrow-right" class="w-4 h-4 inline ml-2"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
-  
-  document.getElementById('wizardContent').innerHTML = content;
-  lucide.createIcons();
-  
-  // Setup drag & drop
-  const dropZone = document.getElementById('dropZone');
-  
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, preventDefaults, false);
-  });
-  
-  function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-  
-  ['dragenter', 'dragover'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => dropZone.classList.add('drag-over'), false);
-  });
-  
-  ['dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'), false);
-  });
-  
-  dropZone.addEventListener('drop', handleDrop, false);
-  dropZone.addEventListener('click', () => document.getElementById('fileInput').click());
-}
-
-function handleDrop(e) {
-  const dt = e.dataTransfer;
-  const files = dt.files;
-  
-  if (files.length > 0) {
-    handleFile(files[0]);
-  }
-}
-
-function handleFileSelect(e) {
-  const files = e.target.files;
-  if (files.length > 0) {
-    handleFile(files[0]);
-  }
-}
-
-async function handleFile(file) {
-  uploadedFile = file;
-  
-  // Show loading
-  showLoading('Parsing file...');
-  
-  try {
-    const format = importEngine.autoDetect(file);
-    
-    let result;
-    switch(format) {
-      case 'csv':
-        result = await importEngine.parseCSV(file);
-        break;
-      case 'xlsx':
-      case 'xls':
-        result = await importEngine.parseXLSX(file);
-        break;
-      case 'json':
-        result = await importEngine.parseJSON(file);
-        break;
-      case 'xml':
-        result = await importEngine.parseXML(file);
-        break;
-      case 'vcf':
-        result = await importEngine.parseVCF(file);
-        break;
-      case 'tsv':
-        result = await importEngine.parseTSV(file);
-        break;
-      default:
-        throw new Error('Unsupported file format');
-    }
-    
-    parsedData = result;
-    showFilePreview();
-    hideLoading();
-  } catch (err) {
-    hideLoading();
-    showError(`Failed to parse file: ${err.message}`);
-  }
-}
-
-function showFilePreview() {
-  document.getElementById('filePreview').style.display = 'block';
-  document.getElementById('fileName').textContent = uploadedFile.name;
-  document.getElementById('fileStats').textContent = `${parsedData.totalRows.toLocaleString()} rows • ${parsedData.headers.length} columns • ${(uploadedFile.size / 1024 / 1024).toFixed(2)} MB`;
-  
-  // Show preview table
-  let tableHTML = '<table class="preview-table"><thead><tr>';
-  parsedData.headers.forEach(header => {
-    tableHTML += `<th>${header}</th>`;
-  });
-  tableHTML += '</tr></thead><tbody>';
-  
-  parsedData.data.slice(0, 5).forEach(row => {
-    tableHTML += '<tr>';
-    parsedData.headers.forEach(header => {
-      tableHTML += `<td>${row[header] || ''}</td>`;
-    });
-    tableHTML += '</tr>';
-  });
-  
-  tableHTML += '</tbody></table>';
-  document.getElementById('dataPreviewTable').innerHTML = tableHTML;
-}
-
-function clearFile() {
-  uploadedFile = null;
-  parsedData = null;
-  document.getElementById('filePreview').style.display = 'none';
-  document.getElementById('fileInput').value = '';
-}
-
-function proceedToMapping() {
-  renderStep2();
-}
-
-// Render Step 2: Field Mapping
-function renderStep2() {
-  currentStep = 2;
-  updateWizardProgress();
-  
-  // Auto-map fields
-  const autoMapping = importEngine.autoMapFields(parsedData.headers);
-  fieldMapping = autoMapping;
-  
-  const content = `
-    <div class="glass-card rounded-2xl p-8">
-      <h2 class="text-2xl font-bold text-white mb-6 font-orbitron">Step 2: Field Mapping</h2>
-      
-      <div class="mb-6">
-        <label class="text-sm text-gray-400 mb-2 block">Load Mapping Template</label>
-        <select id="templateSelect" onchange="loadTemplate(this.value)" class="w-full bg-gray-800 text-white rounded-lg px-4 py-2 border border-gray-700">
-          <option value="">-- Select Template --</option>
-          ${Object.keys(importEngine.mappingTemplates).map(name => `
-            <option value="${name}">${name}</option>
-          `).join('')}
-        </select>
-      </div>
-      
-      <div class="mapping-container">
-        <!-- Source Fields (from uploaded file) -->
-        <div class="mapping-column">
-          <h3><i data-lucide="file-text" class="w-4 h-4 inline mr-2"></i>Your File Fields</h3>
-          <div id="sourceFields"></div>
-        </div>
-        
-        <!-- Mapping Connectors -->
-        <div class="mapping-connector-area">
-          <i data-lucide="arrow-right" class="w-8 h-8 text-blue-500"></i>
-        </div>
-        
-        <!-- Target Fields (our system) -->
-        <div class="mapping-column">
-          <h3><i data-lucide="database" class="w-4 h-4 inline mr-2"></i>System Fields</h3>
-          <div id="targetFields"></div>
-        </div>
-      </div>
-      
-      <div class="flex justify-between mt-6">
-        <button onclick="renderStep1()" class="btn bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
-          <i data-lucide="arrow-left" class="w-4 h-4 inline mr-2"></i>
-          Back
+  <!-- Step 1: Upload -->
+  <div id="step1" class="step-content">
+    <!-- Templates -->
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6 mb-8">
+      <h2 class="text-xl font-semibold text-white mb-4">Quick Templates</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <button onclick="useTemplate('salesforce')" class="p-4 bg-slate-800/50 border border-slate-700 rounded-xl hover:border-blue-500/50 transition-all text-left">
+          <div class="text-white font-semibold mb-1">Salesforce Export</div>
+          <div class="text-sm text-gray-400">Standard Salesforce lead format</div>
         </button>
-        <div class="flex gap-3">
-          <button onclick="saveCurrentMapping()" class="btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
-            <i data-lucide="save" class="w-4 h-4 inline mr-2"></i>
-            Save as Template
-          </button>
-          <button onclick="proceedToValidation()" class="btn btn-primary">
-            Next: Validation
-            <i data-lucide="arrow-right" class="w-4 h-4 inline ml-2"></i>
-          </button>
-        </div>
+        <button onclick="useTemplate('hubspot')" class="p-4 bg-slate-800/50 border border-slate-700 rounded-xl hover:border-blue-500/50 transition-all text-left">
+          <div class="text-white font-semibold mb-1">HubSpot CRM</div>
+          <div class="text-sm text-gray-400">HubSpot contact export</div>
+        </button>
+        <button onclick="useTemplate('stratusbk')" class="p-4 bg-slate-800/50 border border-slate-700 rounded-xl hover:border-blue-500/50 transition-all text-left">
+          <div class="text-white font-semibold mb-1">StratusBK</div>
+          <div class="text-sm text-gray-400">Bankruptcy software export</div>
+        </button>
       </div>
     </div>
-  `;
-  
-  document.getElementById('wizardContent').innerHTML = content;
-  lucide.createIcons();
-  
-  renderMappingFields();
-}
 
-function renderMappingFields() {
-  const sourceDiv = document.getElementById('sourceFields');
-  const targetDiv = document.getElementById('targetFields');
-  
-  // Render source fields
-  sourceDiv.innerHTML = parsedData.headers.map(header => `
-    <div class="field-item ${fieldMapping[header] ? 'mapped' : ''}" data-source="${header}">
-      <div class="flex justify-between items-center">
-        <span>${header}</span>
-        ${fieldMapping[header] ? `<i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>` : ''}
+    <!-- Upload Area -->
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
+      <div id="dropZone" class="border-2 border-dashed border-slate-600 rounded-xl p-12 text-center hover:border-blue-500 transition-all cursor-pointer">
+        <i data-lucide="upload-cloud" class="w-16 h-16 text-gray-500 mx-auto mb-4"></i>
+        <div class="text-white font-semibold mb-2">Drag & drop your CSV file here</div>
+        <div class="text-gray-400 text-sm mb-4">or click to browse</div>
+        <input type="file" id="fileInput" accept=".csv" class="hidden" onchange="handleFileSelect(event)">
+        <button onclick="document.getElementById('fileInput').click()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+          Select File
+        </button>
       </div>
-      <select onchange="updateMapping('${header}', this.value)" class="w-full mt-2 bg-gray-700 text-white rounded px-2 py-1 text-sm">
-        <option value="">-- Unmapped --</option>
-        ${Object.keys(importEngine.schema).map(field => `
-          <option value="${field}" ${fieldMapping[header] === field ? 'selected' : ''}>
-            ${field}${importEngine.schema[field].required ? ' *' : ''}
-          </option>
-        `).join('')}
-        <option value="custom">+ Create Custom Field</option>
-      </select>
     </div>
-  `).join('');
-  
-  // Render target fields
-  targetDiv.innerHTML = Object.keys(importEngine.schema).map(field => {
-    const config = importEngine.schema[field];
-    const isMapped = Object.values(fieldMapping).includes(field);
-    
-    return `
-      <div class="field-item ${isMapped ? 'mapped' : ''} ${config.required ? 'required' : ''}">
-        <div class="flex justify-between items-center">
-          <span>${field}</span>
-          ${isMapped ? `<i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>` : ''}
-        </div>
-        <div class="text-xs text-gray-400 mt-1">Type: ${config.type}</div>
-      </div>
-    `;
-  }).join('');
-  
-  lucide.createIcons();
-}
+  </div>
 
-function updateMapping(sourceField, targetField) {
-  if (targetField === 'custom') {
-    const customName = prompt('Enter custom field name:');
-    if (customName) {
-      fieldMapping[sourceField] = customName;
-      // Add to schema
-      importEngine.schema[customName] = { required: false, type: 'string', aliases: [] };
-    }
-  } else {
-    fieldMapping[sourceField] = targetField || null;
-  }
-  
-  renderMappingFields();
-}
-
-function loadTemplate(templateName) {
-  if (!templateName) return;
-  
-  const template = importEngine.mappingTemplates[templateName];
-  if (template) {
-    fieldMapping = { ...template };
-    renderMappingFields();
-  }
-}
-
-function saveCurrentMapping() {
-  const name = prompt('Enter template name:');
-  if (name) {
-    importEngine.saveMappingTemplate(name, fieldMapping);
-    showSuccess(`Mapping template "${name}" saved!`);
-  }
-}
-
-function proceedToValidation() {
-  // Validate that required fields are mapped
-  const requiredFields = Object.keys(importEngine.schema).filter(f => importEngine.schema[f].required);
-  const mappedFields = Object.values(fieldMapping).filter(v => v);
-  
-  const missingRequired = requiredFields.filter(f => !mappedFields.includes(f));
-  
-  if (missingRequired.length > 0) {
-    showError(`Please map required fields: ${missingRequired.join(', ')}`);
-    return;
-  }
-  
-  renderStep3();
-}
-
-// Render Step 3: Validation
-function renderStep3() {
-  currentStep = 3;
-  updateWizardProgress();
-  
-  showLoading('Validating data...');
-  
-  // Validate all rows
-  validationResults = parsedData.data.map(row => 
-    importEngine.validateRow(row, fieldMapping)
-  );
-  
-  hideLoading();
-  
-  const validCount = validationResults.filter(r => r.valid && r.warnings.length === 0).length;
-  const warningCount = validationResults.filter(r => r.valid && r.warnings.length > 0).length;
-  const errorCount = validationResults.filter(r => !r.valid).length;
-  
-  const content = `
-    <div class="glass-card rounded-2xl p-8">
-      <h2 class="text-2xl font-bold text-white mb-6 font-orbitron">Step 3: Validation & Preview</h2>
+  <!-- Step 2: Map Fields -->
+  <div id="step2" class="step-content" style="display: none;">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
+      <h2 class="text-xl font-semibold text-white mb-6">Map CSV Fields to System Fields</h2>
       
-      <!-- Validation Summary -->
-      <div class="validation-summary">
-        <div class="validation-stat success">
-          <div class="validation-stat-number">${validCount.toLocaleString()}</div>
-          <div class="validation-stat-label">✅ Ready to Import</div>
-        </div>
-        <div class="validation-stat warning">
-          <div class="validation-stat-number">${warningCount.toLocaleString()}</div>
-          <div class="validation-stat-label">⚠️ Warnings</div>
-        </div>
-        <div class="validation-stat error">
-          <div class="validation-stat-number">${errorCount.toLocaleString()}</div>
-          <div class="validation-stat-label">❌ Errors</div>
-        </div>
+      <div id="fieldMappingContainer" class="space-y-3">
+        <!-- Populated by JS -->
       </div>
       
-      ${errorCount > 0 || warningCount > 0 ? `
-        <div class="mb-4">
-          <button onclick="fixAllIssues()" class="btn btn-primary">
-            <i data-lucide="wrench" class="w-4 h-4 inline mr-2"></i>
-            Auto-Fix Common Issues
-          </button>
-        </div>
-      ` : ''}
+      <div class="flex gap-3 mt-6">
+        <button onclick="goToStep(1)" class="px-6 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600">Back</button>
+        <button onclick="goToStep(3)" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Preview -->
+  <div id="step3" class="step-content" style="display: none;">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
+      <h2 class="text-xl font-semibold text-white mb-6">Preview Import Data</h2>
       
-      <!-- Preview Table -->
-      <div class="overflow-x-auto">
-        <table class="preview-table">
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full text-sm">
           <thead>
-            <tr>
-              <th>#</th>
-              <th>Status</th>
-              ${Object.values(fieldMapping).filter(f => f).map(field => `<th>${field}</th>`).join('')}
-              <th>Issues</th>
+            <tr class="border-b border-slate-700">
+              <th class="text-left p-2 text-gray-400 font-medium">Name</th>
+              <th class="text-left p-2 text-gray-400 font-medium">Email</th>
+              <th class="text-left p-2 text-gray-400 font-medium">Phone</th>
+              <th class="text-left p-2 text-gray-400 font-medium">Debt Amount</th>
+              <th class="text-left p-2 text-gray-400 font-medium">Source</th>
             </tr>
           </thead>
-          <tbody>
-            ${validationResults.slice(0, 50).map((result, index) => {
-              const rowClass = !result.valid ? 'has-error' : result.warnings.length > 0 ? 'has-warning' : '';
-              const statusIcon = !result.valid ? '❌' : result.warnings.length > 0 ? '⚠️' : '✅';
-              
-              return `
-                <tr class="${rowClass}">
-                  <td>${index + 1}</td>
-                  <td>${statusIcon}</td>
-                  ${Object.values(fieldMapping).filter(f => f).map(field => 
-                    `<td>${result.data[field] || ''}</td>`
-                  ).join('')}
-                  <td class="text-xs">
-                    ${[...result.errors, ...result.warnings].join(', ')}
-                  </td>
-                </tr>
-              `;
-            }).join('')}
+          <tbody id="previewTableBody">
+            <!-- Populated by JS -->
           </tbody>
         </table>
       </div>
       
-      ${validationResults.length > 50 ? `
-        <p class="text-sm text-gray-400 mt-2">Showing first 50 of ${validationResults.length} rows</p>
-      ` : ''}
+      <div class="text-gray-400 text-sm mb-6">
+        Showing first 5 rows. <span id="totalRowsPreview" class="text-white font-semibold">0</span> total rows will be imported.
+      </div>
       
-      <div class="flex justify-between mt-6">
-        <button onclick="renderStep2()" class="btn bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
-          <i data-lucide="arrow-left" class="w-4 h-4 inline mr-2"></i>
-          Back to Mapping
-        </button>
-        <button onclick="proceedToDuplicates()" class="btn btn-primary" ${errorCount > 0 ? 'disabled' : ''}>
-          Next: Duplicate Check
-          <i data-lucide="arrow-right" class="w-4 h-4 inline ml-2"></i>
-        </button>
+      <div class="flex gap-3">
+        <button onclick="goToStep(2)" class="px-6 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600">Back</button>
+        <button onclick="goToStep(4)" class="px-6 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600">Import Now</button>
       </div>
     </div>
-  `;
-  
-  document.getElementById('wizardContent').innerHTML = content;
-  lucide.createIcons();
-}
+  </div>
 
-function fixAllIssues() {
-  showLoading('Auto-fixing issues...');
-  
-  // Re-validate with auto-fix
-  validationResults = validationResults.map(result => {
-    // Auto-fix is already applied in validateRow
-    return result;
-  });
-  
-  hideLoading();
-  renderStep3();
-}
-
-function proceedToDuplicates() {
-  // Check for duplicates against existing DB data
-  const validRows = validationResults.filter(r => r.valid).map(r => r.data);
-  duplicateRecords = importEngine.findDuplicates(validRows, DB.leads);
-  
-  if (duplicateRecords.length === 0) {
-    // No duplicates, skip to import
-    renderStep5();
-  } else {
-    renderStep4();
-  }
-}
-
-// Render Step 4: Duplicate Resolution
-function renderStep4() {
-  currentStep = 4;
-  updateWizardProgress();
-  
-  const content = `
-    <div class="glass-card rounded-2xl p-8">
-      <h2 class="text-2xl font-bold text-white mb-6 font-orbitron">Step 4: Duplicate Resolution</h2>
-      
-      <div class="mb-6">
-        <div class="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-          <p class="text-yellow-500">
-            <i data-lucide="alert-triangle" class="w-5 h-5 inline mr-2"></i>
-            Found ${duplicateRecords.length} potential duplicate(s) in your database
-          </p>
-        </div>
+  <!-- Step 4: Import Complete -->
+  <div id="step4" class="step-content" style="display: none;">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6 text-center">
+      <div class="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-6">
+        <i data-lucide="check-circle" class="w-12 h-12 text-emerald-400"></i>
       </div>
       
-      <div id="duplicateList">
-        ${duplicateRecords.map((dup, index) => `
-          <div class="duplicate-item">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-white font-semibold">
-                Duplicate #${index + 1} 
-                <span class="text-sm text-gray-400">(Match: ${dup.matchType})</span>
-              </h3>
-              <label class="flex items-center gap-2 text-sm text-gray-400">
-                <input type="checkbox" id="applyToAll${index}" class="rounded">
-                Apply to all duplicates
-              </label>
-            </div>
-            
-            <div class="duplicate-comparison">
-              <div class="duplicate-record">
-                <h4>📋 Existing Record</h4>
-                ${Object.keys(dup.existingRow).map(key => `
-                  <div class="duplicate-record-field">
-                    <span class="text-gray-400">${key}:</span>
-                    <span class="text-white">${dup.existingRow[key] || '-'}</span>
-                  </div>
-                `).join('')}
-              </div>
-              
-              <div class="duplicate-record">
-                <h4>📥 Incoming Record</h4>
-                ${Object.keys(dup.newRow).map(key => `
-                  <div class="duplicate-record-field">
-                    <span class="text-gray-400">${key}:</span>
-                    <span class="text-white">${dup.newRow[key] || '-'}</span>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-            
-            <div class="duplicate-actions">
-              <button onclick="resolveDuplicate(${index}, 'skip')" class="btn bg-gray-700 hover:bg-gray-600 text-white">
-                Skip
-              </button>
-              <button onclick="resolveDuplicate(${index}, 'overwrite')" class="btn bg-orange-600 hover:bg-orange-700 text-white">
-                Overwrite
-              </button>
-              <button onclick="resolveDuplicate(${index}, 'merge')" class="btn bg-blue-600 hover:bg-blue-700 text-white">
-                Merge
-              </button>
-              <button onclick="resolveDuplicate(${index}, 'create')" class="btn bg-green-600 hover:bg-green-700 text-white">
-                Create New
-              </button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
+      <h2 class="text-2xl font-semibold text-white mb-2">Import Complete!</h2>
+      <p class="text-gray-400 mb-6"><span id="importedCount" class="text-white font-semibold">0</span> records successfully imported</p>
       
-      <div class="flex justify-between mt-6">
-        <button onclick="renderStep3()" class="btn bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
-          <i data-lucide="arrow-left" class="w-4 h-4 inline mr-2"></i>
-          Back
-        </button>
-        <button onclick="renderStep5()" class="btn btn-primary">
-          Next: Import
-          <i data-lucide="arrow-right" class="w-4 h-4 inline ml-2"></i>
-        </button>
-      </div>
+      <button onclick="resetImport()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+        Import Another File
+      </button>
     </div>
-  `;
-  
-  document.getElementById('wizardContent').innerHTML = content;
-  lucide.createIcons();
-}
+  </div>
 
-function resolveDuplicate(index, action) {
-  duplicateRecords[index].resolution = action;
-  
-  // Check if "apply to all" is checked
-  const applyToAll = document.getElementById(`applyToAll${index}`).checked;
-  if (applyToAll) {
-    duplicateRecords.forEach(dup => {
-      dup.resolution = action;
-    });
-    showSuccess(`Applied "${action}" to all duplicates`);
-  } else {
-    showSuccess(`Duplicate #${index + 1} marked as "${action}"`);
-  }
-}
-
-// Render Step 5: Import Execution
-function renderStep5() {
-  currentStep = 5;
-  updateWizardProgress();
-  
-  const content = `
-    <div class="glass-card rounded-2xl p-8">
-      <h2 class="text-2xl font-bold text-white mb-6 font-orbitron">Step 5: Import Execution</h2>
-      
-      <div class="import-progress">
-        <h3 class="text-white font-semibold mb-4">Import Progress</h3>
-        <div class="progress-bar-container">
-          <div id="progressBar" class="progress-bar" style="width: 0%"></div>
-        </div>
-        <div class="progress-stats">
-          <span id="progressText">Preparing import...</span>
-          <span id="progressPercentage">0%</span>
-        </div>
-      </div>
-      
-      <div class="import-log" id="importLog">
-        <div class="import-log-entry">Import log will appear here...</div>
-      </div>
-      
-      <div class="flex justify-end mt-6">
-        <button id="startImportBtn" onclick="startImport()" class="btn btn-primary">
-          <i data-lucide="play" class="w-4 h-4 inline mr-2"></i>
-          Start Import
-        </button>
-      </div>
+  <!-- Import History -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mt-8">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-xl font-semibold text-white">Import History</h2>
     </div>
-  `;
-  
-  document.getElementById('wizardContent').innerHTML = content;
-  lucide.createIcons();
-}
-
-async function startImport() {
-  document.getElementById('startImportBtn').disabled = true;
-  
-  const validRows = validationResults.filter(r => r.valid).map(r => r.data);
-  const logDiv = document.getElementById('importLog');
-  
-  function addLog(message, type = 'info') {
-    const entry = document.createElement('div');
-    entry.className = `import-log-entry ${type}`;
-    entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-    logDiv.appendChild(entry);
-    logDiv.scrollTop = logDiv.scrollHeight;
-  }
-  
-  function updateProgress(progress) {
-    document.getElementById('progressBar').style.width = `${progress.percentage}%`;
-    document.getElementById('progressPercentage').textContent = `${progress.percentage}%`;
-    document.getElementById('progressText').textContent = `Processing ${progress.processed} of ${progress.total} rows`;
-    
-    addLog(`Processed batch: ${progress.processed}/${progress.total}`, 'success');
-  }
-  
-  try {
-    addLog('Starting import...');
-    addLog(`Total rows to import: ${validRows.length}`);
-    
-    const results = await importEngine.importBatch(validRows, 100, updateProgress);
-    
-    addLog('Import completed!', 'success');
-    addLog(`✅ Imported: ${results.imported}`, 'success');
-    addLog(`⚠️ Skipped: ${results.skipped}`);
-    addLog(`❌ Failed: ${results.failed}`, results.failed > 0 ? 'error' : 'info');
-    
-    // Save import record
-    importEngine.saveImportRecord({
-      id: Date.now(),
-      fileName: uploadedFile.name,
-      date: new Date().toISOString(),
-      totalRows: validRows.length,
-      imported: results.imported,
-      skipped: results.skipped,
-      failed: results.failed,
-      user: 'Current User'
-    });
-    
-    // Move to report
-    setTimeout(() => renderStep6(results), 1000);
-  } catch (err) {
-    addLog(`Import failed: ${err.message}`, 'error');
-  }
-}
-
-// Render Step 6: Import Report
-function renderStep6(results) {
-  currentStep = 6;
-  updateWizardProgress();
-  
-  const content = `
-    <div class="glass-card rounded-2xl p-8">
-      <h2 class="text-2xl font-bold text-white mb-6 font-orbitron">Step 6: Import Report</h2>
-      
-      <div class="text-center mb-8">
-        <div class="text-6xl mb-4">🎉</div>
-        <h3 class="text-2xl font-bold text-white mb-2">Import Completed!</h3>
-        <p class="text-gray-400">Your data has been successfully imported</p>
-      </div>
-      
-      <div class="validation-summary">
-        <div class="validation-stat success">
-          <div class="validation-stat-number">${results.imported.toLocaleString()}</div>
-          <div class="validation-stat-label">✅ Imported</div>
-        </div>
-        <div class="validation-stat warning">
-          <div class="validation-stat-number">${results.skipped.toLocaleString()}</div>
-          <div class="validation-stat-label">⏭️ Skipped</div>
-        </div>
-        <div class="validation-stat error">
-          <div class="validation-stat-number">${results.failed.toLocaleString()}</div>
-          <div class="validation-stat-label">❌ Failed</div>
-        </div>
-      </div>
-      
-      ${results.failed > 0 ? `
-        <div class="mt-6">
-          <button onclick="downloadErrorReport()" class="btn bg-orange-600 hover:bg-orange-700 text-white w-full">
-            <i data-lucide="download" class="w-4 h-4 inline mr-2"></i>
-            Download Error Report (${results.failed} rows)
-          </button>
-        </div>
-      ` : ''}
-      
-      <div class="flex justify-between mt-8 gap-3">
-        <button onclick="resetWizard()" class="btn bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
-          Import Another File
-        </button>
-        <button onclick="window.location.href='/?page=CRMLeads'" class="btn btn-primary px-6 py-2">
-          <i data-lucide="users" class="w-4 h-4 inline mr-2"></i>
-          View Imported Data
-        </button>
-      </div>
-    </div>
-  `;
-  
-  document.getElementById('wizardContent').innerHTML = content;
-  lucide.createIcons();
-}
-
-function downloadErrorReport() {
-  // Create CSV of failed rows
-  showSuccess('Error report downloaded!');
-}
-
-// Utility Functions
-function updateWizardProgress() {
-  document.querySelectorAll('.wizard-step').forEach((step, index) => {
-    const stepNum = index + 1;
-    step.classList.remove('active', 'completed');
-    
-    if (stepNum < currentStep) {
-      step.classList.add('completed');
-    } else if (stepNum === currentStep) {
-      step.classList.add('active');
-    }
-  });
-}
-
-function resetWizard() {
-  if (confirm('Are you sure? All current progress will be lost.')) {
-    currentStep = 1;
-    uploadedFile = null;
-    parsedData = null;
-    fieldMapping = {};
-    validationResults = [];
-    duplicateRecords = [];
-    renderStep1();
-  }
-}
-
-function viewImportHistory() {
-  const history = importEngine.getImportHistory();
-  
-  if (history.length === 0) {
-    showInfo('No import history yet');
-    return;
-  }
-  
-  const content = `
-    <div class="glass-card rounded-2xl p-8">
-      <h2 class="text-2xl font-bold text-white mb-6 font-orbitron">Import History</h2>
-      
-      <table class="preview-table">
+    <div class="overflow-x-auto">
+      <table class="w-full">
         <thead>
-          <tr>
-            <th>Date</th>
-            <th>File</th>
-            <th>Total Rows</th>
-            <th>Imported</th>
-            <th>Skipped</th>
-            <th>Failed</th>
-            <th>User</th>
+          <tr class="border-b border-slate-700/50">
+            <th class="text-left p-4 text-gray-400 font-medium">Date</th>
+            <th class="text-left p-4 text-gray-400 font-medium">File Name</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Records</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Type</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Status</th>
           </tr>
         </thead>
-        <tbody>
-          ${history.map(record => `
-            <tr>
-              <td>${new Date(record.date).toLocaleString()}</td>
-              <td>${record.fileName}</td>
-              <td>${record.totalRows.toLocaleString()}</td>
-              <td class="text-green-500">${record.imported.toLocaleString()}</td>
-              <td class="text-yellow-500">${record.skipped.toLocaleString()}</td>
-              <td class="text-red-500">${record.failed.toLocaleString()}</td>
-              <td>${record.user}</td>
-            </tr>
-          `).join('')}
+        <tbody id="importHistoryBody">
+          <!-- Populated by JS -->
         </tbody>
       </table>
-      
-      <div class="flex justify-end mt-6">
-        <button onclick="renderStep1()" class="btn btn-primary">
-          Close
-        </button>
-      </div>
     </div>
-  `;
+  </div>
+</div>
+
+<script>
+  // Toast Function
+  function showToast(msg, type='info') {
+    const toast = document.createElement('div');
+    const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-blue-500' };
+    toast.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // Check DebtDB
+  if (!window.DebtDB) {
+    showToast('DebtDB not loaded!', 'error');
+  }
+
+  let csvData = null;
+  let fieldMapping = {};
+  let importHistory = JSON.parse(localStorage.getItem('import_history') || '[]');
+
+  const systemFields = [
+    { value: '', label: '(Skip)' },
+    { value: 'name', label: 'Name' },
+    { value: 'email', label: 'Email' },
+    { value: 'phone', label: 'Phone' },
+    { value: 'debtAmount', label: 'Debt Amount' },
+    { value: 'source', label: 'Source' },
+    { value: 'status', label: 'Status' },
+    { value: 'notes', label: 'Notes' }
+  ];
+
+  const templates = {
+    salesforce: {
+      'First Name': 'firstName',
+      'Last Name': 'lastName',
+      'Email': 'email',
+      'Phone': 'phone',
+      'Lead Source': 'source'
+    },
+    hubspot: {
+      'Full Name': 'name',
+      'Email Address': 'email',
+      'Phone Number': 'phone',
+      'Company': 'company'
+    },
+    stratusbk: {
+      'Client Name': 'name',
+      'Email': 'email',
+      'Phone': 'phone',
+      'Total Debt': 'debtAmount',
+      'Case Type': 'caseType'
+    }
+  };
+
+  function useTemplate(templateName) {
+    showToast(`${templateName} template selected`, 'info');
+    fieldMapping = templates[templateName] || {};
+  }
+
+  // Drag and drop
+  const dropZone = document.getElementById('dropZone');
   
-  document.getElementById('wizardContent').innerHTML = content;
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-blue-500');
+  });
+  
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-blue-500');
+  });
+  
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-blue-500');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFile(files[0]);
+    }
+  });
+
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+      handleFile(file);
+    }
+  }
+
+  function handleFile(file) {
+    if (!file.name.endsWith('.csv')) {
+      showToast('Please upload a CSV file', 'error');
+      return;
+    }
+    
+    Papa.parse(file, {
+      header: true,
+      complete: function(results) {
+        csvData = results.data.filter(row => Object.values(row).some(val => val)); // Remove empty rows
+        showToast('File uploaded successfully!', 'success');
+        goToStep(2);
+        renderFieldMapping();
+      },
+      error: function(error) {
+        showToast('Error parsing CSV: ' + error.message, 'error');
+      }
+    });
+  }
+
+  function goToStep(stepNumber) {
+    // Hide all steps
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('step' + i).style.display = 'none';
+      const indicator = document.getElementById('step' + i + 'Indicator');
+      if (indicator) {
+        if (i < stepNumber) {
+          indicator.querySelector('div').classList.remove('bg-slate-700', 'bg-blue-500');
+          indicator.querySelector('div').classList.add('bg-emerald-500');
+          indicator.classList.remove('opacity-50');
+        } else if (i === stepNumber) {
+          indicator.querySelector('div').classList.remove('bg-slate-700', 'bg-emerald-500');
+          indicator.querySelector('div').classList.add('bg-blue-500');
+          indicator.classList.remove('opacity-50');
+        } else {
+          indicator.querySelector('div').classList.remove('bg-blue-500', 'bg-emerald-500');
+          indicator.querySelector('div').classList.add('bg-slate-700');
+          indicator.classList.add('opacity-50');
+        }
+      }
+    }
+    
+    // Show current step
+    document.getElementById('step' + stepNumber).style.display = 'block';
+    
+    if (stepNumber === 3) {
+      renderPreview();
+    } else if (stepNumber === 4) {
+      performImport();
+    }
+  }
+
+  function renderFieldMapping() {
+    if (!csvData || csvData.length === 0) return;
+    
+    const csvHeaders = Object.keys(csvData[0]);
+    const container = document.getElementById('fieldMappingContainer');
+    
+    container.innerHTML = csvHeaders.map(header => `
+      <div class="flex items-center gap-4 p-3 bg-slate-800/50 rounded-lg">
+        <div class="flex-1">
+          <div class="text-white font-semibold text-sm">${header}</div>
+          <div class="text-xs text-gray-400">Sample: ${csvData[0][header] || 'N/A'}</div>
+        </div>
+        <i data-lucide="arrow-right" class="w-5 h-5 text-gray-500"></i>
+        <select class="field-map-select px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm" data-csv-field="${header}">
+          ${systemFields.map(field => `<option value="${field.value}">${field.label}</option>`).join('')}
+        </select>
+      </div>
+    `).join('');
+    
+    lucide.createIcons();
+    
+    // Apply template mapping if exists
+    document.querySelectorAll('.field-map-select').forEach(select => {
+      const csvField = select.dataset.csvField;
+      if (fieldMapping[csvField]) {
+        select.value = fieldMapping[csvField];
+      }
+    });
+  }
+
+  function renderPreview() {
+    if (!csvData) return;
+    
+    // Collect mapping
+    document.querySelectorAll('.field-map-select').forEach(select => {
+      const csvField = select.dataset.csvField;
+      const systemField = select.value;
+      if (systemField) {
+        fieldMapping[csvField] = systemField;
+      }
+    });
+    
+    const preview = csvData.slice(0, 5);
+    const tbody = document.getElementById('previewTableBody');
+    
+    tbody.innerHTML = preview.map(row => {
+      const mapped = {};
+      Object.entries(fieldMapping).forEach(([csvField, systemField]) => {
+        mapped[systemField] = row[csvField];
+      });
+      
+      return `
+        <tr class="border-b border-slate-700/30">
+          <td class="p-2 text-gray-300">${mapped.name || mapped.firstName + ' ' + mapped.lastName || 'N/A'}</td>
+          <td class="p-2 text-gray-300">${mapped.email || 'N/A'}</td>
+          <td class="p-2 text-gray-300">${mapped.phone || 'N/A'}</td>
+          <td class="p-2 text-gray-300">${mapped.debtAmount || 'N/A'}</td>
+          <td class="p-2 text-gray-300">${mapped.source || 'N/A'}</td>
+        </tr>
+      `;
+    }).join('');
+    
+    document.getElementById('totalRowsPreview').textContent = csvData.length;
+  }
+
+  function performImport() {
+    if (!csvData) return;
+    
+    let imported = 0;
+    
+    csvData.forEach(row => {
+      const mapped = {};
+      Object.entries(fieldMapping).forEach(([csvField, systemField]) => {
+        mapped[systemField] = row[csvField];
+      });
+      
+      if (mapped.firstName && mapped.lastName) {
+        mapped.name = mapped.firstName + ' ' + mapped.lastName;
+      }
+      
+      // Import as lead
+      if (mapped.name || mapped.email || mapped.phone) {
+        window.DebtDB.addLead(mapped);
+        imported++;
+      }
+    });
+    
+    // Save to history
+    importHistory.unshift({
+      date: new Date().toISOString(),
+      fileName: 'import_' + Date.now() + '.csv',
+      records: imported,
+      type: 'Leads',
+      status: 'Success'
+    });
+    
+    if (importHistory.length > 10) importHistory.length = 10;
+    localStorage.setItem('import_history', JSON.stringify(importHistory));
+    
+    document.getElementById('importedCount').textContent = imported;
+    renderImportHistory();
+    showToast(`${imported} records imported!`, 'success');
+    
+    lucide.createIcons();
+  }
+
+  function renderImportHistory() {
+    const tbody = document.getElementById('importHistoryBody');
+    
+    if (importHistory.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">No imports yet</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = importHistory.map(entry => {
+      const date = new Date(entry.date);
+      const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      return `
+        <tr class="border-b border-slate-700/30">
+          <td class="p-4 text-gray-300">${dateStr}</td>
+          <td class="p-4 text-white">${entry.fileName}</td>
+          <td class="p-4 text-gray-300 font-mono" style="font-family: 'Orbitron', monospace;">${entry.records}</td>
+          <td class="p-4 text-gray-300">${entry.type}</td>
+          <td class="p-4">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold ${entry.status === 'Success' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}">
+              ${entry.status}
+            </span>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function resetImport() {
+    csvData = null;
+    fieldMapping = {};
+    document.getElementById('fileInput').value = '';
+    goToStep(1);
+  }
+
+  // Initialize
+  renderImportHistory();
   lucide.createIcons();
-}
-
-function showLoading(message) {
-  // Show loading indicator (implement as needed)
-  console.log('Loading:', message);
-}
-
-function hideLoading() {
-  // Hide loading indicator
-  console.log('Loading complete');
-}
-
-function showError(message) {
-  alert('Error: ' + message);
-}
-
-function showSuccess(message) {
-  alert('Success: ' + message);
-}
-
-function showInfo(message) {
-  alert(message);
-}
 </script>
+</body>
+</html>

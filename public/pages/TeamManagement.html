@@ -1,1035 +1,389 @@
-<!-- Functionality verified by Agent 3 -->
-<!-- Team Management Page -->
-<div class="space-y-6">
-  <!-- Page Header -->
-  <div class="flex items-center justify-between">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght:400;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950">
+<div class="team-page p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
     <div>
-      <h1 class="text-3xl font-bold text-white font-orbitron mb-2">Team Management</h1>
-      <p class="text-gray-400">Manage agents, schedules, performance, and training</p>
+      <h1 class="text-3xl font-bold text-white mb-1">👥 Team Management</h1>
+      <p class="text-gray-400">Manage agents, roles, and performance</p>
     </div>
-    <button onclick="TeamManagement.showAddAgentModal()" class="btn btn-primary flex items-center gap-2">
+    <button onclick="openAddAgentModal()" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2">
       <i data-lucide="user-plus" class="w-5 h-5"></i>
-      <span>Add Agent</span>
+      Add Agent
     </button>
   </div>
 
-  <!-- Team Metrics Summary -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-    <div class="kpi-card fade-in-up stagger-1">
-      <div class="flex items-center justify-between mb-2">
-        <span class="text-gray-400 text-sm">Total Agents</span>
+  <!-- Agent Roster -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
         <i data-lucide="users" class="w-5 h-5 text-blue-400"></i>
-      </div>
-      <div class="text-3xl font-bold text-white font-orbitron" id="totalAgents">10</div>
+        Agent Roster
+      </h2>
     </div>
-
-    <div class="kpi-card fade-in-up stagger-2">
-      <div class="flex items-center justify-between mb-2">
-        <span class="text-gray-400 text-sm">Avg Calls/Agent</span>
-        <i data-lucide="phone" class="w-5 h-5 text-cyan-400"></i>
-      </div>
-      <div class="text-3xl font-bold text-white font-orbitron" id="avgCalls">42</div>
-    </div>
-
-    <div class="kpi-card fade-in-up stagger-3">
-      <div class="flex items-center justify-between mb-2">
-        <span class="text-gray-400 text-sm">Avg Enrollments</span>
-        <i data-lucide="target" class="w-5 h-5 text-green-400"></i>
-      </div>
-      <div class="text-3xl font-bold text-white font-orbitron" id="avgEnrollments">7.2</div>
-    </div>
-
-    <div class="kpi-card fade-in-up stagger-4">
-      <div class="flex items-center justify-between mb-2">
-        <span class="text-gray-400 text-sm">Team Revenue</span>
-        <i data-lucide="dollar-sign" class="w-5 h-5 text-emerald-400"></i>
-      </div>
-      <div class="text-3xl font-bold text-white font-orbitron" id="teamRevenue">$485K</div>
-    </div>
-
-    <div class="kpi-card fade-in-up stagger-5">
-      <div class="flex items-center justify-between mb-2">
-        <span class="text-gray-400 text-sm">Top Performer</span>
-        <i data-lucide="trophy" class="w-5 h-5 text-yellow-400"></i>
-      </div>
-      <div class="text-lg font-bold text-white truncate" id="topPerformer">Maria G.</div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-slate-700/50">
+            <th class="text-left p-4 text-gray-400 font-medium">Agent</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Role</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Email</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Phone</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Status</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="agentRosterBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- Tab Navigation -->
-  <div class="glass-card rounded-2xl p-2">
-    <div class="flex flex-wrap gap-2" id="tabNav">
-      <button onclick="TeamManagement.switchTab('roster')" class="tab-btn active flex items-center gap-2 px-4 py-2 rounded-xl transition-all">
-        <i data-lucide="users-2" class="w-4 h-4"></i>
-        <span>Team Roster</span>
-      </button>
-      <button onclick="TeamManagement.switchTab('schedule')" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all">
-        <i data-lucide="calendar" class="w-4 h-4"></i>
-        <span>Scheduling</span>
-      </button>
-      <button onclick="TeamManagement.switchTab('attendance')" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all">
-        <i data-lucide="clock" class="w-4 h-4"></i>
-        <span>Attendance</span>
-      </button>
-      <button onclick="TeamManagement.switchTab('performance')" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all">
-        <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-        <span>Performance</span>
-      </button>
-      <button onclick="TeamManagement.switchTab('training')" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all">
-        <i data-lucide="graduation-cap" class="w-4 h-4"></i>
-        <span>Training</span>
-      </button>
-      <button onclick="TeamManagement.switchTab('onboarding')" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all">
-        <i data-lucide="rocket" class="w-4 h-4"></i>
-        <span>Onboarding</span>
-      </button>
-      <button onclick="TeamManagement.switchTab('activity')" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all">
-        <i data-lucide="activity" class="w-4 h-4"></i>
-        <span>Live Activity</span>
-      </button>
+  <!-- Performance Dashboard -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="bar-chart-3" class="w-5 h-5 text-emerald-400"></i>
+        Performance Dashboard
+      </h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-slate-700/50">
+            <th class="text-left p-4 text-gray-400 font-medium">Agent</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Calls</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Deals</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Revenue</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Conv %</th>
+          </tr>
+        </thead>
+        <tbody id="performanceBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- Tab Content -->
-  <div id="tabContent">
-    <!-- Team Roster Tab -->
-    <div id="rosterTab" class="tab-content active">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="agentRoster">
-        <!-- Agent cards will be rendered here -->
-      </div>
+  <!-- Weekly Schedule -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="calendar" class="w-5 h-5 text-purple-400"></i>
+        Weekly Schedule
+      </h2>
     </div>
-
-    <!-- Scheduling Tab -->
-    <div id="scheduleTab" class="tab-content hidden">
-      <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-xl font-bold text-white font-orbitron">Weekly Schedule</h2>
-          <div class="flex items-center gap-2">
-            <button onclick="TeamManagement.previousWeek()" class="p-2 hover:bg-blue-500/10 rounded-lg transition-colors">
-              <i data-lucide="chevron-left" class="w-5 h-5 text-gray-400"></i>
-            </button>
-            <span class="text-white font-semibold" id="weekLabel">Feb 24 - Mar 2, 2026</span>
-            <button onclick="TeamManagement.nextWeek()" class="p-2 hover:bg-blue-500/10 rounded-lg transition-colors">
-              <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Schedule Grid -->
-        <div class="overflow-x-auto">
-          <div class="min-w-[800px]">
-            <!-- Header -->
-            <div class="grid grid-cols-8 gap-2 mb-2">
-              <div class="text-xs font-semibold text-gray-400 p-2">Time</div>
-              <div class="text-xs font-semibold text-gray-400 p-2 text-center">Mon</div>
-              <div class="text-xs font-semibold text-gray-400 p-2 text-center">Tue</div>
-              <div class="text-xs font-semibold text-gray-400 p-2 text-center">Wed</div>
-              <div class="text-xs font-semibold text-gray-400 p-2 text-center">Thu</div>
-              <div class="text-xs font-semibold text-gray-400 p-2 text-center">Fri</div>
-              <div class="text-xs font-semibold text-gray-400 p-2 text-center">Sat</div>
-              <div class="text-xs font-semibold text-gray-400 p-2 text-center">Sun</div>
-            </div>
-
-            <!-- Time Slots (7AM - 7PM) -->
-            <div id="scheduleGrid" class="space-y-1">
-              <!-- Generated dynamically -->
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="p-6 overflow-x-auto">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr>
+            <th class="text-left p-2 text-gray-400 font-medium border border-slate-700">Agent</th>
+            <th class="text-center p-2 text-gray-400 font-medium border border-slate-700">Mon</th>
+            <th class="text-center p-2 text-gray-400 font-medium border border-slate-700">Tue</th>
+            <th class="text-center p-2 text-gray-400 font-medium border border-slate-700">Wed</th>
+            <th class="text-center p-2 text-gray-400 font-medium border border-slate-700">Thu</th>
+            <th class="text-center p-2 text-gray-400 font-medium border border-slate-700">Fri</th>
+            <th class="text-center p-2 text-gray-400 font-medium border border-slate-700">Sat</th>
+            <th class="text-center p-2 text-gray-400 font-medium border border-slate-700">Sun</th>
+          </tr>
+        </thead>
+        <tbody id="scheduleBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
     </div>
+  </div>
 
-    <!-- Attendance Tab -->
-    <div id="attendanceTab" class="tab-content hidden">
-      <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-xl font-bold text-white font-orbitron">Attendance Log</h2>
-          <input type="date" class="px-4 py-2 bg-[#0a0f1a] border border-gray-800 rounded-xl text-white text-sm focus:border-blue-500 outline-none">
-        </div>
-
-        <!-- Attendance Table -->
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead>
-              <tr class="border-b border-gray-800">
-                <th class="text-left text-xs font-semibold text-gray-400 p-3">Date</th>
-                <th class="text-left text-xs font-semibold text-gray-400 p-3">Agent</th>
-                <th class="text-left text-xs font-semibold text-gray-400 p-3">Clock In</th>
-                <th class="text-left text-xs font-semibold text-gray-400 p-3">Clock Out</th>
-                <th class="text-left text-xs font-semibold text-gray-400 p-3">Total Hours</th>
-                <th class="text-left text-xs font-semibold text-gray-400 p-3">Status</th>
-                <th class="text-left text-xs font-semibold text-gray-400 p-3">Streak</th>
-              </tr>
-            </thead>
-            <tbody id="attendanceTableBody">
-              <!-- Generated dynamically -->
-            </tbody>
-          </table>
-        </div>
-      </div>
+  <!-- Skills & Certifications -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="award" class="w-5 h-5 text-yellow-400"></i>
+        Skills & Certifications
+      </h2>
     </div>
-
-    <!-- Performance Tab -->
-    <div id="performanceTab" class="tab-content hidden">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Create Review -->
-        <div class="glass-card rounded-2xl p-6">
-          <h2 class="text-xl font-bold text-white font-orbitron mb-6">Create Performance Review</h2>
-          
-          <div class="space-y-4">
-            <div>
-              <label class="text-sm text-gray-400 mb-2 block">Select Agent</label>
-              <select id="reviewAgent" class="w-full px-4 py-2 bg-[#0a0f1a] border border-gray-800 rounded-xl text-white focus:border-blue-500 outline-none">
-                <option value="">Choose agent...</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="text-sm text-gray-400 mb-2 block">Review Period</label>
-              <input type="text" value="Feb 2026" class="w-full px-4 py-2 bg-[#0a0f1a] border border-gray-800 rounded-xl text-white focus:border-blue-500 outline-none">
-            </div>
-
-            <div class="space-y-4">
-              <div class="review-category">
-                <label class="text-sm text-white mb-2 flex items-center justify-between">
-                  <span>Call Volume & Quality</span>
-                  <span class="text-blue-400 font-bold" id="callsRating">0</span>
-                </label>
-                <input type="range" min="1" max="10" value="5" class="w-full" oninput="TeamManagement.updateRating('calls', this.value)">
-              </div>
-
-              <div class="review-category">
-                <label class="text-sm text-white mb-2 flex items-center justify-between">
-                  <span>Enrollments & Conversions</span>
-                  <span class="text-blue-400 font-bold" id="enrollmentsRating">0</span>
-                </label>
-                <input type="range" min="1" max="10" value="5" class="w-full" oninput="TeamManagement.updateRating('enrollments', this.value)">
-              </div>
-
-              <div class="review-category">
-                <label class="text-sm text-white mb-2 flex items-center justify-between">
-                  <span>Compliance & Documentation</span>
-                  <span class="text-blue-400 font-bold" id="complianceRating">0</span>
-                </label>
-                <input type="range" min="1" max="10" value="5" class="w-full" oninput="TeamManagement.updateRating('compliance', this.value)">
-              </div>
-
-              <div class="review-category">
-                <label class="text-sm text-white mb-2 flex items-center justify-between">
-                  <span>Teamwork & Communication</span>
-                  <span class="text-blue-400 font-bold" id="teamworkRating">0</span>
-                </label>
-                <input type="range" min="1" max="10" value="5" class="w-full" oninput="TeamManagement.updateRating('teamwork', this.value)">
-              </div>
-
-              <div class="review-category">
-                <label class="text-sm text-white mb-2 flex items-center justify-between">
-                  <span>Attendance & Punctuality</span>
-                  <span class="text-blue-400 font-bold" id="attendanceRating">0</span>
-                </label>
-                <input type="range" min="1" max="10" value="5" class="w-full" oninput="TeamManagement.updateRating('attendance', this.value)">
-              </div>
-            </div>
-
-            <div>
-              <label class="text-sm text-gray-400 mb-2 block">Notes</label>
-              <textarea rows="4" placeholder="Performance notes, areas for improvement, achievements..." class="w-full px-4 py-2 bg-[#0a0f1a] border border-gray-800 rounded-xl text-white placeholder-gray-500 focus:border-blue-500 outline-none resize-none"></textarea>
-            </div>
-
-            <button onclick="TeamManagement.saveReview()" class="btn btn-primary w-full">
-              <span>Save Review</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Recent Reviews -->
-        <div class="glass-card rounded-2xl p-6">
-          <h2 class="text-xl font-bold text-white font-orbitron mb-6">Recent Reviews</h2>
-          <div id="recentReviews" class="space-y-4">
-            <!-- Generated dynamically -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Training Tab -->
-    <div id="trainingTab" class="tab-content hidden">
-      <div class="glass-card rounded-2xl p-6">
-        <h2 class="text-xl font-bold text-white font-orbitron mb-6">Training Tracker</h2>
-
-        <div class="space-y-6" id="trainingCourses">
-          <!-- Generated dynamically -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Onboarding Tab -->
-    <div id="onboardingTab" class="tab-content hidden">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- New Hires -->
-        <div class="glass-card rounded-2xl p-6">
-          <h2 class="text-xl font-bold text-white font-orbitron mb-6">New Hires</h2>
-          <div id="newHiresList" class="space-y-4">
-            <!-- Generated dynamically -->
-          </div>
-        </div>
-
-        <!-- Onboarding Checklist -->
-        <div class="glass-card rounded-2xl p-6">
-          <h2 class="text-xl font-bold text-white font-orbitron mb-6">Onboarding Checklist</h2>
-          <div id="onboardingChecklist" class="space-y-3">
-            <!-- Generated dynamically -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Live Activity Tab -->
-    <div id="activityTab" class="tab-content hidden">
-      <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-xl font-bold text-white font-orbitron">Real-Time Activity Monitor</h2>
-          <div class="flex items-center gap-2">
-            <span class="status-dot bg-green-400"></span>
-            <span class="text-sm text-gray-400">Live</span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="activityMonitor">
-          <!-- Generated dynamically -->
-        </div>
+    <div class="p-6">
+      <div id="skillsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Populated by JS -->
       </div>
     </div>
   </div>
 </div>
 
-<!-- Agent Detail Modal -->
-<div id="agentModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);">
-  <div class="glass-card rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-2xl font-bold text-white font-orbitron">Agent Profile</h2>
-      <button onclick="TeamManagement.closeAgentModal()" class="p-2 hover:bg-red-500/20 rounded-lg transition-colors">
-        <i data-lucide="x" class="w-6 h-6 text-gray-400"></i>
-      </button>
+<!-- Add Agent Modal -->
+<div id="addAgentModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center">
+  <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-md w-full mx-4">
+    <h2 class="text-2xl font-bold text-white mb-6">Add New Agent</h2>
+    
+    <div class="space-y-4">
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Full Name</label>
+        <input type="text" id="newAgentName" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500" placeholder="John Doe">
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Email</label>
+        <input type="email" id="newAgentEmail" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500" placeholder="john@example.com">
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Phone</label>
+        <input type="tel" id="newAgentPhone" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500" placeholder="(555) 123-4567">
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Role</label>
+        <select id="newAgentRole" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+          <option value="Agent">Agent</option>
+          <option value="Manager">Manager</option>
+          <option value="Owner">Owner</option>
+        </select>
+      </div>
     </div>
-
-    <div id="agentModalContent">
-      <!-- Generated dynamically -->
+    
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeAddAgentModal()" class="flex-1 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">Cancel</button>
+      <button onclick="addAgent()" class="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:shadow-lg transition-all">Add Agent</button>
     </div>
   </div>
 </div>
-
-<style>
-  .tab-btn {
-    color: #94a3b8;
-    background: transparent;
-  }
-
-  .tab-btn.active {
-    color: #fff;
-    background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.1));
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-  }
-
-  .tab-btn:hover:not(.active) {
-    background: rgba(59, 130, 246, 0.1);
-  }
-
-  .tab-content {
-    animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .agent-card {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(59, 130, 246, 0.15);
-    border-radius: 16px;
-    padding: 20px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-  }
-
-  .agent-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: rgba(59, 130, 246, 0.4);
-    box-shadow: 0 12px 40px rgba(59, 130, 246, 0.2);
-  }
-
-  .schedule-cell {
-    min-height: 40px;
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid rgba(59, 130, 246, 0.1);
-    border-radius: 8px;
-    padding: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .schedule-cell:hover {
-    background: rgba(59, 130, 246, 0.1);
-    border-color: rgba(59, 130, 246, 0.3);
-  }
-
-  .schedule-block {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(6, 182, 212, 0.2));
-    border: 1px solid rgba(59, 130, 246, 0.4);
-    border-radius: 6px;
-    padding: 4px 8px;
-    font-size: 11px;
-    color: white;
-    margin-bottom: 2px;
-  }
-
-  input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 6px;
-    border-radius: 10px;
-    background: rgba(15, 23, 42, 0.8);
-    outline: none;
-  }
-
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #3B82F6, #06B6D4);
-    cursor: pointer;
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
-  }
-
-  input[type="range"]::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #3B82F6, #06B6D4);
-    cursor: pointer;
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
-    border: none;
-  }
-</style>
 
 <script>
-const TeamManagement = {
-  currentTab: 'roster',
-  currentWeek: new Date(),
-  agents: [],
-  reviews: [],
-  trainingCourses: [
-    {
-      id: 'C001',
-      name: 'Debt Consolidation Fundamentals',
-      modules: ['Basics', 'Creditors', 'Settlements', 'Compliance'],
-      totalModules: 4
-    },
-    {
-      id: 'C002',
-      name: 'Sales & Persuasion Techniques',
-      modules: ['Active Listening', 'Objection Handling', 'Closing', 'Follow-up'],
-      totalModules: 4
-    },
-    {
-      id: 'C003',
-      name: 'CRM & System Mastery',
-      modules: ['Navigation', 'Lead Management', 'Reporting', 'Automation'],
-      totalModules: 4
-    },
-    {
-      id: 'C004',
-      name: 'Compliance & Legal Requirements',
-      modules: ['TCPA', 'FDCPA', 'State Laws', 'Documentation'],
-      totalModules: 4
+  // Toast Function
+  function showToast(msg, type='info') {
+    const toast = document.createElement('div');
+    const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-blue-500' };
+    toast.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // Check DebtDB
+  if (!window.DebtDB) {
+    showToast('DebtDB not loaded!', 'error');
+  }
+
+  function renderAgentRoster() {
+    const agents = window.DebtDB.getAgents();
+    const tbody = document.getElementById('agentRosterBody');
+    
+    if (agents.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">No agents yet. Add one above!</td></tr>';
+      return;
     }
-  ],
-  newHires: [
-    { id: 'NH001', name: 'Alex Thompson', startDate: '2026-02-17', progress: 65 },
-    { id: 'NH002', name: 'Lisa Martinez', startDate: '2026-02-20', progress: 45 }
-  ],
-  onboardingTasks: [
-    { id: 'OB01', task: 'Complete HR paperwork', dueDate: 'Day 1', assignedTo: 'HR', status: 'pending' },
-    { id: 'OB02', task: 'System access setup', dueDate: 'Day 1', assignedTo: 'IT', status: 'pending' },
-    { id: 'OB03', task: 'Complete C001 training', dueDate: 'Week 1', assignedTo: 'Training', status: 'pending' },
-    { id: 'OB04', task: 'Shadow senior agent (10 calls)', dueDate: 'Week 1', assignedTo: 'Manager', status: 'pending' },
-    { id: 'OB05', task: 'Complete C002 training', dueDate: 'Week 2', assignedTo: 'Training', status: 'pending' },
-    { id: 'OB06', task: 'First live call (supervised)', dueDate: 'Week 2', assignedTo: 'Manager', status: 'pending' },
-    { id: 'OB07', task: 'Complete C003 training', dueDate: 'Week 3', assignedTo: 'Training', status: 'pending' },
-    { id: 'OB08', task: 'First enrollment (supervised)', dueDate: 'Week 3', assignedTo: 'Manager', status: 'pending' },
-    { id: 'OB09', task: 'Complete C004 training', dueDate: 'Week 4', assignedTo: 'Training', status: 'pending' },
-    { id: 'OB10', task: '30-day performance review', dueDate: 'Day 30', assignedTo: 'Manager', status: 'pending' }
-  ],
-
-  init() {
-    this.agents = DB.agents;
-    this.loadTeamMetrics();
-    this.renderRoster();
-    this.renderSchedule();
-    this.renderAttendance();
-    this.renderReviews();
-    this.renderTraining();
-    this.renderOnboarding();
-    this.renderActivityMonitor();
-
-    // Update activity monitor every 5 seconds
-    setInterval(() => {
-      if (this.currentTab === 'activity') {
-        this.renderActivityMonitor();
-      }
-    }, 5000);
-  },
-
-  loadTeamMetrics() {
-    const totalAgents = this.agents.length;
-    const totalCalls = this.agents.reduce((sum, a) => sum + (a.stats?.callsToday || 0), 0);
-    const totalEnrollments = this.agents.reduce((sum, a) => sum + (a.stats?.enrollments || 0), 0);
-    const totalRevenue = this.agents.reduce((sum, a) => sum + (a.stats?.revenue || 0), 0);
     
-    const topPerformer = this.agents.reduce((top, agent) => 
-      (agent.stats?.enrollments || 0) > (top.stats?.enrollments || 0) ? agent : top
-    , this.agents[0]);
-
-    document.getElementById('totalAgents').textContent = totalAgents;
-    document.getElementById('avgCalls').textContent = Math.round(totalCalls / totalAgents);
-    document.getElementById('avgEnrollments').textContent = (totalEnrollments / totalAgents).toFixed(1);
-    document.getElementById('teamRevenue').textContent = DBHelpers.formatCurrency(totalRevenue);
-    document.getElementById('topPerformer').textContent = topPerformer.name.split(' ')[0] + ' ' + topPerformer.name.split(' ')[1]?.charAt(0) + '.';
-  },
-
-  switchTab(tabId) {
-    this.currentTab = tabId;
-    
-    // Update tab buttons
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-
-    // Update tab content
-    document.querySelectorAll('.tab-content').forEach(content => {
-      content.classList.add('hidden');
-      content.classList.remove('active');
-    });
-    
-    const targetTab = document.getElementById(tabId + 'Tab');
-    targetTab.classList.remove('hidden');
-    targetTab.classList.add('active');
-
-    lucide.createIcons();
-  },
-
-  renderRoster() {
-    const roster = document.getElementById('agentRoster');
-    
-    roster.innerHTML = this.agents.map((agent, index) => {
-      const statusColors = ['online', 'busy', 'away', 'offline'];
-      const statusLabels = ['Online', 'On Call', 'Away', 'Offline'];
-      const statusIndex = index % 4;
-      const status = statusColors[statusIndex];
-      const statusLabel = statusLabels[statusIndex];
+    tbody.innerHTML = agents.map(agent => {
+      const status = agent.status || 'active';
+      const statusColors = {
+        active: 'bg-emerald-500/20 text-emerald-400',
+        inactive: 'bg-gray-500/20 text-gray-400',
+        on_leave: 'bg-yellow-500/20 text-yellow-400'
+      };
       
-      let statusDotClass = 'bg-gray-500';
-      if (status === 'online') statusDotClass = 'bg-green-400';
-      else if (status === 'busy') statusDotClass = 'bg-yellow-400';
-      else if (status === 'away') statusDotClass = 'bg-gray-400';
-
       return `
-        <div class="agent-card fade-in-up stagger-${(index % 6) + 1}" onclick="TeamManagement.showAgentModal('${agent.id}')">
-          <div class="flex items-start gap-4 mb-4">
-            <div class="avatar-ring flex-shrink-0">
-              <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xl font-bold">
-                ${agent.name.split(' ').map(n => n[0]).join('')}
-              </div>
-            </div>
-            <div class="flex-1 min-w-0">
-              <h3 class="text-white font-semibold truncate">${agent.name}</h3>
-              <div class="flex items-center gap-2 mt-1">
-                ${Auth.getRoleBadge(agent.role)}
-                <div class="flex items-center gap-1">
-                  <span class="status-dot ${statusDotClass}"></span>
-                  <span class="text-xs text-gray-400">${statusLabel}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="section-divider"></div>
-
-          <div class="grid grid-cols-3 gap-2 text-center">
-            <div>
-              <div class="text-xs text-gray-400 mb-1">Calls</div>
-              <div class="text-lg font-bold text-white font-orbitron">${agent.stats?.callsToday || 0}</div>
-            </div>
-            <div>
-              <div class="text-xs text-gray-400 mb-1">Enrollments</div>
-              <div class="text-lg font-bold text-blue-400 font-orbitron">${agent.stats?.enrollments || 0}</div>
-            </div>
-            <div>
-              <div class="text-xs text-gray-400 mb-1">Revenue</div>
-              <div class="text-sm font-bold text-green-400 font-orbitron">${DBHelpers.formatCurrency(agent.stats?.revenue || 0).replace('.00', '')}</div>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    lucide.createIcons();
-  },
-
-  renderSchedule() {
-    const grid = document.getElementById('scheduleGrid');
-    const hours = Array.from({ length: 13 }, (_, i) => i + 7); // 7AM - 7PM
-    
-    grid.innerHTML = hours.map(hour => `
-      <div class="grid grid-cols-8 gap-2">
-        <div class="text-xs text-gray-400 p-2">${hour % 12 || 12}${hour < 12 ? 'AM' : 'PM'}</div>
-        ${Array.from({ length: 7 }, (_, day) => {
-          const hasShift = Math.random() > 0.3;
-          const agents = hasShift ? this.agents.slice(0, Math.floor(Math.random() * 3) + 1) : [];
-          
-          return `
-            <div class="schedule-cell" onclick="TeamManagement.assignShift(${day}, ${hour})">
-              ${agents.map(agent => `
-                <div class="schedule-block">
-                  ${agent.name.split(' ')[0]}
-                </div>
-              `).join('')}
-            </div>
-          `;
-        }).join('')}
-      </div>
-    `).join('');
-  },
-
-  assignShift(day, hour) {
-    // TODO: Implement shift assignment modal
-    console.log(`Assign shift: Day ${day}, Hour ${hour}`);
-  },
-
-  previousWeek() {
-    this.currentWeek = new Date(this.currentWeek.getTime() - 7 * 24 * 60 * 60 * 1000);
-    this.renderSchedule();
-  },
-
-  nextWeek() {
-    this.currentWeek = new Date(this.currentWeek.getTime() + 7 * 24 * 60 * 60 * 1000);
-    this.renderSchedule();
-  },
-
-  renderAttendance() {
-    const tbody = document.getElementById('attendanceTableBody');
-    const statuses = ['present', 'late', 'absent', 'pto'];
-    const statusIcons = { present: '✅', late: '⚠️', absent: '❌', pto: '🏖️' };
-    const statusLabels = { present: 'Present', late: 'Late', absent: 'Absent', pto: 'PTO' };
-    const statusColors = { present: 'text-green-400', late: 'text-yellow-400', absent: 'text-red-400', pto: 'text-blue-400' };
-
-    const records = this.agents.flatMap(agent => 
-      Array.from({ length: 5 }, (_, i) => {
-        const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-        const status = statuses[Math.floor(Math.random() * statuses.length)];
-        const clockIn = status !== 'absent' && status !== 'pto' ? '8:00 AM' : '-';
-        const clockOut = status !== 'absent' && status !== 'pto' ? '5:00 PM' : '-';
-        const hours = status === 'present' ? '9.0' : status === 'late' ? '8.5' : '-';
-        const streak = Math.floor(Math.random() * 30) + 1;
-
-        return {
-          date,
-          agent: agent.name,
-          clockIn,
-          clockOut,
-          hours,
-          status,
-          streak
-        };
-      })
-    ).sort((a, b) => b.date - a.date).slice(0, 20);
-
-    tbody.innerHTML = records.map(record => `
-      <tr class="border-b border-gray-800 hover:bg-blue-500/5 transition-colors">
-        <td class="p-3 text-sm text-gray-400">${record.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>
-        <td class="p-3 text-sm text-white">${record.agent}</td>
-        <td class="p-3 text-sm text-gray-400">${record.clockIn}</td>
-        <td class="p-3 text-sm text-gray-400">${record.clockOut}</td>
-        <td class="p-3 text-sm text-white font-semibold">${record.hours}</td>
-        <td class="p-3">
-          <span class="${statusColors[record.status]} text-sm font-semibold">
-            ${statusIcons[record.status]} ${statusLabels[record.status]}
-          </span>
-        </td>
-        <td class="p-3">
-          <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-white text-xs font-bold">
-              ${record.streak}
-            </div>
-            <span class="text-xs text-gray-400">days</span>
-          </div>
-        </td>
-      </tr>
-    `).join('');
-  },
-
-  updateRating(category, value) {
-    document.getElementById(category + 'Rating').textContent = value;
-  },
-
-  saveReview() {
-    const agentId = document.getElementById('reviewAgent').value;
-    if (!agentId) {
-      Toast.warning('Please select an agent to review');
-      return;
-    }
-
-    const review = {
-      id: 'REV' + Date.now(),
-      agentId,
-      period: 'Feb 2026',
-      ratings: {
-        calls: parseInt(document.getElementById('callsRating').textContent) || 5,
-        enrollments: parseInt(document.getElementById('enrollmentsRating').textContent) || 5,
-        compliance: parseInt(document.getElementById('complianceRating').textContent) || 5,
-        teamwork: parseInt(document.getElementById('teamworkRating').textContent) || 5,
-        attendance: parseInt(document.getElementById('attendanceRating').textContent) || 5
-      },
-      date: new Date().toISOString()
-    };
-
-    this.reviews.push(review);
-    this.renderReviews();
-    Toast.success('Review saved successfully!');
-  },
-
-  renderReviews() {
-    const select = document.getElementById('reviewAgent');
-    select.innerHTML = '<option value="">Choose agent...</option>' + 
-      this.agents.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
-
-    const container = document.getElementById('recentReviews');
-    
-    if (this.reviews.length === 0) {
-      container.innerHTML = `
-        <div class="text-center text-gray-400 py-8">
-          <i data-lucide="file-text" class="w-12 h-12 mx-auto mb-3 opacity-50"></i>
-          <p>No reviews yet</p>
-        </div>
-      `;
-      lucide.createIcons();
-      return;
-    }
-
-    container.innerHTML = this.reviews.slice(-5).reverse().map(review => {
-      const agent = this.agents.find(a => a.id === review.agentId);
-      const avgRating = Object.values(review.ratings).reduce((a, b) => a + b, 0) / 5;
-
-      return `
-        <div class="p-4 bg-[rgba(15,23,42,0.5)] rounded-xl border border-gray-800">
-          <div class="flex items-center justify-between mb-3">
+        <tr class="border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+          <td class="p-4">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-sm font-bold">
-                ${agent?.name.split(' ').map(n => n[0]).join('') || '??'}
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                ${agent.name?.charAt(0) || 'A'}
               </div>
-              <div>
-                <div class="text-white font-semibold">${agent?.name || 'Unknown'}</div>
-                <div class="text-xs text-gray-400">${review.period}</div>
-              </div>
+              <div class="text-white font-medium">${agent.name}</div>
             </div>
-            <div class="text-right">
-              <div class="text-2xl font-bold text-blue-400 font-orbitron">${avgRating.toFixed(1)}</div>
-              <div class="text-xs text-gray-400">Overall</div>
-            </div>
-          </div>
-          <div class="grid grid-cols-5 gap-2 text-center text-xs">
-            ${Object.entries(review.ratings).map(([key, val]) => `
-              <div>
-                <div class="text-gray-400 mb-1">${key.charAt(0).toUpperCase() + key.slice(1)}</div>
-                <div class="text-white font-bold">${val}</div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
+          </td>
+          <td class="p-4">
+            <select onchange="updateAgentRole('${agent.id}', this.value)" class="px-3 py-1 bg-slate-700 text-white rounded-lg text-sm border-0">
+              <option value="Agent" ${agent.role === 'Agent' ? 'selected' : ''}>Agent</option>
+              <option value="Manager" ${agent.role === 'Manager' ? 'selected' : ''}>Manager</option>
+              <option value="Owner" ${agent.role === 'Owner' ? 'selected' : ''}>Owner</option>
+            </select>
+          </td>
+          <td class="p-4 text-gray-300 text-sm">${agent.email || 'N/A'}</td>
+          <td class="p-4 text-gray-300 text-sm">${agent.phone || 'N/A'}</td>
+          <td class="p-4">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColors[status] || statusColors.active}">
+              ${status.replace('_', ' ')}
+            </span>
+          </td>
+          <td class="p-4 flex gap-2">
+            <button onclick="editAgent('${agent.id}')" class="text-blue-400 hover:text-blue-300">
+              <i data-lucide="edit" class="w-4 h-4"></i>
+            </button>
+            <button onclick="removeAgent('${agent.id}')" class="text-red-400 hover:text-red-300">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </td>
+        </tr>
       `;
     }).join('');
-  },
+    
+    lucide.createIcons();
+  }
 
-  renderTraining() {
-    const container = document.getElementById('trainingCourses');
-
-    container.innerHTML = this.trainingCourses.map(course => {
-      const agentProgress = this.agents.map(agent => {
-        const completed = Math.floor(Math.random() * (course.totalModules + 1));
-        return { agent, completed };
-      });
-
+  function renderPerformanceDashboard() {
+    const agents = window.DebtDB.getAgents();
+    const calls = window.DebtDB.getCalls();
+    const deals = window.DebtDB.getDeals();
+    
+    const tbody = document.getElementById('performanceBody');
+    
+    tbody.innerHTML = agents.map(agent => {
+      const agentCalls = calls.filter(c => c.agent === agent.id || c.agentId === agent.id);
+      const agentDeals = deals.filter(d => d.agent === agent.id || d.agentId === agent.id);
+      const revenue = agentDeals.reduce((sum, d) => sum + (d.amount || 0), 0);
+      const convRate = agentCalls.length > 0 ? ((agentDeals.length / agentCalls.length) * 100).toFixed(1) : 0;
+      
       return `
-        <div class="p-6 bg-[rgba(15,23,42,0.5)] rounded-xl border border-gray-800">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-bold text-white">${course.name}</h3>
-            <div class="flex items-center gap-2">
-              <i data-lucide="book-open" class="w-5 h-5 text-blue-400"></i>
-              <span class="text-sm text-gray-400">${course.totalModules} modules</span>
-            </div>
-          </div>
+        <tr class="border-b border-slate-700/30">
+          <td class="p-4 text-white font-medium">${agent.name}</td>
+          <td class="p-4 text-gray-300 font-mono" style="font-family: 'Orbitron', monospace;">${agentCalls.length}</td>
+          <td class="p-4 text-gray-300 font-mono" style="font-family: 'Orbitron', monospace;">${agentDeals.length}</td>
+          <td class="p-4 text-emerald-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">$${revenue.toLocaleString()}</td>
+          <td class="p-4 text-blue-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">${convRate}%</td>
+        </tr>
+      `;
+    }).join('');
+  }
 
-          <div class="space-y-3">
-            ${agentProgress.map(({ agent, completed }) => {
-              const percentage = (completed / course.totalModules) * 100;
+  function renderSchedule() {
+    const agents = window.DebtDB.getAgents();
+    const tbody = document.getElementById('scheduleBody');
+    
+    const shifts = ['9-5', '10-6', '12-8', 'OFF'];
+    
+    tbody.innerHTML = agents.map(agent => {
+      return `
+        <tr class="border-b border-slate-700/30">
+          <td class="p-2 text-white font-medium border border-slate-700">${agent.name}</td>
+          ${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => {
+            const shift = i < 5 ? '9-5' : 'OFF';
+            const bgColor = shift === 'OFF' ? 'bg-slate-800/50' : 'bg-blue-500/10';
+            return `<td class="p-2 text-center border border-slate-700 ${bgColor}">
+              <select class="bg-transparent text-white text-xs border-0">
+                ${shifts.map(s => `<option ${s === shift ? 'selected' : ''}>${s}</option>`).join('')}
+              </select>
+            </td>`;
+          }).join('')}
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function renderSkills() {
+    const agents = window.DebtDB.getAgents();
+    const skills = [
+      'Debt Counseling',
+      'Compliance Certified',
+      'Sales Training',
+      'Objection Handling',
+      'Lead Generation'
+    ];
+    
+    const grid = document.getElementById('skillsGrid');
+    
+    grid.innerHTML = agents.map(agent => {
+      const agentSkills = agent.skills || skills.slice(0, Math.floor(Math.random() * 3) + 2);
+      
+      return `
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+              ${agent.name?.charAt(0) || 'A'}
+            </div>
+            <div class="text-white font-semibold">${agent.name}</div>
+          </div>
+          <div class="space-y-2">
+            ${skills.map(skill => {
+              const has = agentSkills.includes(skill);
               return `
-                <div>
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm text-white">${agent.name}</span>
-                    <span class="text-sm text-gray-400">${completed}/${course.totalModules}</span>
-                  </div>
-                  <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${percentage}%"></div>
-                  </div>
-                </div>
+                <label class="flex items-center gap-2 text-sm cursor-pointer">
+                  <input type="checkbox" ${has ? 'checked' : ''} class="w-4 h-4">
+                  <span class="text-gray-300">${skill}</span>
+                </label>
               `;
             }).join('')}
           </div>
-
-          <div class="mt-4 pt-4 border-t border-gray-800">
-            <div class="flex flex-wrap gap-2">
-              ${course.modules.map((module, i) => `
-                <div class="flex items-center gap-2 px-3 py-1 bg-[rgba(59,130,246,0.1)] rounded-lg text-sm">
-                  <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
-                  <span class="text-gray-300">${module}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
         </div>
       `;
     }).join('');
-
-    lucide.createIcons();
-  },
-
-  renderOnboarding() {
-    const hiresContainer = document.getElementById('newHiresList');
-    const checklistContainer = document.getElementById('onboardingChecklist');
-
-    hiresContainer.innerHTML = this.newHires.map(hire => `
-      <div class="p-4 bg-[rgba(15,23,42,0.5)] rounded-xl border border-gray-800">
-        <div class="flex items-center gap-3 mb-3">
-          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold">
-            ${hire.name.split(' ').map(n => n[0]).join('')}
-          </div>
-          <div>
-            <div class="text-white font-semibold">${hire.name}</div>
-            <div class="text-xs text-gray-400">Started ${new Date(hire.startDate).toLocaleDateString()}</div>
-          </div>
-        </div>
-        <div class="mb-2">
-          <div class="flex items-center justify-between text-sm mb-1">
-            <span class="text-gray-400">Onboarding Progress</span>
-            <span class="text-white font-semibold">${hire.progress}%</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-fill" style="width: ${hire.progress}%"></div>
-          </div>
-        </div>
-        <button class="btn btn-primary w-full mt-2" onclick="TeamManagement.viewHireDetails('${hire.id}')">
-          View Details
-        </button>
-      </div>
-    `).join('');
-
-    checklistContainer.innerHTML = this.onboardingTasks.map(task => `
-      <div class="flex items-start gap-3 p-3 bg-[rgba(15,23,42,0.5)] rounded-xl border border-gray-800">
-        <input 
-          type="checkbox" 
-          ${task.status === 'completed' ? 'checked' : ''} 
-          class="mt-1 w-5 h-5 rounded border-gray-700 text-blue-500 focus:ring-blue-500"
-        >
-        <div class="flex-1">
-          <div class="text-white font-medium">${task.task}</div>
-          <div class="flex items-center gap-3 mt-1 text-xs text-gray-400">
-            <span>📅 ${task.dueDate}</span>
-            <span>👤 ${task.assignedTo}</span>
-          </div>
-        </div>
-      </div>
-    `).join('');
-  },
-
-  viewHireDetails(hireId) {
-    console.log('View hire details:', hireId);
-    // TODO: Implement hire detail modal
-  },
-
-  renderActivityMonitor() {
-    const container = document.getElementById('activityMonitor');
-    const activities = ['On Call', 'Idle', 'After-Call Work', 'Break', 'Training'];
-    const activityColors = {
-      'On Call': 'from-green-500 to-emerald-500',
-      'Idle': 'from-gray-500 to-slate-500',
-      'After-Call Work': 'from-yellow-500 to-amber-500',
-      'Break': 'from-blue-500 to-cyan-500',
-      'Training': 'from-purple-500 to-pink-500'
-    };
-
-    container.innerHTML = this.agents.map(agent => {
-      const activity = activities[Math.floor(Math.random() * activities.length)];
-      const duration = Math.floor(Math.random() * 30) + 1;
-
-      return `
-        <div class="p-4 bg-[rgba(15,23,42,0.5)] rounded-xl border border-gray-800">
-          <div class="flex items-start gap-3">
-            <div class="avatar-ring flex-shrink-0">
-              <div class="w-12 h-12 rounded-full bg-gradient-to-br ${activityColors[activity]} flex items-center justify-center text-white font-bold">
-                ${agent.name.split(' ').map(n => n[0]).join('')}
-              </div>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="text-white font-semibold truncate">${agent.name}</div>
-              <div class="flex items-center gap-2 mt-1">
-                <span class="status-dot ${activity === 'On Call' ? 'bg-green-400' : activity === 'Idle' ? 'bg-gray-400' : 'bg-yellow-400'}"></span>
-                <span class="text-sm text-gray-400">${activity}</span>
-              </div>
-              <div class="text-xs text-gray-500 mt-1">${duration}m</div>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  },
-
-  showAgentModal(agentId) {
-    const agent = this.agents.find(a => a.id === agentId);
-    if (!agent) return;
-
-    const modal = document.getElementById('agentModal');
-    const content = document.getElementById('agentModalContent');
-
-    content.innerHTML = `
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Profile -->
-        <div class="lg:col-span-1">
-          <div class="text-center mb-6">
-            <div class="avatar-ring inline-block mb-4">
-              <div class="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-3xl font-bold">
-                ${agent.name.split(' ').map(n => n[0]).join('')}
-              </div>
-            </div>
-            <h3 class="text-xl font-bold text-white">${agent.name}</h3>
-            <div class="flex items-center justify-center gap-2 mt-2">
-              ${Auth.getRoleBadge(agent.role)}
-            </div>
-          </div>
-
-          <div class="space-y-3">
-            <div class="p-3 bg-[rgba(15,23,42,0.5)] rounded-xl">
-              <div class="text-xs text-gray-400 mb-1">Email</div>
-              <div class="text-sm text-white">${agent.email}</div>
-            </div>
-            <div class="p-3 bg-[rgba(15,23,42,0.5)] rounded-xl">
-              <div class="text-xs text-gray-400 mb-1">Status</div>
-              <div class="flex items-center gap-2">
-                <span class="status-dot bg-green-400"></span>
-                <span class="text-sm text-white">Online</span>
-              </div>
-            </div>
-            <div class="p-3 bg-[rgba(15,23,42,0.5)] rounded-xl">
-              <div class="text-xs text-gray-400 mb-1">Role</div>
-              <select class="w-full px-3 py-2 bg-[#0a0f1a] border border-gray-800 rounded-lg text-white text-sm focus:border-blue-500 outline-none">
-                <option ${agent.role === 'agent' ? 'selected' : ''}>Agent</option>
-                <option ${agent.role === 'manager' ? 'selected' : ''}>Manager</option>
-                <option ${agent.role === 'owner' ? 'selected' : ''}>Owner</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Performance & Stats -->
-        <div class="lg:col-span-2">
-          <h3 class="text-lg font-bold text-white mb-4">Performance Overview</h3>
-          
-          <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="p-4 bg-[rgba(15,23,42,0.5)] rounded-xl">
-              <div class="text-xs text-gray-400 mb-1">Calls Today</div>
-              <div class="text-2xl font-bold text-white font-orbitron">${agent.stats?.callsToday || 0}</div>
-            </div>
-            <div class="p-4 bg-[rgba(15,23,42,0.5)] rounded-xl">
-              <div class="text-xs text-gray-400 mb-1">Enrollments</div>
-              <div class="text-2xl font-bold text-blue-400 font-orbitron">${agent.stats?.enrollments || 0}</div>
-            </div>
-            <div class="p-4 bg-[rgba(15,23,42,0.5)] rounded-xl">
-              <div class="text-xs text-gray-400 mb-1">Revenue</div>
-              <div class="text-2xl font-bold text-green-400 font-orbitron">${DBHelpers.formatCurrency(agent.stats?.revenue || 0)}</div>
-            </div>
-            <div class="p-4 bg-[rgba(15,23,42,0.5)] rounded-xl">
-              <div class="text-xs text-gray-400 mb-1">Commission</div>
-              <div class="text-2xl font-bold text-cyan-400 font-orbitron">${DBHelpers.formatCurrency(agent.stats?.commission || 0)}</div>
-            </div>
-          </div>
-
-          <h3 class="text-lg font-bold text-white mb-4">Performance History</h3>
-          <div class="space-y-3">
-            ${agent.performance ? `
-              <div class="p-4 bg-[rgba(15,23,42,0.5)] rounded-xl">
-                <div class="text-sm text-gray-400 mb-2">This Week</div>
-                <div class="grid grid-cols-3 gap-3 text-center">
-                  <div>
-                    <div class="text-xs text-gray-400">Calls</div>
-                    <div class="text-lg font-bold text-white">${agent.performance.thisWeek.calls}</div>
-                  </div>
-                  <div>
-                    <div class="text-xs text-gray-400">Enrollments</div>
-                    <div class="text-lg font-bold text-blue-400">${agent.performance.thisWeek.enrollments}</div>
-                  </div>
-                  <div>
-                    <div class="text-xs text-gray-400">Revenue</div>
-                    <div class="text-sm font-bold text-green-400">${DBHelpers.formatCurrency(agent.performance.thisWeek.revenue)}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="p-4 bg-[rgba(15,23,42,0.5)] rounded-xl">
-                <div class="text-sm text-gray-400 mb-2">This Month</div>
-                <div class="grid grid-cols-3 gap-3 text-center">
-                  <div>
-                    <div class="text-xs text-gray-400">Calls</div>
-                    <div class="text-lg font-bold text-white">${agent.performance.thisMonth.calls}</div>
-                  </div>
-                  <div>
-                    <div class="text-xs text-gray-400">Enrollments</div>
-                    <div class="text-lg font-bold text-blue-400">${agent.performance.thisMonth.enrollments}</div>
-                  </div>
-                  <div>
-                    <div class="text-xs text-gray-400">Revenue</div>
-                    <div class="text-sm font-bold text-green-400">${DBHelpers.formatCurrency(agent.performance.thisMonth.revenue)}</div>
-                  </div>
-                </div>
-              </div>
-            ` : '<p class="text-gray-400 text-center py-8">No performance history available</p>'}
-          </div>
-
-          <h3 class="text-lg font-bold text-white mb-4 mt-6">Notes</h3>
-          <textarea rows="4" placeholder="Add notes about this agent..." class="w-full px-4 py-2 bg-[#0a0f1a] border border-gray-800 rounded-xl text-white placeholder-gray-500 focus:border-blue-500 outline-none resize-none"></textarea>
-        </div>
-      </div>
-    `;
-
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    lucide.createIcons();
-  },
-
-  closeAgentModal() {
-    const modal = document.getElementById('agentModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-  },
-
-  showAddAgentModal() {
-    // TODO: Implement add agent modal
-    console.log('Add agent modal');
   }
-};
 
-// Initialize on load
-function initTeamManagement() {
-  TeamManagement.init();
-}
+  function updateAgentRole(agentId, newRole) {
+    window.DebtDB.updateAgent(agentId, { role: newRole });
+    showToast('Role updated!', 'success');
+    renderAgentRoster();
+  }
 
-// Auto-init
-if (typeof initTeamManagement === 'function') {
-  initTeamManagement();
-}
+  function editAgent(agentId) {
+    showToast('Edit functionality coming soon!', 'info');
+  }
+
+  function removeAgent(agentId) {
+    if (!confirm('Remove this agent?')) return;
+    
+    // Note: DebtDB doesn't have deleteAgent yet, so we'd need to add it
+    // For now, just show a message
+    showToast('Remove functionality requires DebtDB.deleteAgent()', 'error');
+  }
+
+  function openAddAgentModal() {
+    document.getElementById('addAgentModal').classList.remove('hidden');
+    document.getElementById('addAgentModal').classList.add('flex');
+  }
+
+  function closeAddAgentModal() {
+    document.getElementById('addAgentModal').classList.add('hidden');
+    document.getElementById('addAgentModal').classList.remove('flex');
+  }
+
+  function addAgent() {
+    const name = document.getElementById('newAgentName').value.trim();
+    const email = document.getElementById('newAgentEmail').value.trim();
+    const phone = document.getElementById('newAgentPhone').value.trim();
+    const role = document.getElementById('newAgentRole').value;
+    
+    if (!name) {
+      showToast('Name is required', 'error');
+      return;
+    }
+    
+    window.DebtDB.addAgent({
+      name,
+      email,
+      phone,
+      role,
+      status: 'active'
+    });
+    
+    showToast('Agent added!', 'success');
+    renderAgentRoster();
+    renderPerformanceDashboard();
+    renderSchedule();
+    renderSkills();
+    closeAddAgentModal();
+    
+    // Clear form
+    document.getElementById('newAgentName').value = '';
+    document.getElementById('newAgentEmail').value = '';
+    document.getElementById('newAgentPhone').value = '';
+  }
+
+  // Initialize
+  renderAgentRoster();
+  renderPerformanceDashboard();
+  renderSchedule();
+  renderSkills();
+  lucide.createIcons();
 </script>
+</body>
+</html>

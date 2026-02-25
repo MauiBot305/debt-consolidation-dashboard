@@ -1,843 +1,436 @@
-<!-- Functionality verified by Agent 3 -->
-<div class="automation-container" style="padding: 24px; max-width: 1600px; margin: 0 auto;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automation Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght:400;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950">
+<div class="automation-page p-6 max-w-7xl mx-auto">
   <!-- Header -->
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+  <div class="flex items-center justify-between mb-8">
     <div>
-      <h1 style="font-size: 32px; font-weight: 700; color: #fff; margin: 0 0 8px 0; font-family: 'Orbitron', monospace; text-transform: uppercase; letter-spacing: 2px;">
-        <i data-lucide="zap" style="width: 32px; height: 32px; color: #06B6D4; vertical-align: middle; margin-right: 12px;"></i>
-        Workflow Automation
-      </h1>
-      <p style="color: #94a3b8; margin: 0; font-size: 14px;">Build smart automations that save time and never miss a follow-up</p>
+      <h1 class="text-3xl font-bold text-white mb-1">⚡ Automation Hub</h1>
+      <p class="text-gray-400">Automate workflows and save time</p>
     </div>
-    <button id="createAutomationBtn" style="padding: 14px 28px; background: linear-gradient(135deg, #3B82F6, #06B6D4); border: none; border-radius: 12px; color: white; font-weight: 600; font-size: 15px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4);">
-      <i data-lucide="plus" style="width: 20px; height: 20px;"></i>
-      New Automation
+    <button onclick="openCreateModal()" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2">
+      <i data-lucide="plus" class="w-5 h-5"></i>
+      Create Automation
     </button>
   </div>
 
-  <!-- Templates Section -->
-  <div style="margin-bottom: 32px;">
-    <h3 style="margin: 0 0 20px 0; color: #fff; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
-      <i data-lucide="layout-template" style="width: 20px; height: 20px; color: #3B82F6;"></i>
-      Quick Start Templates
-    </h3>
-    
-    <div id="templatesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
-      <!-- Templates rendered here -->
+  <!-- Template Automations -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="layout-template" class="w-5 h-5 text-blue-400"></i>
+        Quick Templates
+      </h2>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="templatesGrid">
+        <!-- Populated by JS -->
+      </div>
     </div>
   </div>
 
-  <!-- Active Automations List -->
-  <div style="background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 24px; margin-bottom: 24px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h3 style="margin: 0; color: #fff; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
-        <i data-lucide="play-circle" style="width: 20px; height: 20px; color: #22C55E;"></i>
+  <!-- Active Automations -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="zap" class="w-5 h-5 text-yellow-400"></i>
         Active Automations
-      </h3>
-      <div style="display: flex; gap: 12px;">
-        <button id="viewLogsBtn" style="padding: 8px 16px; background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.3); border-radius: 8px; color: #3B82F6; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s;">
-          <i data-lucide="scroll-text" style="width: 14px; height: 14px;"></i>
-          View Logs
-        </button>
-        <div style="padding: 8px 16px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2); border-radius: 8px; color: #22C55E; font-size: 13px; display: flex; align-items: center; gap: 6px;">
-          <span style="width: 8px; height: 8px; background: #22C55E; border-radius: 50%; animation: pulse 2s infinite;"></span>
-          12 Active
-        </div>
-      </div>
+      </h2>
     </div>
-
-    <div id="automationsList" style="display: flex; flex-direction: column; gap: 12px;">
-      <!-- Automation items rendered here -->
-    </div>
-  </div>
-
-  <!-- Workflow Builder Section -->
-  <div id="workflowBuilder" style="display: none; background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(59,130,246,0.2); border-radius: 16px; padding: 24px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-      <div style="display: flex; align-items: center; gap: 16px;">
-        <h3 style="margin: 0; color: #fff; font-size: 18px; font-weight: 600;">Workflow Builder</h3>
-        <input id="workflowName" type="text" placeholder="Name your automation..." style="padding: 10px 16px; background: rgba(10,15,26,0.8); border: 1px solid rgba(148,163,184,0.2); border-radius: 8px; color: #fff; font-size: 14px; width: 280px;">
-      </div>
-      <div style="display: flex; gap: 12px;">
-        <button id="cancelWorkflowBtn" style="padding: 10px 20px; background: transparent; border: 1px solid rgba(148,163,184,0.3); border-radius: 8px; color: #94a3b8; font-size: 14px; cursor: pointer; transition: all 0.2s;">Cancel</button>
-        <button id="saveWorkflowBtn" style="padding: 10px 24px; background: linear-gradient(135deg, #22C55E, #16a34a); border: none; border-radius: 8px; color: white; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s;">Save Automation</button>
-      </div>
-    </div>
-
-    <!-- Node Palette -->
-    <div style="display: grid; grid-template-columns: 220px 1fr; gap: 24px;">
-      <!-- Sidebar: Node Types -->
-      <div style="background: rgba(10,15,26,0.6); border-radius: 12px; padding: 16px;">
-        <h4 style="margin: 0 0 16px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Add Step</h4>
-        
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-          <div class="node-palette-item" data-type="trigger" style="padding: 14px; background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.1)); border: 1px solid rgba(139,92,246,0.3); border-radius: 10px; cursor: grab; transition: all 0.2s;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="width: 32px; height: 32px; background: rgba(139,92,246,0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                <i data-lucide="lightning" style="width: 16px; height: 16px; color: #8b5cf6;"></i>
-              </div>
-              <div>
-                <div style="color: #fff; font-size: 13px; font-weight: 600;">Trigger</div>
-                <div style="color: #94a3b8; font-size: 11px;">Start automation</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="node-palette-item" data-type="action" style="padding: 14px; background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.1)); border: 1px solid rgba(59,130,246,0.3); border-radius: 10px; cursor: grab; transition: all 0.2s;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="width: 32px; height: 32px; background: rgba(59,130,246,0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                <i data-lucide="zap" style="width: 16px; height: 16px; color: #3B82F6;"></i>
-              </div>
-              <div>
-                <div style="color: #fff; font-size: 13px; font-weight: 600;">Action</div>
-                <div style="color: #94a3b8; font-size: 11px;">Do something</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="node-palette-item" data-type="condition" style="padding: 14px; background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.1)); border: 1px solid rgba(234,179,8,0.3); border-radius: 10px; cursor: grab; transition: all 0.2s;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="width: 32px; height: 32px; background: rgba(234,179,8,0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                <i data-lucide="git-branch" style="width: 16px; height: 16px; color: #eab308;"></i>
-              </div>
-              <div>
-                <div style="color: #fff; font-size: 13px; font-weight: 600;">Condition</div>
-                <div style="color: #94a3b8; font-size: 11px;">If/Then logic</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="node-palette-item" data-type="delay" style="padding: 14px; background: linear-gradient(135deg, rgba(6,182,212,0.2), rgba(6,182,212,0.1)); border: 1px solid rgba(6,182,212,0.3); border-radius: 10px; cursor: grab; transition: all 0.2s;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="width: 32px; height: 32px; background: rgba(6,182,212,0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                <i data-lucide="clock" style="width: 16px; height: 16px; color: #06B6D4;"></i>
-              </div>
-              <div>
-                <div style="color: #fff; font-size: 13px; font-weight: 600;">Delay</div>
-                <div style="color: #94a3b8; font-size: 11px;">Wait timer</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Canvas: Workflow Nodes -->
-      <div id="workflowCanvas" style="background: rgba(10,15,26,0.6); border-radius: 12px; padding: 24px; min-height: 500px; position: relative;">
-        <div id="workflowNodes" style="display: flex; flex-direction: column; align-items: center; gap: 0;">
-          <!-- Start Node -->
-          <div class="workflow-node trigger-node" style="width: 280px; padding: 20px; background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.1)); border: 2px solid #8b5cf6; border-radius: 16px; position: relative; z-index: 2;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <div style="width: 40px; height: 40px; background: rgba(139,92,246,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                <i data-lucide="play" style="width: 20px; height: 20px; color: #8b5cf6;"></i>
-              </div>
-              <div style="flex: 1;">
-                <div style="color: #fff; font-size: 14px; font-weight: 600;">Start</div>
-                <div style="color: #94a3b8; font-size: 12px;">Click to set trigger</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Connection Line -->
-          <div style="width: 2px; height: 40px; background: linear-gradient(180deg, #8b5cf6, #3B82F6); position: relative;">
-            <div class="connection-anim" style="position: absolute; width: 6px; height: 6px; background: #fff; border-radius: 50%; left: 50%; transform: translateX(-50%); animation: flowDown 1.5s linear infinite;"></div>
-          </div>
-
-          <!-- Add Step Placeholder -->
-          <div id="addStepPlaceholder" style="width: 280px; padding: 30px; border: 2px dashed rgba(148,163,184,0.3); border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s;">
-            <i data-lucide="plus-circle" style="width: 32px; height: 32px; color: #94a3b8; margin-bottom: 8px;"></i>
-            <div style="color: #94a3b8; font-size: 13px;">Add your first step</div>
-          </div>
-        </div>
-
-        <!-- Empty State -->
-        <div id="emptyWorkflowState" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-          <div style="width: 80px; height: 80px; background: rgba(59,130,246,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-            <i data-lucide="workflow" style="width: 40px; height: 40px; color: #3B82F6;"></i>
-          </div>
-          <div style="color: #fff; font-size: 16px; font-weight: 600; margin-bottom: 8px;">Build Your Workflow</div>
-          <div style="color: #94a3b8; font-size: 13px;">Drag nodes from the sidebar or click the + button</div>
-        </div>
-      </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-slate-700/50">
+            <th class="text-left p-4 text-gray-400 font-medium">Name</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Trigger</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Action</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Runs</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Status</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="automationsTableBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- Automation Logs Modal -->
-  <div id="logsModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: rgba(15,23,42,0.95); border: 1px solid rgba(59,130,246,0.3); border-radius: 24px; padding: 32px; max-width: 1000px; width: 90%; max-height: 80vh; overflow-y: auto;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h2 style="margin: 0; color: #fff; font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
-          <i data-lucide="scroll-text" style="width: 28px; height: 28px; color: #3B82F6;"></i>
-          Automation Logs
-        </h2>
-        <button id="closeLogsBtn" style="background: none; border: none; color: #94a3b8; cursor: pointer; padding: 8px; border-radius: 8px; transition: all 0.2s;">
-          <i data-lucide="x" style="width: 24px; height: 24px;"></i>
-        </button>
-      </div>
-
-      <!-- Filters -->
-      <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-        <select id="logFilterStatus" style="padding: 10px 16px; background: rgba(10,15,26,0.8); border: 1px solid rgba(148,163,184,0.2); border-radius: 8px; color: #fff; font-size: 13px;">
-          <option value="all">All Status</option>
-          <option value="success">Success</option>
-          <option value="failed">Failed</option>
-          <option value="skipped">Skipped</option>
-        </select>
-        
-        <select id="logFilterAutomation" style="padding: 10px 16px; background: rgba(10,15,26,0.8); border: 1px solid rgba(148,163,184,0.2); border-radius: 8px; color: #fff; font-size: 13px;">
-          <option value="all">All Automations</option>
-        </select>
-        
-        <input id="logDateFilter" type="date" style="padding: 10px 16px; background: rgba(10,15,26,0.8); border: 1px solid rgba(148,163,184,0.2); border-radius: 8px; color: #fff; font-size: 13px;">
-      </div>
-
-      <!-- Logs Table -->
-      <div id="logsTable" style="display: flex; flex-direction: column; gap: 8px;">
-        <!-- Log entries rendered here -->
-      </div>
+  <!-- Execution Log -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="activity" class="w-5 h-5 text-emerald-400"></i>
+        Execution Log
+      </h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-slate-700/50">
+            <th class="text-left p-4 text-gray-400 font-medium">Time</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Automation</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Action</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Target</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Result</th>
+          </tr>
+        </thead>
+        <tbody id="executionLogBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
 
-<style>
-@keyframes flowDown {
-  0% { top: 0; opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { top: 100%; opacity: 0; }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(-10px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.template-card {
-  background: rgba(15,23,42,0.8);
-  border: 1px solid rgba(59,130,246,0.2);
-  border-radius: 16px;
-  padding: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.template-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #3B82F6, #06B6D4);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.template-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(59,130,246,0.5);
-  box-shadow: 0 10px 40px rgba(59,130,246,0.15);
-}
-
-.template-card:hover::before {
-  transform: scaleX(1);
-}
-
-.automation-item {
-  background: rgba(10,15,26,0.6);
-  border: 1px solid rgba(59,130,246,0.1);
-  border-radius: 12px;
-  padding: 16px 20px;
-  display: grid;
-  grid-template-columns: 1fr auto auto auto auto;
-  gap: 20px;
-  align-items: center;
-  transition: all 0.3s ease;
-  animation: slideIn 0.3s ease forwards;
-}
-
-.automation-item:hover {
-  border-color: rgba(59,130,246,0.3);
-  background: rgba(10,15,26,0.8);
-}
-
-.toggle-switch {
-  width: 48px;
-  height: 26px;
-  background: rgba(148,163,184,0.3);
-  border-radius: 13px;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.toggle-switch.active {
-  background: #22C55E;
-}
-
-.toggle-switch::after {
-  content: '';
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  background: #fff;
-  border-radius: 50%;
-  top: 2px;
-  left: 2px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.toggle-switch.active::after {
-  left: 24px;
-}
-
-.status-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.status-success { background: rgba(34,197,94,0.2); color: #22C55E; }
-.status-failed { background: rgba(239,68,68,0.2); color: #ef4444; }
-.status-skipped { background: rgba(234,179,8,0.2); color: #eab308; }
-
-.log-entry {
-  background: rgba(10,15,26,0.6);
-  border-radius: 10px;
-  padding: 14px 18px;
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  gap: 16px;
-  align-items: center;
-  animation: slideIn 0.3s ease forwards;
-}
-
-.log-entry:hover {
-  background: rgba(10,15,26,0.8);
-}
-
-.node-palette-item:hover {
-  transform: translateX(4px);
-}
-
-.node-palette-item:active {
-  cursor: grabbing;
-}
-
-.workflow-step {
-  width: 280px;
-  padding: 20px;
-  border-radius: 16px;
-  position: relative;
-  animation: slideIn 0.4s ease forwards;
-}
-
-.workflow-step.trigger { 
-  background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.1)); 
-  border: 2px solid #8b5cf6; 
-}
-
-.workflow-step.action { 
-  background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.1)); 
-  border: 2px solid #3B82F6; 
-}
-
-.workflow-step.condition { 
-  background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.1)); 
-  border: 2px solid #eab308; 
-}
-
-.workflow-step.delay { 
-  background: linear-gradient(135deg, rgba(6,182,212,0.2), rgba(6,182,212,0.1)); 
-  border: 2px solid #06B6D4; 
-}
-
-.workflow-connector {
-  width: 2px;
-  height: 40px;
-  background: linear-gradient(180deg, var(--from-color), var(--to-color));
-  position: relative;
-}
-
-.workflow-connector::after {
-  content: '';
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: #fff;
-  border-radius: 50%;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: flowDown 1.5s linear infinite;
-}
-</style>
+<!-- Create Automation Modal -->
+<div id="createModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center">
+  <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-lg w-full mx-4">
+    <h2 class="text-2xl font-bold text-white mb-6">Create Automation</h2>
+    
+    <div class="space-y-4">
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Name</label>
+        <input type="text" id="newName" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500" placeholder="My Automation">
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Trigger</label>
+        <select id="newTrigger" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+          <option value="new_lead">New Lead Created</option>
+          <option value="status_change">Lead Status Changed</option>
+          <option value="time_based">Time-Based (Daily)</option>
+          <option value="payment_due">Payment Due Date</option>
+          <option value="no_contact">No Contact in 7 Days</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Action</label>
+        <select id="newAction" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+          <option value="send_sms">Send SMS</option>
+          <option value="send_email">Send Email</option>
+          <option value="assign_agent">Assign to Agent</option>
+          <option value="change_status">Change Status</option>
+          <option value="create_task">Create Task</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Message (if applicable)</label>
+        <textarea id="newMessage" rows="3" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500" placeholder="Hi {name}, this is..."></textarea>
+      </div>
+    </div>
+    
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeCreateModal()" class="flex-1 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors">Cancel</button>
+      <button onclick="createAutomation()" class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all">Create</button>
+    </div>
+  </div>
+</div>
 
 <script>
-(function() {
-  // Pre-built Templates
+  // Toast Function
+  function showToast(msg, type='info') {
+    const toast = document.createElement('div');
+    const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-blue-500' };
+    toast.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // Check DebtDB
+  if (!window.DebtDB) {
+    showToast('DebtDB not loaded!', 'error');
+  }
+
+  // Local storage for automations (since DebtDB doesn't have automation methods yet)
+  function getAutomations() {
+    const data = localStorage.getItem('automations');
+    return data ? JSON.parse(data) : [];
+  }
+
+  function saveAutomations(automations) {
+    localStorage.setItem('automations', JSON.stringify(automations));
+  }
+
+  function getExecutionLog() {
+    const data = localStorage.getItem('automation_log');
+    return data ? JSON.parse(data) : [];
+  }
+
+  function saveExecutionLog(log) {
+    localStorage.setItem('automation_log', JSON.stringify(log));
+  }
+
+  // Templates
   const templates = [
     {
-      id: 'new-lead-followup',
-      name: 'New Lead Follow-up',
-      description: 'Auto-email + SMS + task for agent when new lead enters system',
-      icon: 'user-plus',
-      color: '#3B82F6',
-      steps: ['trigger:lead_created', 'action:send_email', 'action:send_sms', 'action:create_task']
+      name: 'Follow-up No Answer',
+      trigger: 'No Contact in 7 Days',
+      action: 'Send SMS',
+      icon: '📞',
+      message: 'Hi {name}, we haven\'t heard from you. Just checking in!'
     },
     {
-      id: 'missed-payment',
-      name: 'Missed Payment Alert',
-      description: 'Notify client + agent + manager when payment fails',
-      icon: 'alert-circle',
-      color: '#ef4444',
-      steps: ['trigger:payment_failed', 'action:notify_client', 'action:notify_agent', 'action:notify_manager']
+      name: 'Birthday Greeting',
+      trigger: 'Birthday Date',
+      action: 'Send Email',
+      icon: '🎂',
+      message: 'Happy Birthday {name}! 🎉'
     },
     {
-      id: 'settlement-review',
-      name: 'Settlement Offer Review',
-      description: 'Route to attorney + notify client of settlement offer',
-      icon: 'file-check',
-      color: '#22C55E',
-      steps: ['trigger:settlement_offer', 'action:route_attorney', 'action:notify_client', 'condition:client_approve']
+      name: 'Payment Reminder',
+      trigger: 'Payment Due in 3 Days',
+      action: 'Send SMS',
+      icon: '💳',
+      message: 'Reminder: Your payment of ${amount} is due in 3 days.'
     },
     {
-      id: 'enrollment-anniversary',
-      name: 'Enrollment Anniversary',
-      description: 'Check-in email at 3/6/12 months in program',
-      icon: 'calendar-heart',
-      color: '#8b5cf6',
-      steps: ['trigger:schedule', 'condition:months_enrolled', 'action:send_checkin_email']
-    },
-    {
-      id: 'stale-lead',
-      name: 'Stale Lead Reactivation',
-      description: 'Re-engage after 30 days of no activity',
-      icon: 'refresh-cw',
-      color: '#eab308',
-      steps: ['trigger:schedule', 'condition:days_inactive', 'action:send_reactivation', 'action:create_call_task']
-    },
-    {
-      id: 'welcome-sequence',
-      name: 'Welcome Sequence',
-      description: '5-email drip over 14 days for new enrollments',
-      icon: 'mail',
-      color: '#06B6D4',
-      steps: ['trigger:enrollment', 'action:send_email', 'delay:2_days', 'action:send_email', 'delay:3_days', 'action:send_email']
-    }
-  ];
-
-  // Mock Active Automations
-  let automations = JSON.parse(localStorage.getItem('automations') || 'null') || [
-    {
-      id: 'AUTO001',
-      name: 'New Lead Follow-up',
+      name: 'New Lead Assignment',
       trigger: 'New Lead Created',
-      actions: 'Email → SMS → Task',
-      status: 'active',
-      lastRun: '2026-02-24T18:45:00',
-      runCount: 156
+      action: 'Assign to Agent',
+      icon: '🎯',
+      message: ''
     },
     {
-      id: 'AUTO002',
-      name: 'Missed Payment Alert',
-      trigger: 'Payment Failed',
-      actions: 'Notify All',
-      status: 'active',
-      lastRun: '2026-02-24T17:30:00',
-      runCount: 23
+      name: 'Status Change Notification',
+      trigger: 'Lead Status Changed',
+      action: 'Send Email',
+      icon: '📊',
+      message: 'Your status has been updated to {status}.'
     },
     {
-      id: 'AUTO003',
-      name: 'Stale Lead Reactivation',
-      trigger: 'Daily Schedule',
-      actions: 'Email + Call Task',
-      status: 'paused',
-      lastRun: '2026-02-23T09:00:00',
-      runCount: 89
-    },
-    {
-      id: 'AUTO004',
-      name: 'Welcome Email Series',
-      trigger: 'Enrollment Complete',
-      actions: '5-Email Drip',
-      status: 'active',
-      lastRun: '2026-02-24T16:20:00',
-      runCount: 312
+      name: 'Compliance Deadline Alert',
+      trigger: 'Compliance Date - 7 Days',
+      action: 'Create Task',
+      icon: '⚠️',
+      message: ''
     }
   ];
-
-  // Mock Automation Logs
-  const logs = [
-    { id: 'LOG001', automation: 'New Lead Follow-up', status: 'success', message: 'Executed for lead L0123 - Sarah Wilson', timestamp: '2026-02-24T18:45:00' },
-    { id: 'LOG002', automation: 'Missed Payment Alert', status: 'success', message: 'Payment failed for client C0045 - Mike Brown', timestamp: '2026-02-24T17:30:00' },
-    { id: 'LOG003', automation: 'Stale Lead Reactivation', status: 'skipped', message: 'No stale leads found (threshold: 30 days)', timestamp: '2026-02-24T09:00:00' },
-    { id: 'LOG004', automation: 'Welcome Email Series', status: 'success', message: 'Day 1 email sent to Emily Parker', timestamp: '2026-02-24T16:20:00' },
-    { id: 'LOG005', automation: 'Welcome Email Series', status: 'failed', message: 'SMTP error - retry scheduled', timestamp: '2026-02-24T15:45:00' },
-    { id: 'LOG006', automation: 'New Lead Follow-up', status: 'success', message: 'Executed for lead L0122 - John Davis', timestamp: '2026-02-24T14:30:00' },
-    { id: 'LOG007', automation: 'Settlement Offer Review', status: 'success', message: 'Offer routed to attorney for case C0023', timestamp: '2026-02-24T13:15:00' },
-    { id: 'LOG008', automation: 'Enrollment Anniversary', status: 'success', message: '6-month check-in sent to 23 clients', timestamp: '2026-02-24T10:00:00' }
-  ];
-
-  let currentWorkflow = [];
-
-  function init() {
-    renderTemplates();
-    renderAutomations();
-    renderLogs();
-    setupEventListeners();
-  }
 
   function renderTemplates() {
     const grid = document.getElementById('templatesGrid');
-    grid.innerHTML = '';
-    
-    templates.forEach((template, index) => {
-      const card = document.createElement('div');
-      card.className = 'template-card';
-      card.style.animationDelay = (index * 0.05) + 's';
-      card.innerHTML = `
-        <div style="display: flex; align-items: flex-start; gap: 14px;">
-          <div style="width: 48px; height: 48px; background: rgba(${hexToRgb(template.color)},0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <i data-lucide="${template.icon}" style="width: 24px; height: 24px; color: ${template.color};"></i>
-          </div>
-          <div style="flex: 1;">
-            <div style="color: #fff; font-weight: 600; font-size: 14px; margin-bottom: 6px;">${template.name}</div>
-            <div style="color: #94a3b8; font-size: 12px; line-height: 1.4;">${template.description}</div>
+    grid.innerHTML = templates.map((t, i) => `
+      <div onclick="useTemplate(${i})" class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 hover:border-purple-500/50 transition-all cursor-pointer group">
+        <div class="flex items-start gap-3">
+          <div class="text-4xl">${t.icon}</div>
+          <div class="flex-1">
+            <div class="text-white font-semibold mb-1">${t.name}</div>
+            <div class="text-xs text-gray-400 mb-2">
+              <span class="text-blue-400">${t.trigger}</span> → <span class="text-emerald-400">${t.action}</span>
+            </div>
           </div>
         </div>
-      `;
-      card.addEventListener('click', () => loadTemplate(template));
-      grid.appendChild(card);
-    });
+        <div class="text-xs text-purple-400 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          Click to use template
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function useTemplate(index) {
+    const template = templates[index];
+    const automations = getAutomations();
+    
+    const newAutomation = {
+      id: 'auto_' + Date.now(),
+      name: template.name,
+      trigger: template.trigger,
+      action: template.action,
+      message: template.message,
+      enabled: true,
+      runs: 0,
+      createdAt: new Date().toISOString()
+    };
+    
+    automations.push(newAutomation);
+    saveAutomations(automations);
+    
+    showToast('Automation created from template!', 'success');
+    renderAutomations();
   }
 
   function renderAutomations() {
-    const list = document.getElementById('automationsList');
-    list.innerHTML = '';
+    const automations = getAutomations();
+    const tbody = document.getElementById('automationsTableBody');
     
-    automations.forEach((auto, index) => {
-      const item = document.createElement('div');
-      item.className = 'automation-item';
-      item.style.animationDelay = (index * 0.05) + 's';
-      
-      const statusColor = auto.status === 'active' ? '#22C55E' : '#94a3b8';
-      
-      item.innerHTML = `
-        <div>
-          <div style="color: #fff; font-weight: 600; font-size: 14px; margin-bottom: 4px;">${auto.name}</div>
-          <div style="color: #94a3b8; font-size: 12px;">${auto.trigger} → ${auto.actions}</div>
-        </div>
-        
-        <div style="color: #94a3b8; font-size: 12px; text-align: center;">
-          <div style="color: #64748b; font-size: 10px; margin-bottom: 2px;">Last Run</div>
-          ${formatTime(auto.lastRun)}
-        </div>
-        
-        <div style="color: #94a3b8; font-size: 12px; text-align: center;">
-          <div style="color: #64748b; font-size: 10px; margin-bottom: 2px;">Runs</div>
-          <span style="color: #3B82F6; font-weight: 600; font-family: 'Orbitron', monospace;">${auto.runCount.toLocaleString()}</span>
-        </div>
-        
-        <div class="toggle-switch ${auto.status}" data-id="${auto.id}" title="${auto.status === 'active' ? 'Active' : 'Paused'}"></div>
-        
-        <button class="edit-auto-btn" data-id="${auto.id}" style="background: none; border: none; color: #94a3b8; cursor: pointer; padding: 8px; border-radius: 6px; transition: all 0.2s;">
-          <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
-        </button>
-      `;
-      
-      list.appendChild(item);
-    });
-    
-    // Add toggle listeners
-    list.querySelectorAll('.toggle-switch').forEach(toggle => {
-      toggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = toggle.dataset.id;
-        toggleAutomation(id);
-      });
-    });
-    
-    if (window.lucide) window.lucide.createIcons();
-  }
-
-  function renderLogs(filter = {}) {
-    const container = document.getElementById('logsTable');
-    container.innerHTML = '';
-    
-    let filteredLogs = logs;
-    if (filter.status && filter.status !== 'all') {
-      filteredLogs = filteredLogs.filter(l => l.status === filter.status);
+    if (automations.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">No automations yet. Create one above!</td></tr>';
+      return;
     }
     
-    filteredLogs.forEach((log, index) => {
-      const entry = document.createElement('div');
-      entry.className = 'log-entry';
-      entry.style.animationDelay = (index * 0.03) + 's';
-      
-      const statusIcon = log.status === 'success' ? 'check-circle' : log.status === 'failed' ? 'x-circle' : 'skip-forward';
-      
-      entry.innerHTML = `
-        <div class="status-badge status-${log.status}">
-          <i data-lucide="${statusIcon}" style="width: 14px; height: 14px;"></i>
-          ${log.status.toUpperCase()}
-        </div>
-        
-        <div>
-          <div style="color: #fff; font-size: 13px; font-weight: 500; margin-bottom: 2px;">${log.automation}</div>
-          <div style="color: #94a3b8; font-size: 12px;">${log.message}</div>
-        </div>
-        
-        <div style="color: #64748b; font-size: 11px;">${formatTime(log.timestamp)}</div>
-        
-        <button style="background: none; border: none; color: #64748b; cursor: pointer; padding: 4px;">
-          <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
-        </button>
-      `;
-      
-      container.appendChild(entry);
-    });
+    tbody.innerHTML = automations.map(a => `
+      <tr class="border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+        <td class="p-4 text-white font-medium">${a.name}</td>
+        <td class="p-4 text-gray-300 text-sm">${a.trigger}</td>
+        <td class="p-4 text-gray-300 text-sm">${a.action}</td>
+        <td class="p-4 text-gray-300 font-mono" style="font-family: 'Orbitron', monospace;">${a.runs || 0}</td>
+        <td class="p-4">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold ${a.enabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-500/20 text-gray-400'}">
+            ${a.enabled ? 'Active' : 'Disabled'}
+          </span>
+        </td>
+        <td class="p-4 flex gap-2">
+          <button onclick="toggleAutomation('${a.id}')" class="text-${a.enabled ? 'yellow' : 'blue'}-400 hover:text-${a.enabled ? 'yellow' : 'blue'}-300">
+            <i data-lucide="${a.enabled ? 'pause' : 'play'}" class="w-4 h-4"></i>
+          </button>
+          <button onclick="testAutomation('${a.id}')" class="text-emerald-400 hover:text-emerald-300">
+            <i data-lucide="play-circle" class="w-4 h-4"></i>
+          </button>
+          <button onclick="deleteAutomation('${a.id}')" class="text-red-400 hover:text-red-300">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </td>
+      </tr>
+    `).join('');
     
-    if (window.lucide) window.lucide.createIcons();
-  }
-
-  function setupEventListeners() {
-    document.getElementById('createAutomationBtn').addEventListener('click', () => {
-      document.getElementById('workflowBuilder').style.display = 'block';
-      document.getElementById('workflowBuilder').scrollIntoView({ behavior: 'smooth' });
-    });
-    
-    document.getElementById('cancelWorkflowBtn').addEventListener('click', () => {
-      document.getElementById('workflowBuilder').style.display = 'none';
-      resetWorkflow();
-    });
-    
-    document.getElementById('saveWorkflowBtn').addEventListener('click', saveWorkflow);
-    
-    document.getElementById('viewLogsBtn').addEventListener('click', () => {
-      document.getElementById('logsModal').style.display = 'flex';
-    });
-    
-    document.getElementById('closeLogsBtn').addEventListener('click', () => {
-      document.getElementById('logsModal').style.display = 'none';
-    });
-    
-    document.getElementById('logFilterStatus').addEventListener('change', (e) => {
-      renderLogs({ status: e.target.value });
-    });
-    
-    // Close modals on outside click
-    document.getElementById('logsModal').addEventListener('click', (e) => {
-      if (e.target.id === 'logsModal') document.getElementById('logsModal').style.display = 'none';
-    });
+    lucide.createIcons();
   }
 
   function toggleAutomation(id) {
-    const auto = automations.find(a => a.id === id);
-    if (auto) {
-      auto.status = auto.status === 'active' ? 'paused' : 'active';
-      localStorage.setItem('automations', JSON.stringify(automations));
-      renderAutomations();
-    }
-  }
-
-  function loadTemplate(template) {
-    document.getElementById('workflowBuilder').style.display = 'block';
-    document.getElementById('workflowName').value = template.name;
-    document.getElementById('workflowBuilder').scrollIntoView({ behavior: 'smooth' });
+    const automations = getAutomations();
+    const automation = automations.find(a => a.id === id);
+    if (!automation) return;
     
-    // Pre-populate workflow with template steps
-    currentWorkflow = template.steps.map(step => {
-      const [type, action] = step.split(':');
-      return { type, action, id: Date.now() + Math.random() };
-    });
+    automation.enabled = !automation.enabled;
+    saveAutomations(automations);
     
-    renderWorkflow();
-  }
-
-  function renderWorkflow() {
-    const canvas = document.getElementById('workflowNodes');
-    const emptyState = document.getElementById('emptyWorkflowState');
-    
-    if (currentWorkflow.length === 0) {
-      emptyState.style.display = 'block';
-      return;
-    }
-    
-    emptyState.style.display = 'none';
-    
-    // Keep start node, remove others
-    const startNode = canvas.querySelector('.trigger-node');
-    canvas.innerHTML = '';
-    canvas.appendChild(startNode);
-    
-    // Add connector
-    const connector = document.createElement('div');
-    connector.className = 'workflow-connector';
-    connector.style.setProperty('--from-color', '#8b5cf6');
-    connector.style.setProperty('--to-color', '#3B82F6');
-    canvas.appendChild(connector);
-    
-    // Add workflow steps
-    currentWorkflow.forEach((step, index) => {
-      const stepEl = createWorkflowStep(step, index);
-      canvas.appendChild(stepEl);
-      
-      if (index < currentWorkflow.length - 1) {
-        const nextConnector = document.createElement('div');
-        nextConnector.className = 'workflow-connector';
-        const colors = ['#3B82F6', '#eab308', '#06B6D4', '#8b5cf6'];
-        nextConnector.style.setProperty('--from-color', colors[index % colors.length]);
-        nextConnector.style.setProperty('--to-color', colors[(index + 1) % colors.length]);
-        canvas.appendChild(nextConnector);
-      }
-    });
-    
-    // Add final placeholder
-    const placeholder = document.createElement('div');
-    placeholder.id = 'addStepPlaceholder';
-    placeholder.style.cssText = 'width: 280px; padding: 30px; border: 2px dashed rgba(148,163,184,0.3); border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s;';
-    placeholder.innerHTML = `
-      <i data-lucide="plus-circle" style="width: 32px; height: 32px; color: #94a3b8; margin-bottom: 8px;"></i>
-      <div style="color: #94a3b8; font-size: 13px;">Add another step</div>
-    `;
-    canvas.appendChild(placeholder);
-    
-    if (window.lucide) window.lucide.createIcons();
-  }
-
-  function createWorkflowStep(step, index) {
-    const div = document.createElement('div');
-    div.className = `workflow-step ${step.type}`;
-    div.style.animationDelay = (index * 0.1) + 's';
-    
-    const icons = {
-      trigger: 'lightning',
-      action: 'zap',
-      condition: 'git-branch',
-      delay: 'clock'
-    };
-    
-    const colors = {
-      trigger: '#8b5cf6',
-      action: '#3B82F6',
-      condition: '#eab308',
-      delay: '#06B6D4'
-    };
-    
-    div.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-          <i data-lucide="${icons[step.type]}" style="width: 20px; height: 20px; color: ${colors[step.type]};"></i>
-        </div>
-        <div style="flex: 1;">
-          <div style="color: #fff; font-size: 14px; font-weight: 600; text-transform: capitalize;">${step.action.replace('_', ' ')}</div>
-          <div style="color: #94a3b8; font-size: 12px; text-transform: capitalize;">${step.type} Step</div>
-        </div>
-        <button class="remove-step" data-index="${index}" style="background: none; border: none; color: #64748b; cursor: pointer; padding: 4px; opacity: 0; transition: opacity 0.2s;">
-          <i data-lucide="x" style="width: 16px; height: 16px;"></i>
-        </button>
-      </div>
-    `;
-    
-    div.addEventListener('mouseenter', () => {
-      div.querySelector('.remove-step').style.opacity = '1';
-    });
-    div.addEventListener('mouseleave', () => {
-      div.querySelector('.remove-step').style.opacity = '0';
-    });
-    
-    div.querySelector('.remove-step').addEventListener('click', () => {
-      currentWorkflow.splice(index, 1);
-      renderWorkflow();
-    });
-    
-    return div;
-  }
-
-  function saveWorkflow() {
-    const name = document.getElementById('workflowName').value;
-    if (!name) {
-      Toast.warning('Please name your automation before saving');
-      return;
-    }
-    
-    const newAuto = {
-      id: 'AUTO' + String(automations.length + 1).padStart(3, '0'),
-      name: name,
-      trigger: currentWorkflow[0]?.action.replace('_', ' ') || 'Manual',
-      actions: currentWorkflow.length + ' steps',
-      status: 'active',
-      lastRun: 'Never',
-      runCount: 0
-    };
-    
-    automations.push(newAuto);
-    localStorage.setItem('automations', JSON.stringify(automations));
-    
+    showToast(`Automation ${automation.enabled ? 'enabled' : 'disabled'}!`, 'success');
     renderAutomations();
-    document.getElementById('workflowBuilder').style.display = 'none';
-    resetWorkflow();
   }
 
-  function resetWorkflow() {
-    currentWorkflow = [];
-    document.getElementById('workflowName').value = '';
-    const canvas = document.getElementById('workflowNodes');
-    canvas.innerHTML = `
-      <div class="workflow-node trigger-node" style="width: 280px; padding: 20px; background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.1)); border: 2px solid #8b5cf6; border-radius: 16px; position: relative; z-index: 2;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="width: 40px; height: 40px; background: rgba(139,92,246,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-            <i data-lucide="play" style="width: 20px; height: 20px; color: #8b5cf6;"></i>
-          </div>
-          <div style="flex: 1;">
-            <div style="color: #fff; font-size: 14px; font-weight: 600;">Start</div>
-            <div style="color: #94a3b8; font-size: 12px;">Click to set trigger</div>
-          </div>
-        </div>
-      </div>
-      <div style="width: 2px; height: 40px; background: linear-gradient(180deg, #8b5cf6, #3B82F6); position: relative;">
-        <div class="connection-anim" style="position: absolute; width: 6px; height: 6px; background: #fff; border-radius: 50%; left: 50%; transform: translateX(-50%); animation: flowDown 1.5s linear infinite;"></div>
-      </div>
-      <div id="addStepPlaceholder" style="width: 280px; padding: 30px; border: 2px dashed rgba(148,163,184,0.3); border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s;">
-        <i data-lucide="plus-circle" style="width: 32px; height: 32px; color: #94a3b8; margin-bottom: 8px;"></i>
-        <div style="color: #94a3b8; font-size: 13px;">Add your first step</div>
-      </div>
-    `;
-  }
-
-  function formatTime(timestamp) {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diff = (now - date) / 1000 / 60; // minutes
+  function testAutomation(id) {
+    const automations = getAutomations();
+    const automation = automations.find(a => a.id === id);
+    if (!automation) return;
     
-    if (diff < 1) return 'Just now';
-    if (diff < 60) return `${Math.floor(diff)}m ago`;
-    if (diff < 1440) return `${Math.floor(diff / 60)}h ago`;
-    return date.toLocaleDateString();
+    // Simulate execution
+    const log = getExecutionLog();
+    log.unshift({
+      id: 'exec_' + Date.now(),
+      automationId: id,
+      automationName: automation.name,
+      action: automation.action,
+      target: 'Test User',
+      result: 'Success',
+      timestamp: new Date().toISOString()
+    });
+    
+    // Keep only last 50 entries
+    if (log.length > 50) log.length = 50;
+    
+    saveExecutionLog(log);
+    
+    // Increment run count
+    automation.runs = (automation.runs || 0) + 1;
+    saveAutomations(automations);
+    
+    showToast('Automation test executed!', 'success');
+    renderAutomations();
+    renderExecutionLog();
   }
 
-  function hexToRgb(hex) {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? 
-      `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
-      '59, 130, 246';
+  function deleteAutomation(id) {
+    if (!confirm('Delete this automation?')) return;
+    
+    const automations = getAutomations();
+    const filtered = automations.filter(a => a.id !== id);
+    saveAutomations(filtered);
+    
+    showToast('Automation deleted!', 'success');
+    renderAutomations();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+  function renderExecutionLog() {
+    const log = getExecutionLog();
+    const tbody = document.getElementById('executionLogBody');
+    
+    if (log.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">No executions yet</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = log.slice(0, 20).map(entry => {
+      const date = new Date(entry.timestamp);
+      const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      return `
+        <tr class="border-b border-slate-700/30">
+          <td class="p-4 text-gray-400 text-sm">${timeStr}</td>
+          <td class="p-4 text-white text-sm">${entry.automationName}</td>
+          <td class="p-4 text-gray-300 text-sm">${entry.action}</td>
+          <td class="p-4 text-gray-300 text-sm">${entry.target}</td>
+          <td class="p-4">
+            <span class="px-2 py-1 rounded-full text-xs font-semibold ${entry.result === 'Success' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}">
+              ${entry.result}
+            </span>
+          </td>
+        </tr>
+      `;
+    }).join('');
   }
-})();
+
+  function openCreateModal() {
+    document.getElementById('createModal').classList.remove('hidden');
+    document.getElementById('createModal').classList.add('flex');
+  }
+
+  function closeCreateModal() {
+    document.getElementById('createModal').classList.add('hidden');
+    document.getElementById('createModal').classList.remove('flex');
+  }
+
+  function createAutomation() {
+    const name = document.getElementById('newName').value.trim();
+    const trigger = document.getElementById('newTrigger').value;
+    const action = document.getElementById('newAction').value;
+    const message = document.getElementById('newMessage').value.trim();
+    
+    if (!name) {
+      showToast('Name is required', 'error');
+      return;
+    }
+    
+    const automations = getAutomations();
+    
+    const newAutomation = {
+      id: 'auto_' + Date.now(),
+      name,
+      trigger: document.getElementById('newTrigger').selectedOptions[0].text,
+      action: document.getElementById('newAction').selectedOptions[0].text,
+      message,
+      enabled: true,
+      runs: 0,
+      createdAt: new Date().toISOString()
+    };
+    
+    automations.push(newAutomation);
+    saveAutomations(automations);
+    
+    showToast('Automation created!', 'success');
+    renderAutomations();
+    closeCreateModal();
+    
+    // Clear form
+    document.getElementById('newName').value = '';
+    document.getElementById('newMessage').value = '';
+  }
+
+  // Initialize
+  renderTemplates();
+  renderAutomations();
+  renderExecutionLog();
+  lucide.createIcons();
 </script>
+</body>
+</html>

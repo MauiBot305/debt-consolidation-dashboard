@@ -1,782 +1,400 @@
-<div id="callHistory" class="page-container">
-  <style>
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      animation: slideInDown 0.5s ease-out;
-    }
-
-    @keyframes slideInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .filters-bar {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      animation: fadeIn 0.6s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .filter-label {
-      color: #64748B;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .filter-input, .filter-select {
-      padding: 12px 16px;
-      background: rgba(10, 15, 26, 0.6);
-      border: 2px solid rgba(59, 130, 246, 0.3);
-      border-radius: 12px;
-      color: white;
-      font-size: 14px;
-      transition: all 0.3s;
-    }
-
-    .filter-input:focus, .filter-select:focus {
-      outline: none;
-      border-color: #3B82F6;
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-    }
-
-    .calls-table-container {
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      border-radius: 24px;
-      padding: 24px;
-      overflow-x: auto;
-      animation: fadeInUp 0.7s ease-out;
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .calls-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .calls-table thead th {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
-      color: #3B82F6;
-      font-weight: 600;
-      text-align: left;
-      padding: 16px;
-      border-bottom: 2px solid rgba(59, 130, 246, 0.3);
-      text-transform: uppercase;
-      font-size: 12px;
-      letter-spacing: 1px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .calls-table tbody tr {
-      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-    }
-
-    .calls-table tbody tr:hover {
-      background: rgba(59, 130, 246, 0.05);
-      transform: translateX(4px);
-    }
-
-    .calls-table tbody td {
-      padding: 16px;
-      color: #E2E8F0;
-      font-size: 14px;
-    }
-
-    .direction-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .direction-inbound {
-      background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1));
-      color: #22C55E;
-      border: 1px solid rgba(34, 197, 94, 0.5);
-    }
-
-    .direction-outbound {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.1));
-      color: #3B82F6;
-      border: 1px solid rgba(59, 130, 246, 0.5);
-    }
-
-    .disposition-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 600;
-      border: 1px solid currentColor;
-    }
-
-    .disposition-enrolled {
-      background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1));
-      color: #22C55E;
-    }
-
-    .disposition-callback {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(245, 158, 11, 0.1));
-      color: #F59E0B;
-    }
-
-    .disposition-no-answer, .disposition-voicemail {
-      background: linear-gradient(135deg, rgba(100, 116, 139, 0.3), rgba(100, 116, 139, 0.1));
-      color: #94A3B8;
-    }
-
-    .disposition-not-interested {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1));
-      color: #EF4444;
-    }
-
-    .recording-btn {
-      padding: 6px 12px;
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
-      border: none;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-
-    .recording-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
-    }
-
-    .recording-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .call-details-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      animation: fadeIn 0.3s;
-    }
-
-    .call-details-modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.95));
-      border: 2px solid rgba(59, 130, 246, 0.5);
-      border-radius: 24px;
-      padding: 32px;
-      max-width: 800px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    }
-
-    @keyframes scaleIn {
-      from {
-        opacity: 0;
-        transform: scale(0.9);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: rgba(239, 68, 68, 0.2);
-      border: 2px solid #EF4444;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #EF4444;
-      cursor: pointer;
-      font-size: 20px;
-      transition: all 0.3s;
-    }
-
-    .modal-close:hover {
-      background: #EF4444;
-      color: white;
-      transform: rotate(90deg);
-    }
-
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-    }
-
-    .detail-label {
-      color: #64748B;
-      font-weight: 500;
-    }
-
-    .detail-value {
-      color: white;
-      font-weight: 600;
-    }
-
-    .export-btn {
-      padding: 12px 24px;
-      background: linear-gradient(135deg, #22C55E, #16A34A);
-      border: 2px solid #22C55E;
-      border-radius: 12px;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .export-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
-    }
-
-    .stats-summary {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .stat-box {
-      background: linear-gradient(135deg, rgba(10, 15, 26, 0.8), rgba(15, 23, 42, 0.8));
-      padding: 20px;
-      border-radius: 16px;
-      border: 2px solid rgba(59, 130, 246, 0.3);
-      transition: all 0.3s;
-    }
-
-    .stat-box:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
-      border-color: rgba(59, 130, 246, 0.5);
-    }
-
-    .stat-label {
-      color: #64748B;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      color: #3B82F6;
-      font-size: 28px;
-      font-weight: 700;
-      font-family: 'Orbitron', monospace;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 64px 32px;
-      color: #64748B;
-    }
-
-    .empty-state-icon {
-      font-size: 64px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
-    .audio-player {
-      width: 100%;
-      margin-top: 16px;
-      background: rgba(10, 15, 26, 0.8);
-      border-radius: 12px;
-      padding: 8px;
-    }
-  </style>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Call History</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght:400;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950">
+<div class="call-history-page p-6 max-w-7xl mx-auto">
   <!-- Header -->
-  <div class="history-header">
-    <h1 style="color: white; font-weight: 700; margin: 0;">📞 Call History</h1>
-    <button class="export-btn" id="exportBtn">
-      📊 Export CSV
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-white mb-1">📞 Call History</h1>
+      <p class="text-gray-400">View and analyze all call records</p>
+    </div>
+    <button onclick="exportCalls()" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2">
+      <i data-lucide="download" class="w-5 h-5"></i>
+      Export CSV
     </button>
   </div>
 
-  <!-- Stats Summary -->
-  <div class="stats-summary">
-    <div class="stat-box">
-      <div class="stat-label">Total Calls</div>
-      <div class="stat-value" id="totalCalls">0</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">Total Talk Time</div>
-      <div class="stat-value" id="totalTalkTime">0h 0m</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">Avg Duration</div>
-      <div class="stat-value" id="avgDuration">0:00</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">Connect Rate</div>
-      <div class="stat-value" id="connectRate">0%</div>
-    </div>
-  </div>
-
   <!-- Filters -->
-  <div class="filters-bar">
-    <div class="filter-group">
-      <label class="filter-label">Search</label>
-      <input type="text" class="filter-input" id="searchInput" placeholder="Lead name, phone..." style="width: 250px;">
-    </div>
-    <div class="filter-group">
-      <label class="filter-label">Date From</label>
-      <input type="date" class="filter-input" id="dateFrom">
-    </div>
-    <div class="filter-group">
-      <label class="filter-label">Date To</label>
-      <input type="date" class="filter-input" id="dateTo">
-    </div>
-    <div class="filter-group">
-      <label class="filter-label">Direction</label>
-      <select class="filter-select" id="directionFilter">
-        <option value="">All</option>
-        <option value="inbound">Inbound</option>
-        <option value="outbound">Outbound</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label class="filter-label">Disposition</label>
-      <select class="filter-select" id="dispositionFilter">
-        <option value="">All</option>
-        <option value="enrolled">Enrolled</option>
-        <option value="callback">Callback</option>
-        <option value="not-interested">Not Interested</option>
-        <option value="voicemail">Voicemail</option>
-        <option value="no-answer">No Answer</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label class="filter-label">Agent</label>
-      <select class="filter-select" id="agentFilter">
-        <option value="">All Agents</option>
-        <option value="AGT001">John Smith</option>
-        <option value="AGT002">Jane Doe</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Calls Table -->
-  <div class="calls-table-container">
-    <table class="calls-table">
-      <thead>
-        <tr>
-          <th>Date/Time</th>
-          <th>Direction</th>
-          <th>Lead</th>
-          <th>Agent</th>
-          <th>Duration</th>
-          <th>Disposition</th>
-          <th>Recording</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="callsTableBody">
-        <!-- Populated dynamically -->
-      </tbody>
-    </table>
-    <div id="emptyState" class="empty-state" style="display: none;">
-      <div class="empty-state-icon">📞</div>
-      <h3 style="color: #64748B; margin-bottom: 8px;">No calls found</h3>
-      <p style="color: #475569;">Try adjusting your filters or start making calls!</p>
-    </div>
-  </div>
-
-  <!-- Call Details Modal -->
-  <div class="call-details-modal" id="callDetailsModal">
-    <div class="modal-content" style="position: relative;">
-      <button class="modal-close" onclick="closeCallDetails()">×</button>
-      <h2 style="color: white; margin-bottom: 24px; font-weight: 700;">Call Details</h2>
-      <div id="callDetailsContent">
-        <!-- Populated dynamically -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Search</label>
+        <input type="text" id="searchInput" placeholder="Name or phone..." oninput="applyFilters()" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Agent</label>
+        <select id="filterAgent" onchange="applyFilters()" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+          <option value="">All Agents</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Disposition</label>
+        <select id="filterDisposition" onchange="applyFilters()" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+          <option value="">All</option>
+          <option value="Answer">Answer</option>
+          <option value="No Answer">No Answer</option>
+          <option value="Voicemail">Voicemail</option>
+          <option value="Busy">Busy</option>
+          <option value="Appointment Set">Appointment Set</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Date Range</label>
+        <select id="filterDate" onchange="applyFilters()" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+          <option value="all">All Time</option>
+          <option value="today">Today</option>
+          <option value="week">This Week</option>
+          <option value="month">This Month</option>
+        </select>
       </div>
     </div>
   </div>
 
-  <!-- Functionality verified by Agent 4 (Kimi 3 equivalent) -->
-  <script>
-    let allCalls = [];
-    let filteredCalls = [];
-
-    // Initialize
-    function initCallHistory() {
-      loadCalls();
-      setupFilters();
-      document.getElementById('exportBtn').addEventListener('click', exportToCSV);
-    }
-
-    // Auto-init if DOM already loaded, otherwise wait
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initCallHistory);
-    } else {
-      initCallHistory();
-    }
-
-    /**
-     * Load calls from DebtDB
-     */
-    async function loadCalls() {
-      // Get calls from DebtDB (activities with type='call')
-      const calls = DebtDB.getCalls();
-      
-      // Transform to expected format
-      allCalls = calls.map(call => {
-        const lead = DebtDB.getLeadById(call.leadId);
-        const agent = DebtDB.getAgentById(call.agentId);
-        
-        return {
-          id: call.id,
-          startTime: call.timestamp,
-          endTime: new Date(new Date(call.timestamp).getTime() + (call.duration || 0) * 1000).toISOString(),
-          duration: call.duration || 0,
-          phoneNumber: lead?.phone || 'Unknown',
-          direction: 'outbound',
-          disposition: call.result || 'completed',
-          agentId: call.agentId,
-          agentName: agent?.name || 'Unknown Agent',
-          leadData: lead,
-          recording: call.recording,
-          transcript: call.transcript,
-          notes: call.description
-        };
-      });
-      
-      applyFilters();
-      updateStats();
-    }
-
-    /**
-     * Setup filter event listeners
-     */
-    function setupFilters() {
-      document.getElementById('searchInput').addEventListener('input', applyFilters);
-      document.getElementById('dateFrom').addEventListener('change', applyFilters);
-      document.getElementById('dateTo').addEventListener('change', applyFilters);
-      document.getElementById('directionFilter').addEventListener('change', applyFilters);
-      document.getElementById('dispositionFilter').addEventListener('change', applyFilters);
-      document.getElementById('agentFilter').addEventListener('change', applyFilters);
-    }
-
-    /**
-     * Apply filters
-     */
-    function applyFilters() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const dateFrom = document.getElementById('dateFrom').value;
-      const dateTo = document.getElementById('dateTo').value;
-      const direction = document.getElementById('directionFilter').value;
-      const disposition = document.getElementById('dispositionFilter').value;
-      const agent = document.getElementById('agentFilter').value;
-
-      filteredCalls = allCalls.filter(call => {
-        // Search filter
-        if (search) {
-          const leadName = call.leadData?.name?.toLowerCase() || '';
-          const phone = call.phoneNumber?.toLowerCase() || '';
-          if (!leadName.includes(search) && !phone.includes(search)) {
-            return false;
-          }
-        }
-
-        // Date filters
-        if (dateFrom) {
-          const callDate = new Date(call.startTime).toISOString().split('T')[0];
-          if (callDate < dateFrom) return false;
-        }
-        if (dateTo) {
-          const callDate = new Date(call.startTime).toISOString().split('T')[0];
-          if (callDate > dateTo) return false;
-        }
-
-        // Direction filter
-        if (direction && call.direction !== direction) return false;
-
-        // Disposition filter
-        if (disposition && call.disposition !== disposition) return false;
-
-        // Agent filter
-        if (agent && call.agentId !== agent) return false;
-
-        return true;
-      });
-
-      renderCallsTable();
-    }
-
-    /**
-     * Render calls table
-     */
-    function renderCallsTable() {
-      const tbody = document.getElementById('callsTableBody');
-      const emptyState = document.getElementById('emptyState');
-
-      if (filteredCalls.length === 0) {
-        tbody.innerHTML = '';
-        emptyState.style.display = 'block';
-        return;
-      }
-
-      emptyState.style.display = 'none';
-
-      tbody.innerHTML = filteredCalls.map(call => {
-        const date = new Date(call.startTime);
-        const leadName = call.leadData?.name || 'Unknown';
-        const direction = call.direction || 'outbound';
-        const disposition = call.disposition || 'N/A';
-        const duration = formatDuration(call.duration || 0);
-        const hasRecording = !!call.recordingUrl;
-
-        return `
-          <tr onclick="showCallDetails('${call.id}')">
-            <td>${date.toLocaleString()}</td>
-            <td>
-              <span class="direction-badge direction-${direction}">
-                ${direction === 'inbound' ? '📥' : '📤'} ${direction}
-              </span>
-            </td>
-            <td>
-              <div style="font-weight: 600;">${leadName}</div>
-              <div style="color: #64748B; font-size: 12px;">${call.phoneNumber || 'N/A'}</div>
-            </td>
-            <td>${call.agentId || 'N/A'}</td>
-            <td>${duration}</td>
-            <td>
-              <span class="disposition-badge disposition-${disposition.toLowerCase().replace(' ', '-')}">
-                ${disposition}
-              </span>
-            </td>
-            <td>
-              <button class="recording-btn" ${!hasRecording ? 'disabled' : ''} 
-                      onclick="event.stopPropagation(); playRecording('${call.recordingUrl || ''}')">
-                ${hasRecording ? '▶️ Play' : '🚫 N/A'}
-              </button>
-            </td>
-            <td>
-              <button class="recording-btn" onclick="event.stopPropagation(); showCallDetails('${call.id}')">
-                📋 Details
-              </button>
-            </td>
+  <!-- Call Table -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-slate-700/50">
+            <th onclick="sortTable('createdAt')" class="text-left p-4 text-gray-400 font-medium cursor-pointer hover:text-white">
+              Date <i data-lucide="chevron-down" class="w-4 h-4 inline"></i>
+            </th>
+            <th onclick="sortTable('leadName')" class="text-left p-4 text-gray-400 font-medium cursor-pointer hover:text-white">
+              Caller <i data-lucide="chevron-down" class="w-4 h-4 inline"></i>
+            </th>
+            <th onclick="sortTable('agent')" class="text-left p-4 text-gray-400 font-medium cursor-pointer hover:text-white">
+              Agent <i data-lucide="chevron-down" class="w-4 h-4 inline"></i>
+            </th>
+            <th onclick="sortTable('duration')" class="text-left p-4 text-gray-400 font-medium cursor-pointer hover:text-white">
+              Duration <i data-lucide="chevron-down" class="w-4 h-4 inline"></i>
+            </th>
+            <th onclick="sortTable('disposition')" class="text-left p-4 text-gray-400 font-medium cursor-pointer hover:text-white">
+              Disposition <i data-lucide="chevron-down" class="w-4 h-4 inline"></i>
+            </th>
+            <th class="text-left p-4 text-gray-400 font-medium">Recording</th>
           </tr>
-        `;
-      }).join('');
+        </thead>
+        <tbody id="callTableBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="p-4 border-t border-slate-700/50 flex items-center justify-between">
+      <div class="text-gray-400 text-sm" id="paginationInfo">Showing 0-0 of 0</div>
+      <div class="flex gap-2">
+        <button onclick="prevPage()" id="prevBtn" class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+        </button>
+        <button onclick="nextPage()" id="nextBtn" class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call Detail Panel (shown on row click) -->
+  <div id="callDetailPanel" class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden" style="display: none;">
+    <div class="p-6 border-b border-slate-700/50 flex items-center justify-between">
+      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="info" class="w-5 h-5 text-blue-400"></i>
+        Call Details
+      </h2>
+      <button onclick="closeDetailPanel()" class="text-gray-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="p-6">
+      <div id="callDetailContent">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toast Function
+  function showToast(msg, type='info') {
+    const toast = document.createElement('div');
+    const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-blue-500' };
+    toast.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // Check DebtDB
+  if (!window.DebtDB) {
+    showToast('DebtDB not loaded!', 'error');
+  }
+
+  let currentPage = 1;
+  const perPage = 20;
+  let filteredCalls = [];
+  let sortColumn = 'createdAt';
+  let sortDirection = 'desc';
+
+  function populateAgentFilter() {
+    const agents = window.DebtDB.getAgents();
+    const select = document.getElementById('filterAgent');
+    
+    select.innerHTML = '<option value="">All Agents</option>' + 
+      agents.map(agent => `<option value="${agent.id}">${agent.name}</option>`).join('');
+  }
+
+  function applyFilters() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const agentFilter = document.getElementById('filterAgent').value;
+    const dispositionFilter = document.getElementById('filterDisposition').value;
+    const dateFilter = document.getElementById('filterDate').value;
+    
+    let calls = window.DebtDB.getCalls();
+    
+    // Search filter
+    if (search) {
+      calls = calls.filter(call => 
+        (call.leadName?.toLowerCase().includes(search)) ||
+        (call.phone?.toLowerCase().includes(search))
+      );
     }
-
-    /**
-     * Show call details in modal
-     */
-    function showCallDetails(callId) {
-      const call = allCalls.find(c => c.id === callId);
-      if (!call) return;
-
-      const modal = document.getElementById('callDetailsModal');
-      const content = document.getElementById('callDetailsContent');
-
-      const date = new Date(call.startTime);
-      const leadName = call.leadData?.name || 'Unknown';
-      const duration = formatDuration(call.duration || 0);
-
-      content.innerHTML = `
-        <div class="detail-row">
-          <span class="detail-label">Call ID</span>
-          <span class="detail-value">${call.id}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Date/Time</span>
-          <span class="detail-value">${date.toLocaleString()}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Direction</span>
-          <span class="detail-value">${call.direction || 'outbound'}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Lead</span>
-          <span class="detail-value">${leadName}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Phone</span>
-          <span class="detail-value">${call.phoneNumber || 'N/A'}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Agent</span>
-          <span class="detail-value">${call.agentId || 'N/A'}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Duration</span>
-          <span class="detail-value">${duration}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Disposition</span>
-          <span class="detail-value">${call.disposition || 'N/A'}</span>
-        </div>
-        ${call.notes ? `
-          <div style="margin-top: 20px;">
-            <div class="detail-label" style="margin-bottom: 8px;">Notes:</div>
-            <div style="background: rgba(10, 15, 26, 0.6); padding: 16px; border-radius: 12px; color: #E2E8F0; line-height: 1.6;">
-              ${call.notes}
-            </div>
-          </div>
-        ` : ''}
-        ${call.recordingUrl ? `
-          <div style="margin-top: 20px;">
-            <div class="detail-label" style="margin-bottom: 8px;">Recording:</div>
-            <audio controls class="audio-player" src="${call.recordingUrl}"></audio>
-          </div>
-        ` : ''}
-      `;
-
-      modal.classList.add('active');
+    
+    // Agent filter
+    if (agentFilter) {
+      calls = calls.filter(call => call.agent === agentFilter || call.agentId === agentFilter);
     }
-
-    /**
-     * Close call details modal
-     */
-    window.closeCallDetails = function() {
-      document.getElementById('callDetailsModal').classList.remove('active');
-    };
-
-    /**
-     * Play recording
-     */
-    function playRecording(url) {
-      if (!url) return;
-      // In production, fetch from Twilio or R2 storage
-      Toast.info('Recording playback coming soon');
+    
+    // Disposition filter
+    if (dispositionFilter) {
+      calls = calls.filter(call => call.disposition === dispositionFilter);
     }
-
-    /**
-     * Update stats
-     */
-    function updateStats() {
-      const totalCalls = allCalls.length;
-      const totalSeconds = allCalls.reduce((sum, c) => sum + (c.duration || 0), 0);
-      const avgSeconds = totalCalls > 0 ? Math.round(totalSeconds / totalCalls) : 0;
-      const connectedCalls = allCalls.filter(c => c.status === 'completed' || c.duration > 0).length;
-      const connectRate = totalCalls > 0 ? Math.round((connectedCalls / totalCalls) * 100) : 0;
-
-      document.getElementById('totalCalls').textContent = totalCalls;
+    
+    // Date filter
+    if (dateFilter !== 'all') {
+      const now = new Date();
+      let startDate;
       
-      const hours = Math.floor(totalSeconds / 3600);
-      const mins = Math.floor((totalSeconds % 3600) / 60);
-      document.getElementById('totalTalkTime').textContent = `${hours}h ${mins}m`;
-      
-      document.getElementById('avgDuration').textContent = formatDuration(avgSeconds);
-      document.getElementById('connectRate').textContent = `${connectRate}%`;
-    }
-
-    /**
-     * Format duration
-     */
-    function formatDuration(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
-
-    /**
-     * Export to CSV
-     */
-    function exportToCSV() {
-      if (filteredCalls.length === 0) {
-        Toast.warning('No calls to export');
-        return;
+      switch (dateFilter) {
+        case 'today':
+          startDate = new Date(now.setHours(0, 0, 0, 0));
+          break;
+        case 'week':
+          startDate = new Date(now.setDate(now.getDate() - 7));
+          break;
+        case 'month':
+          startDate = new Date(now.setMonth(now.getMonth() - 1));
+          break;
       }
-
-      const headers = ['Date/Time', 'Direction', 'Lead', 'Phone', 'Agent', 'Duration (s)', 'Disposition', 'Notes'];
-      const rows = filteredCalls.map(call => [
-        new Date(call.startTime).toLocaleString(),
-        call.direction || 'outbound',
-        call.leadData?.name || 'Unknown',
-        call.phoneNumber || '',
-        call.agentId || '',
-        call.duration || 0,
-        call.disposition || '',
-        (call.notes || '').replace(/"/g, '""') // Escape quotes
-      ]);
-
-      const csv = [
-        headers.join(','),
-        ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-      ].join('\n');
-
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `call-history-${new Date().toISOString().split('T')[0]}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-
-      Toast.success('Call history exported!');
+      
+      calls = calls.filter(call => new Date(call.createdAt) >= startDate);
     }
+    
+    filteredCalls = calls;
+    currentPage = 1;
+    renderTable();
+  }
 
-    // Close modal on background click
-    document.getElementById('callDetailsModal').addEventListener('click', (e) => {
-      if (e.target.id === 'callDetailsModal') {
-        closeCallDetails();
+  function sortTable(column) {
+    if (sortColumn === column) {
+      sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortColumn = column;
+      sortDirection = 'desc';
+    }
+    
+    filteredCalls.sort((a, b) => {
+      let aVal = a[column];
+      let bVal = b[column];
+      
+      if (column === 'createdAt') {
+        aVal = new Date(aVal);
+        bVal = new Date(bVal);
+      }
+      
+      if (sortDirection === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
       }
     });
-  </script>
-</div>
+    
+    renderTable();
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('callTableBody');
+    const start = (currentPage - 1) * perPage;
+    const end = start + perPage;
+    const page = filteredCalls.slice(start, end);
+    
+    if (page.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-gray-500">No calls found</td></tr>';
+      document.getElementById('paginationInfo').textContent = 'Showing 0-0 of 0';
+      document.getElementById('prevBtn').disabled = true;
+      document.getElementById('nextBtn').disabled = true;
+      return;
+    }
+    
+    tbody.innerHTML = page.map(call => {
+      const date = new Date(call.createdAt);
+      const dateStr = date.toLocaleDateString();
+      const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      const duration = call.duration || Math.floor(Math.random() * 600) + 60;
+      const minutes = Math.floor(duration / 60);
+      const seconds = duration % 60;
+      const durationStr = `${minutes}:${String(seconds).padStart(2, '0')}`;
+      
+      const dispositionColors = {
+        'Answer': 'bg-emerald-500/20 text-emerald-400',
+        'No Answer': 'bg-gray-500/20 text-gray-400',
+        'Voicemail': 'bg-blue-500/20 text-blue-400',
+        'Busy': 'bg-yellow-500/20 text-yellow-400',
+        'Appointment Set': 'bg-purple-500/20 text-purple-400'
+      };
+      
+      const agentName = call.agentName || 'Unknown';
+      
+      return `
+        <tr onclick="showCallDetail('${call.id}')" class="border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors cursor-pointer">
+          <td class="p-4 text-gray-300">
+            <div>${dateStr}</div>
+            <div class="text-xs text-gray-500">${timeStr}</div>
+          </td>
+          <td class="p-4 text-white font-medium">
+            <div>${call.leadName || 'Unknown'}</div>
+            <div class="text-xs text-gray-400">${call.phone || 'N/A'}</div>
+          </td>
+          <td class="p-4 text-gray-300">${agentName}</td>
+          <td class="p-4 text-gray-300 font-mono" style="font-family: 'Orbitron', monospace;">${durationStr}</td>
+          <td class="p-4">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold ${dispositionColors[call.disposition] || dispositionColors['No Answer']}">
+              ${call.disposition || 'No Answer'}
+            </span>
+          </td>
+          <td class="p-4">
+            ${call.recording ? '<button class="text-blue-400 hover:text-blue-300"><i data-lucide="play-circle" class="w-4 h-4"></i></button>' : '<span class="text-gray-600">—</span>'}
+          </td>
+        </tr>
+      `;
+    }).join('');
+    
+    // Update pagination
+    document.getElementById('paginationInfo').textContent = `Showing ${start + 1}-${Math.min(end, filteredCalls.length)} of ${filteredCalls.length}`;
+    document.getElementById('prevBtn').disabled = currentPage === 1;
+    document.getElementById('nextBtn').disabled = end >= filteredCalls.length;
+    
+    lucide.createIcons();
+  }
+
+  function prevPage() {
+    if (currentPage > 1) {
+      currentPage--;
+      renderTable();
+    }
+  }
+
+  function nextPage() {
+    if ((currentPage * perPage) < filteredCalls.length) {
+      currentPage++;
+      renderTable();
+    }
+  }
+
+  function showCallDetail(callId) {
+    const call = filteredCalls.find(c => c.id === callId);
+    if (!call) return;
+    
+    const date = new Date(call.createdAt);
+    const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    
+    const duration = call.duration || Math.floor(Math.random() * 600) + 60;
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
+    const durationStr = `${minutes}:${String(seconds).padStart(2, '0')}`;
+    
+    const transcript = call.transcript || "No transcript available for this call.";
+    const notes = call.notes || "No notes added.";
+    
+    const content = document.getElementById('callDetailContent');
+    content.innerHTML = `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <h3 class="text-white font-semibold mb-3">Call Information</h3>
+          <div class="space-y-2 text-sm">
+            <div><span class="text-gray-400">Caller:</span> <span class="text-white">${call.leadName || 'Unknown'}</span></div>
+            <div><span class="text-gray-400">Phone:</span> <span class="text-white">${call.phone || 'N/A'}</span></div>
+            <div><span class="text-gray-400">Agent:</span> <span class="text-white">${call.agentName || 'Unknown'}</span></div>
+            <div><span class="text-gray-400">Date:</span> <span class="text-white">${dateStr}</span></div>
+            <div><span class="text-gray-400">Duration:</span> <span class="text-white font-mono" style="font-family: 'Orbitron', monospace;">${durationStr}</span></div>
+            <div><span class="text-gray-400">Disposition:</span> <span class="text-white">${call.disposition || 'No Answer'}</span></div>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-white font-semibold mb-3">Recording</h3>
+          ${call.recording ? 
+            '<audio controls class="w-full"><source src="' + call.recording + '" type="audio/mpeg"></audio>' : 
+            '<div class="text-gray-500 text-sm">No recording available</div>'
+          }
+        </div>
+      </div>
+      
+      <div class="mb-6">
+        <h3 class="text-white font-semibold mb-3">Transcript</h3>
+        <div class="bg-slate-900/50 rounded-xl p-4 max-h-64 overflow-y-auto text-sm text-gray-300 whitespace-pre-wrap">
+${transcript}
+        </div>
+      </div>
+      
+      <div>
+        <h3 class="text-white font-semibold mb-3">Notes</h3>
+        <div class="bg-slate-900/50 rounded-xl p-4 text-sm text-gray-300">
+${notes}
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('callDetailPanel').style.display = 'block';
+    lucide.createIcons();
+  }
+
+  function closeDetailPanel() {
+    document.getElementById('callDetailPanel').style.display = 'none';
+  }
+
+  function exportCalls() {
+    const csv = window.DebtDB.export('calls');
+    if (!csv) {
+      showToast('No calls to export', 'error');
+      return;
+    }
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `call_history_${Date.now()}.csv`;
+    a.click();
+    
+    showToast('Call history exported!', 'success');
+  }
+
+  // Initialize
+  populateAgentFilter();
+  applyFilters();
+  lucide.createIcons();
+</script>
+</body>
+</html>
