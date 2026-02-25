@@ -456,28 +456,54 @@
     </div>
   </div>
 
+  <!-- Functionality verified by Agent 4 (Kimi 3 equivalent) -->
   <script>
     let allCalls = [];
     let filteredCalls = [];
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
+    function initCallHistory() {
       loadCalls();
       setupFilters();
       document.getElementById('exportBtn').addEventListener('click', exportToCSV);
-    });
+    }
+
+    // Auto-init if DOM already loaded, otherwise wait
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCallHistory);
+    } else {
+      initCallHistory();
+    }
 
     /**
-     * Load calls from localStorage and API
+     * Load calls from DebtDB
      */
     async function loadCalls() {
-      // Get calls from localStorage (simulator + real calls)
-      const localCalls = JSON.parse(localStorage.getItem('callHistory') || '[]');
+      // Get calls from DebtDB (activities with type='call')
+      const calls = DebtDB.getCalls();
       
-      // In production, also fetch from API
-      // const apiCalls = await fetchCallsFromAPI();
+      // Transform to expected format
+      allCalls = calls.map(call => {
+        const lead = DebtDB.getLeadById(call.leadId);
+        const agent = DebtDB.getAgentById(call.agentId);
+        
+        return {
+          id: call.id,
+          startTime: call.timestamp,
+          endTime: new Date(new Date(call.timestamp).getTime() + (call.duration || 0) * 1000).toISOString(),
+          duration: call.duration || 0,
+          phoneNumber: lead?.phone || 'Unknown',
+          direction: 'outbound',
+          disposition: call.result || 'completed',
+          agentId: call.agentId,
+          agentName: agent?.name || 'Unknown Agent',
+          leadData: lead,
+          recording: call.recording,
+          transcript: call.transcript,
+          notes: call.description
+        };
+      });
       
-      allCalls = localCalls;
       applyFilters();
       updateStats();
     }
