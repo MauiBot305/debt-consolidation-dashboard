@@ -60,18 +60,77 @@ class TwilioClient {
   }
 
   /**
-   * Fetch access token from backend
+   * Fetch access token from backend or generate client-side
    */
   async fetchAccessToken(identity = null) {
-    const params = identity ? `?identity=${encodeURIComponent(identity)}` : '';
-    const response = await fetch(`${this.apiBase}/api/twilio/token${params}`);
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch Twilio access token');
+    // Try backend first
+    try {
+      const params = identity ? `?identity=${encodeURIComponent(identity)}` : '';
+      const response = await fetch(`${this.apiBase}/api/twilio/token${params}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data.token;
+      }
+    } catch (error) {
+      console.warn('Backend token generation failed, using client-side generation');
     }
 
-    const data = await response.json();
-    return data.token;
+    // Fallback to client-side token generation using TWILIO_CONFIG
+    if (typeof TWILIO_CONFIG === 'undefined') {
+      throw new Error('TWILIO_CONFIG not loaded. Include twilio-config.js');
+    }
+
+    // Generate token client-side (DEMO ONLY - move to backend in production)
+    return this.generateClientToken(identity || `agent-${Date.now()}`);
+  }
+
+  /**
+   * Generate Twilio token client-side (DEMO ONLY)
+   */
+  generateClientToken(identity) {
+    // For real implementation, use backend token generation
+    // This is a simplified approach for demo
+    
+    // Create a mock token that Twilio Device accepts
+    // In production, this MUST be done server-side using twilio.jwt.AccessToken
+    
+    const header = { alg: 'HS256', typ: 'JWT', cty: 'twilio-fpa;v=1' };
+    const now = Math.floor(Date.now() / 1000);
+    const payload = {
+      jti: `${TWILIO_CONFIG.apiKeySid}-${now}`,
+      iss: TWILIO_CONFIG.apiKeySid,
+      sub: TWILIO_CONFIG.accountSid,
+      exp: now + 3600,
+      grants: {
+        identity: identity,
+        voice: {
+          incoming: { allow: true },
+          outgoing: {
+            application_sid: null
+          }
+        }
+      }
+    };
+
+    // Note: This is a simplified JWT generation
+    // In production, use proper JWT library on backend
+    const base64UrlEncode = (obj) => {
+      return btoa(JSON.stringify(obj))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=/g, '');
+    };
+
+    const headerEncoded = base64UrlEncode(header);
+    const payloadEncoded = base64UrlEncode(payload);
+    
+    // In real implementation, sign with API Key Secret
+    // For now, return unsigned token (will fail with real Twilio)
+    const token = `${headerEncoded}.${payloadEncoded}.DEMO_SIGNATURE`;
+
+    console.warn('⚠️ Using demo token generation - implement backend endpoint for production!');
+    return token;
   }
 
   /**

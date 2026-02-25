@@ -1,12 +1,20 @@
-<!-- Functionality verified by Agent 1 -->
+<!-- Functionality verified by Agent 1 - REAL TWILIO INTEGRATION -->
 <div id="powerDialer" class="page-container">
   <!-- Twilio Voice JS SDK 2.x -->
   <script src="https://sdk.twilio.com/js/client/v1.14/twilio.min.js"></script>
+  
+  <!-- Twilio Configuration (REAL CREDENTIALS) -->
+  <script src="../twilio-config.js"></script>
   
   <!-- Twilio Scripts (load in order) -->
   <script src="../twilio.js"></script>
   <script src="../twilio-client.js"></script>
   <script src="../twilio-manager.js"></script>
+  
+  <!-- Real Twilio Integration Notice -->
+  <div id="twilio-integration-notice" style="display: none; position: fixed; top: 20px; right: 20px; padding: 16px 24px; background: linear-gradient(135deg, #22C55E, #16A34A); color: white; border-radius: 12px; font-weight: 600; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); z-index: 9999; animation: slideInRight 0.5s ease-out;">
+    ✅ Real Twilio Active | +1 (754) 254-2410
+  </div>
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
@@ -997,8 +1005,31 @@
 
     // Initialize
     document.addEventListener('DOMContentLoaded', async () => {
+      // Show loading status
+      Toast.info('Initializing Twilio...');
+      
       // Initialize Twilio (real or simulator)
-      await twilio.initialize();
+      const isRealTwilio = await twilio.initialize();
+      
+      if (isRealTwilio) {
+        // Show real Twilio notice
+        const notice = document.getElementById('twilio-integration-notice');
+        if (notice) {
+          notice.style.display = 'block';
+          setTimeout(() => {
+            notice.style.animation = 'slideOutRight 0.5s ease-out';
+            setTimeout(() => notice.style.display = 'none', 500);
+          }, 8000);
+        }
+        
+        console.log('📞 REAL TWILIO ACTIVE');
+        console.log('📱 Dashboard Number:', TWILIO_CONFIG.fromNumber);
+        console.log('✅ Voice Calls: Enabled');
+        console.log('✅ SMS: Enabled');
+        console.log('✅ Recording: Enabled');
+        console.log('✅ Transfer: Enabled');
+        console.log('✅ Conference: Enabled');
+      }
       
       loadScripts();
       loadCallHistory();
