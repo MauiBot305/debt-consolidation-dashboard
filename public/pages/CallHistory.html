@@ -505,10 +505,18 @@
     showToast('Call history exported!', 'success');
   }
 
-  // Initialize
-  populateAgentFilter();
-  loadAllCalls(); // Fetches real calls, then applies filters
-  lucide.createIcons();
+  function initCallHistory() {
+    populateAgentFilter();
+    loadAllCalls(); // Fetches real calls, then applies filters
+    lucide.createIcons();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCallHistory);
+  } else {
+    initCallHistory();
+  }
+  window.initCallHistory = initCallHistory;
 
 // ---- Window Exports ----
   window.closeDetailPanel = closeDetailPanel;

@@ -940,7 +940,7 @@
 
       let filteredDeals = deals;
       if (agentFilter) {
-        filteredDeals = deals.filter(d => d.assignedAgent === agentFilter);
+        filteredDeals = deals.filter(d => (d.assignedAgent || d.agent) === agentFilter);
       }
 
       board.innerHTML = PIPELINE_STAGES.map(stage => {
@@ -969,7 +969,7 @@
     // Render deal card
     function renderDealCard(deal) {
       const agents = window.DebtDB.getAgents() || [];
-      const agent = agents.find(a => a.id === deal.assignedAgent);
+      const agent = agents.find(a => a.id === (deal.assignedAgent || deal.agent));
       const agentName = agent ? agent.name : 'Unassigned';
 
       const daysInStage = Math.floor((new Date() - new Date(deal.updatedAt || deal.createdAt)) / (1000 * 60 * 60 * 24));
@@ -985,13 +985,13 @@
         >
           <div class="deal-header">
             <div class="deal-client">${deal.client}</div>
-            <div class="priority-badge ${deal.priority}">${deal.priority}</div>
+            <div class="priority-badge ${deal.priority}">${deal.priority || "medium"}</div>
           </div>
           <div class="deal-amount">$${(deal.enrolledDebt || 0).toLocaleString()}</div>
           <div class="deal-meta">
             <div class="deal-meta-item">
               <i data-lucide="credit-card" style="width: 14px; height: 14px;"></i>
-              $${deal.monthlyPayment}/mo
+              $${deal.monthlyPayment || 0}/mo
             </div>
             <div class="deal-meta-item">
               <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
@@ -1169,7 +1169,7 @@
       selectedDeal = deal;
 
       const agents = window.DebtDB.getAgents() || [];
-      const agent = agents.find(a => a.id === deal.assignedAgent);
+      const agent = agents.find(a => a.id === (deal.assignedAgent || deal.agent));
       const agentName = agent ? agent.name : 'Unassigned';
 
       const content = `

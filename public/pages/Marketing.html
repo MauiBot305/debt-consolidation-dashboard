@@ -236,7 +236,8 @@
     
     const tbody = document.getElementById('campaignTableBody');
     tbody.innerHTML = campaigns.map(c => {
-      const roi = c.spent > 0 ? (((c.conversions * 1000) - c.spent) / c.spent * 100).toFixed(1) : 0;
+      const conv = c.conversions || 0;
+      const roi = c.spent > 0 ? (((conv * 1000) - c.spent) / c.spent * 100).toFixed(1) : 0;
       const statusColors = {
         active: 'bg-emerald-500/20 text-emerald-400',
         paused: 'bg-yellow-500/20 text-yellow-400',

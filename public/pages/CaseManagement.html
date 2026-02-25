@@ -1293,7 +1293,7 @@
       if (!selectedCase) return;
 
       const agents = window.DebtDB.getAgents() || [];
-      const agent = agents.find(a => a.id === selectedCase.assignedAgent);
+      const agent = agents.find(a => a.id === (selectedCase.assignedAgent || selectedCase.agent));
       const agentName = agent ? agent.name : 'Unassigned';
 
       const totalDebt = selectedCase.totalDebt || 0;
