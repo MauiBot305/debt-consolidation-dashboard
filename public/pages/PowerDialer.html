@@ -1,0 +1,1287 @@
+<div id="powerDialer" class="page-container">
+  <script src="../twilio.js"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .dialer-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 24px;
+      height: calc(100vh - 120px);
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .dialer-main {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .dialer-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dialer-card:hover {
+      border-color: rgba(59, 130, 246, 0.5);
+      box-shadow: 0 12px 48px rgba(59, 130, 246, 0.15);
+    }
+
+    .dialer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .dialer-modes {
+      display: flex;
+      gap: 8px;
+      background: rgba(10, 15, 26, 0.6);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .mode-btn {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      color: #94A3B8;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 14px;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mode-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #3B82F6, #06B6D4);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .mode-btn.active {
+      color: white;
+    }
+
+    .mode-btn.active::before {
+      opacity: 1;
+    }
+
+    .mode-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .phone-input-section {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .phone-input {
+      flex: 1;
+      padding: 16px;
+      background: rgba(10, 15, 26, 0.6);
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 16px;
+      color: white;
+      font-size: 20px;
+      letter-spacing: 2px;
+      font-family: 'Orbitron', monospace;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .phone-input:focus {
+      outline: none;
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1), 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+
+    .call-controls {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .control-btn {
+      padding: 16px;
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      background: rgba(10, 15, 26, 0.6);
+      color: white;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .control-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .control-btn:hover:not(:disabled)::before {
+      opacity: 1;
+    }
+
+    .control-btn:hover:not(:disabled) {
+      transform: translateY(-4px);
+      border-color: #3B82F6;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+    }
+
+    .control-btn:active:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .control-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .control-btn.active {
+      background: linear-gradient(135deg, #3B82F6, #06B6D4);
+      border-color: #3B82F6;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    }
+
+    .control-btn.danger {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1));
+      border-color: #EF4444;
+    }
+
+    .control-btn.danger:hover {
+      background: linear-gradient(135deg, #EF4444, #DC2626);
+      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+    }
+
+    .call-timer {
+      text-align: center;
+      padding: 32px;
+      background: linear-gradient(135deg, rgba(10, 15, 26, 0.8), rgba(15, 23, 42, 0.8));
+      border-radius: 16px;
+      margin: 16px 0;
+      border: 2px solid rgba(59, 130, 246, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .call-timer::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: conic-gradient(from 0deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+      animation: rotate 4s linear infinite;
+    }
+
+    @keyframes rotate {
+      to { transform: rotate(360deg); }
+    }
+
+    .call-timer > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .timer-display {
+      font-size: 64px;
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      background: linear-gradient(135deg, #3B82F6, #06B6D4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      text-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+    }
+
+    .timer-display.calling {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .call-status {
+      color: #94A3B8;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .call-status::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+      background: #64748B;
+    }
+
+    .call-status.connected::before {
+      background: #22C55E;
+      box-shadow: 0 0 10px #22C55E, 0 0 20px #22C55E;
+      animation: pulse-green 1.5s ease-in-out infinite;
+    }
+
+    .call-status.dialing::before {
+      background: #F59E0B;
+      box-shadow: 0 0 10px #F59E0B;
+      animation: pulse-yellow 1s ease-in-out infinite;
+    }
+
+    .call-status.disconnected::before {
+      background: #EF4444;
+      box-shadow: 0 0 10px #EF4444;
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.2); }
+    }
+
+    @keyframes pulse-yellow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    .audio-visualizer {
+      height: 80px;
+      background: rgba(10, 15, 26, 0.6);
+      border-radius: 16px;
+      padding: 8px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 3px;
+      overflow: hidden;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .audio-bar {
+      flex: 1;
+      max-width: 8px;
+      background: linear-gradient(to top, #22C55E, #3B82F6, #06B6D4);
+      border-radius: 4px;
+      transition: height 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+    }
+
+    .lead-info-panel {
+      background: linear-gradient(135deg, rgba(10, 15, 26, 0.8), rgba(15, 23, 42, 0.6));
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .lead-info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+      transition: all 0.3s;
+    }
+
+    .lead-info-row:hover {
+      background: rgba(59, 130, 246, 0.05);
+      padding-left: 8px;
+      border-left: 3px solid #3B82F6;
+    }
+
+    .lead-info-label {
+      color: #64748B;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .lead-info-value {
+      color: white;
+      font-weight: 600;
+      font-family: 'Orbitron', monospace;
+    }
+
+    .disposition-form {
+      margin-top: 24px;
+    }
+
+    .disposition-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .disposition-btn {
+      padding: 12px;
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      background: rgba(10, 15, 26, 0.6);
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 14px;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .disposition-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .disposition-btn:hover::before {
+      opacity: 1;
+    }
+
+    .disposition-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+
+    .disposition-btn.success {
+      border-color: #22C55E;
+    }
+
+    .disposition-btn.success:hover {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1));
+      box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
+    }
+
+    .disposition-btn.active {
+      background: linear-gradient(135deg, #3B82F6, #06B6D4);
+      border-color: #3B82F6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+    }
+
+    .notes-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      background: rgba(10, 15, 26, 0.6);
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      color: white;
+      resize: vertical;
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+
+    .notes-textarea:focus {
+      outline: none;
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    .call-history-sidebar {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 24px;
+      padding: 24px;
+      overflow-y: auto;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .call-history-sidebar::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .call-history-sidebar::-webkit-scrollbar-track {
+      background: rgba(10, 15, 26, 0.6);
+      border-radius: 4px;
+    }
+
+    .call-history-sidebar::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #3B82F6, #06B6D4);
+      border-radius: 4px;
+    }
+
+    .history-item {
+      padding: 16px;
+      background: rgba(10, 15, 26, 0.6);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border-left: 4px solid #3B82F6;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .history-item:hover {
+      transform: translateX(4px);
+      background: rgba(15, 23, 42, 0.8);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+    }
+
+    .history-item.success {
+      border-left-color: #22C55E;
+    }
+
+    .history-item.failed {
+      border-left-color: #EF4444;
+    }
+
+    .history-phone {
+      font-weight: 600;
+      color: white;
+      margin-bottom: 4px;
+      font-family: 'Orbitron', monospace;
+    }
+
+    .history-meta {
+      font-size: 12px;
+      color: #64748B;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .history-disposition {
+      display: inline-block;
+      padding: 4px 8px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.1));
+      border-radius: 6px;
+      font-size: 11px;
+      margin-top: 8px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .scripts-panel {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .scripts-panel::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .scripts-panel::-webkit-scrollbar-track {
+      background: rgba(10, 15, 26, 0.4);
+      border-radius: 3px;
+    }
+
+    .scripts-panel::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #3B82F6, #06B6D4);
+      border-radius: 3px;
+    }
+
+    .script-item {
+      padding: 16px;
+      background: rgba(10, 15, 26, 0.6);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .script-item:hover {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+    }
+
+    .script-title {
+      font-weight: 600;
+      color: #3B82F6;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .script-content {
+      color: #94A3B8;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+      animation: slideInDown 0.6s ease-out;
+    }
+
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, rgba(10, 15, 26, 0.8), rgba(15, 23, 42, 0.8));
+      padding: 20px;
+      border-radius: 16px;
+      border: 2px solid rgba(59, 130, 246, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #3B82F6, #06B6D4);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(59, 130, 246, 0.5);
+      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+    }
+
+    .stat-label {
+      color: #64748B;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+    }
+
+    .stat-value {
+      color: white;
+      font-size: 32px;
+      font-weight: 700;
+      margin-top: 8px;
+      font-family: 'Orbitron', monospace;
+      background: linear-gradient(135deg, #3B82F6, #06B6D4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .callbacks-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .callback-item {
+      padding: 16px;
+      background: rgba(10, 15, 26, 0.6);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .callback-item:hover {
+      background: rgba(15, 23, 42, 0.8);
+      transform: translateX(4px);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+    }
+
+    .callback-info {
+      flex: 1;
+    }
+
+    .callback-name {
+      color: white;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .callback-time {
+      color: #64748B;
+      font-size: 12px;
+    }
+
+    .callback-call-btn {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #3B82F6, #06B6D4);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .callback-call-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+    }
+
+    .callback-call-btn:active {
+      transform: translateY(0);
+    }
+
+    .urgency-badge {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .urgency-red {
+      background: #EF4444;
+      animation: pulse-red 2s ease-in-out infinite;
+    }
+
+    .urgency-yellow {
+      background: #F59E0B;
+    }
+
+    .urgency-green {
+      background: #22C55E;
+    }
+
+    @keyframes pulse-red {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.3); }
+    }
+
+    /* Loading skeleton */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, rgba(10, 15, 26, 0.6) 25%, rgba(59, 130, 246, 0.1) 50%, rgba(10, 15, 26, 0.6) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+    }
+  </style>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-label">Calls/Hour</div>
+      <div class="stat-value" id="callsPerHour" data-target="0">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Talk Time</div>
+      <div class="stat-value" id="totalTalkTime">00:00</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Conversion Rate</div>
+      <div class="stat-value" id="conversionRate" data-target="0">0%</div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="dialer-grid">
+    <!-- Left Column: Dialer Controls -->
+    <div class="dialer-main">
+      <!-- Dialer Card -->
+      <div class="dialer-card">
+        <div class="dialer-header">
+          <h2 style="margin: 0; color: white; font-weight: 700;">Power Dialer</h2>
+          <div class="dialer-modes">
+            <button class="mode-btn active" data-mode="manual"><span>Manual</span></button>
+            <button class="mode-btn" data-mode="preview"><span>Preview</span></button>
+            <button class="mode-btn" data-mode="progressive"><span>Progressive</span></button>
+          </div>
+        </div>
+
+        <!-- Phone Input -->
+        <div class="phone-input-section">
+          <input type="tel" class="phone-input" id="phoneInput" placeholder="Enter phone number..." />
+          <button class="control-btn" id="dialBtn" style="width: 140px;">
+            <span style="font-size: 24px;">📞</span>
+            <span>Dial</span>
+          </button>
+        </div>
+
+        <!-- Call Timer -->
+        <div class="call-timer" id="callTimer" style="display: none;">
+          <div class="timer-display" id="timerDisplay">00:00</div>
+          <div class="call-status" id="callStatus">Idle</div>
+        </div>
+
+        <!-- Audio Visualizer -->
+        <div class="audio-visualizer" id="audioVisualizer" style="display: none;">
+          <!-- Dynamic bars will be generated -->
+        </div>
+
+        <!-- Call Controls -->
+        <div class="call-controls">
+          <button class="control-btn danger" id="hangupBtn" disabled>
+            <span style="font-size: 24px;">📴</span>
+            <span>Hang Up</span>
+          </button>
+          <button class="control-btn" id="muteBtn" disabled>
+            <span style="font-size: 24px;">🔇</span>
+            <span>Mute</span>
+          </button>
+          <button class="control-btn" id="holdBtn" disabled>
+            <span style="font-size: 24px;">⏸️</span>
+            <span>Hold</span>
+          </button>
+          <button class="control-btn" id="recordBtn" disabled>
+            <span style="font-size: 24px;">⏺️</span>
+            <span>Record</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Lead Info Panel -->
+      <div class="dialer-card" id="leadInfoPanel" style="display: none;">
+        <h3 style="color: white; margin-bottom: 16px; font-weight: 600;">Current Lead</h3>
+        <div class="lead-info-panel" id="leadInfoContent">
+          <!-- Dynamic lead info -->
+        </div>
+      </div>
+
+      <!-- Disposition Form -->
+      <div class="dialer-card" id="dispositionPanel" style="display: none;">
+        <h3 style="color: white; margin-bottom: 16px; font-weight: 600;">Call Disposition</h3>
+        <div class="disposition-form">
+          <div class="disposition-grid">
+            <button class="disposition-btn success" data-disposition="enrolled">✅ Enrolled</button>
+            <button class="disposition-btn" data-disposition="callback">📅 Callback</button>
+            <button class="disposition-btn" data-disposition="not-interested">❌ Not Interested</button>
+            <button class="disposition-btn" data-disposition="wrong-number">📞 Wrong Number</button>
+            <button class="disposition-btn" data-disposition="voicemail">📧 Voicemail</button>
+            <button class="disposition-btn" data-disposition="no-answer">🔇 No Answer</button>
+          </div>
+          <textarea class="notes-textarea" id="callNotes" placeholder="Call notes..."></textarea>
+          <div style="display: flex; gap: 16px; margin-top: 16px;">
+            <button class="control-btn" id="scheduleCallbackBtn" style="flex: 1;">
+              <span>📅 Schedule Callback</span>
+            </button>
+            <button class="control-btn active" id="saveDispositionBtn" style="flex: 1;">
+              <span>💾 Save & Next</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Scripts -->
+      <div class="dialer-card">
+        <h3 style="color: white; margin-bottom: 16px; font-weight: 600;">Quick Scripts</h3>
+        <div class="scripts-panel" id="scriptsPanel">
+          <!-- Scripts will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Sidebar -->
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      <!-- Upcoming Callbacks -->
+      <div class="call-history-sidebar" style="flex: 1;">
+        <h3 style="color: white; margin-bottom: 16px; font-weight: 600;">Upcoming Callbacks</h3>
+        <div class="callbacks-list" id="callbacksList">
+          <!-- Callbacks will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Call History -->
+      <div class="call-history-sidebar" style="flex: 1;">
+        <h3 style="color: white; margin-bottom: 16px; font-weight: 600;">Recent Calls</h3>
+        <div id="callHistoryList">
+          <!-- History will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Twilio Simulator
+    const twilio = new TwilioSimulator();
+    let currentMode = 'manual';
+    let currentLead = null;
+    let selectedDisposition = null;
+
+    // Scripts database
+    const scripts = [
+      {
+        title: "Opening / Introduction",
+        content: "Hi, this is [Your Name] from Debt Solutions. I'm calling because you recently inquired about reducing your monthly debt payments. Is this still a priority for you?"
+      },
+      {
+        title: "Qualification",
+        content: "Great! To help you best, I need to understand your situation. Can you tell me: 1) What's your total monthly debt payment right now? 2) What would be an ideal monthly payment for you? 3) Are you currently behind on any payments?"
+      },
+      {
+        title: "Objection: Not Interested",
+        content: "I understand. Let me ask you this - if I could show you a way to reduce your monthly payments by 30-50% and get you debt-free in 3-4 years instead of 10+, would that be worth 15 minutes of your time?"
+      },
+      {
+        title: "Objection: Need to Think",
+        content: "I completely understand wanting to think it over. That's smart. Let me ask - what specific concerns do you have? I'd rather address them now than have you worry about them unnecessarily."
+      },
+      {
+        title: "Objection: Bankruptcy Concerns",
+        content: "That's a great question. Our program is NOT bankruptcy. Your credit may actually improve because you'll be paying off debts faster. Plus, you avoid the 7-10 year bankruptcy mark on your record."
+      },
+      {
+        title: "Close / Enrollment",
+        content: "Based on everything we've discussed, I can see you qualifying for our program. Your new monthly payment would be around $[amount], and you'd be debt-free in [timeframe]. Sound good? Let's get you enrolled today."
+      }
+    ];
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadScripts();
+      loadCallHistory();
+      loadCallbacks();
+      updateStats();
+      setupEventListeners();
+      createAudioBars();
+      animateCounters();
+    });
+
+    // Animate counter numbers
+    function animateCounters() {
+      document.querySelectorAll('[data-target]').forEach(el => {
+        const target = parseInt(el.dataset.target);
+        animateValue(el, 0, target, 1000);
+      });
+    }
+
+    function animateValue(el, start, end, duration) {
+      const range = end - start;
+      const increment = range / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= end) {
+          current = end;
+          clearInterval(timer);
+        }
+        el.textContent = Math.round(current) + (el.id === 'conversionRate' ? '%' : '');
+      }, 16);
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Mode buttons
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+          e.target.closest('.mode-btn').classList.add('active');
+          currentMode = e.target.closest('.mode-btn').dataset.mode;
+        });
+      });
+
+      // Dial button
+      document.getElementById('dialBtn').addEventListener('click', handleDial);
+
+      // Hangup button
+      document.getElementById('hangupBtn').addEventListener('click', handleHangup);
+
+      // Mute button
+      document.getElementById('muteBtn').addEventListener('click', () => {
+        const isMuted = twilio.toggleMute();
+        document.getElementById('muteBtn').classList.toggle('active', isMuted);
+      });
+
+      // Hold button
+      document.getElementById('holdBtn').addEventListener('click', () => {
+        const isOnHold = twilio.toggleHold();
+        document.getElementById('holdBtn').classList.toggle('active', isOnHold);
+      });
+
+      // Record button
+      document.getElementById('recordBtn').addEventListener('click', () => {
+        const isRecording = twilio.toggleRecording();
+        document.getElementById('recordBtn').classList.toggle('active', isRecording);
+      });
+
+      // Disposition buttons
+      document.querySelectorAll('.disposition-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.disposition-btn').forEach(b => b.classList.remove('active'));
+          e.currentTarget.classList.add('active');
+          selectedDisposition = e.currentTarget.dataset.disposition;
+        });
+      });
+
+      // Save disposition
+      document.getElementById('saveDispositionBtn').addEventListener('click', saveDisposition);
+
+      // Schedule callback
+      document.getElementById('scheduleCallbackBtn').addEventListener('click', scheduleCallback);
+
+      // Twilio callbacks
+      twilio.on('onStateChange', handleStateChange);
+      twilio.on('onTimerUpdate', updateTimer);
+      twilio.on('onAudioLevel', updateAudioLevel);
+      twilio.on('onCallEnd', handleCallEnd);
+
+      // Enter key to dial
+      document.getElementById('phoneInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleDial();
+      });
+    }
+
+    // Handle dial
+    function handleDial() {
+      const phoneNumber = document.getElementById('phoneInput').value.trim();
+      if (!phoneNumber) return;
+
+      // Get lead data if available
+      if (window.DebtDB && window.DebtDB.leads) {
+        currentLead = window.DebtDB.leads.find(l => l.phone === phoneNumber);
+      }
+
+      twilio.dial(phoneNumber, currentLead);
+    }
+
+    // Handle hangup
+    function handleHangup() {
+      twilio.hangup();
+    }
+
+    // Handle state change
+    function handleStateChange(state) {
+      const statusEl = document.getElementById('callStatus');
+      const timerEl = document.getElementById('callTimer');
+      const timerDisplay = document.getElementById('timerDisplay');
+      const visualizerEl = document.getElementById('audioVisualizer');
+      const dialBtn = document.getElementById('dialBtn');
+      const hangupBtn = document.getElementById('hangupBtn');
+      const muteBtn = document.getElementById('muteBtn');
+      const holdBtn = document.getElementById('holdBtn');
+      const recordBtn = document.getElementById('recordBtn');
+      const leadPanel = document.getElementById('leadInfoPanel');
+      const dispPanel = document.getElementById('dispositionPanel');
+
+      // Remove all status classes
+      statusEl.classList.remove('connected', 'dialing', 'disconnected');
+
+      switch (state) {
+        case 'idle':
+          statusEl.textContent = 'Idle';
+          timerEl.style.display = 'none';
+          visualizerEl.style.display = 'none';
+          leadPanel.style.display = 'none';
+          dispPanel.style.display = 'none';
+          dialBtn.disabled = false;
+          hangupBtn.disabled = true;
+          muteBtn.disabled = true;
+          holdBtn.disabled = true;
+          recordBtn.disabled = true;
+          timerDisplay.classList.remove('calling');
+          break;
+
+        case 'dialing':
+          statusEl.textContent = 'Dialing...';
+          statusEl.classList.add('dialing');
+          timerEl.style.display = 'block';
+          timerDisplay.classList.add('calling');
+          dialBtn.disabled = true;
+          hangupBtn.disabled = false;
+          if (currentLead) {
+            showLeadInfo(currentLead);
+            leadPanel.style.display = 'block';
+          }
+          break;
+
+        case 'connected':
+          statusEl.textContent = 'Connected';
+          statusEl.classList.add('connected');
+          visualizerEl.style.display = 'flex';
+          muteBtn.disabled = false;
+          holdBtn.disabled = false;
+          recordBtn.disabled = false;
+          timerDisplay.classList.remove('calling');
+          break;
+
+        case 'on-hold':
+          statusEl.textContent = 'On Hold';
+          visualizerEl.style.display = 'none';
+          break;
+
+        case 'disconnected':
+          statusEl.textContent = 'Call Ended';
+          statusEl.classList.add('disconnected');
+          visualizerEl.style.display = 'none';
+          dispPanel.style.display = 'block';
+          break;
+      }
+    }
+
+    // Update timer
+    function updateTimer(seconds) {
+      document.getElementById('timerDisplay').textContent = TwilioSimulator.formatTime(seconds);
+    }
+
+    // Update audio level
+    function updateAudioLevel(level) {
+      const bars = document.querySelectorAll('.audio-bar');
+      bars.forEach((bar, i) => {
+        const variance = Math.random() * 0.5 + 0.5;
+        const height = (level * variance) * 0.8;
+        bar.style.height = `${height}%`;
+      });
+    }
+
+    // Create audio bars
+    function createAudioBars() {
+      const visualizer = document.getElementById('audioVisualizer');
+      for (let i = 0; i < 50; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'audio-bar';
+        visualizer.appendChild(bar);
+      }
+    }
+
+    // Show lead info
+    function showLeadInfo(lead) {
+      const content = document.getElementById('leadInfoContent');
+      content.innerHTML = `
+        <div class="lead-info-row">
+          <span class="lead-info-label">Name</span>
+          <span class="lead-info-value">${lead.name || 'Unknown'}</span>
+        </div>
+        <div class="lead-info-row">
+          <span class="lead-info-label">Phone</span>
+          <span class="lead-info-value">${lead.phone}</span>
+        </div>
+        <div class="lead-info-row">
+          <span class="lead-info-label">Email</span>
+          <span class="lead-info-value">${lead.email || 'N/A'}</span>
+        </div>
+        <div class="lead-info-row">
+          <span class="lead-info-label">Total Debt</span>
+          <span class="lead-info-value">$${(lead.totalDebt || 0).toLocaleString()}</span>
+        </div>
+        <div class="lead-info-row">
+          <span class="lead-info-label">Monthly Income</span>
+          <span class="lead-info-value">$${(lead.monthlyIncome || 0).toLocaleString()}</span>
+        </div>
+        <div class="lead-info-row">
+          <span class="lead-info-label">DTI Ratio</span>
+          <span class="lead-info-value">${lead.dtiRatio || 'N/A'}%</span>
+        </div>
+        <div class="lead-info-row">
+          <span class="lead-info-label">Status</span>
+          <span class="lead-info-value">${lead.status || 'New'}</span>
+        </div>
+      `;
+    }
+
+    // Handle call end
+    function handleCallEnd(call) {
+      loadCallHistory();
+      updateStats();
+    }
+
+    // Save disposition
+    function saveDisposition() {
+      const notes = document.getElementById('callNotes').value;
+      
+      if (!selectedDisposition) {
+        alert('Please select a disposition');
+        return;
+      }
+
+      twilio.hangup(selectedDisposition, notes);
+
+      // Reset form
+      document.getElementById('callNotes').value = '';
+      selectedDisposition = null;
+      document.querySelectorAll('.disposition-btn').forEach(b => b.classList.remove('active'));
+
+      // Auto-dial next in progressive mode
+      if (currentMode === 'progressive') {
+        setTimeout(() => {
+          // Get next lead from queue
+          if (window.DebtDB && window.DebtDB.leads) {
+            const nextLead = window.DebtDB.leads.find(l => l.status === 'new');
+            if (nextLead) {
+              document.getElementById('phoneInput').value = nextLead.phone;
+              handleDial();
+            }
+          }
+        }, 2000);
+      }
+    }
+
+    // Schedule callback
+    function scheduleCallback() {
+      const phone = document.getElementById('phoneInput').value;
+      const name = currentLead ? currentLead.name : 'Unknown';
+      const leadId = currentLead ? currentLead.id : null;
+      
+      const date = prompt('Enter callback date/time (YYYY-MM-DD HH:MM):');
+      if (!date) return;
+
+      const notes = document.getElementById('callNotes').value;
+      twilio.scheduleCallback(leadId, name, phone, date, notes);
+      
+      loadCallbacks();
+      alert('Callback scheduled!');
+    }
+
+    // Load scripts
+    function loadScripts() {
+      const panel = document.getElementById('scriptsPanel');
+      panel.innerHTML = scripts.map(script => `
+        <div class="script-item">
+          <div class="script-title">${script.title}</div>
+          <div class="script-content">${script.content}</div>
+        </div>
+      `).join('');
+    }
+
+    // Load call history
+    function loadCallHistory() {
+      const history = twilio.getCallHistory(20);
+      const list = document.getElementById('callHistoryList');
+      
+      if (history.length === 0) {
+        list.innerHTML = '<div style="text-align: center; color: #64748B; padding: 32px;">No calls yet</div>';
+        return;
+      }
+
+      list.innerHTML = history.map(call => {
+        const date = new Date(call.startTime);
+        const isSuccess = call.disposition === 'enrolled';
+        const isFailed = call.disposition === 'no-answer' || call.disposition === 'voicemail';
+        
+        return `
+          <div class="history-item ${isSuccess ? 'success' : isFailed ? 'failed' : ''}">
+            <div class="history-phone">${call.phoneNumber}</div>
+            <div class="history-meta">
+              <span>${date.toLocaleTimeString()}</span>
+              <span>${TwilioSimulator.formatTime(call.duration)}</span>
+            </div>
+            ${call.disposition ? `<div class="history-disposition">${call.disposition}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Load callbacks
+    function loadCallbacks() {
+      const callbacks = twilio.getCallbacks().filter(cb => !cb.completed);
+      const list = document.getElementById('callbacksList');
+      
+      if (callbacks.length === 0) {
+        list.innerHTML = '<div style="text-align: center; color: #64748B; padding: 32px;">No upcoming callbacks</div>';
+        return;
+      }
+
+      list.innerHTML = callbacks.map(cb => {
+        const scheduledDate = new Date(cb.scheduledDate);
+        const now = new Date();
+        const isOverdue = scheduledDate < now;
+        const isDueToday = scheduledDate.toDateString() === now.toDateString();
+        
+        let urgency = 'green';
+        if (isOverdue) urgency = 'red';
+        else if (isDueToday) urgency = 'yellow';
+
+        return `
+          <div class="callback-item">
+            <div class="callback-info">
+              <div class="callback-name">
+                <span class="urgency-badge urgency-${urgency}"></span>
+                ${cb.leadName}
+              </div>
+              <div class="callback-time">${scheduledDate.toLocaleString()}</div>
+            </div>
+            <button class="callback-call-btn" onclick="callCallback('${cb.phoneNumber}', '${cb.id}')">
+              📞 Call
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Call from callback
+    window.callCallback = (phone, callbackId) => {
+      document.getElementById('phoneInput').value = phone;
+      handleDial();
+      twilio.completeCallback(callbackId);
+      setTimeout(loadCallbacks, 1000);
+    };
+
+    // Update stats
+    function updateStats() {
+      const stats = twilio.getCallStats();
+      
+      // Calls per hour (assuming 8-hour workday)
+      const callsPerHour = Math.round(stats.totalCalls / 8) || 0;
+      const el = document.getElementById('callsPerHour');
+      el.dataset.target = callsPerHour;
+      animateValue(el, parseInt(el.textContent) || 0, callsPerHour, 500);
+
+      // Talk time
+      document.getElementById('totalTalkTime').textContent = TwilioSimulator.formatTime(stats.totalTalkTime);
+
+      // Conversion rate
+      const conversionRate = stats.totalCalls > 0 
+        ? Math.round((stats.conversions / stats.totalCalls) * 100) 
+        : 0;
+      const convEl = document.getElementById('conversionRate');
+      convEl.dataset.target = conversionRate;
+      animateValue(convEl, parseInt(convEl.textContent) || 0, conversionRate, 500);
+    }
+
+    // Refresh stats every 30 seconds
+    setInterval(updateStats, 30000);
+  </script>
+</div>
