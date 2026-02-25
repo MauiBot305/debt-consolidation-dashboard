@@ -792,18 +792,21 @@
     function viewDealDetails(dealId) {
       const deal = deals.find(d => d.id === dealId);
       if (deal) {
-        alert(`Deal Details: ${deal.clientName}\n\nThis would open a detailed slide-out panel with full deal information, timeline, notes, and actions.`);
-        // TODO: Implement slide-out panel
+        // TODO: Will be replaced with slide-out panel in next fix
+        openDealDetailPanel(deal);
       }
     }
 
     function callClient(dealId) {
-      alert('Opening Power Dialer with client phone number...');
+      Toast.info('Opening Power Dialer with client phone number...');
       // TODO: Integrate with Power Dialer
+      setTimeout(() => {
+        window.location.hash = 'power-dialer';
+      }, 1000);
     }
 
     function emailClient(dealId) {
-      alert('Opening email composer...');
+      Toast.info('Opening email composer...');
       // TODO: Implement email functionality
     }
 
@@ -818,14 +821,14 @@
           author: 'Current User'
         });
         saveDeals();
-        alert('Note added!');
+        Toast.success('Note added successfully!');
       }
     }
 
     function scheduleTask(dealId) {
       const task = prompt('Schedule task:');
       if (task) {
-        alert(`Task "${task}" scheduled!`);
+        Toast.success(`Task "${task}" scheduled!`);
         // TODO: Implement task scheduling
       }
     }

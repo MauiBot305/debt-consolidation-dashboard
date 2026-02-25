@@ -614,7 +614,7 @@ function loadRewardStore() {
 
 function redeemReward(rewardId) {
   const reward = GamificationData.rewards.find(r => r.id === rewardId);
-  alert(`Redeemed: ${reward.name} for ${reward.cost} points!`);
+  Toast.success(`Redeemed: ${reward.name} for ${reward.cost} points!`);
   
   // Save to localStorage (mock)
   localStorage.setItem('gamification_data', JSON.stringify(GamificationData));

@@ -672,7 +672,7 @@ const TeamManagement = {
   saveReview() {
     const agentId = document.getElementById('reviewAgent').value;
     if (!agentId) {
-      alert('Please select an agent');
+      Toast.warning('Please select an agent to review');
       return;
     }
 
@@ -692,7 +692,7 @@ const TeamManagement = {
 
     this.reviews.push(review);
     this.renderReviews();
-    alert('Review saved successfully!');
+    Toast.success('Review saved successfully!');
   },
 
   renderReviews() {

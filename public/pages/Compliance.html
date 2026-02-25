@@ -1270,7 +1270,8 @@
                         state.status === 'pending' ? 'Pending' :
                         state.status === 'expired' ? 'EXPIRED' : 'Not Licensed';
       
-      alert(`${state.name} (${state.code})\n\nStatus: ${statusText}\n${state.expiry ? `Expiry: ${state.expiry}` : 'No license information'}\n\nClick OK to view full license details.`);
+      const message = `<strong>${state.name} (${state.code})</strong><br>Status: ${statusText}<br>${state.expiry ? `Expiry: ${state.expiry}` : 'No license information'}`;
+      Toast.info(message, 6000);
     }
 
     function filterByRisk(risk) {

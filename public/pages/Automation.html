@@ -767,7 +767,7 @@
   function saveWorkflow() {
     const name = document.getElementById('workflowName').value;
     if (!name) {
-      alert('Please name your automation');
+      Toast.warning('Please name your automation before saving');
       return;
     }
     

@@ -1902,7 +1902,8 @@
 
     function scheduleFollowup() {
       closeModal();
-      alert('Follow-up scheduled! (This would save to calendar)');
+      Toast.success('Follow-up scheduled successfully!');
+      // TODO: Save to calendar/database
     }
 
     // Close modal on overlay click

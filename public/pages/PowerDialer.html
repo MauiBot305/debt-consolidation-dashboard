@@ -1133,7 +1133,7 @@
       const notes = document.getElementById('callNotes').value;
       
       if (!selectedDisposition) {
-        alert('Please select a disposition');
+        Toast.warning('Please select a disposition before saving');
         return;
       }
 
@@ -1172,7 +1172,7 @@
       twilio.scheduleCallback(leadId, name, phone, date, notes);
       
       loadCallbacks();
-      alert('Callback scheduled!');
+      Toast.success('Callback scheduled successfully!');
     }
 
     // Load scripts
