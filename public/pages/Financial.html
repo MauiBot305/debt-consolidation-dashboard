@@ -1,0 +1,1221 @@
+<div id="financial-page" class="page-content">
+  <style>
+    /* Orbitron Font Import */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Root Variables */
+    :root {
+      --bg-primary: #0a0f1a;
+      --bg-card: rgba(15, 23, 42, 0.8);
+      --bg-glass: rgba(30, 41, 59, 0.6);
+      --primary: #3B82F6;
+      --primary-glow: rgba(59, 130, 246, 0.3);
+      --accent: #06B6D4;
+      --accent-glow: rgba(6, 182, 212, 0.3);
+      --success: #22C55E;
+      --success-glow: rgba(34, 197, 94, 0.3);
+      --warning: #F59E0B;
+      --warning-glow: rgba(245, 158, 11, 0.3);
+      --danger: #EF4444;
+      --danger-glow: rgba(239, 68, 68, 0.3);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-subtle: rgba(148, 163, 184, 0.1);
+      --border-hover: rgba(148, 163, 184, 0.2);
+    }
+
+    #financial-page {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    /* Header */
+    .financial-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .financial-header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--success), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Glass Card */
+    .glass-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      padding: 1.5rem;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-card.success::before { background: linear-gradient(90deg, var(--success), var(--accent)); }
+    .stat-card.warning::before { background: linear-gradient(90deg, var(--warning), var(--danger)); }
+    .stat-card.danger::before { background: linear-gradient(90deg, var(--danger), var(--warning)); }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-card.success .stat-value {
+      background: linear-gradient(135deg, var(--success), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card.warning .stat-value {
+      background: linear-gradient(135deg, var(--warning), var(--danger));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card.danger .stat-value {
+      background: linear-gradient(135deg, var(--danger), var(--warning));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-change {
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .stat-change.positive { color: var(--success); }
+    .stat-change.negative { color: var(--danger); }
+
+    /* Charts Section */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-container {
+      padding: 1.5rem;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Revenue Bar Chart */
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.75rem;
+      height: 200px;
+      padding-top: 1rem;
+    }
+
+    .bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 40px;
+      border-radius: 0.5rem 0.5rem 0 0;
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .bar:hover {
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .bar-value {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .bar:hover .bar-value {
+      opacity: 1;
+    }
+
+    .bar-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Trust Account Cards */
+    .trust-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .trust-card {
+      padding: 1.25rem;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.05));
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .trust-card:hover {
+      transform: translateX(4px);
+      border-color: var(--primary);
+    }
+
+    .trust-info h4 {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    .trust-info .amount {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    /* AR Aging Table */
+    .aging-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .aging-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .aging-table td {
+      padding: 1rem;
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .aging-table tr:hover {
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .aging-cell {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+    }
+
+    .aging-cell.current { color: var(--success); }
+    .aging-cell.days30 { color: #84cc16; }
+    .aging-cell.days60 { color: var(--warning); }
+    .aging-cell.days90 { color: var(--danger); }
+
+    /* Fee Calculator */
+    .calculator-section {
+      padding: 1.5rem;
+    }
+
+    .calc-input-group {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .calc-input {
+      padding: 0.75rem 1rem;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.5rem;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .calc-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .calc-results {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .calc-result-item {
+      text-align: center;
+      padding: 1rem;
+      background: var(--bg-card);
+      border-radius: 0.5rem;
+    }
+
+    .calc-result-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .calc-result-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* P&L Expandable */
+    .pl-section {
+      padding: 1.5rem;
+    }
+
+    .pl-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .pl-item:hover {
+      border-color: var(--primary);
+    }
+
+    .pl-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .pl-expand {
+      transition: transform 0.3s ease;
+    }
+
+    .pl-item.expanded .pl-expand {
+      transform: rotate(180deg);
+    }
+
+    .pl-amount {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+    }
+
+    .pl-subitems {
+      display: none;
+      padding-left: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .pl-item.expanded + .pl-subitems {
+      display: block;
+    }
+
+    .pl-subitem {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    /* Payment Processing */
+    .payment-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .payment-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .payment-item:hover {
+      border-color: var(--primary);
+    }
+
+    .payment-item.failed {
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    .payment-info h4 {
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .payment-info p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .payment-amount {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+    }
+
+    .payment-status {
+      padding: 0.35rem 0.75rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .payment-status.success { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+    .payment-status.failed { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+    .payment-status.pending { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+
+    /* Commission Table */
+    .commission-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .commission-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .commission-table td {
+      padding: 1rem;
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .commission-table tr:hover {
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .agent-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .agent-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .commission-value {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+    }
+
+    .commission-value.positive { color: var(--success); }
+
+    /* Settlement Stats */
+    .settlement-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .settlement-card {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .settlement-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--success);
+    }
+
+    .settlement-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: var(--success);
+    }
+
+    .settlement-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    .settlement-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    /* Export Button */
+    .export-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, var(--success), var(--accent));
+      border: none;
+      border-radius: 0.75rem;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .export-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+    }
+
+    /* Two Column Layouts */
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .three-column {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 1200px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .charts-grid { grid-template-columns: 1fr; }
+      .two-column { grid-template-columns: 1fr; }
+      .three-column { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .settlement-grid { grid-template-columns: 1fr; }
+      .calc-results { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <div class="financial-header">
+    <h1><i data-lucide="trending-up"></i> Financial Dashboard</h1>
+    <div style="display: flex; gap: 0.75rem;">
+      <select style="padding: 0.75rem; background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: 0.5rem; color: var(--text-primary);">
+        <option>This Month</option>
+        <option>Last Month</option>
+        <option>This Quarter</option>
+        <option>YTD</option>
+        <option>Last 12 Months</option>
+      </select>
+      <button class="export-btn" onclick="exportCSV()">
+        <i data-lucide="download"></i> Export CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- Revenue Stats -->
+  <div class="stats-grid">
+    <div class="stat-card success">
+      <div class="stat-label">
+        <i data-lucide="dollar-sign" style="width: 14px;"></i> Total Enrolled Debt
+      </div>
+      <div class="stat-value" id="statEnrolledDebt">$0</div>
+      <div class="stat-change positive">
+        <i data-lucide="trending-up" style="width: 14px;"></i> +12.5% vs last month
+      </div>
+    </div>
+
+    <div class="stat-card success">
+      <div class="stat-label">
+        <i data-lucide="wallet" style="width: 14px;"></i> Total Fees Earned
+      </div>
+      <div class="stat-value" id="statFeesEarned">$0</div>
+      <div class="stat-change positive">
+        <i data-lucide="trending-up" style="width: 14px;"></i> +8.3% vs last month
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">
+        <i data-lucide="calendar" style="width: 14px;"></i> Monthly Revenue
+      </div>
+      <div class="stat-value" id="statMonthlyRevenue">$0</div>
+      <div class="stat-change positive">
+        <i data-lucide="trending-up" style="width: 14px;"></i> +5.2% vs last month
+      </div>
+    </div>
+
+    <div class="stat-card warning">
+      <div class="stat-label">
+        <i data-lucide="repeat" style="width: 14px;"></i> MRR
+      </div>
+      <div class="stat-value" id="statMRR">$0</div>
+      <div class="stat-change positive">
+        <i data-lucide="trending-up" style="width: 14px;"></i> +3.1% vs last month
+      </div>
+    </div>
+  </div>
+
+  <!-- Revenue Chart + Trust Account -->
+  <div class="charts-grid">
+    <div class="glass-card chart-container">
+      <div class="chart-header">
+        <h2 class="chart-title"><i data-lucide="bar-chart-3"></i> Revenue (Last 12 Months)</h2>
+        <span style="font-size: 0.875rem; color: var(--text-muted);">Hover bars for details</span>
+      </div>
+      <div class="bar-chart" id="revenueChart">
+        <!-- Bars rendered here -->
+      </div>
+    </div>
+
+    <div class="glass-card chart-container">
+      <div class="chart-header">
+        <h2 class="chart-title"><i data-lucide="landmark"></i> Trust Account</h2>
+      </div>
+      <div class="trust-grid">
+        <div class="trust-card">
+          <div class="trust-info">
+            <h4>Total Balance</h4>
+            <div class="amount" style="color: var(--success);">$127,450</div>
+          </div>
+          <i data-lucide="shield-check" style="color: var(--success);"></i>
+        </div>
+
+        <div class="trust-card">
+          <div class="trust-info">
+            <h4>Pending Disbursements</h4>
+            <div class="amount" style="color: var(--warning);">$42,800</div>
+          </div>
+          <i data-lucide="clock" style="color: var(--warning);"></i>
+        </div>
+
+        <div class="trust-card">
+          <div class="trust-info">
+            <h4>Recent Inflow</h4>
+            <div class="amount" style="color: var(--accent);">+$18,250</div>
+          </div>
+          <i data-lucide="arrow-down-left" style="color: var(--accent);"></i>
+        </div>
+
+        <div class="trust-card">
+          <div class="trust-info">
+            <h4>Settlements Paid</h4>
+            <div class="amount" style="color: var(--primary);">$35,600</div>
+          </div>
+          <i data-lucide="handshake" style="color: var(--primary);"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-column">
+    <!-- AR Aging -->
+    <div class="glass-card" style="padding: 1.5rem;">
+      <div class="chart-header">
+        <h2 class="chart-title"><i data-lucide="calendar-clock"></i> AR Aging Report</h2>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="aging-table">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Current</th>
+              <th>30 Days</th>
+              <th>60 Days</th>
+              <th>90+ Days</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="agingTableBody">
+            <!-- Rows rendered here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Fee Calculator -->
+    <div class="glass-card calculator-section">
+      <div class="chart-header">
+        <h2 class="chart-title"><i data-lucide="calculator"></i> Fee Calculator</h2>
+      </div>
+      
+      <div class="calc-input-group">
+        <input type="number" class="calc-input" id="calcDebtAmount" placeholder="Enter enrolled debt amount" onkeyup="calculateFees()">
+        <select class="calc-input" id="calcFeeRate" onchange="calculateFees()">
+          <option value="0.15">15% Fee</option>
+          <option value="0.18" selected>18% Fee</option>
+          <option value="0.20">20% Fee</option>
+          <option value="0.25">25% Fee</option>
+        </select>
+      </div>
+
+      <div class="calc-results">
+        <div class="calc-result-item">
+          <div class="calc-result-value" id="calcServiceFee">--</div>
+          <div class="calc-result-label">Service Fee</div>
+        </div>
+        <div class="calc-result-item">
+          <div class="calc-result-value" id="calcSettlement">--</div>
+          <div class="calc-result-label">Est. Settlement (50%)</div>
+        </div>
+        <div class="calc-result-item">
+          <div class="calc-result-value" id="calcTotalCost">--</div>
+          <div class="calc-result-label">Total Cost</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-subtle);">
+        <div class="calc-result-item" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05));">
+          <div class="calc-result-value" id="calcSavings" style="color: var(--success);">--</div>
+          <div class="calc-result-label">Est. Client Savings</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="three-column">
+    <!-- Payment Processing -->
+    <div class="glass-card" style="padding: 1.5rem;">
+      <div class="chart-header">
+        <h2 class="chart-title"><i data-lucide="credit-card"></i> Recent Transactions</h2>
+        <span id="failedCount" style="font-size: 0.75rem; color: var(--danger);">1 Failed</span>
+      </div>
+      <div class="payment-grid" id="paymentList">
+        <!-- Payments rendered here -->
+      </div>
+    </div>
+
+    <!-- P&L Summary -->
+    <div class="glass-card pl-section">
+      <div class="chart-header">
+        <h2 class="chart-title"><i data-lucide="pie-chart"></i> P&L Summary</h2>
+      </div>
+      
+      <div class="pl-item" onclick="togglePL(this)">
+        <div class="pl-header">
+          <i data-lucide="chevron-down" class="pl-expand"></i>
+          <span>Revenue</span>
+        </div>
+        <div class="pl-amount" style="color: var(--success);">$89,450</div>
+      </div>
+      <div class="pl-subitems">
+        <div class="pl-subitem">
+          <span>Service Fees</span>
+          <span>$52,300</span>
+        </div>
+        <div class="pl-subitem">
+          <span>Settlement Fees</span>
+          <span>$28,150</span>
+        </div>
+        <div class="pl-subitem">
+          <span>Monthly Fees</span>
+          <span>$9,000</span>
+        </div>
+      </div>
+
+      <div class="pl-item" onclick="togglePL(this)">
+        <div class="pl-header">
+          <i data-lucide="chevron-down" class="pl-expand"></i>
+          <span>Operating Expenses</span>
+        </div>
+        <div class="pl-amount" style="color: var(--danger);">$34,250</div>
+      </div>
+      <div class="pl-subitems">
+        <div class="pl-subitem">
+          <span>Salaries</span>
+          <span>$22,000</span>
+        </div>
+        <div class="pl-subitem">
+          <span>Software/Tools</span>
+          <span>$3,500</span>
+        </div>
+        <div class="pl-subitem">
+          <span>Marketing</span>
+          <span>$5,250</span>
+        </div>
+        <div class="pl-subitem">
+          <span>Other</span>
+          <span>$3,500</span>
+        </div>
+      </div>
+
+      <div class="pl-item" onclick="togglePL(this)">
+        <div class="pl-header">
+          <i data-lucide="chevron-down" class="pl-expand"></i>
+          <span>Commissions</span>
+        </div>
+        <div class="pl-amount" style="color: var(--warning);">$15,680</div>
+      </div>
+      <div class="pl-subitems">
+        <div class="pl-subitem">
+          <span>Sales Commissions</span>
+          <span>$12,450</span>
+        </div>
+        <div class="pl-subitem">
+          <span>Performance Bonuses</span>
+          <span>$3,230</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 600;">Net Profit</span>
+        <span class="pl-amount" style="color: var(--success); font-size: 1.25rem;">$39,520</span>
+      </div>
+    </div>
+
+    <!-- Settlement Tracker -->
+    <div class="glass-card" style="padding: 1.5rem;">
+      <div class="chart-header">
+        <h2 class="chart-title"><i data-lucide="handshake"></i> Settlement Tracker</h2>
+      </div>
+      
+      <div class="settlement-grid">
+        <div class="settlement-card">
+          <div class="settlement-icon">
+            <i data-lucide="check-circle"></i>
+          </div>
+          <div class="settlement-value">47</div>
+          <div class="settlement-label">Settlements Negotiated</div>
+        </div>
+
+        <div class="settlement-card">
+          <div class="settlement-icon">
+            <i data-lucide="percent"></i>
+          </div>
+          <div class="settlement-value">42%</div>
+          <div class="settlement-label">Average Settlement %</div>
+        </div>
+
+        <div class="settlement-card">
+          <div class="settlement-icon">
+            <i data-lucide="piggy-bank"></i>
+          </div>
+          <div class="settlement-value">$284K</div>
+          <div class="settlement-label">Total Client Savings</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-subtle);">
+        <h4 style="margin-bottom: 1rem; font-size: 0.875rem; color: var(--text-muted);">Recent Settlements</h4>
+        <div id="recentSettlements">
+          <!-- Settlements rendered here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent Commission Table -->
+  <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+    <div class="chart-header">
+      <h2 class="chart-title"><i data-lucide="users"></i> Agent Commission Summary</h2>
+      <button class="export-btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+        <i data-lucide="download" style="width: 14px;"></i> Export
+      </button>
+    </div>
+    
+    <div style="overflow-x: auto;">
+      <table class="commission-table">
+        <thead>
+          <tr>
+            <th>Agent</th>
+            <th>Enrolled Debt</th>
+            <th>Fees Generated</th>
+            <th>Commission Rate</th>
+            <th>Commission Earned</th>
+            <th>Commission Paid</th>
+            <th>Outstanding</th>
+          </tr>
+        </thead>
+        <tbody id="commissionTableBody">
+          <!-- Rows rendered here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Data
+    const revenueData = [
+      { month: 'Mar', value: 28500 },
+      { month: 'Apr', value: 32200 },
+      { month: 'May', value: 29800 },
+      { month: 'Jun', value: 35600 },
+      { month: 'Jul', value: 38400 },
+      { month: 'Aug', value: 42100 },
+      { month: 'Sep', value: 39800 },
+      { month: 'Oct', value: 44500 },
+      { month: 'Nov', value: 47200 },
+      { month: 'Dec', value: 51800 },
+      { month: 'Jan', value: 48900 },
+      { month: 'Feb', value: 52450 }
+    ];
+
+    const agingData = [
+      { client: 'John Doe', current: 2500, days30: 0, days60: 0, days90: 0 },
+      { client: 'Jane Smith', current: 1800, days30: 1200, days60: 0, days90: 0 },
+      { client: 'Bob Johnson', current: 0, days30: 0, days60: 3500, days90: 0 },
+      { client: 'Alice Williams', current: 4200, days30: 0, days60: 0, days90: 1800 },
+      { client: 'Charlie Brown', current: 1500, days30: 1500, days60: 1500, days90: 0 }
+    ];
+
+    const payments = [
+      { client: 'John Doe', date: 'Feb 24', amount: 425, status: 'success', method: 'Visa •••• 4242' },
+      { client: 'Jane Smith', date: 'Feb 23', amount: 550, status: 'success', method: 'ACH •••• 7890' },
+      { client: 'Bob Johnson', date: 'Feb 23', amount: 325, status: 'failed', method: 'Visa •••• 1234' },
+      { client: 'Alice Williams', date: 'Feb 22', amount: 400, status: 'success', method: 'Mastercard •••• 5678' },
+      { client: 'Charlie Brown', date: 'Feb 22', amount: 275, status: 'pending', method: 'ACH •••• 3456' }
+    ];
+
+    const agents = [
+      { name: 'Sarah Johnson', enrolled: 245000, fees: 44100, rate: 0.15, earned: 6615, paid: 4500 },
+      { name: 'Mike Chen', enrolled: 189000, fees: 34020, rate: 0.15, earned: 5103, paid: 3800 },
+      { name: 'Jessica Davis', enrolled: 156000, fees: 28080, rate: 0.12, earned: 3370, paid: 2800 }
+    ];
+
+    const recentSettlements = [
+      { creditor: 'Chase Bank', client: 'John Doe', original: 15000, settled: 6750, saved: 8250 },
+      { creditor: 'Capital One', client: 'Alice W.', original: 8500, settled: 3400, saved: 5100 },
+      { creditor: 'Discover', client: 'Bob J.', original: 12000, settled: 5400, saved: 6600 }
+    ];
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadData();
+      renderAll();
+      animateStats();
+      animateBars();
+    });
+
+    function loadData() {
+      const stored = localStorage.getItem('debtDB_financial');
+      if (stored) {
+        // Load saved data if exists
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem('debtDB_financial', JSON.stringify({
+        // Financial data
+      }));
+    }
+
+    function renderAll() {
+      renderRevenueChart();
+      renderAgingTable();
+      renderPayments();
+      renderCommissionTable();
+      renderRecentSettlements();
+      window.lucide?.createIcons();
+    }
+
+    // Animate stats count up
+    function animateStats() {
+      const stats = [
+        { id: 'statEnrolledDebt', value: 1842000, prefix: '$' },
+        { id: 'statFeesEarned', value: 331560, prefix: '$' },
+        { id: 'statMonthlyRevenue', value: 52450, prefix: '$' },
+        { id: 'statMRR', value: 28400, prefix: '$' }
+      ];
+
+      stats.forEach(stat => {
+        const el = document.getElementById(stat.id);
+        if (!el) return;
+        
+        let current = 0;
+        const increment = stat.value / 50;
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= stat.value) {
+            current = stat.value;
+            clearInterval(timer);
+          }
+          el.textContent = stat.prefix + Math.round(current).toLocaleString();
+        }, 30);
+      });
+    }
+
+    // Revenue Chart
+    function renderRevenueChart() {
+      const max = Math.max(...revenueData.map(d => d.value));
+      const container = document.getElementById('revenueChart');
+      
+      container.innerHTML = revenueData.map((d, i) => {
+        const height = (d.value / max) * 100;
+        return `
+          <div class="bar-group">
+            <div class="bar" style="height: 0%;" data-height="${height}%" data-value="$${d.value.toLocaleString()}">
+              <span class="bar-value">$${(d.value / 1000).toFixed(1)}k</span>
+            </div>
+            <span class="bar-label">${d.month}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function animateBars() {
+      setTimeout(() => {
+        document.querySelectorAll('.bar').forEach((bar, i) => {
+          setTimeout(() => {
+            bar.style.height = bar.dataset.height;
+          }, i * 50);
+        });
+      }, 500);
+    }
+
+    // AR Aging Table
+    function renderAgingTable() {
+      const tbody = document.getElementById('agingTableBody');
+      tbody.innerHTML = agingData.map(row => {
+        const total = row.current + row.days30 + row.days60 + row.days90;
+        return `
+          <tr>
+            <td>${row.client}</td>
+            <td class="aging-cell current">$${row.current.toLocaleString()}</td>
+            <td class="aging-cell days30">$${row.days30.toLocaleString()}</td>
+            <td class="aging-cell days60">$${row.days60.toLocaleString()}</td>
+            <td class="aging-cell days90">$${row.days90.toLocaleString()}</td>
+            <td style="font-weight: 600;">$${total.toLocaleString()}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Fee Calculator
+    function calculateFees() {
+      const amount = parseFloat(document.getElementById('calcDebtAmount').value) || 0;
+      const rate = parseFloat(document.getElementById('calcFeeRate').value) || 0.18;
+      
+      if (amount <= 0) {
+        document.getElementById('calcServiceFee').textContent = '--';
+        document.getElementById('calcSettlement').textContent = '--';
+        document.getElementById('calcTotalCost').textContent = '--';
+        document.getElementById('calcSavings').textContent = '--';
+        return;
+      }
+      
+      const serviceFee = amount * rate;
+      const settlement = amount * 0.5; // 50% settlement assumption
+      const totalCost = serviceFee + settlement;
+      const savings = amount - totalCost;
+      
+      document.getElementById('calcServiceFee').textContent = '$' + Math.round(serviceFee).toLocaleString();
+      document.getElementById('calcSettlement').textContent = '$' + Math.round(settlement).toLocaleString();
+      document.getElementById('calcTotalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+      document.getElementById('calcSavings').textContent = '$' + Math.round(savings).toLocaleString();
+    }
+
+    // Payment Processing
+    function renderPayments() {
+      const container = document.getElementById('paymentList');
+      const failedCount = payments.filter(p => p.status === 'failed').length;
+      document.getElementById('failedCount').textContent = `${failedCount} Failed`;
+      
+      container.innerHTML = payments.map(p => `
+        <div class="payment-item ${p.status}">
+          <div class="payment-info">
+            <h4>${p.client}</h4>
+            <p>${p.date} • ${p.method}</p>
+          </div>
+          <div style="text-align: right;">
+            <div class="payment-amount">$${p.amount.toLocaleString()}</div>
+            <div class="payment-status ${p.status}">${p.status}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // P&L Toggle
+    function togglePL(item) {
+      item.classList.toggle('expanded');
+    }
+
+    // Commission Table
+    function renderCommissionTable() {
+      const tbody = document.getElementById('commissionTableBody');
+      tbody.innerHTML = agents.map(a => {
+        const outstanding = a.earned - a.paid;
+        return `
+          <tr>
+            <td>
+              <div class="agent-cell">
+                <div class="agent-avatar">${a.name.split(' ').map(n => n[0]).join('')}</div>
+                ${a.name}
+              </div>
+            </td>
+            <td>$${a.enrolled.toLocaleString()}</td>
+            <td>$${a.fees.toLocaleString()}</td>
+            <td>${(a.rate * 100).toFixed(0)}%</td>
+            <td class="commission-value positive">$${a.earned.toLocaleString()}</td>
+            <td>$${a.paid.toLocaleString()}</td>
+            <td style="color: ${outstanding > 0 ? 'var(--warning)' : 'var(--text-secondary)'};">$${outstanding.toLocaleString()}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Recent Settlements
+    function renderRecentSettlements() {
+      const container = document.getElementById('recentSettlements');
+      container.innerHTML = recentSettlements.map(s => `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-card); border-radius: 0.5rem; margin-bottom: 0.5rem;">
+          <div>
+            <div style="font-weight: 500; font-size: 0.875rem;">${s.creditor}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">${s.client}</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: 'Orbitron', sans-serif; font-weight: 600; color: var(--success);">$${s.saved.toLocaleString()} saved</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">$${s.original.toLocaleString()} → $${s.settled.toLocaleString()}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Export CSV
+    function exportCSV() {
+      const headers = ['Metric', 'Value'];
+      const data = [
+        ['Total Enrolled Debt', '$1,842,000'],
+        ['Total Fees Earned', '$331,560'],
+        ['Monthly Revenue', '$52,450'],
+        ['MRR', '$28,400'],
+        ['Trust Account Balance', '$127,450']
+      ];
+      
+      const csv = [headers.join(','), ...data.map(row => row.join(','))].join('\n');
+      
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `financial-report-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</div>
