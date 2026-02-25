@@ -469,12 +469,25 @@
         </div>
       </div>
 
+      <!-- AI Status Indicator -->
+      <div class="glass-card" id="aiStatusCard" style="display: none; background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.05)); border-color: #8B5CF6;">
+        <div style="text-align: center; padding: 16px;">
+          <div style="font-size: 32px; margin-bottom: 8px;">🤖</div>
+          <div style="color: #8B5CF6; font-weight: 600; font-size: 16px;" id="aiStatusText">AI Active</div>
+          <div style="color: #94A3B8; font-size: 14px; margin-top: 4px;" id="aiStatusDetail">Calling...</div>
+        </div>
+      </div>
+
       <!-- Call Controls -->
       <div class="glass-card">
         <div class="call-controls">
           <button class="control-btn" id="callBtn" onclick="makeCall()">
             <span style="font-size: 24px;">📞</span>
             <span>Call</span>
+          </button>
+          <button class="control-btn" id="aiCallBtn" onclick="makeAICall()" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.1)); border-color: #8B5CF6;">
+            <span style="font-size: 24px;">🤖</span>
+            <span>AI Call</span>
           </button>
           <button class="control-btn danger" id="hangupBtn" onclick="hangup()" disabled>
             <span style="font-size: 24px;">📴</span>
@@ -492,9 +505,9 @@
             <span style="font-size: 24px;">💬</span>
             <span>SMS</span>
           </button>
-          <button class="control-btn" id="recordBtn" onclick="toggleRecord()" disabled>
-            <span style="font-size: 24px;">⏺️</span>
-            <span>Record</span>
+          <button class="control-btn" id="aiTranscriptBtn" onclick="showAITranscript()" disabled>
+            <span style="font-size: 24px;">📋</span>
+            <span>AI Transcript</span>
           </button>
           <button class="control-btn" id="transferBtn" onclick="transferCall()" disabled>
             <span style="font-size: 24px;">➡️</span>
@@ -558,6 +571,19 @@
     </div>
   </div>
 
+  <!-- AI Transcript Modal -->
+  <div class="modal-overlay" id="aiTranscriptModal">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3>🤖 AI Call Transcript</h3>
+        <button class="modal-close" onclick="closeTranscriptModal()">×</button>
+      </div>
+      <div id="transcriptContent" style="max-height: 400px; overflow-y: auto; padding: 16px; background: rgba(10, 15, 26, 0.6); border-radius: 12px;">
+        <div style="color: #64748B; text-align: center;">Loading transcript...</div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2/dist/twilio.min.js"></script>
   <script>
 (function() {
@@ -573,6 +599,9 @@
     let currentLead = null;
     let selectedDisposition = null;
     let isDemoMode = false;
+    let aiCallActive = false;
+    let aiCallSid = null;
+    let transcriptPollInterval = null;
 
     const WORKER_URL = 'https://debt-voice-stack.fly.dev';
 
@@ -830,8 +859,9 @@
       stopAudioVisualizer();
       setCallStatus('Call Ended', 'disconnected');
       
-      // Save call to history
-      saveCallToHistory();
+      // Save call to history (human call)
+      const leadName = currentLead ? currentLead.name : null;
+      saveCallToHistory(false, leadName);
       
       // Show disposition panel
       setTimeout(() => {
@@ -1093,15 +1123,17 @@
     // =====================
     // CALL HISTORY
     // =====================
-    function saveCallToHistory() {
+    function saveCallToHistory(isAICall = false, leadName = null) {
       const phoneNumber = document.getElementById('phoneInput').value;
-      const duration = document.getElementById('timerDisplay').textContent;
+      const duration = document.getElementById('timerDisplay').textContent || '00:00';
       
       const callData = {
         phoneNumber: phoneNumber,
         duration: duration,
         timestamp: Date.now(),
-        disposition: null
+        disposition: null,
+        isAICall: isAICall,
+        leadName: leadName
       };
       
       let history = JSON.parse(localStorage.getItem('callHistory') || '[]');
@@ -1122,9 +1154,13 @@
       
       container.innerHTML = history.map(call => {
         const date = new Date(call.timestamp);
+        const aiBadge = call.isAICall ? '<span style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); padding: 2px 8px; border-radius: 6px; font-size: 11px; margin-left: 8px;">🤖 AI</span>' : '';
+        const nameDisplay = call.leadName ? `<div style="color: #94A3B8; font-size: 12px; margin-top: 4px;">${call.leadName}</div>` : '';
+        
         return `
           <div class="history-item">
-            <div class="history-phone">${call.phoneNumber}</div>
+            <div class="history-phone">${call.phoneNumber} ${aiBadge}</div>
+            ${nameDisplay}
             <div class="history-meta">
               <span>${date.toLocaleTimeString()}</span>
               <span>${call.duration || '00:00'}</span>
@@ -1169,6 +1205,173 @@
     }
 
     // =====================
+    // AI CALLING
+    // =====================
+    async function makeAICall() {
+      const phoneNumber = document.getElementById('phoneInput').value.replace(/\D/g, '');
+      
+      if (!phoneNumber || phoneNumber.length < 10) {
+        showToast('Please enter a valid phone number', 'error');
+        return;
+      }
+
+      const leadName = currentLead ? currentLead.name : 'Customer';
+
+      try {
+        // Show AI status card
+        document.getElementById('aiStatusCard').style.display = 'block';
+        document.getElementById('aiStatusText').textContent = 'AI Active';
+        document.getElementById('aiStatusDetail').textContent = `Calling ${leadName}...`;
+
+        // Make AI call
+        const response = await fetch(`${WORKER_URL}/api/calls/outbound-ai`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: `+1${phoneNumber}`,
+            lead_name: leadName,
+            context: 'Outbound from Power Dialer'
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('AI call failed');
+        }
+
+        const data = await response.json();
+        aiCallSid = data.call_sid || data.callSid;
+        aiCallActive = true;
+
+        // Update UI
+        document.getElementById('aiStatusDetail').textContent = `AI calling ${leadName}...`;
+        document.getElementById('aiCallBtn').disabled = true;
+        document.getElementById('callBtn').disabled = true;
+        document.getElementById('aiTranscriptBtn').disabled = false;
+
+        // Start polling for transcript
+        startTranscriptPolling();
+
+        // Save to history as AI call
+        saveCallToHistory(true, leadName);
+
+        showToast('AI call initiated', 'success');
+      } catch (error) {
+        console.error('❌ AI call failed:', error);
+        showToast('AI call failed: ' + error.message, 'error');
+        resetAICallUI();
+      }
+    }
+
+    function startTranscriptPolling() {
+      if (transcriptPollInterval) {
+        clearInterval(transcriptPollInterval);
+      }
+
+      transcriptPollInterval = setInterval(async () => {
+        try {
+          const response = await fetch(`${WORKER_URL}/api/calls/active`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch active calls');
+          }
+
+          const data = await response.json();
+          
+          // Check if our AI call is still active
+          if (data.calls && Array.isArray(data.calls)) {
+            const ourCall = data.calls.find(c => c.call_sid === aiCallSid || c.callSid === aiCallSid);
+            
+            if (!ourCall) {
+              // Call ended
+              stopTranscriptPolling();
+              handleAICallEnd();
+            } else {
+              // Update status
+              const status = ourCall.status || 'in-progress';
+              document.getElementById('aiStatusDetail').textContent = `AI call ${status}`;
+            }
+          }
+        } catch (error) {
+          console.error('❌ Transcript poll error:', error);
+        }
+      }, 3000); // Poll every 3 seconds
+    }
+
+    function stopTranscriptPolling() {
+      if (transcriptPollInterval) {
+        clearInterval(transcriptPollInterval);
+        transcriptPollInterval = null;
+      }
+    }
+
+    function handleAICallEnd() {
+      aiCallActive = false;
+      aiCallSid = null;
+      document.getElementById('aiStatusDetail').textContent = 'AI call completed';
+      
+      setTimeout(() => {
+        resetAICallUI();
+        // Show disposition panel
+        document.getElementById('dispositionPanel').style.display = 'block';
+      }, 2000);
+      
+      loadCallHistory();
+      updateStats();
+    }
+
+    function resetAICallUI() {
+      document.getElementById('aiStatusCard').style.display = 'none';
+      document.getElementById('aiCallBtn').disabled = false;
+      document.getElementById('callBtn').disabled = false;
+      document.getElementById('aiTranscriptBtn').disabled = true;
+    }
+
+    async function showAITranscript() {
+      document.getElementById('aiTranscriptModal').classList.add('open');
+      const container = document.getElementById('transcriptContent');
+      container.innerHTML = '<div style="color: #64748B; text-align: center;">Loading transcript...</div>';
+
+      try {
+        const response = await fetch(`${WORKER_URL}/api/calls/active`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch transcript');
+        }
+
+        const data = await response.json();
+        
+        if (data.calls && Array.isArray(data.calls)) {
+          const ourCall = data.calls.find(c => c.call_sid === aiCallSid || c.callSid === aiCallSid);
+          
+          if (ourCall && ourCall.transcript) {
+            // Display transcript
+            const transcript = Array.isArray(ourCall.transcript) ? ourCall.transcript : [ourCall.transcript];
+            
+            container.innerHTML = transcript.map(entry => {
+              const speaker = entry.speaker || entry.role || 'Unknown';
+              const text = entry.text || entry.message || entry;
+              return `
+                <div style="margin-bottom: 16px; padding: 12px; background: rgba(15, 23, 42, 0.6); border-radius: 8px; border-left: 3px solid ${speaker.toLowerCase().includes('ai') || speaker.toLowerCase().includes('assistant') ? '#8B5CF6' : '#3B82F6'};">
+                  <div style="color: ${speaker.toLowerCase().includes('ai') || speaker.toLowerCase().includes('assistant') ? '#8B5CF6' : '#3B82F6'}; font-weight: 600; font-size: 12px; margin-bottom: 4px;">${speaker}</div>
+                  <div style="color: white;">${text}</div>
+                </div>
+              `;
+            }).join('');
+          } else {
+            container.innerHTML = '<div style="color: #64748B; text-align: center;">No transcript available yet</div>';
+          }
+        } else {
+          container.innerHTML = '<div style="color: #64748B; text-align: center;">No active AI call</div>';
+        }
+      } catch (error) {
+        console.error('❌ Transcript fetch failed:', error);
+        container.innerHTML = '<div style="color: #EF4444; text-align: center;">Failed to load transcript</div>';
+      }
+    }
+
+    function closeTranscriptModal() {
+      document.getElementById('aiTranscriptModal').classList.remove('open');
+    }
+
+    // =====================
     // TOAST NOTIFICATIONS
     // =====================
     function showToast(message, type = 'info') {
@@ -1182,16 +1385,19 @@
   // Expose functions to window for onclick handlers
   window.addConference = addConference;
   window.backspace = backspace;
+  window.closeTranscriptModal = closeTranscriptModal;
   window.closeSMSModal = closeSMSModal;
   window.dialDigit = dialDigit;
   window.hangup = hangup;
   window.initializeTwilio = initializeTwilio;
+  window.makeAICall = makeAICall;
   window.makeCall = makeCall;
   window.openSMSModal = openSMSModal;
   window.saveDisposition = saveDisposition;
   window.selectContact = selectContact;
   window.selectDisposition = selectDisposition;
   window.sendSMS = sendSMS;
+  window.showAITranscript = showAITranscript;
   window.toggleHold = toggleHold;
   window.toggleMute = toggleMute;
   window.toggleRecord = toggleRecord;
