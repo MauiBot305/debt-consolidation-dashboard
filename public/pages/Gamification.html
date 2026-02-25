@@ -341,12 +341,20 @@
     showToast('Reward redeemed! (Demo mode)', 'success');
   }
 
+  function initGamification() {
+    renderLeaderboard();
+    renderAchievements();
+    renderChallenges();
+    renderRewards();
+    lucide.createIcons();
+  }
+
   // Initialize
-  renderLeaderboard();
-  renderAchievements();
-  renderChallenges();
-  renderRewards();
-  lucide.createIcons();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGamification);
+  } else {
+    initGamification();
+  }
 
 // Window exports for onclick handlers
   window.closeAgentProfile = closeAgentProfile;

@@ -469,9 +469,18 @@
     showToast('All data cleared!', 'success');
   }
 
+  function initSettings() {
+    loadSettings();
+    switchTab('profile');
+    lucide.createIcons();
+  }
+
   // Initialize
-  loadSettings();
-  lucide.createIcons();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSettings);
+  } else {
+    initSettings();
+  }
 
 // Window exports for onclick handlers
   window.changePassword = changePassword;

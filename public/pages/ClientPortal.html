@@ -396,9 +396,17 @@
     renderSettlements();
   }
 
+  function initClientPortal() {
+    renderClientSelector();
+    lucide.createIcons();
+  }
+
   // Initialize
-  renderClientSelector();
-  lucide.createIcons();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initClientPortal);
+  } else {
+    initClientPortal();
+  }
 
 // Window exports for onclick handlers
   window.acceptOffer = acceptOffer;
