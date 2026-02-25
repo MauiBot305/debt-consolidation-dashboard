@@ -1032,9 +1032,11 @@
   let voicesCache = [];
 
   window.switchConfigTab = function(tab) {
-    ['general','voice','llm','behavior'].forEach(t => {
-      const panel = $('cfgPanel' + t.charAt(0).toUpperCase() + t.slice(1));
-      const btn = $('cfgTab' + t.charAt(0).toUpperCase() + t.slice(1));
+    const panelMap = {general:'General', voice:'Voice', llm:'LLM', behavior:'Behavior'};
+    const tabMap = {general:'General', voice:'Voice', llm:'LLM', behavior:'Behavior'};
+    Object.keys(panelMap).forEach(t => {
+      const panel = $('cfgPanel' + panelMap[t]);
+      const btn = $('cfgTab' + tabMap[t]);
       if (panel) panel.classList.toggle('active', t === tab);
       if (btn) btn.classList.toggle('active', t === tab);
     });
