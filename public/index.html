@@ -995,6 +995,9 @@
                 oldScript.parentNode.replaceChild(newScript, oldScript);
               });
               
+              // Fire DOMContentLoaded for pages that listen for it (SPA re-entry)
+              try { document.dispatchEvent(new Event('DOMContentLoaded')); } catch(e) {}
+              
               lucide.createIcons();
               
               // Initialize page-specific JS if exists

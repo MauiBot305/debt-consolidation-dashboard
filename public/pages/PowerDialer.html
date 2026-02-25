@@ -579,8 +579,7 @@
     // =====================
     // INITIALIZATION
     // =====================
-    // Run immediately — DOMContentLoaded already fired in SPA context
-    (async () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       console.log('🚀 Power Dialer initializing...');
       
       // Initialize Twilio
@@ -605,7 +604,7 @@
 
       // Phone input formatter
       document.getElementById('phoneInput').addEventListener('input', formatPhoneInput);
-    })();
+    });
 
     // =====================
     // TWILIO INITIALIZATION

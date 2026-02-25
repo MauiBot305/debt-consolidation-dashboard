@@ -1070,7 +1070,7 @@
     }
 
     // Initialize
-    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initFinancial); } else { initFinancial(); }
+    document.addEventListener('DOMContentLoaded', initFinancial);
     
     if (document.readyState !== 'loading') {
       initFinancial();

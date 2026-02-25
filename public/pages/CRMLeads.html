@@ -746,7 +746,7 @@
     // =====================
     // INITIALIZATION
     // =====================
-    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', () => { __init(); }); } else { __init(); } function __init() {
+    document.addEventListener('DOMContentLoaded', () => {
       console.log('🚀 CRM Leads initializing...');
       
       loadLeads();
@@ -1058,7 +1058,7 @@
       if (lead) {
         // Switch to Power Dialer and populate phone
         window.location.hash = 'power-dialer';
-        setTimeoutif (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', () => { __init(); }); } else { __init(); } function __init() {
+        setTimeout(() => {
           const phoneInput = document.getElementById('phoneInput');
           if (phoneInput) {
             phoneInput.value = lead.phone;
