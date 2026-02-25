@@ -1291,13 +1291,88 @@
         if (file) {
           const reader = new FileReader();
           reader.onload = (event) => {
-            Toast.info('CSV import functionality coming soon!');
-            // TODO: Parse CSV and add to leads
+            try {
+              const csv = event.target.result;
+              const parsed = parseCSV(csv);
+              
+              if (parsed.length === 0) {
+                Toast.warning('No valid leads found in CSV file');
+                return;
+              }
+
+              // Add leads to database
+              let successCount = 0;
+              let errorCount = 0;
+
+              parsed.forEach(row => {
+                try {
+                  const newLead = {
+                    id: 'LEAD' + String(leads.length + successCount + 1).padStart(4, '0'),
+                    name: row.name || 'Unknown',
+                    phone: row.phone || '',
+                    email: row.email || '',
+                    totalDebt: parseFloat(row.totalDebt) || 0,
+                    monthlyIncome: parseFloat(row.monthlyIncome) || 0,
+                    dtiRatio: parseFloat(row.dtiRatio) || 0,
+                    source: row.source || 'CSV Import',
+                    status: row.status || 'new',
+                    assignedAgent: row.assignedAgent || 'Unassigned',
+                    score: parseInt(row.score) || 50,
+                    lastContact: new Date().toISOString(),
+                    createdAt: new Date().toISOString(),
+                    debts: []
+                  };
+
+                  leads.unshift(newLead);
+                  successCount++;
+                } catch (err) {
+                  errorCount++;
+                  console.error('Error adding lead:', err);
+                }
+              });
+
+              saveLeads();
+              renderLeads();
+
+              if (successCount > 0) {
+                Toast.success(`Successfully imported ${successCount} lead${successCount > 1 ? 's' : ''}!`);
+              }
+              if (errorCount > 0) {
+                Toast.warning(`${errorCount} lead${errorCount > 1 ? 's' : ''} could not be imported`);
+              }
+            } catch (error) {
+              Toast.error('Failed to parse CSV file. Please check the format.');
+              console.error('CSV import error:', error);
+            }
           };
           reader.readAsText(file);
         }
       };
       input.click();
+    }
+
+    function parseCSV(csv) {
+      const lines = csv.split('\n').filter(line => line.trim());
+      if (lines.length < 2) return [];
+
+      const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
+      const data = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.trim());
+        const row = {};
+        
+        headers.forEach((header, index) => {
+          row[header] = values[index] || '';
+        });
+
+        // Only add rows with at least a name or phone
+        if (row.name || row.phone) {
+          data.push(row);
+        }
+      }
+
+      return data;
     }
 
     function exportCSV() {
