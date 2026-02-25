@@ -1,46 +1,101 @@
 /**
  * Twilio API Handler for Cloudflare Worker
  * Provides token generation and call control endpoints
+ * 
+ * DEPLOYMENT:
+ * npx wrangler deploy worker/twilio-api.js --name debt-dashboard-api
+ * 
+ * SET SECRETS:
+ * echo "AC817583246f1bd0d4d71d0be44e65d938" | npx wrangler secret put TWILIO_ACCOUNT_SID --name debt-dashboard-api
+ * echo "83c7a2a19ce4627b66632bb12873d2e9" | npx wrangler secret put TWILIO_AUTH_TOKEN --name debt-dashboard-api
+ * echo "SK81e414a5d4c572c269e00fb0c4257807" | npx wrangler secret put TWILIO_API_KEY_SID --name debt-dashboard-api
+ * echo "iioElfBXphoOp4yNtjgCsr0j1TMfsqGL" | npx wrangler secret put TWILIO_API_KEY_SECRET --name debt-dashboard-api
+ * echo "+17542542410" | npx wrangler secret put TWILIO_FROM_NUMBER --name debt-dashboard-api
  */
 
-// REAL TWILIO CREDENTIALS - HARDCODED
-const TWILIO_CONFIG = {
-  accountSid: env.TWILIO_ACCOUNT_SID || 'CONFIGURE_IN_WORKER_SECRETS',
-  authToken: env.TWILIO_AUTH_TOKEN || 'CONFIGURE_IN_WORKER_SECRETS',
-  apiKeySid: env.TWILIO_API_KEY_SID || 'CONFIGURE_IN_WORKER_SECRETS',
-  apiKeySecret: env.TWILIO_API_KEY_SECRET || 'CONFIGURE_IN_WORKER_SECRETS',
-  phoneNumber: '+17542542410',
-  voiceWebhook: 'https://voice-api.alldayautomations.ai/voice/inbound',
-  statusCallback: 'https://voice-api.alldayautomations.ai/api/call-status'
-};
+/**
+ * Generate JWT token manually (Cloudflare Worker compatible)
+ * Replaces Twilio's AccessToken library
+ */
+function generateTwilioJWT(accountSid, apiKeySid, apiKeySecret, identity) {
+  const now = Math.floor(Date.now() / 1000);
+  const exp = now + 3600; // 1 hour expiration
+
+  const header = {
+    cty: 'twilio-fpa;v=1',
+    typ: 'JWT',
+    alg: 'HS256'
+  };
+
+  const grants = {
+    identity: identity,
+    voice: {
+      incoming: { allow: true },
+      outgoing: {
+        application_sid: null
+      }
+    }
+  };
+
+  const payload = {
+    jti: `${apiKeySid}-${now}`,
+    iss: apiKeySid,
+    sub: accountSid,
+    exp: exp,
+    grants: grants
+  };
+
+  // Base64 URL encode
+  const base64url = (obj) => {
+    return btoa(JSON.stringify(obj))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+  };
+
+  const encodedHeader = base64url(header);
+  const encodedPayload = base64url(payload);
+  const signingInput = `${encodedHeader}.${encodedPayload}`;
+
+  // HMAC-SHA256 signature
+  return crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(apiKeySecret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  ).then(key => {
+    return crypto.subtle.sign(
+      'HMAC',
+      key,
+      new TextEncoder().encode(signingInput)
+    );
+  }).then(signature => {
+    const base64Signature = btoa(String.fromCharCode(...new Uint8Array(signature)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+    
+    return `${signingInput}.${base64Signature}`;
+  });
+}
 
 /**
  * Generate Twilio Access Token for browser calling
  */
-async function generateAccessToken(identity = 'dashboard-agent') {
+async function generateAccessToken(env, identity = 'dashboard-agent') {
   try {
-    // Use Twilio's token generation
-    // Since we're in a Worker, we'll generate the JWT manually
-    const AccessToken = require('twilio').jwt.AccessToken;
-    const VoiceGrant = AccessToken.VoiceGrant;
-
-    const token = new AccessToken(
-      TWILIO_CONFIG.accountSid,
-      TWILIO_CONFIG.apiKeySid,
-      TWILIO_CONFIG.apiKeySecret,
-      { identity }
+    const token = await generateTwilioJWT(
+      env.TWILIO_ACCOUNT_SID,
+      env.TWILIO_API_KEY_SID,
+      env.TWILIO_API_KEY_SECRET,
+      identity
     );
 
-    const voiceGrant = new VoiceGrant({
-      outgoingApplicationSid: null, // We'll use direct TwiML
-      incomingAllow: true
-    });
-
-    token.addGrant(voiceGrant);
-
     return {
-      token: token.toJwt(),
-      identity
+      token,
+      identity,
+      accountSid: env.TWILIO_ACCOUNT_SID
     };
   } catch (error) {
     console.error('Failed to generate token:', error);
@@ -51,25 +106,26 @@ async function generateAccessToken(identity = 'dashboard-agent') {
 /**
  * Send SMS via Twilio
  */
-async function sendSMS(to, body) {
-  const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Messages.json`;
+async function sendSMS(env, to, body) {
+  const url = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`;
   
   const formData = new URLSearchParams();
   formData.append('To', to);
-  formData.append('From', TWILIO_CONFIG.phoneNumber);
+  formData.append('From', env.TWILIO_FROM_NUMBER);
   formData.append('Body', body);
 
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Authorization': 'Basic ' + btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`),
+      'Authorization': 'Basic ' + btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`),
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: formData.toString()
   });
 
   if (!response.ok) {
-    throw new Error(`Twilio SMS API error: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(`Twilio SMS API error: ${response.statusText} - ${errorText}`);
   }
 
   return await response.json();
@@ -78,10 +134,9 @@ async function sendSMS(to, body) {
 /**
  * Update call to hold/unhold
  */
-async function toggleHold(callSid, hold) {
-  const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Calls/${callSid}.json`;
+async function toggleHold(env, callSid, hold) {
+  const url = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Calls/${callSid}.json`;
   
-  // Put on hold using TwiML
   const twiml = hold
     ? '<Response><Play loop="0">http://com.twilio.sounds.music.s3.amazonaws.com/MARKOVICHAMP-Borghestral.mp3</Play></Response>'
     : '<Response><Say>Resuming call</Say></Response>';
@@ -92,7 +147,7 @@ async function toggleHold(callSid, hold) {
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Authorization': 'Basic ' + btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`),
+      'Authorization': 'Basic ' + btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`),
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: formData.toString()
@@ -108,15 +163,14 @@ async function toggleHold(callSid, hold) {
 /**
  * Start/stop call recording
  */
-async function toggleRecording(callSid, record) {
+async function toggleRecording(env, callSid, record) {
   if (record) {
-    // Start recording
-    const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Calls/${callSid}/Recordings.json`;
+    const url = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Calls/${callSid}/Recordings.json`;
     
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Authorization': 'Basic ' + btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`),
+        'Authorization': 'Basic ' + btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`),
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
@@ -127,8 +181,7 @@ async function toggleRecording(callSid, record) {
 
     return await response.json();
   } else {
-    // Stop recording (update call to pause recording)
-    const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Calls/${callSid}.json`;
+    const url = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Calls/${callSid}.json`;
     
     const formData = new URLSearchParams();
     formData.append('RecordingStatus', 'stopped');
@@ -136,7 +189,7 @@ async function toggleRecording(callSid, record) {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Authorization': 'Basic ' + btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`),
+        'Authorization': 'Basic ' + btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`),
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: formData.toString()
@@ -153,8 +206,8 @@ async function toggleRecording(callSid, record) {
 /**
  * Transfer call to another number
  */
-async function transferCall(callSid, to) {
-  const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Calls/${callSid}.json`;
+async function transferCall(env, callSid, to) {
+  const url = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Calls/${callSid}.json`;
   
   const twiml = `<Response><Dial>${to}</Dial></Response>`;
   
@@ -164,7 +217,7 @@ async function transferCall(callSid, to) {
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Authorization': 'Basic ' + btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`),
+      'Authorization': 'Basic ' + btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`),
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: formData.toString()
@@ -180,11 +233,11 @@ async function transferCall(callSid, to) {
 /**
  * Add third party to call (create conference)
  */
-async function createConference(callSid, thirdPartyNumber) {
+async function createConference(env, callSid, thirdPartyNumber) {
   const conferenceName = `conf-${Date.now()}`;
   
   // Update existing call to join conference
-  const url1 = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Calls/${callSid}.json`;
+  const url1 = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Calls/${callSid}.json`;
   
   const twiml1 = `<Response><Dial><Conference>${conferenceName}</Conference></Dial></Response>`;
   
@@ -194,26 +247,26 @@ async function createConference(callSid, thirdPartyNumber) {
   await fetch(url1, {
     method: 'POST',
     headers: {
-      'Authorization': 'Basic ' + btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`),
+      'Authorization': 'Basic ' + btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`),
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: formData1.toString()
   });
 
   // Dial third party into conference
-  const url2 = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Calls.json`;
+  const url2 = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Calls.json`;
   
   const twiml2 = `<Response><Dial><Conference>${conferenceName}</Conference></Dial></Response>`;
   
   const formData2 = new URLSearchParams();
   formData2.append('To', thirdPartyNumber);
-  formData2.append('From', TWILIO_CONFIG.phoneNumber);
+  formData2.append('From', env.TWILIO_FROM_NUMBER);
   formData2.append('Twiml', twiml2);
 
   const response = await fetch(url2, {
     method: 'POST',
     headers: {
-      'Authorization': 'Basic ' + btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`),
+      'Authorization': 'Basic ' + btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`),
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: formData2.toString()
@@ -234,113 +287,127 @@ async function createConference(callSid, thirdPartyNumber) {
 /**
  * Generate TwiML for outbound call
  */
-function generateOutboundTwiML(phoneNumber) {
+function generateOutboundTwiML(env, phoneNumber) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Dial callerId="${TWILIO_CONFIG.phoneNumber}" record="record-from-answer" recordingStatusCallback="${TWILIO_CONFIG.statusCallback}">
+  <Dial callerId="${env.TWILIO_FROM_NUMBER}" record="record-from-answer">
     <Number>${phoneNumber}</Number>
   </Dial>
 </Response>`;
 }
 
 /**
- * Main request handler
+ * Main Cloudflare Worker fetch handler
  */
-async function handleTwilioRequest(request) {
-  const url = new URL(request.url);
-  const path = url.pathname;
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const path = url.pathname;
 
-  // CORS headers
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
-  };
+    // CORS headers
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    };
 
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    try {
+      // Generate access token
+      if (path === '/api/twilio/token') {
+        const identity = url.searchParams.get('identity') || `agent-${Date.now()}`;
+        const result = await generateAccessToken(env, identity);
+        
+        return new Response(JSON.stringify(result), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Send SMS
+      if (path === '/api/twilio/sms') {
+        const body = await request.json();
+        const result = await sendSMS(env, body.to, body.body);
+        
+        return new Response(JSON.stringify({ success: true, messageSid: result.sid }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Toggle hold
+      if (path === '/api/twilio/hold') {
+        const body = await request.json();
+        const result = await toggleHold(env, body.callSid, body.hold);
+        
+        return new Response(JSON.stringify({ success: true, result }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Toggle recording
+      if (path === '/api/twilio/record') {
+        const body = await request.json();
+        const result = await toggleRecording(env, body.callSid, body.record);
+        
+        return new Response(JSON.stringify({ success: true, result }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Transfer call
+      if (path === '/api/twilio/transfer') {
+        const body = await request.json();
+        const result = await transferCall(env, body.callSid, body.to);
+        
+        return new Response(JSON.stringify({ success: true, result }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Create conference
+      if (path === '/api/twilio/conference') {
+        const body = await request.json();
+        const result = await createConference(env, body.callSid, body.thirdPartyNumber);
+        
+        return new Response(JSON.stringify({ success: true, result }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // TwiML for outbound calls
+      if (path === '/api/twilio/twiml/outbound') {
+        const phoneNumber = url.searchParams.get('to');
+        const twiml = generateOutboundTwiML(env, phoneNumber);
+        
+        return new Response(twiml, {
+          headers: { ...corsHeaders, 'Content-Type': 'application/xml' }
+        });
+      }
+
+      // Health check
+      if (path === '/health' || path === '/') {
+        return new Response(JSON.stringify({ 
+          status: 'ok', 
+          service: 'Twilio API Worker',
+          phoneNumber: env.TWILIO_FROM_NUMBER 
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      return new Response(JSON.stringify({ error: 'Not found' }), { 
+        status: 404, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+
+    } catch (error) {
+      console.error('Twilio API error:', error);
+      return new Response(JSON.stringify({ error: error.message, stack: error.stack }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
   }
-
-  try {
-    // Generate access token
-    if (path === '/api/twilio/token') {
-      const identity = url.searchParams.get('identity') || `agent-${Date.now()}`;
-      const result = await generateAccessToken(identity);
-      
-      return new Response(JSON.stringify(result), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Send SMS
-    if (path === '/api/twilio/sms') {
-      const body = await request.json();
-      const result = await sendSMS(body.to, body.body);
-      
-      return new Response(JSON.stringify({ messageSid: result.sid }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Toggle hold
-    if (path === '/api/twilio/hold') {
-      const body = await request.json();
-      const result = await toggleHold(body.callSid, body.hold);
-      
-      return new Response(JSON.stringify(result), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Toggle recording
-    if (path === '/api/twilio/record') {
-      const body = await request.json();
-      const result = await toggleRecording(body.callSid, body.record);
-      
-      return new Response(JSON.stringify(result), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Transfer call
-    if (path === '/api/twilio/transfer') {
-      const body = await request.json();
-      const result = await transferCall(body.callSid, body.to);
-      
-      return new Response(JSON.stringify(result), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Create conference
-    if (path === '/api/twilio/conference') {
-      const body = await request.json();
-      const result = await createConference(body.callSid, body.thirdPartyNumber);
-      
-      return new Response(JSON.stringify(result), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    // TwiML for outbound calls
-    if (path === '/api/twilio/twiml/outbound') {
-      const phoneNumber = url.searchParams.get('to');
-      const twiml = generateOutboundTwiML(phoneNumber);
-      
-      return new Response(twiml, {
-        headers: { ...corsHeaders, 'Content-Type': 'application/xml' }
-      });
-    }
-
-    return new Response('Not found', { status: 404, headers: corsHeaders });
-
-  } catch (error) {
-    console.error('Twilio API error:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
-  }
-}
-
-module.exports = { handleTwilioRequest, TWILIO_CONFIG };
+};

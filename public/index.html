@@ -959,6 +959,24 @@
             const html = await response.text();
             setTimeout(() => {
               pageContent.innerHTML = html;
+              
+              // CRITICAL FIX: Execute scripts that were in the loaded HTML
+              // Scripts loaded via innerHTML don't execute automatically
+              const scripts = pageContent.querySelectorAll('script');
+              scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                // Copy all attributes
+                Array.from(oldScript.attributes).forEach(attr => {
+                  newScript.setAttribute(attr.name, attr.value);
+                });
+                // Copy content for inline scripts
+                if (!oldScript.src) {
+                  newScript.textContent = oldScript.textContent;
+                }
+                // Replace old script with new one to trigger execution
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+              });
+              
               lucide.createIcons();
               
               // Initialize page-specific JS if exists
