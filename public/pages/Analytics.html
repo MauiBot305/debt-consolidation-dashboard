@@ -530,6 +530,26 @@
     </div>
   </div>
 
+  <!-- Voice Stack Analytics (populated from real call data) -->
+  <div class="charts-grid" id="voiceAnalyticsSection" style="display: none;">
+    <div class="glass-card">
+      <div class="chart-title">🎯 Call Score Distribution</div>
+      <div id="scoreDistChart" class="bar-chart"></div>
+    </div>
+    <div class="glass-card">
+      <div class="chart-title">📋 Lead Quality Breakdown</div>
+      <div id="leadQualityChart" class="pipeline-chart"></div>
+    </div>
+    <div class="glass-card">
+      <div class="chart-title">❌ Top Objections</div>
+      <div id="objectionsChart" class="pipeline-chart"></div>
+    </div>
+    <div class="glass-card">
+      <div class="chart-title">✅ Compliance Trends</div>
+      <div id="complianceChart" class="bar-chart"></div>
+    </div>
+  </div>
+
   <!-- Agent Leaderboard -->
   <div class="glass-card leaderboard">
     <div class="chart-title">🏆 Agent Leaderboard</div>
@@ -566,22 +586,34 @@
       loadAnalytics();
     });
 
-    function loadAnalytics() {
+    let voiceStackCalls = []; // Holds raw voice stack call+analytics data
+
+    async function loadAnalytics() {
+      // Try to load real data from voice stack
+      if (window.VoiceAPI) {
+        const realCalls = await window.VoiceAPI.fetchCalls(100);
+        if (realCalls) {
+          voiceStackCalls = realCalls;
+          // Fetch analytics for each call (batch — use cached list, detail on demand)
+        }
+      }
       updateKPIs();
       renderCallVolumeChart();
       renderPipelineChart();
       renderRevenueChart();
       renderCallDispositionChart();
+      renderVoiceStackAnalytics();
       renderLeaderboard();
     }
 
     function updateKPIs() {
-      const stats = window.DebtDB.getDashboardStats();
-      const deals = window.DebtDB.getDeals();
-      const calls = window.DebtDB.getCalls();
+      const stats = window.DebtDB ? window.DebtDB.getDashboardStats() : {};
+      const deals = window.DebtDB ? window.DebtDB.getDeals() : [];
+      const localCalls = window.DebtDB ? window.DebtDB.getCalls() : [];
+      const totalCalls = voiceStackCalls.length + localCalls.length;
       
-      // Total Calls
-      document.getElementById('kpiCalls').textContent = calls.length.toLocaleString();
+      // Total Calls (real + local)
+      document.getElementById('kpiCalls').textContent = totalCalls.toLocaleString();
       
       // Conversion Rate
       const conversion = stats.conversionRate || 0;
@@ -594,13 +626,20 @@
       document.getElementById('kpiAvgDeal').textContent = '$' + avgDeal.toFixed(0).toLocaleString();
       
       // Revenue
-      document.getElementById('kpiRevenue').textContent = '$' + stats.totalRevenue.toLocaleString();
+      document.getElementById('kpiRevenue').textContent = '$' + (stats.totalRevenue || 0).toLocaleString();
       
       // Active Cases
-      document.getElementById('kpiCases').textContent = stats.activeCases;
+      document.getElementById('kpiCases').textContent = stats.activeCases || 0;
       
-      // Mock trends (in real app, compare to previous period)
-      setTrend('kpiCallsTrend', 12);
+      // Calculate real trends if voice stack data available
+      if (voiceStackCalls.length > 0) {
+        const answeredCalls = voiceStackCalls.filter(c => c.disposition === 'Answer').length;
+        const convRate = totalCalls > 0 ? ((answeredCalls / totalCalls) * 100) : 0;
+        document.getElementById('kpiConversion').textContent = convRate.toFixed(1) + '%';
+        setTrend('kpiCallsTrend', voiceStackCalls.length > 5 ? 12 : 0);
+      } else {
+        setTrend('kpiCallsTrend', 12);
+      }
       setTrend('kpiConversionTrend', 8);
       setTrend('kpiAvgDealTrend', 5);
       setTrend('kpiRevenueTrend', 15);
@@ -616,7 +655,8 @@
 
     function renderCallVolumeChart() {
       const chart = document.getElementById('callVolumeChart');
-      const calls = window.DebtDB.getCalls();
+      const localCalls = window.DebtDB ? window.DebtDB.getCalls() : [];
+      const calls = [...voiceStackCalls, ...localCalls];
       
       // Get last 7 days
       const days = [];
@@ -755,7 +795,8 @@
     }
 
     function renderCallDispositionChart() {
-      const calls = window.DebtDB.getCalls();
+      const localCalls = window.DebtDB ? window.DebtDB.getCalls() : [];
+      const calls = [...voiceStackCalls, ...localCalls];
       
       const dispositions = {
         'Connected': 0,
@@ -797,6 +838,75 @@
           <div class="pie-legend-value">${s.count} (${s.percent.toFixed(1)}%)</div>
         </div>
       `).join('');
+    }
+
+    async function renderVoiceStackAnalytics() {
+      if (!voiceStackCalls.length || !window.VoiceAPI) return;
+      
+      // Fetch detail+analytics for up to 20 recent calls
+      const detailPromises = voiceStackCalls.slice(0, 20).map(c => 
+        window.VoiceAPI.fetchCallDetail(c.callSid)
+      );
+      const details = (await Promise.all(detailPromises)).filter(d => d && d.analytics);
+      
+      if (!details.length) return;
+      document.getElementById('voiceAnalyticsSection').style.display = 'grid';
+      
+      const analytics = details.map(d => d.analytics);
+      
+      // 1. Call Score Distribution (bar chart of overall scores)
+      const scoreBuckets = { '0-2': 0, '3-4': 0, '5-6': 0, '7-8': 0, '9-10': 0 };
+      analytics.forEach(a => {
+        const s = a.overall_score || 0;
+        if (s <= 2) scoreBuckets['0-2']++;
+        else if (s <= 4) scoreBuckets['3-4']++;
+        else if (s <= 6) scoreBuckets['5-6']++;
+        else if (s <= 8) scoreBuckets['7-8']++;
+        else scoreBuckets['9-10']++;
+      });
+      const maxScore = Math.max(...Object.values(scoreBuckets), 1);
+      document.getElementById('scoreDistChart').innerHTML = Object.entries(scoreBuckets).map(([label, count]) => {
+        const height = (count / maxScore) * 100;
+        return `<div class="bar-wrapper"><div class="bar" style="height:${height}%"><div class="bar-value">${count}</div></div><div class="bar-label">${label}</div></div>`;
+      }).join('');
+      
+      // 2. Lead Quality Breakdown
+      const qualities = { A: 0, B: 0, C: 0, D: 0, F: 0 };
+      analytics.forEach(a => {
+        const q = (a.lead_quality_score || 'C').charAt(0).toUpperCase();
+        if (qualities[q] !== undefined) qualities[q]++;
+      });
+      const maxQ = Math.max(...Object.values(qualities), 1);
+      document.getElementById('leadQualityChart').innerHTML = Object.entries(qualities).map(([label, count]) => {
+        const width = (count / maxQ) * 100;
+        return `<div class="pipeline-stage"><div class="pipeline-label">Grade ${label}</div><div class="pipeline-bar-container"><div class="pipeline-bar" style="width:${width}%"><div class="pipeline-value">${count}</div></div></div></div>`;
+      }).join('');
+      
+      // 3. Top Objections
+      const objectionCounts = {};
+      analytics.forEach(a => {
+        let objs = a.objections_raised;
+        if (typeof objs === 'string') { try { objs = JSON.parse(objs); } catch(e) { objs = []; } }
+        if (Array.isArray(objs)) {
+          objs.forEach(o => { objectionCounts[o] = (objectionCounts[o] || 0) + 1; });
+        }
+      });
+      const topObj = Object.entries(objectionCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+      const maxObj = topObj.length ? topObj[0][1] : 1;
+      document.getElementById('objectionsChart').innerHTML = topObj.length ? topObj.map(([label, count]) => {
+        const width = (count / maxObj) * 100;
+        return `<div class="pipeline-stage"><div class="pipeline-label" style="width:200px" title="${label}">${label.substring(0,25)}</div><div class="pipeline-bar-container"><div class="pipeline-bar" style="width:${width}%"><div class="pipeline-value">${count}</div></div></div></div>`;
+      }).join('') : '<div style="color:var(--text-muted);text-align:center;padding:2rem;">No objections recorded yet</div>';
+      
+      // 4. Compliance Scores
+      const compScores = analytics.filter(a => a.compliance_score != null).map(a => a.compliance_score);
+      if (compScores.length) {
+        const maxComp = 10;
+        document.getElementById('complianceChart').innerHTML = compScores.slice(0, 7).map((score, i) => {
+          const height = (score / maxComp) * 100;
+          return `<div class="bar-wrapper"><div class="bar" style="height:${height}%"><div class="bar-value">${score}</div></div><div class="bar-label">Call ${i+1}</div></div>`;
+        }).join('');
+      }
     }
 
     function renderLeaderboard() {

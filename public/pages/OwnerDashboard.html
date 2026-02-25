@@ -448,8 +448,8 @@
         <div class="financial-value" id="avgSavings">0%</div>
       </div>
       <div class="financial-row">
-        <div class="financial-label">Revenue vs Costs</div>
-        <div class="financial-value" id="revenueCosts">$0</div>
+        <div class="financial-label">Net Revenue (after costs)</div>
+        <div class="financial-value" id="netRevenue">$0</div>
       </div>
       <div class="financial-row">
         <div class="financial-label">Profit Margin</div>
@@ -464,7 +464,7 @@
     <!-- Top Performers -->
     <div class="glass-card">
       <div class="card-title">🏅 Top Agent Rankings</div>
-      <div class="performers-grid" id="topPerformers"></div>
+      <div id="topPerformersContainer" style="min-height: 200px;"></div>
     </div>
   </div>
 
@@ -517,228 +517,272 @@
 
   <script>
 (function() {
-'use strict';
+  'use strict';
 
-'use strict';
+  document.addEventListener('DOMContentLoaded', function() {
+    loadOwnerDashboard();
+  });
 
-    document.addEventListener('DOMContentLoaded', function() {
-      loadOwnerDashboard();
-    });
+  function loadOwnerDashboard() {
+    const ownerStats = window.DebtDB.getOwnerStats();
+    const deals = window.DebtDB.getDeals();
+    const cases = window.DebtDB.getCases();
+    
+    // Total Revenue
+    document.getElementById('totalRevenue').textContent = '$' + ownerStats.totalRevenue.toLocaleString();
+    
+    // Calculate real growth (compare current month to previous)
+    const thisMonth = new Date().toISOString().slice(0, 7);
+    const lastMonth = new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7);
+    
+    const thisMonthRevenue = deals.filter(d => d.createdAt?.startsWith(thisMonth))
+      .reduce((sum, d) => sum + (d.amount || 0), 0);
+    const lastMonthRevenue = deals.filter(d => d.createdAt?.startsWith(lastMonth))
+      .reduce((sum, d) => sum + (d.amount || 0), 0);
+    
+    const growth = lastMonthRevenue > 0 
+      ? ((thisMonthRevenue - lastMonthRevenue) / lastMonthRevenue * 100)
+      : 0;
+    
+    document.getElementById('revenueGrowth').textContent = 
+      (growth >= 0 ? '+' : '') + growth.toFixed(1) + '%';
+    
+    // God View Metrics
+    document.getElementById('totalClients').textContent = ownerStats.totalLeads.toLocaleString();
+    document.getElementById('activeCases').textContent = ownerStats.totalCases.toLocaleString();
+    
+    // Settlement Rate
+    const settledCases = cases.filter(c => c.status === 'Settled' || c.status === 'Closed').length;
+    const settlementRate = cases.length > 0 ? (settledCases / cases.length * 100).toFixed(1) : 0;
+    document.getElementById('settlementRate').textContent = settlementRate + '%';
+    
+    // Financial Overview
+    const mrr = thisMonthRevenue;
+    document.getElementById('mrr').textContent = '$' + Math.round(mrr).toLocaleString();
+    
+    // Average Savings (calculated from deals)
+    const totalSavings = deals.reduce((sum, d) => sum + (d.savings || 0), 0);
+    const avgSavingsPercent = deals.length > 0 ? (totalSavings / deals.length).toFixed(0) : 0;
+    document.getElementById('avgSavings').textContent = avgSavingsPercent + '%';
+    
+    // Net Revenue (assuming 35% cost ratio)
+    const costs = ownerStats.totalRevenue * 0.35;
+    const netRevenue = ownerStats.totalRevenue - costs;
+    document.getElementById('netRevenue').textContent = '$' + Math.round(netRevenue).toLocaleString();
+    
+    // Profit Margin
+    const profitMargin = ownerStats.totalRevenue > 0 
+      ? ((netRevenue / ownerStats.totalRevenue) * 100).toFixed(1) 
+      : 0;
+    document.getElementById('profitMargin').textContent = profitMargin + '%';
+    
+    // Outstanding Receivables (estimated at 15% of revenue)
+    const receivables = ownerStats.totalRevenue * 0.15;
+    document.getElementById('receivables').textContent = '$' + Math.round(receivables).toLocaleString();
+    
+    // Top Performers
+    renderTopPerformers();
+    
+    // Growth Chart
+    renderGrowthChart();
+    
+    // Department Health
+    updateDepartmentHealth();
+  }
 
-    function loadOwnerDashboard() {
-      const ownerStats = window.DebtDB.getOwnerStats();
-      const deals = window.DebtDB.getDeals();
-      const cases = window.DebtDB.getCases();
-      const checklist = window.DebtDB.getComplianceChecklist();
-      
-      // Total Revenue
-      document.getElementById('totalRevenue').textContent = '$' + ownerStats.totalRevenue.toLocaleString();
-      
-      // Mock growth (in real app, compare to previous period)
-      const growth = 15.7;
-      document.getElementById('revenueGrowth').textContent = '+' + growth.toFixed(1) + '%';
-      
-      // God View Metrics
-      document.getElementById('totalClients').textContent = ownerStats.totalLeads.toLocaleString();
-      document.getElementById('activeCases').textContent = ownerStats.totalCases.toLocaleString();
-      
-      // Settlement Rate (mock calculation)
-      const settledCases = cases.filter(c => c.status === 'Settled' || c.status === 'Closed').length;
-      const settlementRate = cases.length > 0 ? (settledCases / cases.length * 100).toFixed(1) : 0;
-      document.getElementById('settlementRate').textContent = settlementRate + '%';
-      
-      // Financial Overview
-      const mrr = ownerStats.totalRevenue / 12;
-      document.getElementById('mrr').textContent = '$' + Math.round(mrr).toLocaleString();
-      
-      // Average Savings (mock)
-      document.getElementById('avgSavings').textContent = '47%';
-      
-      // Revenue vs Costs (mock)
-      const costs = ownerStats.totalRevenue * 0.35;
-      const netRevenue = ownerStats.totalRevenue - costs;
-      document.getElementById('revenueCosts').textContent = '$' + Math.round(netRevenue).toLocaleString();
-      
-      // Profit Margin
-      const profitMargin = ((netRevenue / ownerStats.totalRevenue) * 100).toFixed(1);
-      document.getElementById('profitMargin').textContent = profitMargin + '%';
-      
-      // Outstanding Receivables (mock)
-      const receivables = ownerStats.totalRevenue * 0.15;
-      document.getElementById('receivables').textContent = '$' + Math.round(receivables).toLocaleString();
-      
-      // Top Performers
-      renderTopPerformers();
-      
-      // Growth Chart
-      renderGrowthChart();
-      
-      // Department Health
-      updateDepartmentHealth();
+  function renderTopPerformers() {
+    const managerStats = window.DebtDB.getManagerStats();
+    
+    // Sort by revenue and take top 3
+    const topAgents = managerStats
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 3);
+    
+    const container = document.getElementById('topPerformersContainer');
+    
+    if (topAgents.length === 0) {
+      container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No agent data available</div>';
+      return;
     }
-
-    function renderTopPerformers() {
-      const managerStats = window.DebtDB.getManagerStats();
-      
-      // Sort by revenue and take top 3
-      const topAgents = managerStats
-        .sort((a, b) => b.revenue - a.revenue)
-        .slice(0, 3);
-      
-      const container = document.getElementById('topPerformers');
-      
-      container.innerHTML = topAgents.map((agent, index) => {
-        const rank = index + 1;
-        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉';
-        const commission = agent.revenue * 0.1; // 10% commission
-        
-        return `
-          <div class="performer-card rank-${rank}">
-            <div class="performer-rank">${medal}</div>
-            <div class="performer-name">#${rank} ${agent.agentName}</div>
-            <div class="performer-revenue">$${agent.revenue.toLocaleString()}</div>
-            <div class="performer-commission">Commission: $${commission.toLocaleString()}</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderGrowthChart() {
-      const chart = document.getElementById('growthChart');
-      const deals = window.DebtDB.getDeals();
-      
-      // Group by month (last 6 months)
-      const months = [];
-      for (let i = 5; i >= 0; i--) {
-        const date = new Date();
-        date.setMonth(date.getMonth() - i);
-        months.push({
-          month: date.toLocaleDateString('en-US', { month: 'short' }),
-          revenue: 0
-        });
-      }
-      
-      // Sum revenue per month
-      deals.forEach(deal => {
-        const dealDate = new Date(deal.createdAt);
-        const monthIndex = 5 - Math.floor((new Date() - dealDate) / (30 * 24 * 60 * 60 * 1000));
-        if (monthIndex >= 0 && monthIndex < 6) {
-          months[monthIndex].revenue += deal.amount || 0;
-        }
-      });
-      
-      const maxRevenue = Math.max(...months.map(m => m.revenue), 1);
-      
-      chart.innerHTML = months.map(m => {
-        const height = (m.revenue / maxRevenue) * 100;
-        return `
-          <div class="growth-bar">
-            <div class="bar" style="height: ${height}%">
-              <div class="bar-value">$${(m.revenue / 1000).toFixed(0)}K</div>
+    
+    // Use grid layout for performers
+    container.innerHTML = `
+      <div class="performers-grid">
+        ${topAgents.map((agent, index) => {
+          const rank = index + 1;
+          const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉';
+          const commission = agent.revenue * 0.1; // 10% commission
+          
+          return `
+            <div class="performer-card rank-${rank}">
+              <div class="performer-rank">${medal}</div>
+              <div class="performer-name">#${rank} ${agent.agentName}</div>
+              <div class="performer-revenue">$${agent.revenue.toLocaleString()}</div>
+              <div class="performer-commission">Commission: $${commission.toLocaleString()}</div>
             </div>
-            <div class="bar-label">${m.month}</div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  function renderGrowthChart() {
+    const chart = document.getElementById('growthChart');
+    const deals = window.DebtDB.getDeals();
+    
+    // Group by month (last 6 months)
+    const months = [];
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date();
+      date.setMonth(date.getMonth() - i);
+      months.push({
+        month: date.toLocaleDateString('en-US', { month: 'short' }),
+        revenue: 0
+      });
+    }
+    
+    // Sum revenue per month
+    deals.forEach(deal => {
+      const dealDate = new Date(deal.createdAt);
+      const monthIndex = 5 - Math.floor((new Date() - dealDate) / (30 * 24 * 60 * 60 * 1000));
+      if (monthIndex >= 0 && monthIndex < 6) {
+        months[monthIndex].revenue += deal.amount || 0;
+      }
+    });
+    
+    const maxRevenue = Math.max(...months.map(m => m.revenue), 1);
+    
+    chart.innerHTML = months.map(m => {
+      const height = (m.revenue / maxRevenue) * 100;
+      return `
+        <div class="growth-bar">
+          <div class="bar" style="height: ${height}%">
+            <div class="bar-value">$${(m.revenue / 1000).toFixed(0)}K</div>
           </div>
-        `;
-      }).join('');
-    }
+          <div class="bar-label">${m.month}</div>
+        </div>
+      `;
+    }).join('');
+  }
 
-    function updateDepartmentHealth() {
-      const agents = window.DebtDB.getAgents();
-      const cases = window.DebtDB.getCases();
-      const checklist = window.DebtDB.getComplianceChecklist();
-      
-      // Sales Health
-      const salesStatus = document.getElementById('salesStatus');
-      const salesMetrics = document.getElementById('salesMetrics');
-      
-      if (agents.length >= 5) {
-        salesStatus.className = 'department-status';
-        salesMetrics.innerHTML = `${agents.length} active agents<br>Pipeline healthy`;
-      } else {
-        salesStatus.className = 'department-status warning';
-        salesMetrics.innerHTML = `${agents.length} active agents<br>Consider hiring`;
-      }
-      
-      // Operations Health
-      const opsStatus = document.getElementById('opsStatus');
-      const opsMetrics = document.getElementById('opsMetrics');
-      
-      const activeCases = cases.filter(c => c.status === 'Active' || c.status === 'In Progress').length;
-      
-      if (activeCases < 100) {
-        opsStatus.className = 'department-status';
-        opsMetrics.innerHTML = `${activeCases} active cases<br>Workload normal`;
-      } else {
-        opsStatus.className = 'department-status warning';
-        opsMetrics.innerHTML = `${activeCases} active cases<br>High volume`;
-      }
-      
-      // Compliance Health
-      const complianceStatus = document.getElementById('complianceStatus');
-      const complianceMetrics = document.getElementById('complianceMetrics');
-      
-      const completed = checklist.filter(item => item.completed).length;
-      const total = checklist.length;
-      const complianceScore = total > 0 ? Math.round((completed / total) * 100) : 0;
-      
-      if (complianceScore >= 80) {
-        complianceStatus.className = 'department-status';
-        complianceMetrics.innerHTML = `${complianceScore}% compliance score<br>Excellent standing`;
-      } else if (complianceScore >= 60) {
-        complianceStatus.className = 'department-status warning';
-        complianceMetrics.innerHTML = `${complianceScore}% compliance score<br>Needs attention`;
-      } else {
-        complianceStatus.className = 'department-status critical';
-        complianceMetrics.innerHTML = `${complianceScore}% compliance score<br>CRITICAL - Action Required`;
-      }
+  function updateDepartmentHealth() {
+    const agents = window.DebtDB.getAgents();
+    const cases = window.DebtDB.getCases();
+    const checklist = window.DebtDB.getComplianceChecklist();
+    
+    // Sales Health
+    const salesStatus = document.getElementById('salesStatus');
+    const salesMetrics = document.getElementById('salesMetrics');
+    
+    if (agents.length >= 5) {
+      salesStatus.className = 'department-status';
+      salesMetrics.innerHTML = `${agents.length} active agents<br>Pipeline healthy`;
+    } else {
+      salesStatus.className = 'department-status warning';
+      salesMetrics.innerHTML = `${agents.length} active agents<br>Consider hiring`;
     }
+    
+    // Operations Health
+    const opsStatus = document.getElementById('opsStatus');
+    const opsMetrics = document.getElementById('opsMetrics');
+    
+    const activeCases = cases.filter(c => c.status === 'Active' || c.status === 'In Progress').length;
+    
+    if (activeCases < 100) {
+      opsStatus.className = 'department-status';
+      opsMetrics.innerHTML = `${activeCases} active cases<br>Workload normal`;
+    } else {
+      opsStatus.className = 'department-status warning';
+      opsMetrics.innerHTML = `${activeCases} active cases<br>High volume`;
+    }
+    
+    // Compliance Health
+    const complianceStatus = document.getElementById('complianceStatus');
+    const complianceMetrics = document.getElementById('complianceMetrics');
+    
+    const completed = checklist.filter(item => item.completed).length;
+    const total = checklist.length;
+    const complianceScore = total > 0 ? Math.round((completed / total) * 100) : 0;
+    
+    if (complianceScore >= 80) {
+      complianceStatus.className = 'department-status';
+      complianceMetrics.innerHTML = `${complianceScore}% compliance score<br>Excellent standing`;
+    } else if (complianceScore >= 60) {
+      complianceStatus.className = 'department-status warning';
+      complianceMetrics.innerHTML = `${complianceScore}% compliance score<br>Needs attention`;
+    } else {
+      complianceStatus.className = 'department-status critical';
+      complianceMetrics.innerHTML = `${complianceScore}% compliance score<br>CRITICAL - Action Required`;
+    }
+  }
 
-    function goToAnalytics() {
+  function goToAnalytics() {
+    if (window.App && window.App.loadPage) {
+      window.App.loadPage('Analytics');
+    } else {
       window.location.href = '/pages/Analytics.html';
     }
+  }
 
-    function exportFullReport() {
-      const ownerStats = window.DebtDB.getOwnerStats();
-      const managerStats = window.DebtDB.getManagerStats();
-      const checklist = window.DebtDB.getComplianceChecklist();
-      
-      const report = {
-        generatedAt: new Date().toISOString(),
-        reportType: 'Owner Full Report',
-        overview: {
-          totalRevenue: ownerStats.totalRevenue,
-          totalClients: ownerStats.totalLeads,
-          totalCases: ownerStats.totalCases,
-          totalDeals: ownerStats.totalDeals,
-          totalAgents: ownerStats.totalAgents,
-          avgDealSize: ownerStats.avgDealSize,
-          activeCampaigns: ownerStats.activeCampaigns
-        },
-        compliance: {
-          score: checklist.filter(i => i.completed).length / checklist.length * 100,
-          checklist: checklist
-        },
-        topPerformers: managerStats.sort((a, b) => b.revenue - a.revenue).slice(0, 5),
-        departmentHealth: {
-          sales: 'Healthy',
-          operations: 'Normal',
-          compliance: 'Excellent'
-        }
-      };
-      
-      const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `owner-full-report-${new Date().toISOString().split('T')[0]}.json`;
-      a.click();
-      
-      alert('Full owner report exported successfully');
-    }
+  function exportFullReport() {
+    const ownerStats = window.DebtDB.getOwnerStats();
+    const managerStats = window.DebtDB.getManagerStats();
+    const checklist = window.DebtDB.getComplianceChecklist();
+    const deals = window.DebtDB.getDeals();
+    
+    // Calculate additional metrics
+    const thisMonth = new Date().toISOString().slice(0, 7);
+    const thisMonthRevenue = deals.filter(d => d.createdAt?.startsWith(thisMonth))
+      .reduce((sum, d) => sum + (d.amount || 0), 0);
+    const costs = ownerStats.totalRevenue * 0.35;
+    const netRevenue = ownerStats.totalRevenue - costs;
+    const profitMargin = ((netRevenue / ownerStats.totalRevenue) * 100).toFixed(1);
+    
+    const report = {
+      generatedAt: new Date().toISOString(),
+      reportType: 'Owner Full Report',
+      overview: {
+        totalRevenue: ownerStats.totalRevenue,
+        monthlyRevenue: thisMonthRevenue,
+        netRevenue: netRevenue,
+        profitMargin: profitMargin + '%',
+        totalClients: ownerStats.totalLeads,
+        totalCases: ownerStats.totalCases,
+        totalDeals: ownerStats.totalDeals,
+        totalAgents: ownerStats.totalAgents,
+        avgDealSize: ownerStats.avgDealSize,
+        activeCampaigns: ownerStats.activeCampaigns
+      },
+      compliance: {
+        score: (checklist.filter(i => i.completed).length / checklist.length * 100).toFixed(1) + '%',
+        checklist: checklist
+      },
+      topPerformers: managerStats.sort((a, b) => b.revenue - a.revenue).slice(0, 5),
+      departmentHealth: {
+        sales: ownerStats.totalAgents >= 5 ? 'Healthy' : 'Needs Attention',
+        operations: 'Normal',
+        compliance: checklist.filter(i => i.completed).length / checklist.length >= 0.8 ? 'Excellent' : 'Needs Improvement'
+      }
+    };
+    
+    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `owner-full-report-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    alert('Full owner report exported successfully');
+  }
 
-    function goToSettings() {
+  function goToSettings() {
+    if (window.App && window.App.loadPage) {
+      window.App.loadPage('Settings');
+    } else {
       window.location.href = '/pages/Settings.html';
     }
+  }
 
   // Expose functions to window for onclick handlers
   window.exportFullReport = exportFullReport;

@@ -265,15 +265,35 @@
   let currentPage = 1;
   const perPage = 20;
   let filteredCalls = [];
+  let allCalls = []; // Combined real + local calls
   let sortColumn = 'createdAt';
   let sortDirection = 'desc';
 
+  // Load real calls from voice stack, merge with local
+  async function loadAllCalls() {
+    const localCalls = window.DebtDB ? window.DebtDB.getCalls() : [];
+    if (window.VoiceAPI) {
+      const voiceCalls = await window.VoiceAPI.fetchCalls(50);
+      if (voiceCalls) {
+        allCalls = window.VoiceAPI.mergeCalls(voiceCalls, localCalls);
+        showToast(`Loaded ${voiceCalls.length} calls from voice stack`, 'success');
+      } else {
+        allCalls = localCalls;
+      }
+    } else {
+      allCalls = localCalls;
+    }
+    applyFilters();
+  }
+
   function populateAgentFilter() {
-    const agents = window.DebtDB.getAgents();
+    const agents = window.DebtDB ? window.DebtDB.getAgents() : [];
     const select = document.getElementById('filterAgent');
     
     select.innerHTML = '<option value="">All Agents</option>' + 
       agents.map(agent => `<option value="${agent.id}">${agent.name}</option>`).join('');
+    // Add AI Agent option for voice stack calls
+    select.innerHTML += '<option value="ai">AI Agent</option>';
   }
 
   function applyFilters() {
@@ -282,13 +302,15 @@
     const dispositionFilter = document.getElementById('filterDisposition').value;
     const dateFilter = document.getElementById('filterDate').value;
     
-    let calls = window.DebtDB.getCalls();
+    let calls = [...allCalls];
     
     // Search filter
     if (search) {
       calls = calls.filter(call => 
         (call.leadName?.toLowerCase().includes(search)) ||
-        (call.phone?.toLowerCase().includes(search))
+        (call.phone?.toLowerCase().includes(search)) ||
+        (call.fromNumber?.toLowerCase().includes(search)) ||
+        (call.toNumber?.toLowerCase().includes(search))
       );
     }
     
@@ -434,20 +456,68 @@
     }
   }
 
-  function showCallDetail(callId) {
+  async function showCallDetail(callId) {
     const call = filteredCalls.find(c => c.id === callId);
     if (!call) return;
+    
+    // If this is a voice stack call, try to get full detail with analytics
+    let analytics = null;
+    let transcript = call.transcript || null;
+    if (call._source === 'voice-stack' && window.VoiceAPI) {
+      const detail = await window.VoiceAPI.fetchCallDetail(call.callSid);
+      if (detail) {
+        analytics = detail.analytics || null;
+        transcript = detail.transcript || transcript;
+      }
+    }
+    if (!transcript) transcript = "No transcript available for this call.";
     
     const date = new Date(call.createdAt);
     const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     
-    const duration = call.duration || Math.floor(Math.random() * 600) + 60;
+    const duration = call.duration || 0;
     const minutes = Math.floor(duration / 60);
     const seconds = duration % 60;
     const durationStr = `${minutes}:${String(seconds).padStart(2, '0')}`;
     
-    const transcript = call.transcript || "No transcript available for this call.";
     const notes = call.notes || "No notes added.";
+    
+    // Build analytics section if available
+    let analyticsHtml = '';
+    if (analytics) {
+      const scoreBar = (label, value, max=10) => {
+        const pct = Math.min((value / max) * 100, 100);
+        return `<div class="mb-2">
+          <div class="flex justify-between text-xs mb-1"><span class="text-gray-400">${label}</span><span class="text-blue-400 font-mono">${value}/${max}</span></div>
+          <div class="h-1.5 bg-slate-700 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full" style="width:${pct}%"></div></div>
+        </div>`;
+      };
+      analyticsHtml = `
+        <div class="mb-6">
+          <h3 class="text-white font-semibold mb-3">📊 AI Analysis (65 Data Points)</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-900/50 rounded-xl p-4">
+              <div class="text-sm font-semibold text-cyan-400 mb-3">Performance Scores</div>
+              ${scoreBar('Overall', analytics.overall_score || 0)}
+              ${scoreBar('Energy', analytics.energy_enthusiasm || 0)}
+              ${scoreBar('Objection Handling', analytics.objection_handling || 0)}
+              ${scoreBar('Closing', analytics.closing_technique || 0)}
+              ${scoreBar('Rapport', analytics.rapport_building || 0)}
+              ${scoreBar('Compliance', analytics.compliance_score || 0)}
+            </div>
+            <div class="bg-slate-900/50 rounded-xl p-4 text-sm space-y-2">
+              <div class="text-sm font-semibold text-cyan-400 mb-3">Call Insights</div>
+              <div><span class="text-gray-400">Sentiment:</span> <span class="text-white">${analytics.call_sentiment || 'N/A'}</span></div>
+              <div><span class="text-gray-400">Talk/Listen Ratio:</span> <span class="text-white">${analytics.talk_listen_ratio ? (analytics.talk_listen_ratio * 100).toFixed(0) + '%' : 'N/A'}</span></div>
+              <div><span class="text-gray-400">Lead Quality:</span> <span class="text-white">${analytics.lead_quality_score || 'N/A'}</span></div>
+              <div><span class="text-gray-400">Close Attempts:</span> <span class="text-white">${analytics.close_attempt_count ?? 'N/A'}</span></div>
+              <div><span class="text-gray-400">Close Success:</span> <span class="text-white">${analytics.close_success ? 'Yes' : 'No'}</span></div>
+              <div><span class="text-gray-400">Next Action:</span> <span class="text-white">${analytics.recommended_next_action || 'N/A'}</span></div>
+              ${analytics.ai_summary ? `<div class="mt-2 pt-2 border-t border-slate-700"><span class="text-gray-400">AI Summary:</span><div class="text-white mt-1">${analytics.ai_summary}</div></div>` : ''}
+            </div>
+          </div>
+        </div>`;
+    }
     
     const content = document.getElementById('callDetailContent');
     content.innerHTML = `
@@ -456,11 +526,14 @@
           <h3 class="text-white font-semibold mb-3">Call Information</h3>
           <div class="space-y-2 text-sm">
             <div><span class="text-gray-400">Caller:</span> <span class="text-white">${call.leadName || 'Unknown'}</span></div>
-            <div><span class="text-gray-400">Phone:</span> <span class="text-white">${call.phone || 'N/A'}</span></div>
+            <div><span class="text-gray-400">From:</span> <span class="text-white">${call.fromNumber || call.phone || 'N/A'}</span></div>
+            <div><span class="text-gray-400">To:</span> <span class="text-white">${call.toNumber || 'N/A'}</span></div>
             <div><span class="text-gray-400">Agent:</span> <span class="text-white">${call.agentName || 'Unknown'}</span></div>
+            <div><span class="text-gray-400">Direction:</span> <span class="text-white">${call.direction || 'N/A'}</span></div>
             <div><span class="text-gray-400">Date:</span> <span class="text-white">${dateStr}</span></div>
             <div><span class="text-gray-400">Duration:</span> <span class="text-white font-mono" style="font-family: 'Orbitron', monospace;">${durationStr}</span></div>
             <div><span class="text-gray-400">Disposition:</span> <span class="text-white">${call.disposition || 'No Answer'}</span></div>
+            ${call._source === 'voice-stack' ? '<div><span class="px-2 py-0.5 bg-cyan-500/20 text-cyan-400 rounded text-xs">Live Data</span></div>' : ''}
           </div>
         </div>
         
@@ -473,18 +546,16 @@
         </div>
       </div>
       
+      ${analyticsHtml}
+      
       <div class="mb-6">
         <h3 class="text-white font-semibold mb-3">Transcript</h3>
-        <div class="bg-slate-900/50 rounded-xl p-4 max-h-64 overflow-y-auto text-sm text-gray-300 whitespace-pre-wrap">
-${transcript}
-        </div>
+        <div class="bg-slate-900/50 rounded-xl p-4 max-h-64 overflow-y-auto text-sm text-gray-300 whitespace-pre-wrap">${transcript}</div>
       </div>
       
       <div>
         <h3 class="text-white font-semibold mb-3">Notes</h3>
-        <div class="bg-slate-900/50 rounded-xl p-4 text-sm text-gray-300">
-${notes}
-        </div>
+        <div class="bg-slate-900/50 rounded-xl p-4 text-sm text-gray-300">${notes}</div>
       </div>
     `;
     
@@ -515,7 +586,7 @@ ${notes}
 
   // Initialize
   populateAgentFilter();
-  applyFilters();
+  loadAllCalls(); // Fetches real calls, then applies filters
   lucide.createIcons();
 
 // ---- Window Exports ----
@@ -525,14 +596,7 @@ ${notes}
   window.prevPage = prevPage;
   window.showCallDetail = showCallDetail;
   window.sortTable = sortTable;
-
-// Window exports for onclick handlers
-window.closeDetailPanel = closeDetailPanel;
-window.exportCalls = exportCalls;
-window.nextPage = nextPage;
-window.prevPage = prevPage;
-window.showCallDetail = showCallDetail;
-window.sortTable = sortTable;
+  window.applyFilters = applyFilters;
 })();
 </script>
 </body>

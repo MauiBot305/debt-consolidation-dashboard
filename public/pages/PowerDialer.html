@@ -558,10 +558,9 @@
     </div>
   </div>
 
+  <script src="https://sdk.twilio.com/js/client/releases/1.14/twilio.min.js"></script>
   <script>
 (function() {
-'use strict';
-
 'use strict';
 
     // =====================
@@ -575,7 +574,7 @@
     let selectedDisposition = null;
     let isDemoMode = false;
 
-    const WORKER_URL = 'https://debt-dashboard-api.maui-6b7.workers.dev';
+    const WORKER_URL = 'https://debt-voice-stack.fly.dev';
 
     // =====================
     // INITIALIZATION
@@ -617,8 +616,8 @@
           throw new Error('Twilio SDK not loaded');
         }
 
-        // Fetch token from Worker
-        const response = await fetch(`${WORKER_URL}/api/twilio/token`);
+        // Fetch token from voice stack
+        const response = await fetch(`${WORKER_URL}/api/voice/token?identity=agent`);
         if (!response.ok) throw new Error('Failed to fetch token');
 
         const { token } = await response.json();

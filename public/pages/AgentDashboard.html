@@ -471,249 +471,276 @@
 
   <script>
 (function() {
-'use strict';
+  'use strict';
 
-'use strict';
+  let currentUser = null;
 
-    let currentUser = null;
+  document.addEventListener('DOMContentLoaded', function() {
+    loadAgentDashboard();
+  });
 
-    document.addEventListener('DOMContentLoaded', function() {
-      loadAgentDashboard();
+  async function loadAgentDashboard() {
+    currentUser = window.DebtDB.getCurrentUser();
+    
+    // Update welcome message
+    const name = currentUser?.name || 'Agent';
+    document.getElementById('welcomeMessage').textContent = `Welcome back, ${name}! 👋`;
+    
+    // Update date
+    const today = new Date();
+    document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
+    
+    await updateStats();
+    renderTasks();
+    renderActivity();
+    renderSchedule();
+    renderPerformance();
+  }
 
-    function loadAgentDashboard() {
-      currentUser = window.DebtDB.getCurrentUser();
-      
-      // Update welcome message
-      const name = currentUser?.name || 'Agent';
-      document.getElementById('welcomeMessage').textContent = `Welcome back, ${name}! 👋`;
-      
-      // Update date
-      const today = new Date();
-      document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-      
-      updateStats();
-      renderTasks();
-      renderActivity();
-      renderSchedule();
-      renderPerformance();
+  async function fetchCallData() {
+    try {
+      const resp = await fetch('https://debt-voice-stack.fly.dev/api/calls?limit=50');
+      const data = await resp.json();
+      return data.calls || [];
+    } catch(e) {
+      console.warn('Voice stack API unavailable, using local data:', e);
+      return window.DebtDB.getCalls() || [];
     }
+  }
 
-    function updateStats() {
-      const leads = window.DebtDB.getLeads();
-      const calls = window.DebtDB.getCalls();
-      const deals = window.DebtDB.getDeals();
-      
-      const today = new Date().toISOString().split('T')[0];
-      const thisMonth = new Date().toISOString().slice(0, 7);
-      
-      // Filter for current agent
-      const myLeads = leads.filter(l => l.agent === currentUser?.id && l.createdAt.startsWith(today));
-      const myCalls = calls.filter(c => c.agent === currentUser?.id && c.createdAt.startsWith(today));
-      const myDeals = deals.filter(d => d.agent === currentUser?.id && d.createdAt.startsWith(thisMonth));
-      const myRevenue = myDeals.reduce((sum, d) => sum + (d.amount || 0), 0);
-      
-      document.getElementById('statLeads').textContent = myLeads.length;
-      document.getElementById('statCalls').textContent = myCalls.length;
-      document.getElementById('statDeals').textContent = myDeals.length;
-      document.getElementById('statRevenue').textContent = '$' + myRevenue.toLocaleString();
+  async function updateStats() {
+    const leads = window.DebtDB.getLeads();
+    const calls = await fetchCallData();
+    const deals = window.DebtDB.getDeals();
+    
+    const today = new Date().toISOString().split('T')[0];
+    const thisMonth = new Date().toISOString().slice(0, 7);
+    
+    // Filter for current agent
+    const myLeads = leads.filter(l => l.agent === currentUser?.id && l.createdAt?.startsWith(today));
+    const myCalls = calls.filter(c => c.agent === currentUser?.id && c.createdAt?.startsWith(today));
+    const myDeals = deals.filter(d => d.agent === currentUser?.id && d.createdAt?.startsWith(thisMonth));
+    const myRevenue = myDeals.reduce((sum, d) => sum + (d.amount || 0), 0);
+    
+    document.getElementById('statLeads').textContent = myLeads.length;
+    document.getElementById('statCalls').textContent = myCalls.length;
+    document.getElementById('statDeals').textContent = myDeals.length;
+    document.getElementById('statRevenue').textContent = '$' + myRevenue.toLocaleString();
+  }
+
+  function renderTasks() {
+    const taskList = document.getElementById('taskList');
+    
+    // Get tasks from activities or create mock tasks
+    const tasks = [
+      { id: 1, title: 'Follow up with John Smith', time: '10:00 AM', completed: false },
+      { id: 2, title: 'Complete onboarding call with Sarah Johnson', time: '2:00 PM', completed: false },
+      { id: 3, title: 'Review and sign documents for Mike Davis', time: '3:30 PM', completed: false },
+      { id: 4, title: 'Call back missed lead from yesterday', time: 'ASAP', completed: false },
+      { id: 5, title: 'Update case notes for active clients', time: 'End of day', completed: false }
+    ];
+    
+    taskList.innerHTML = tasks.map(task => `
+      <div class="task-item" data-task-id="${task.id}">
+        <div class="task-checkbox ${task.completed ? 'completed' : ''}" 
+             onclick="toggleTask(${task.id})"></div>
+        <div class="task-content">
+          <div class="task-title">${task.title}</div>
+          <div class="task-time">⏰ ${task.time}</div>
+        </div>
+        <div class="task-actions">
+          <button class="btn-sm btn-success" onclick="completeTask(${task.id})">Done</button>
+          <button class="btn-sm btn-danger" onclick="dismissTask(${task.id})">Dismiss</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderActivity() {
+    const activities = window.DebtDB.getActivities({ userId: currentUser?.id }).slice(0, 10);
+    const feed = document.getElementById('activityFeed');
+    
+    if (activities.length === 0) {
+      feed.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No recent activity</div>';
+      return;
     }
-
-    function renderTasks() {
-      const taskList = document.getElementById('taskList');
+    
+    feed.innerHTML = activities.map(activity => {
+      const icon = getActivityIcon(activity.type);
+      const text = formatActivityText(activity);
+      const time = formatTimeAgo(activity.createdAt);
       
-      // Get tasks from activities or create mock tasks
-      const tasks = [
-        { id: 1, title: 'Follow up with John Smith', time: '10:00 AM', completed: false },
-        { id: 2, title: 'Complete onboarding call with Sarah Johnson', time: '2:00 PM', completed: false },
-        { id: 3, title: 'Review and sign documents for Mike Davis', time: '3:30 PM', completed: false },
-        { id: 4, title: 'Call back missed lead from yesterday', time: 'ASAP', completed: false },
-        { id: 5, title: 'Update case notes for active clients', time: 'End of day', completed: false }
-      ];
-      
-      taskList.innerHTML = tasks.map(task => `
-        <div class="task-item">
-          <div class="task-checkbox ${task.completed ? 'completed' : ''}" 
-               onclick="toggleTask(${task.id})"></div>
-          <div class="task-content">
-            <div class="task-title">${task.title}</div>
-            <div class="task-time">⏰ ${task.time}</div>
-          </div>
-          <div class="task-actions">
-            <button class="btn-sm btn-success" onclick="completeTask(${task.id})">Done</button>
-            <button class="btn-sm btn-danger" onclick="dismissTask(${task.id})">Dismiss</button>
+      return `
+        <div class="activity-item">
+          <div class="activity-icon">${icon}</div>
+          <div class="activity-content">
+            <div class="activity-text">${text}</div>
+            <div class="activity-time">${time}</div>
           </div>
         </div>
-      `).join('');
-    }
+      `;
+    }).join('');
+  }
 
-    function renderActivity() {
-      const activities = window.DebtDB.getActivities({ userId: currentUser?.id }).slice(0, 10);
-      const feed = document.getElementById('activityFeed');
-      
-      if (activities.length === 0) {
-        feed.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No recent activity</div>';
-        return;
-      }
-      
-      feed.innerHTML = activities.map(activity => {
-        const icon = getActivityIcon(activity.type);
-        const text = formatActivityText(activity);
-        const time = formatTimeAgo(activity.createdAt);
-        
-        return `
-          <div class="activity-item">
-            <div class="activity-icon">${icon}</div>
-            <div class="activity-content">
-              <div class="activity-text">${text}</div>
-              <div class="activity-time">${time}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
+  function renderSchedule() {
+    const scheduleList = document.getElementById('scheduleList');
+    
+    // Get today's callbacks and follow-ups
+    const today = new Date().toISOString().split('T')[0];
+    const activities = window.DebtDB.getActivities().filter(a => 
+      a.scheduledFor && a.scheduledFor.startsWith(today)
+    );
+    
+    if (activities.length === 0) {
+      scheduleList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No scheduled items today</div>';
+      return;
     }
-
-    function renderSchedule() {
-      const scheduleList = document.getElementById('scheduleList');
-      
-      // Get today's callbacks and follow-ups
-      const today = new Date().toISOString().split('T')[0];
-      const activities = window.DebtDB.getActivities().filter(a => 
-        a.scheduledFor && a.scheduledFor.startsWith(today)
-      );
-      
-      if (activities.length === 0) {
-        scheduleList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No scheduled items today</div>';
-        return;
-      }
-      
-      scheduleList.innerHTML = activities.map(activity => {
-        const time = new Date(activity.scheduledFor).toLocaleTimeString('en-US', { 
-          hour: 'numeric', 
-          minute: '2-digit' 
-        });
-        
-        return `
-          <div class="schedule-item">
-            <div class="schedule-time">${time}</div>
-            <div class="schedule-content">
-              <div class="schedule-title">${activity.type === 'callback' ? 'Callback' : 'Follow-up'}</div>
-              <div class="schedule-client">${activity.data?.client || 'Client'}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderPerformance() {
-      const chart = document.getElementById('performanceChart');
-      const calls = window.DebtDB.getCalls().filter(c => c.agent === currentUser?.id);
-      
-      // Get last 7 days
-      const days = [];
-      for (let i = 6; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        days.push({
-          date: date.toISOString().split('T')[0],
-          label: date.toLocaleDateString('en-US', { weekday: 'short' }),
-          count: 0
-        });
-      }
-      
-      // Count calls per day
-      calls.forEach(call => {
-        const callDate = call.createdAt.split('T')[0];
-        const day = days.find(d => d.date === callDate);
-        if (day) day.count++;
+    
+    scheduleList.innerHTML = activities.map(activity => {
+      const time = new Date(activity.scheduledFor).toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit' 
       });
       
-      const maxCount = Math.max(...days.map(d => d.count), 1);
-      
-      chart.innerHTML = days.map(day => {
-        const height = (day.count / maxCount) * 100;
-        return `
-          <div class="perf-bar-wrapper">
-            <div class="perf-bar" style="height: ${height}%">
-              <div class="perf-bar-value">${day.count}</div>
-            </div>
-            <div class="perf-bar-label">${day.label}</div>
+      return `
+        <div class="schedule-item">
+          <div class="schedule-time">${time}</div>
+          <div class="schedule-content">
+            <div class="schedule-title">${activity.type === 'callback' ? 'Callback' : 'Follow-up'}</div>
+            <div class="schedule-client">${activity.data?.client || 'Client'}</div>
           </div>
-        `;
-      }).join('');
-    }
+        </div>
+      `;
+    }).join('');
+  }
 
-    function getActivityIcon(type) {
-      const icons = {
-        'call': '📞',
-        'lead_created': '👤',
-        'deal_updated': '💼',
-        'case_created': '📋',
-        'note_added': '📝',
-        'email_sent': '📧',
-        'sms_sent': '💬'
-      };
-      return icons[type] || '📌';
+  function renderPerformance() {
+    const chart = document.getElementById('performanceChart');
+    const calls = window.DebtDB.getCalls().filter(c => c.agent === currentUser?.id);
+    
+    // Get last 7 days
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      days.push({
+        date: date.toISOString().split('T')[0],
+        label: date.toLocaleDateString('en-US', { weekday: 'short' }),
+        count: 0
+      });
     }
+    
+    // Count calls per day
+    calls.forEach(call => {
+      const callDate = call.createdAt?.split('T')[0];
+      const day = days.find(d => d.date === callDate);
+      if (day) day.count++;
+    });
+    
+    const maxCount = Math.max(...days.map(d => d.count), 1);
+    
+    chart.innerHTML = days.map(day => {
+      const height = (day.count / maxCount) * 100;
+      return `
+        <div class="perf-bar-wrapper">
+          <div class="perf-bar" style="height: ${height}%">
+            <div class="perf-bar-value">${day.count}</div>
+          </div>
+          <div class="perf-bar-label">${day.label}</div>
+        </div>
+      `;
+    }).join('');
+  }
 
-    function formatActivityText(activity) {
-      const types = {
-        'call': `Called ${activity.data?.client || 'client'}`,
-        'lead_created': `Created new lead: ${activity.data?.name || 'Unknown'}`,
-        'deal_updated': `Updated deal in pipeline`,
-        'case_created': `Created new case`,
-        'note_added': `Added note to case`,
-        'email_sent': `Sent email to ${activity.data?.client || 'client'}`,
-        'sms_sent': `Sent SMS to ${activity.data?.client || 'client'}`
-      };
-      return types[activity.type] || activity.type;
-    }
+  function getActivityIcon(type) {
+    const icons = {
+      'call': '📞',
+      'lead_created': '👤',
+      'deal_updated': '💼',
+      'case_created': '📋',
+      'note_added': '📝',
+      'email_sent': '📧',
+      'sms_sent': '💬'
+    };
+    return icons[type] || '📌';
+  }
 
-    function formatTimeAgo(timestamp) {
-      const now = new Date();
-      const then = new Date(timestamp);
-      const diff = Math.floor((now - then) / 1000);
-      
-      if (diff < 60) return 'Just now';
-      if (diff < 3600) return Math.floor(diff / 60) + ' min ago';
-      if (diff < 86400) return Math.floor(diff / 3600) + ' hours ago';
-      return Math.floor(diff / 86400) + ' days ago';
-    }
+  function formatActivityText(activity) {
+    const types = {
+      'call': `Called ${activity.data?.client || 'client'}`,
+      'lead_created': `Created new lead: ${activity.data?.name || 'Unknown'}`,
+      'deal_updated': `Updated deal in pipeline`,
+      'case_created': `Created new case`,
+      'note_added': `Added note to case`,
+      'email_sent': `Sent email to ${activity.data?.client || 'client'}`,
+      'sms_sent': `Sent SMS to ${activity.data?.client || 'client'}`
+    };
+    return types[activity.type] || activity.type;
+  }
 
-    function toggleTask(id) {
-      // Toggle task completion
-      const checkbox = event.target;
+  function formatTimeAgo(timestamp) {
+    const now = new Date();
+    const then = new Date(timestamp);
+    const diff = Math.floor((now - then) / 1000);
+    
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return Math.floor(diff / 60) + ' min ago';
+    if (diff < 86400) return Math.floor(diff / 3600) + ' hours ago';
+    return Math.floor(diff / 86400) + ' days ago';
+  }
+
+  function toggleTask(id) {
+    const taskItem = document.querySelector(`[data-task-id="${id}"]`);
+    if (taskItem) {
+      const checkbox = taskItem.querySelector('.task-checkbox');
       checkbox.classList.toggle('completed');
     }
+  }
 
-    function completeTask(id) {
-      const taskItem = event.target.closest('.task-item');
+  function completeTask(id) {
+    const taskItem = document.querySelector(`[data-task-id="${id}"]`);
+    if (taskItem) {
       taskItem.style.opacity = '0.5';
       setTimeout(() => taskItem.remove(), 300);
     }
+  }
 
-    function dismissTask(id) {
-      const taskItem = event.target.closest('.task-item');
+  function dismissTask(id) {
+    const taskItem = document.querySelector(`[data-task-id="${id}"]`);
+    if (taskItem) {
       taskItem.style.opacity = '0';
       setTimeout(() => taskItem.remove(), 300);
     }
+  }
 
-    function goToDialer() {
+  function goToDialer() {
+    if (window.App && window.App.loadPage) {
+      window.App.loadPage('PowerDialer');
+    } else {
       window.location.href = '/pages/PowerDialer.html';
     }
+  }
 
-    function goToLeads() {
+  function goToLeads() {
+    if (window.App && window.App.loadPage) {
+      window.App.loadPage('CRMLeads');
+    } else {
       window.location.href = '/pages/CRMLeads.html';
     }
+  }
 
-    function goToPipeline() {
+  function goToPipeline() {
+    if (window.App && window.App.loadPage) {
+      window.App.loadPage('DealPipeline');
+    } else {
       window.location.href = '/pages/DealPipeline.html';
     }
+  }
 
   // Expose functions to window for onclick handlers
   window.completeTask = completeTask;

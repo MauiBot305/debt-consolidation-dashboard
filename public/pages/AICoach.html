@@ -469,63 +469,167 @@
     }, 500);
   }
 
-  // Call Analysis
-  function populateCallSelector() {
-    const calls = window.DebtDB.getCalls();
-    const selector = document.getElementById('callSelector');
+  // Call Analysis — merged real + local calls
+  let allCoachCalls = [];
+
+  async function populateCallSelector() {
+    const localCalls = window.DebtDB ? window.DebtDB.getCalls() : [];
+    let voiceCalls = [];
+    if (window.VoiceAPI) {
+      const fetched = await window.VoiceAPI.fetchCalls(30);
+      if (fetched) voiceCalls = fetched;
+    }
+    allCoachCalls = window.VoiceAPI ? window.VoiceAPI.mergeCalls(voiceCalls, localCalls) : localCalls;
     
+    const selector = document.getElementById('callSelector');
     selector.innerHTML = '<option value="">Choose a recent call...</option>' + 
-      calls.slice(0, 20).map(call => `
-        <option value="${call.id}">${call.leadName || 'Unknown'} - ${new Date(call.createdAt).toLocaleDateString()} (${call.disposition})</option>
-      `).join('');
+      allCoachCalls.slice(0, 30).map(call => {
+        const src = call._source === 'voice-stack' ? '🟢' : '⚪';
+        return `<option value="${call.id}">${src} ${call.leadName || call.fromNumber || 'Unknown'} - ${new Date(call.createdAt).toLocaleDateString()} (${call.disposition})</option>`;
+      }).join('');
   }
 
-  function analyzeCall() {
+  async function analyzeCall() {
     const callId = document.getElementById('callSelector').value;
     if (!callId) {
       document.getElementById('callScoring').style.display = 'none';
       document.getElementById('callTranscript').style.display = 'none';
+      if (document.getElementById('coachInsights')) document.getElementById('coachInsights').style.display = 'none';
       return;
     }
     
-    const call = window.DebtDB.getCalls().find(c => c.id === callId);
+    const call = allCoachCalls.find(c => c.id === callId);
     if (!call) return;
     
-    // Simulated scoring
-    const scores = {
-      energy: Math.floor(Math.random() * 4) + 7,
-      objection: Math.floor(Math.random() * 3) + 6,
-      closing: Math.floor(Math.random() * 4) + 6,
-      rapport: Math.floor(Math.random() * 3) + 7,
-      compliance: Math.floor(Math.random() * 2) + 8
-    };
+    let scores, transcript, analytics = null;
     
+    // If voice stack call, fetch real analytics
+    if (call._source === 'voice-stack' && window.VoiceAPI) {
+      const detail = await window.VoiceAPI.fetchCallDetail(call.callSid);
+      if (detail && detail.analytics) {
+        analytics = detail.analytics;
+        scores = {
+          energy: analytics.energy_enthusiasm || 0,
+          objection: analytics.objection_handling || 0,
+          closing: analytics.closing_technique || 0,
+          rapport: analytics.rapport_building || 0,
+          compliance: analytics.compliance_score || 0
+        };
+        transcript = detail.transcript || call.transcript;
+      }
+    }
+    
+    // Fallback to simulated scores if no real analytics
+    if (!scores) {
+      scores = {
+        energy: Math.floor(Math.random() * 4) + 7,
+        objection: Math.floor(Math.random() * 3) + 6,
+        closing: Math.floor(Math.random() * 4) + 6,
+        rapport: Math.floor(Math.random() * 3) + 7,
+        compliance: Math.floor(Math.random() * 2) + 8
+      };
+    }
+    if (!transcript) {
+      transcript = call.transcript || "Agent: Hello, this is calling from Debt Relief Pro.\nLead: Hi.\nAgent: How are you today?\nLead: Good, what's this about?\nAgent: We help people reduce their debt by up to 50%. Do you currently have any credit card debt?\nLead: Yeah, about $15,000.\nAgent: Great, we can definitely help with that. When would be a good time to discuss your options?";
+    }
+    
+    // Render scores
     document.getElementById('scoreEnergy').textContent = scores.energy + '/10';
     document.getElementById('barEnergy').style.width = (scores.energy * 10) + '%';
-    
     document.getElementById('scoreObjection').textContent = scores.objection + '/10';
     document.getElementById('barObjection').style.width = (scores.objection * 10) + '%';
-    
     document.getElementById('scoreClosing').textContent = scores.closing + '/10';
     document.getElementById('barClosing').style.width = (scores.closing * 10) + '%';
-    
     document.getElementById('scoreRapport').textContent = scores.rapport + '/10';
     document.getElementById('barRapport').style.width = (scores.rapport * 10) + '%';
-    
     document.getElementById('scoreCompliance').textContent = scores.compliance + '/10';
     document.getElementById('barCompliance').style.width = (scores.compliance * 10) + '%';
-    
     document.getElementById('callScoring').style.display = 'block';
     
     // Transcript
-    const transcript = call.transcript || "Agent: Hello, this is calling from Debt Relief Pro.\nLead: Hi.\nAgent: How are you today?\nLead: Good, what's this about?\nAgent: We help people reduce their debt by up to 50%. Do you currently have any credit card debt?\nLead: Yeah, about $15,000.\nAgent: Great, we can definitely help with that. When would be a good time to discuss your options?";
-    
     document.getElementById('transcriptContent').innerHTML = transcript.split('\n').map(line => {
-      const isAgent = line.startsWith('Agent:');
+      const isAgent = line.startsWith('Agent:') || line.startsWith('AI:');
       return `<div class="${isAgent ? 'text-blue-400' : 'text-gray-300'}">${line}</div>`;
     }).join('');
-    
     document.getElementById('callTranscript').style.display = 'block';
+    
+    // Render coaching insights from real analytics
+    renderCoachInsights(analytics);
+  }
+  
+  function renderCoachInsights(analytics) {
+    let insightsEl = document.getElementById('coachInsights');
+    if (!insightsEl) {
+      // Create insights panel after transcript
+      insightsEl = document.createElement('div');
+      insightsEl.id = 'coachInsights';
+      insightsEl.className = 'mt-6 bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden';
+      document.getElementById('callTranscript').after(insightsEl);
+    }
+    
+    if (!analytics) {
+      insightsEl.style.display = 'none';
+      return;
+    }
+    insightsEl.style.display = 'block';
+    
+    // Parse JSON fields
+    let keyQuotes = analytics.key_quotes;
+    if (typeof keyQuotes === 'string') { try { keyQuotes = JSON.parse(keyQuotes); } catch(e) { keyQuotes = []; } }
+    let trainingTopics = analytics.training_topics;
+    if (typeof trainingTopics === 'string') { try { trainingTopics = JSON.parse(trainingTopics); } catch(e) { trainingTopics = []; } }
+    let objections = analytics.objections_raised;
+    if (typeof objections === 'string') { try { objections = JSON.parse(objections); } catch(e) { objections = []; } }
+    
+    insightsEl.innerHTML = `
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white flex items-center gap-2">🧠 AI Coaching Insights</h2>
+      </div>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-cyan-400 font-semibold mb-3">📊 Overall Score: ${analytics.overall_score || 'N/A'}/10</h3>
+          <div class="space-y-2 text-sm">
+            <div><span class="text-gray-400">Sentiment:</span> <span class="text-white">${analytics.call_sentiment || 'N/A'}</span></div>
+            <div><span class="text-gray-400">Sentiment Trajectory:</span> <span class="text-white">${analytics.sentiment_trajectory || 'N/A'}</span></div>
+            <div><span class="text-gray-400">Lead Quality:</span> <span class="text-white">${analytics.lead_quality_score || 'N/A'}</span></div>
+            <div><span class="text-gray-400">Enrollment Likelihood:</span> <span class="text-white">${analytics.enrollment_likelihood ? (analytics.enrollment_likelihood * 100).toFixed(0) + '%' : 'N/A'}</span></div>
+            <div><span class="text-gray-400">Coaching Priority:</span> <span class="text-white">${analytics.coaching_priority || 'N/A'}</span></div>
+          </div>
+          
+          ${analytics.recommended_next_action ? `
+          <div class="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl">
+            <div class="text-emerald-400 font-semibold text-sm mb-1">🎯 Recommended Next Action</div>
+            <div class="text-white text-sm">${analytics.recommended_next_action}</div>
+          </div>` : ''}
+          
+          ${analytics.ai_summary ? `
+          <div class="mt-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl">
+            <div class="text-blue-400 font-semibold text-sm mb-1">📝 AI Summary</div>
+            <div class="text-white text-sm">${analytics.ai_summary}</div>
+          </div>` : ''}
+        </div>
+        
+        <div>
+          ${Array.isArray(keyQuotes) && keyQuotes.length ? `
+          <div class="mb-4">
+            <h4 class="text-yellow-400 font-semibold text-sm mb-2">💬 Key Quotes</h4>
+            <div class="space-y-2">${keyQuotes.map(q => `<div class="bg-slate-900/50 rounded-lg p-2 text-sm text-gray-300 italic">"${q}"</div>`).join('')}</div>
+          </div>` : ''}
+          
+          ${Array.isArray(trainingTopics) && trainingTopics.length ? `
+          <div class="mb-4">
+            <h4 class="text-purple-400 font-semibold text-sm mb-2">📚 Training Topics</h4>
+            <div class="flex flex-wrap gap-2">${trainingTopics.map(t => `<span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs">${t}</span>`).join('')}</div>
+          </div>` : ''}
+          
+          ${Array.isArray(objections) && objections.length ? `
+          <div class="mb-4">
+            <h4 class="text-red-400 font-semibold text-sm mb-2">❌ Objections Raised</h4>
+            <div class="flex flex-wrap gap-2">${objections.map(o => `<span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs">${o}</span>`).join('')}</div>
+          </div>` : ''}
+        </div>
+      </div>
+    `;
   }
 
   // Scripts
@@ -637,10 +741,10 @@
 // ---- Window Exports ----
   window.sendChatMessage = sendChatMessage;
   window.switchTab = switchTab;
-
-// Window exports for onclick handlers
-window.sendChatMessage = sendChatMessage;
-window.switchTab = switchTab;
+  window.analyzeCall = analyzeCall;
+  window.loadScript = loadScript;
+  window.filterObjections = filterObjections;
+  window.toggleModule = toggleModule;
 })();
 </script>
 </body>
