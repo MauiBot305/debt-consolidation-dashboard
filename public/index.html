@@ -677,6 +677,7 @@
       currentPage: 'dashboard',
       sidebarCollapsed: false,
       session: null,
+      navItemsById: {},
 
       // Initialize app
       init() {
@@ -864,7 +865,7 @@
             <!-- Breadcrumb Trail -->
             <div id="breadcrumb" class="px-6 py-3 border-b border-gray-800/50">
               <div class="flex items-center gap-2 text-sm">
-                <a href="#" class="text-gray-400 hover:text-white transition-colors">Home</a>
+                <a href="#dashboard" data-breadcrumb-home class="text-gray-400 hover:text-white transition-colors">Home</a>
                 <i data-lucide="chevron-right" class="w-4 h-4 text-gray-600"></i>
                 <span id="breadcrumbCurrent" class="text-white font-semibold">Dashboard</span>
               </div>
@@ -910,9 +911,16 @@
         // Filter by role
         const visibleItems = navItems.filter(item => item.roles.includes(role));
 
+        this.navItemsById = visibleItems.reduce((acc, item) => {
+          acc[item.id] = item;
+          return acc;
+        }, {});
+
         return visibleItems.map(item => `
           <div 
-            class="nav-item ${this.currentPage === item.id ? 'active' : ''}" 
+            class="nav-item ${this.currentPage === item.id ? 'active' : ''}"
+            data-page-id="${item.id}"
+            data-page-name="${item.page}"
             onclick="App.navigateTo('${item.id}', '${item.page}')"
           >
             <i data-lucide="${item.icon}" class="w-5 h-5 flex-shrink-0"></i>
@@ -956,27 +964,41 @@
       // Navigation
       navigateTo(pageId, pageName) {
         this.currentPage = pageId;
-        window.location.hash = pageId;
+        const currentHash = window.location.hash.slice(1);
+        if (currentHash !== pageId) {
+          window.location.hash = pageId;
+        }
         this.loadPage(pageName);
         
-        // Update breadcrumb
+        const navMeta = (this.navItemsById && this.navItemsById[pageId]) || null;
+        const label = navMeta?.label || this.getFallbackPageLabel(pageName);
+        
         const breadcrumbCurrent = document.getElementById('breadcrumbCurrent');
         if (breadcrumbCurrent) {
-          const navItem = document.querySelector(`.nav-item[onclick*="${pageId}"]`);
-          if (navItem) {
-            const label = navItem.querySelector('.sidebar-text')?.textContent || 'Dashboard';
-            breadcrumbCurrent.textContent = label;
-          }
+          breadcrumbCurrent.textContent = label;
+        }
+
+        const breadcrumbHome = document.querySelector('[data-breadcrumb-home]');
+        if (breadcrumbHome) {
+          breadcrumbHome.setAttribute('href', '#dashboard');
         }
         
-        // Update active nav item
         document.querySelectorAll('.nav-item').forEach(item => {
           item.classList.remove('active');
         });
-        event.currentTarget?.classList.add('active');
+        const activeItem = document.querySelector(`.nav-item[data-page-id="${pageId}"]`);
+        activeItem?.classList.add('active');
 
-        // Close mobile menu
         document.getElementById('sidebar')?.classList.remove('mobile-open');
+      },
+
+      getFallbackPageLabel(pageName = '') {
+        if (!pageName) return 'Dashboard';
+        return pageName
+          .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+          .replace(/[-_]/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
       },
 
       // Load page content
@@ -1049,18 +1071,20 @@
 
       // Handle routing
       handleRouting() {
-        const hash = window.location.hash.slice(1) || 'dashboard';
-        const navItem = document.querySelector(`.nav-item[onclick*="${hash}"]`);
-        if (navItem) {
-          navItem.click();
-        } else {
-          this.navigateTo('dashboard', 'AgentDashboard');
-        }
+        const applyRoute = (hashValue) => {
+          const routeId = hashValue || 'dashboard';
+          const navMeta = (this.navItemsById && this.navItemsById[routeId]) || null;
+          if (navMeta) {
+            this.navigateTo(routeId, navMeta.page);
+          } else {
+            this.navigateTo('dashboard', 'AgentDashboard');
+          }
+        };
+
+        applyRoute(window.location.hash.slice(1));
 
         window.addEventListener('hashchange', () => {
-          const newHash = window.location.hash.slice(1) || 'dashboard';
-          const newNavItem = document.querySelector(`.nav-item[onclick*="${newHash}"]`);
-          newNavItem?.click();
+          applyRoute(window.location.hash.slice(1));
         });
       },
 
