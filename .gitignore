@@ -4,6 +4,7 @@ node_modules/
 .dev.vars
 *.log
 recordings/
+test-results/
 
 # Environment secrets
 .env
