@@ -19,7 +19,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-CF_API_TOKEN="${CF_API_TOKEN:?ERROR: Set CF_API_TOKEN environment variable}"
+CF_API_TOKEN="dBR4yeXnfzK9a5nOwE7zvlVse1CfNaJMU4KDAzdj"
 CF_ZONE_ID=""  # Will auto-detect
 
 hr() { echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"; }

@@ -128,7 +128,7 @@
             </td>
           </tr>
         `;
-        if (window.lucide) lucide.createIcons();
+        if (window.lucide) if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
       }
     });
     
@@ -143,7 +143,7 @@
             <p class="empty-state-description">Try adjusting your filters or search terms.</p>
           </div>
         `;
-        if (window.lucide) lucide.createIcons();
+        if (window.lucide) if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
       }
     });
   }

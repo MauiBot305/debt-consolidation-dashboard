@@ -806,7 +806,7 @@
       loadAgentsForFilter();
       renderPipeline();
       updateStats();
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     // Load deals from DebtDB
@@ -974,7 +974,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     // Render deal card
@@ -1095,7 +1095,7 @@
     // Modals
     function openAddDealModal() {
       document.getElementById('addDealModal').classList.add('active');
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     function closeAddDealModal() {
@@ -1120,7 +1120,7 @@
         </button>
       `;
       container.appendChild(row);
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     function removeDealCreditorRow(btn) {
@@ -1245,7 +1245,7 @@
       document.getElementById('detailPanel').classList.add('open');
       document.getElementById('detailPanelOverlay').classList.add('open');
       
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     function closeDealDetailPanel() {

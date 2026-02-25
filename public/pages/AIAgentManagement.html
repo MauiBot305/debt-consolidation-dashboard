@@ -548,7 +548,7 @@
   if (!user || !['manager', 'owner'].includes(user.role)) {
     if (denied) denied.style.display = 'block';
     if (content) content.style.display = 'none';
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof lucide !== 'undefined') if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     return;
   }
 
@@ -679,7 +679,7 @@
         <div style="font-size:2rem; margin-bottom:0.5rem;">📡</div>
         AI Agent is idle — waiting for calls
       </div>`;
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (typeof lucide !== 'undefined') if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
       return;
     }
 
@@ -718,7 +718,7 @@
       </div>`;
     }).join('');
 
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof lucide !== 'undefined') if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
   }
 
   // Timer tick for active calls
@@ -1192,7 +1192,7 @@
 
   // --- Init ---
   async function init() {
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof lucide !== 'undefined') if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     fetchAgentStatus();
     fetchStats();
     fetchActiveCalls();

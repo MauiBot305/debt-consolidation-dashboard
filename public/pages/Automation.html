@@ -303,7 +303,7 @@
       </tr>
     `).join('');
     
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
   }
 
   function toggleAutomation(id) {
@@ -440,7 +440,7 @@
     renderTemplates();
     renderAutomations();
     renderExecutionLog();
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
   }
 
   // Initialize

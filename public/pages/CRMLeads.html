@@ -1271,10 +1271,28 @@
     }
 
     function convertToCSV(data) {
+      // FIX 5: CSV injection protection
+      const sanitizeCSVCell = (value) => {
+        if (value === null || value === undefined) return '';
+        const str = String(value);
+        // Prevent CSV injection - prefix dangerous chars with single quote
+        if (/^[=+\-@\t\r]/.test(str)) {
+          return "'" + str;
+        }
+        return str;
+      };
+      
       const headers = ['Name', 'Phone', 'Email', 'Total Debt', 'Monthly Income', 'DTI Ratio', 'Status', 'Source', 'Priority'];
       const rows = data.map(l => [
-        l.name, l.phone, l.email, l.totalDebt, l.monthlyIncome, l.dtiRatio,
-        l.status, l.source, l.priority
+        sanitizeCSVCell(l.name),
+        sanitizeCSVCell(l.phone),
+        sanitizeCSVCell(l.email),
+        sanitizeCSVCell(l.totalDebt),
+        sanitizeCSVCell(l.monthlyIncome),
+        sanitizeCSVCell(l.dtiRatio),
+        sanitizeCSVCell(l.status),
+        sanitizeCSVCell(l.source),
+        sanitizeCSVCell(l.priority)
       ]);
       return [headers, ...rows].map(row => row.join(',')).join('\n');
     }

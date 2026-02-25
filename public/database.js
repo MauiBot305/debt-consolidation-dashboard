@@ -1,3 +1,23 @@
+// localStorage availability check with in-memory fallback
+(function() {
+  try {
+    if (typeof localStorage === 'undefined') throw new Error('not available');
+    localStorage.setItem('__db_test__', '1');
+    localStorage.removeItem('__db_test__');
+  } catch(e) {
+    console.warn('[DebtDB] localStorage unavailable, using in-memory fallback');
+    window.__memStore = {};
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: function(k) { return window.__memStore[k] || null; },
+        setItem: function(k, v) { window.__memStore[k] = String(v); },
+        removeItem: function(k) { delete window.__memStore[k]; },
+        clear: function() { window.__memStore = {}; }
+      }
+    });
+  }
+})();
+
 /**
  * DebtDB - Complete localStorage Database Abstraction
  * Core Engine for Debt Consolidation Empire Dashboard
@@ -38,6 +58,92 @@ window.DebtDB = (function() {
   
   function deepCopy(obj) {
     return JSON.parse(JSON.stringify(obj));
+  }
+  
+  // ==================== FIX 3: STORAGE QUOTA WARNING ====================
+  function checkStorageQuota() {
+    try {
+      let total = 0;
+      for (let key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+          total += localStorage[key].length * 2; // UTF-16 = 2 bytes per char
+        }
+      }
+      const maxBytes = 5 * 1024 * 1024; // 5MB
+      const usagePercent = (total / maxBytes) * 100;
+      if (usagePercent > 80) {
+        console.warn(`[DebtDB] Storage ${usagePercent.toFixed(1)}% full (${(total/1024).toFixed(0)}KB / ${(maxBytes/1024).toFixed(0)}KB)`);
+        if (typeof Toast !== 'undefined') {
+          Toast.show(`⚠️ Storage ${usagePercent.toFixed(0)}% full. Consider exporting data.`, 'warning', 8000);
+        }
+      }
+      return { used: total, max: maxBytes, percent: usagePercent };
+    } catch(e) {
+      return { used: 0, max: 0, percent: 0 };
+    }
+  }
+  
+  // ==================== FIX 1: INPUT VALIDATION ====================
+  function sanitizeInput(str) {
+    if (typeof str !== 'string') return str;
+    return str.replace(/<[^>]*>/g, '').trim();
+  }
+  
+  function validateLead(lead) {
+    if (!lead || typeof lead !== 'object') {
+      console.error('[DebtDB] addLead: invalid input');
+      return null;
+    }
+    if (!lead.name || typeof lead.name !== 'string' || lead.name.trim().length === 0) {
+      console.error('[DebtDB] addLead: name is required');
+      return null;
+    }
+    return {
+      ...lead,
+      name: sanitizeInput(lead.name),
+      email: lead.email ? sanitizeInput(lead.email) : lead.email,
+      phone: lead.phone ? sanitizeInput(lead.phone) : lead.phone,
+      notes: lead.notes ? sanitizeInput(lead.notes) : lead.notes
+    };
+  }
+  
+  function validateDeal(deal) {
+    if (!deal || typeof deal !== 'object') {
+      console.error('[DebtDB] addDeal: invalid input');
+      return null;
+    }
+    if (!deal.client || typeof deal.client !== 'string' || deal.client.trim().length === 0) {
+      console.error('[DebtDB] addDeal: client is required');
+      return null;
+    }
+    return {
+      ...deal,
+      client: sanitizeInput(deal.client),
+      notes: deal.notes ? sanitizeInput(deal.notes) : deal.notes
+    };
+  }
+  
+  function validateCase(caseData) {
+    if (!caseData || typeof caseData !== 'object') {
+      console.error('[DebtDB] addCase: invalid input');
+      return null;
+    }
+    if (!caseData.client || typeof caseData.client !== 'string' || caseData.client.trim().length === 0) {
+      console.error('[DebtDB] addCase: client is required');
+      return null;
+    }
+    return {
+      ...caseData,
+      client: sanitizeInput(caseData.client)
+    };
+  }
+  
+  function validateActivity(activity) {
+    if (!activity || typeof activity !== 'object') {
+      console.error('[DebtDB] addActivity: invalid input');
+      return null;
+    }
+    return activity;
   }
   
   function generateId(type, items) {
@@ -88,20 +194,29 @@ window.DebtDB = (function() {
   }
   
   function addLead(data) {
+    // FIX 1: Input validation
+    const validated = validateLead(data);
+    if (!validated) return null;
+    
     const leads = getStorage('leads') || [];
     const newLead = {
       id: generateId('lead', leads),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      ...data
+      ...validated
     };
     leads.push(newLead);
     setStorage('leads', leads);
+    checkStorageQuota(); // FIX 3: Storage quota check
     addActivity({ type: 'lead_created', entityId: newLead.id, data: { name: newLead.name } });
     return deepCopy(newLead);
   }
   
+  
   function updateLead(id, data) {
+    // FIX 2: Prevent ID mutation
+    delete data.id;
+    
     const leads = getStorage('leads') || [];
     const index = leads.findIndex(l => l.id === id);
     if (index === -1) return null;
@@ -117,12 +232,38 @@ window.DebtDB = (function() {
   }
   
   function deleteLead(id) {
+    // Delete lead
     const leads = getStorage('leads') || [];
     const filtered = leads.filter(l => l.id !== id);
     setStorage('leads', filtered);
+    
+    // FIX 4: Clean up orphaned records (cascade delete)
+    const deals = getStorage('deals') || [];
+    const filteredDeals = deals.filter(d => d.leadId !== id);
+    if (deals.length !== filteredDeals.length) {
+      setStorage('deals', filteredDeals);
+      // console.log(`[DebtDB] Cleaned up ${deals.length - filteredDeals.length} orphaned deals`);
+    }
+    
+    const cases = getStorage('cases') || [];
+    const filteredCases = cases.filter(c => c.leadId !== id);
+    if (cases.length !== filteredCases.length) {
+      setStorage('cases', filteredCases);
+      // console.log(`[DebtDB] Cleaned up ${cases.length - filteredCases.length} orphaned cases`);
+    }
+    
+    const activities = getStorage('activities') || [];
+    const filteredActivities = activities.filter(a => a.leadId !== id);
+    if (activities.length !== filteredActivities.length) {
+      setStorage('activities', filteredActivities);
+      // console.log(`[DebtDB] Cleaned up ${activities.length - filteredActivities.length} orphaned activities`);
+    }
+    
+    // console.log(`[DebtDB] Deleted lead ${id} and cleaned up all related records`);
     addActivity({ type: 'lead_deleted', entityId: id });
     return true;
   }
+  
   
   // ==================== DEALS ====================
   
@@ -139,20 +280,29 @@ window.DebtDB = (function() {
   }
   
   function addDeal(data) {
+    // FIX 1: Input validation
+    const validated = validateDeal(data);
+    if (!validated) return null;
+    
     const deals = getStorage('deals') || [];
     const newDeal = {
       id: generateId('deal', deals),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      ...data
+      ...validated
     };
     deals.push(newDeal);
     setStorage('deals', deals);
+    checkStorageQuota(); // FIX 3: Storage quota check
     addActivity({ type: 'deal_created', entityId: newDeal.id, data: { client: newDeal.client } });
     return deepCopy(newDeal);
   }
   
+  
   function updateDeal(id, data) {
+    // FIX 2: Prevent ID mutation
+    delete data.id;
+    
     const deals = getStorage('deals') || [];
     const index = deals.findIndex(d => d.id === id);
     if (index === -1) return null;
@@ -194,6 +344,10 @@ window.DebtDB = (function() {
   }
   
   function addCase(data) {
+    // FIX 1: Input validation
+    const validated = validateCase(data);
+    if (!validated) return null;
+    
     const cases = getStorage('cases') || [];
     const newCase = {
       id: generateId('case', cases),
@@ -202,15 +356,20 @@ window.DebtDB = (function() {
       notes: [],
       payments: [],
       documents: [],
-      ...data
+      ...validated
     };
     cases.push(newCase);
     setStorage('cases', cases);
+    checkStorageQuota(); // FIX 3: Storage quota check
     addActivity({ type: 'case_created', entityId: newCase.id, data: { client: newCase.client } });
     return deepCopy(newCase);
   }
   
+  
   function updateCase(id, data) {
+    // FIX 2: Prevent ID mutation
+    delete data.id;
+    
     const cases = getStorage('cases') || [];
     const index = cases.findIndex(c => c.id === id);
     if (index === -1) return null;
@@ -302,6 +461,9 @@ window.DebtDB = (function() {
   }
   
   function updateCall(id, data) {
+    // FIX 2: Prevent ID mutation
+    delete data.id;
+    
     const calls = getStorage('calls') || [];
     const index = calls.findIndex(c => c.id === id);
     if (index === -1) return null;
@@ -347,6 +509,9 @@ window.DebtDB = (function() {
   }
   
   function updateAgent(id, data) {
+    // FIX 2: Prevent ID mutation
+    delete data.id;
+    
     const agents = getStorage('agents') || [];
     const index = agents.findIndex(a => a.id === id);
     if (index === -1) return null;
@@ -369,13 +534,17 @@ window.DebtDB = (function() {
   }
   
   function addActivity(data) {
+    // FIX 1: Input validation
+    const validated = validateActivity(data);
+    if (!validated) return null;
+    
     const activities = getStorage('activities') || [];
     const newActivity = {
       id: `activity_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date().toISOString(),
       user: getCurrentUser()?.name || 'System',
       userId: getCurrentUser()?.id || 'system',
-      ...data
+      ...validated
     };
     activities.push(newActivity);
     
@@ -385,8 +554,10 @@ window.DebtDB = (function() {
     }
     
     setStorage('activities', activities);
+    checkStorageQuota(); // FIX 3: Storage quota check
     return deepCopy(newActivity);
   }
+  
   
   // ==================== NOTIFICATIONS ====================
   
@@ -785,14 +956,28 @@ window.DebtDB = (function() {
     // Convert to CSV
     if (data.length === 0) return '';
     
+    // FIX 5: CSV injection protection
+    const sanitizeCSVCell = (value) => {
+      if (typeof value !== 'string') return value;
+      // Prefix dangerous chars with single quote
+      if (/^[=+\-@\t\r]/.test(value)) {
+        return "'" + value;
+      }
+      return value;
+    };
+    
     const headers = Object.keys(data[0]);
     const csv = [
       headers.join(','),
-      ...data.map(row => headers.map(h => JSON.stringify(row[h] || '')).join(','))
+      ...data.map(row => headers.map(h => {
+        const val = row[h] || '';
+        return JSON.stringify(sanitizeCSVCell(val));
+      }).join(','))
     ].join('\n');
     
     return csv;
   }
+  
   
   function importData(type, data) {
     setStorage(type, data);
@@ -934,4 +1119,4 @@ window.DebtDB = (function() {
   };
 })();
 
-console.log('✅ DebtDB loaded successfully');
+// console.log('✅ DebtDB loaded successfully');

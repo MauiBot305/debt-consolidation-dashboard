@@ -134,7 +134,7 @@ class TwilioSimulator {
   // Transfer (simulated)
   transfer(targetNumber) {
     if (this.state === 'connected') {
-      console.log(`Transferring call to ${targetNumber}`);
+// console.log(`Transferring call to ${targetNumber}`);
       // In a real implementation, this would transfer the call
       return true;
     }

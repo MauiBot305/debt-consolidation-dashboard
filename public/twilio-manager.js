@@ -23,7 +23,7 @@ class TwilioManager {
     const twilioSDKLoaded = typeof Twilio !== 'undefined' && Twilio.Device;
     
     if (twilioSDKLoaded && typeof TwilioClient !== 'undefined') {
-      console.log('🔄 Attempting to initialize real Twilio client...');
+// console.log('🔄 Attempting to initialize real Twilio client...');
       
       try {
         this.client = new TwilioClient();
@@ -31,7 +31,7 @@ class TwilioManager {
         
         if (success) {
           this.isUsingRealTwilio = true;
-          console.log('✅ Using REAL Twilio for calling');
+// console.log('✅ Using REAL Twilio for calling');
           this.showBanner('success', '✅ Real Twilio Connected - Live Calls Enabled');
           return true;
         }
@@ -41,7 +41,7 @@ class TwilioManager {
     }
 
     // Fallback to simulator
-    console.log('📱 Falling back to Twilio Simulator');
+// console.log('📱 Falling back to Twilio Simulator');
     this.client = new TwilioSimulator();
     this.isUsingRealTwilio = false;
     this.showBanner('warning', '📱 Demo Mode - Simulator Active (Real calls require Twilio connection)');

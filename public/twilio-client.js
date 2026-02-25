@@ -39,7 +39,7 @@ class TwilioClient {
     // Current call metadata
     this.currentCall = null;
 
-    console.log('📞 TwilioClient initialized');
+// console.log('📞 TwilioClient initialized');
   }
 
   /**
@@ -70,7 +70,7 @@ class TwilioClient {
       await this.device.register();
 
       this.isDemoMode = false;
-      console.log('✅ Twilio Device registered successfully');
+// console.log('✅ Twilio Device registered successfully');
       return true;
     } catch (error) {
       console.warn('⚠️ Twilio unavailable, switching to demo mode:', error);
@@ -101,7 +101,7 @@ class TwilioClient {
   setupDeviceHandlers() {
     // Device registered
     this.device.on('registered', () => {
-      console.log('📞 Twilio Device registered');
+// console.log('📞 Twilio Device registered');
       this.setState('idle');
     });
 
@@ -113,7 +113,7 @@ class TwilioClient {
 
     // Incoming call
     this.device.on('incoming', (call) => {
-      console.log('📞 Incoming call:', call.parameters.From);
+// console.log('📞 Incoming call:', call.parameters.From);
       this.triggerCallback('onIncoming', call);
       
       // Auto-setup handlers for incoming call
@@ -123,11 +123,11 @@ class TwilioClient {
 
     // Token will expire
     this.device.on('tokenWillExpire', async () => {
-      console.log('⚠️ Token expiring, refreshing...');
+// console.log('⚠️ Token expiring, refreshing...');
       try {
         const token = await this.fetchAccessToken();
         this.device.updateToken(token);
-        console.log('✅ Token refreshed');
+// console.log('✅ Token refreshed');
       } catch (error) {
         console.error('❌ Token refresh failed:', error);
       }
@@ -135,7 +135,7 @@ class TwilioClient {
 
     // Device unregistered
     this.device.on('unregistered', () => {
-      console.log('📴 Twilio Device unregistered');
+// console.log('📴 Twilio Device unregistered');
     });
   }
 
@@ -145,7 +145,7 @@ class TwilioClient {
   setupCallHandlers(call) {
     // Call accepted
     call.on('accept', () => {
-      console.log('✅ Call accepted');
+// console.log('✅ Call accepted');
       this.setState('connected');
       this.startTimer();
       this.startAudioMonitoring(call);
@@ -153,19 +153,19 @@ class TwilioClient {
 
     // Call disconnected
     call.on('disconnect', () => {
-      console.log('📴 Call disconnected');
+// console.log('📴 Call disconnected');
       this.handleCallEnd();
     });
 
     // Call cancelled
     call.on('cancel', () => {
-      console.log('🚫 Call cancelled');
+// console.log('🚫 Call cancelled');
       this.handleCallEnd();
     });
 
     // Call rejected
     call.on('reject', () => {
-      console.log('❌ Call rejected');
+// console.log('❌ Call rejected');
       this.handleCallEnd();
     });
 
@@ -182,7 +182,7 @@ class TwilioClient {
     });
 
     call.on('warning-cleared', (warningName) => {
-      console.log(`✅ Call quality warning cleared: ${warningName}`);
+// console.log(`✅ Call quality warning cleared: ${warningName}`);
     });
   }
 
@@ -222,7 +222,7 @@ class TwilioClient {
         };
       }
 
-      console.log('📞 Calling:', phoneNumber);
+// console.log('📞 Calling:', phoneNumber);
       return true;
     } catch (error) {
       console.error('❌ Failed to make call:', error);
@@ -236,7 +236,7 @@ class TwilioClient {
    * Simulate call in demo mode
    */
   simulateCall(phoneNumber, leadData) {
-    console.log('🎭 DEMO MODE: Simulating call to', phoneNumber);
+// console.log('🎭 DEMO MODE: Simulating call to', phoneNumber);
 
     this.currentCall = {
       id: `DEMO_${Date.now()}`,
@@ -388,7 +388,7 @@ class TwilioClient {
   async sendSMS(to, message) {
     try {
       if (this.isDemoMode) {
-        console.log('🎭 DEMO MODE: SMS sent to', to);
+// console.log('🎭 DEMO MODE: SMS sent to', to);
         return { messageSid: `DEMO_SMS_${Date.now()}`, success: true };
       }
 
@@ -403,7 +403,7 @@ class TwilioClient {
       }
 
       const data = await response.json();
-      console.log('✅ SMS sent:', data.messageSid);
+// console.log('✅ SMS sent:', data.messageSid);
       return data;
     } catch (error) {
       console.error('❌ Failed to send SMS:', error);
@@ -421,7 +421,7 @@ class TwilioClient {
     }
 
     if (this.isDemoMode) {
-      console.log('🎭 DEMO MODE: Adding third party', phoneNumber);
+// console.log('🎭 DEMO MODE: Adding third party', phoneNumber);
       return { success: true, conferenceName: `DEMO_CONF_${Date.now()}` };
     }
 
@@ -440,7 +440,7 @@ class TwilioClient {
       }
 
       const data = await response.json();
-      console.log('✅ Third party added:', data);
+// console.log('✅ Third party added:', data);
       return data;
     } catch (error) {
       console.error('❌ Failed to add third party:', error);
@@ -458,7 +458,7 @@ class TwilioClient {
     }
 
     if (this.isDemoMode) {
-      console.log('🎭 DEMO MODE: Transferring to', phoneNumber);
+// console.log('🎭 DEMO MODE: Transferring to', phoneNumber);
       return { success: true };
     }
 
@@ -477,7 +477,7 @@ class TwilioClient {
       }
 
       const data = await response.json();
-      console.log('✅ Call transferred:', data);
+// console.log('✅ Call transferred:', data);
       return data;
     } catch (error) {
       console.error('❌ Failed to transfer:', error);
@@ -493,7 +493,7 @@ class TwilioClient {
     if (this.activeCall && !this.isDemoMode) {
       this.activeCall.sendDigits(digits);
     } else if (this.isDemoMode) {
-      console.log('🎭 DEMO MODE: Sending DTMF', digits);
+// console.log('🎭 DEMO MODE: Sending DTMF', digits);
     }
   }
 
@@ -502,7 +502,7 @@ class TwilioClient {
    */
   setState(newState) {
     this.state = newState;
-    console.log(`📊 Call state: ${newState}`);
+// console.log(`📊 Call state: ${newState}`);
     this.triggerCallback('onStateChange', newState);
   }
 
@@ -658,7 +658,7 @@ class TwilioClient {
     callbacks.push(callback);
     localStorage.setItem('callbacks', JSON.stringify(callbacks));
     
-    console.log('📅 Callback scheduled:', callback);
+// console.log('📅 Callback scheduled:', callback);
     return callback;
   }
 
@@ -675,7 +675,7 @@ class TwilioClient {
       callback.completed = true;
       callback.completedAt = new Date().toISOString();
       localStorage.setItem('callbacks', JSON.stringify(callbacks));
-      console.log('✅ Callback completed:', callbackId);
+// console.log('✅ Callback completed:', callbackId);
     }
   }
 
@@ -718,7 +718,7 @@ class TwilioClient {
     
     this.stopTimer();
     
-    console.log('📴 TwilioClient destroyed');
+// console.log('📴 TwilioClient destroyed');
   }
 }
 

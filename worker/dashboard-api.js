@@ -8,9 +8,26 @@
  * For now, we'll use the same structure as database.js
  */
 
-// CORS headers
+// CORS headers - dynamic origin validation
+const allowedOrigins = [
+  'https://debt.alldayautomations.ai',
+  'https://debt-consolidation-dashboard.pages.dev'
+];
+
+function getCorsHeaders(request) {
+  const requestOrigin = request.headers.get('Origin') || '';
+  const corsOrigin = allowedOrigins.includes(requestOrigin) ? requestOrigin : allowedOrigins[0];
+  
+  return {
+    'Access-Control-Allow-Origin': corsOrigin,
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Max-Age': '86400',
+  };
+}
+
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': allowedOrigins[0],
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Max-Age': '86400',

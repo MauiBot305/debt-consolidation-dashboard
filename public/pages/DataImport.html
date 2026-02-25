@@ -333,7 +333,7 @@
       </div>
     `).join('');
     
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     
     // Apply template mapping if exists
     document.querySelectorAll('.field-map-select').forEach(select => {
@@ -417,7 +417,7 @@
     renderImportHistory();
     showToast(`${imported} records imported!`, 'success');
     
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
   }
 
   function renderImportHistory() {
@@ -457,7 +457,7 @@
 
   // Initialize
   renderImportHistory();
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
 
 // Window exports for onclick handlers
   window.goToStep = goToStep;

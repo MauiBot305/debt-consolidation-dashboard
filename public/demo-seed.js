@@ -11,11 +11,11 @@
   
   // Check if already seeded
   if (localStorage.getItem('debtdb_seeded') === 'true') {
-    console.log('📦 Demo data already seeded');
+// console.log('📦 Demo data already seeded');
     return;
   }
   
-  console.log('🌱 Seeding demo data...');
+// console.log('🌱 Seeding demo data...');
   
   // ==================== AGENTS ====================
   
@@ -565,23 +565,23 @@
   // Mark as seeded
   localStorage.setItem('debtdb_seeded', 'true');
   
-  console.log('✅ Demo data seeded successfully!');
-  console.log(`   - ${agents.length} Agents`);
-  console.log(`   - ${leads.length} Leads`);
-  console.log(`   - ${DebtDB.getDeals().length} Deals`);
-  console.log(`   - ${DebtDB.getCases().length} Cases`);
-  console.log(`   - ${DebtDB.getCalls().length} Calls`);
-  console.log(`   - ${campaigns.length} Campaigns`);
-  console.log(`   - ${statesWithLicenses.length} State Licenses`);
-  console.log(`   - ${dncNumbers.length} DNC Numbers`);
+// console.log('✅ Demo data seeded successfully!');
+// console.log(`   - ${agents.length} Agents`);
+// console.log(`   - ${leads.length} Leads`);
+// console.log(`   - ${DebtDB.getDeals().length} Deals`);
+// console.log(`   - ${DebtDB.getCases().length} Cases`);
+// console.log(`   - ${DebtDB.getCalls().length} Calls`);
+// console.log(`   - ${campaigns.length} Campaigns`);
+// console.log(`   - ${statesWithLicenses.length} State Licenses`);
+// console.log(`   - ${dncNumbers.length} DNC Numbers`);
   
 })();
 
 // Auto-seed on page load
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
-    console.log('📦 Demo seed loaded');
+// console.log('📦 Demo seed loaded');
   });
 } else {
-  console.log('📦 Demo seed loaded');
+// console.log('📦 Demo seed loaded');
 }

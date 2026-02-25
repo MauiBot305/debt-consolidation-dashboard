@@ -1,16 +1,7 @@
 /**
- * Twilio API Handler for Cloudflare Worker
- * Provides token generation and call control endpoints
- * 
- * DEPLOYMENT:
- * npx wrangler deploy worker/twilio-api.js --name debt-dashboard-api
- * 
- * SET SECRETS:
- * echo "AC817583246f1bd0d4d71d0be44e65d938" | npx wrangler secret put TWILIO_ACCOUNT_SID --name debt-dashboard-api
- * echo "83c7a2a19ce4627b66632bb12873d2e9" | npx wrangler secret put TWILIO_AUTH_TOKEN --name debt-dashboard-api
- * echo "SK81e414a5d4c572c269e00fb0c4257807" | npx wrangler secret put TWILIO_API_KEY_SID --name debt-dashboard-api
- * echo "iioElfBXphoOp4yNtjgCsr0j1TMfsqGL" | npx wrangler secret put TWILIO_API_KEY_SECRET --name debt-dashboard-api
- * echo "+17542542410" | npx wrangler secret put TWILIO_FROM_NUMBER --name debt-dashboard-api
+ * Twilio API Worker
+ * Secrets managed via: npx wrangler secret put <KEY_NAME>
+ * Required secrets: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET, TWILIO_FROM_NUMBER
  */
 
 /**
@@ -304,9 +295,16 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // CORS headers
+    // CORS headers - dynamic origin validation
+    const allowedOrigins = [
+      'https://debt.alldayautomations.ai',
+      'https://debt-consolidation-dashboard.pages.dev'
+    ];
+    const requestOrigin = request.headers.get('Origin') || '';
+    const corsOrigin = allowedOrigins.includes(requestOrigin) ? requestOrigin : allowedOrigins[0];
+    
     const corsHeaders = {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': corsOrigin,
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization'
     };
@@ -404,7 +402,7 @@ export default {
 
     } catch (error) {
       console.error('Twilio API error:', error);
-      return new Response(JSON.stringify({ error: error.message, stack: error.stack }), {
+      return new Response(JSON.stringify({ error: 'Internal server error', code: 'INTERNAL_ERROR' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });

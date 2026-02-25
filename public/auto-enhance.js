@@ -30,25 +30,24 @@
   async function init() {
     try {
       // Load DebtDB storage layer first
-      await loadScript('/debtdb-storage.js');
-      console.log('✓ DebtDB storage loaded');
+// console.log('✓ DebtDB storage loaded');
 
       const page = getCurrentPage();
       if (!page) {
-        console.log('No specific page detected');
+// console.log('No specific page detected');
         return;
       }
 
       // Load page-specific functionality
       const scriptPath = `/pages/${page}-functions.js`;
       await loadScript(scriptPath);
-      console.log(`✓ ${page} functions loaded`);
+// console.log(`✓ ${page} functions loaded`);
 
       // Trigger page-specific init if available
       const initFn = window[`${page.charAt(0).toUpperCase() + page.slice(1)}Functions`]?.init;
       if (typeof initFn === 'function') {
         initFn();
-        console.log(`✓ ${page} initialized`);
+// console.log(`✓ ${page} initialized`);
       }
     } catch (error) {
       console.warn('Auto-enhance error:', error);

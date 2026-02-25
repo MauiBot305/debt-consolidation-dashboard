@@ -22,7 +22,7 @@
     animateGauge();
     
     if (window.lucide) {
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
   }
 
@@ -79,7 +79,7 @@
     renderAuditLog();
     
     if (window.lucide) {
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
   }
 
@@ -200,7 +200,7 @@
     }
     
     if (window.lucide) {
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
   }
 
@@ -299,7 +299,7 @@
     `).join('');
     
     if (window.lucide) {
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
   }
 
@@ -375,7 +375,7 @@
     `).join('');
     
     if (window.lucide) {
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
   }
 

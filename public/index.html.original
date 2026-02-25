@@ -4,23 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Debt Empire - Consolidation Management System</title>
-
-  <!-- CDN Tracking + Fallback Stubs -->
-  <script>
-    // CDN load tracking + fallback stubs
-    window.__cdnStatus = { tailwind: false, lucide: false, xlsx: false, errors: [] };
-    window.lucide = window.lucide || { createIcons: function() { console.warn("[Fallback] Lucide CDN failed"); } };
-    window.XLSX = window.XLSX || { read: function() { return null; }, utils: { sheet_to_json: function() { return []; } } };
-  </script>
   
   <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com/3.4.17" onload="window.__cdnStatus.tailwind=true;" onerror="console.error('[CDN] Tailwind failed'); window.__cdnStatus.errors.push('tailwind');"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@0.575.0" onload="window.__cdnStatus.lucide=true; window.lucide=lucide;" onerror="console.error('[CDN] Lucide failed'); window.__cdnStatus.errors.push('lucide');"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   
   <!-- SheetJS - Excel Parser -->
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js" onload="window.__cdnStatus.xlsx=true;" onerror="console.error('[CDN] SheetJS failed'); window.__cdnStatus.errors.push('xlsx');"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,16 +24,6 @@
   <link rel="stylesheet" href="page-overrides.css">
   
   <style>
-    /* Accessibility: Focus indicators */
-    *:focus-visible {
-      outline: 2px solid #3b82f6 !important;
-      outline-offset: 2px !important;
-    }
-    
-    /* Remove outline on mouse click but keep for keyboard */
-    *:focus:not(:focus-visible) {
-      outline: none;
-    }
     * {
       margin: 0;
       padding: 0;
@@ -522,18 +504,6 @@
         left: 4px;
         right: 4px;
         top: 4px;
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js" integrity="sha512-H+rglffZ6BQLA5cWJPBeu5VsX/MxkVLnaJOa1GBIJRWN5IjkOWwE/2GJgeT+8Oy+/VbxjwQPqQUWVoC62JbAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script>
-  <a href="#pageContent" class="skip-link" style="position:absolute;top:-100%;left:0;background:#3b82f6;color:white;padding:12px 24px;z-index:10000;font-size:16px;text-decoration:none;border-radius:0 0 8px 0;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Skip to main content</a>
-    // Global HTML sanitizer
-    window.sanitizeHTML = function(html) {
-      if (typeof DOMPurify !== 'undefined') return DOMPurify.sanitize(html);
-      // Fallback: strip all tags
-      var tmp = document.createElement('div');
-      tmp.textContent = html;
-      return tmp.innerHTML;
-    };
-  </script>
       }
 
       .toast {
@@ -556,7 +526,7 @@
   </div>
 
   <!-- Toast Container -->
-  <div id="toastContainer" role="status" aria-live="polite" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
   <!-- Search Modal (Cmd+K) -->
   <div id="searchModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] hidden flex items-start justify-center pt-20">
@@ -626,9 +596,7 @@
         `;
 
         container.appendChild(toast);
-        if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+        if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
 
         // Close button handler
         const closeBtn = toast.querySelector('.toast-close');
@@ -728,9 +696,7 @@
         this.handleRouting();
 
         // Initialize Lucide icons
-        if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+        if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
       },
 
       // Render main app structure
@@ -915,9 +881,7 @@
           </main>
         `;
 
-        if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+        if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
       },
 
       // Render navigation items
@@ -1094,9 +1058,7 @@
                 }
               });
               
-              if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+              if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
               
               // Initialize page-specific JS if exists
               if (typeof window[`init${pageName}`] === 'function') {
@@ -1116,9 +1078,7 @@
                 <p class="text-gray-400">${pageName} is coming soon!</p>
               </div>
             `;
-            if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+            if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
           }
         } catch (error) {
           pageContent.innerHTML = `
@@ -1128,9 +1088,7 @@
               <p class="text-gray-400">${error.message}</p>
             </div>
           `;
-          if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+          if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
         }
       },
 
@@ -1181,9 +1139,7 @@
               <p>No notifications yet</p>
             </div>
           `;
-          if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+          if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
           return;
         }
         
@@ -1215,9 +1171,7 @@
           `;
         }).join('');
         
-        if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+        if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
       },
       
       markNotificationRead(notifId) {
@@ -1255,9 +1209,7 @@
         modal?.classList.remove('hidden');
         modal?.classList.add('flex');
         input?.focus();
-        if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+        if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
       },
 
       closeSearchModal() {
@@ -1272,9 +1224,7 @@
             <p>Start typing to search...</p>
           </div>
         `;
-        if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+        if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
       },
 
       handleSearch(query) {
@@ -1287,9 +1237,7 @@
               <p>Type at least 2 characters to search...</p>
             </div>
           `;
-          if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+          if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
           return;
         }
 
@@ -1313,9 +1261,7 @@
               <p>No results found for "${query}"</p>
             </div>
           `;
-          if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+          if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
           return;
         }
 
@@ -1421,9 +1367,7 @@
 
         html += '</div>';
         resultsContainer.innerHTML = html;
-        if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
-          try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); }
-        }
+        if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
       },
 
       // Attach event listeners

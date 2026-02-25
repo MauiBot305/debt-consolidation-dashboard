@@ -1126,7 +1126,7 @@
       loadCases();
       loadAgents();
       renderCaseList();
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     // Load cases from DebtDB
@@ -1244,7 +1244,7 @@
             <div class="empty-description">Try adjusting your search or filters</div>
           </div>
         `;
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
         return;
       }
 
@@ -1271,7 +1271,7 @@
         </div>
       `).join('');
 
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     // Get case type label
@@ -1541,7 +1541,7 @@
       `;
 
       document.getElementById('caseDetailContent').innerHTML = content;
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     // Generate timeline
@@ -1621,7 +1621,7 @@
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
       document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.add('active');
 
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     // Filter cases
@@ -1639,7 +1639,7 @@
     // Modals
     function openAddCaseModal() {
       document.getElementById('addCaseModal').classList.add('active');
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     function closeAddCaseModal() {
@@ -1649,7 +1649,7 @@
 
     function openAddPaymentModal() {
       document.getElementById('addPaymentModal').classList.add('active');
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     function closeAddPaymentModal() {
@@ -1659,7 +1659,7 @@
 
     function openAddNoteModal() {
       document.getElementById('addNoteModal').classList.add('active');
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     function closeAddNoteModal() {
@@ -1669,7 +1669,7 @@
 
     function openAddDocumentModal() {
       document.getElementById('addDocumentModal').classList.add('active');
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     function closeAddDocumentModal() {
@@ -1705,7 +1705,7 @@
         </button>
       `;
       container.appendChild(row);
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
 
     function removeCreditorRow(btn) {

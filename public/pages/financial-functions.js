@@ -31,7 +31,7 @@
     animateStats();
     
     if (window.lucide) {
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
   }
 
@@ -94,7 +94,7 @@
     renderCommissionsTable();
     
     if (window.lucide) {
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
     }
   }
 

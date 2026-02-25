@@ -341,7 +341,7 @@
     document.getElementById('prevBtn').disabled = currentPage === 1;
     document.getElementById('nextBtn').disabled = end >= filteredCalls.length;
     
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
   }
 
   function prevPage() {
@@ -481,7 +481,7 @@
     `;
     
     document.getElementById('callDetailPanel').style.display = 'block';
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
   }
 
   function closeDetailPanel() {
@@ -512,7 +512,7 @@
     _callHistoryInitialized = true;
     populateAgentFilter();
     loadAllCalls(); // Fetches real calls, then applies filters
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
   }
 
   if (document.readyState === 'loading') {
