@@ -1083,10 +1083,13 @@
       currentRange = range;
       
       // Update active button
-      document.querySelectorAll('.date-range .btn-secondary').forEach(btn => {
+      const buttons = document.querySelectorAll('.date-range .btn-secondary, .date-range .btn');
+      buttons.forEach(btn => {
         btn.classList.remove('active');
+        if (btn.textContent.toLowerCase().includes(range === 'week' ? 'week' : range === 'today' ? 'today' : range === 'month' ? 'month' : 'quarter')) {
+          btn.classList.add('active');
+        }
       });
-      event.target.classList.add('active');
       
       loadAnalytics();
       showToast(`Date range set to: ${range}`);

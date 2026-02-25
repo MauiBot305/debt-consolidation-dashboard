@@ -1606,8 +1606,10 @@
     // Switch tab
     function switchTab(tabName) {
       // Update tab buttons
-      document.querySelectorAll('.case-tab').forEach(tab => tab.classList.remove('active'));
-      event.target.classList.add('active');
+      document.querySelectorAll('.case-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.textContent.toLowerCase().includes(tabName.toLowerCase())) tab.classList.add('active');
+      });
 
       // Update tab content
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));

@@ -1083,8 +1083,8 @@
       selectedDisposition = disposition;
       document.querySelectorAll('.disposition-btn').forEach(btn => {
         btn.classList.remove('active');
+        if (btn.textContent.trim().toLowerCase().includes(disposition.toLowerCase())) btn.classList.add('active');
       });
-      event.target.classList.add('active');
     }
 
     function saveDisposition() {
