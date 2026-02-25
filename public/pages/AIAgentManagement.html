@@ -738,8 +738,8 @@
   window.aiListenCall = function(sid) {
     const phone = prompt('Enter your phone number to listen:', DEFAULT_MONITOR_PHONE);
     if (!phone) return;
-    apiPost(`/api/calls/${sid}/listen`, { monitor_phone: phone }).then(r => {
-      alert(r ? 'Listening connected! Your phone will ring.' : 'Failed to connect.');
+    apiPost(`/api/calls/${sid}/listen`, { manager_phone: phone }).then(r => {
+      alert(r && !r.error ? 'Listening connected! Your phone will ring.' : 'Failed to connect.');
     });
   };
 
@@ -748,8 +748,8 @@
     if (!phone) return;
     const message = prompt('Enter whisper message for the AI agent:');
     if (!message) return;
-    apiPost(`/api/calls/${sid}/whisper`, { monitor_phone: phone, message }).then(r => {
-      alert(r ? 'Whisper sent!' : 'Failed to send whisper.');
+    apiPost(`/api/calls/${sid}/whisper`, { manager_phone: phone, message }).then(r => {
+      alert(r && !r.error ? 'Whisper sent!' : 'Failed to send whisper.');
     });
   };
 
@@ -757,8 +757,8 @@
     const phone = prompt('Enter your phone number to barge in:', DEFAULT_MONITOR_PHONE);
     if (!phone) return;
     if (!confirm('This will connect you directly to the call. Continue?')) return;
-    apiPost(`/api/calls/${sid}/barge`, { monitor_phone: phone }).then(r => {
-      alert(r ? 'Barge connected! Your phone will ring.' : 'Failed to barge.');
+    apiPost(`/api/calls/${sid}/barge`, { manager_phone: phone }).then(r => {
+      alert(r && !r.error ? 'Barge connected! Your phone will ring.' : 'Failed to barge.');
     });
   };
 
