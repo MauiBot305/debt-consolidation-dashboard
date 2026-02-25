@@ -2,5 +2,23 @@ name = "debt-consolidation-dashboard"
 compatibility_date = "2024-02-24"
 pages_build_output_dir = "public"
 
+# Twilio API Worker
+[[workers]]
+binding = "TWILIO_API"
+name = "debt-dashboard-api"
+script = "worker/twilio-api.js"
+
+# Workers environment variables
+# Set these via: wrangler secret put <KEY>
+# Or use .dev.vars file for local development (NOT committed to git)
+#
+# Required secrets:
+# - TWILIO_ACCOUNT_SID
+# - TWILIO_AUTH_TOKEN
+# - TWILIO_API_KEY
+# - TWILIO_API_SECRET
+# - TWILIO_PHONE_NUMBER
+# - TWILIO_PHONE_NUMBER_SID
+
 [env.production]
 name = "debt-consolidation-dashboard"
