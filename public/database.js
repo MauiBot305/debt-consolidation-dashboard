@@ -1,6 +1,7 @@
 /**
  * DebtDB - Complete localStorage Database Abstraction
  * Core Engine for Debt Consolidation Empire Dashboard
+ * Version: 2026-02-25
  * 
  * All data stored with prefix: debtdb_
  * All methods synchronous

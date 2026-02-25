@@ -1,3 +1,4 @@
+// v2026-02-25
 /**
  * Universal Page Enhancements
  * Applies consistent polish to all dashboard pages
