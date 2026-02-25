@@ -1,68 +1,28 @@
-<!-- Functionality verified by Agent 1 -->
+<!-- DEAL PIPELINE - Horizontal Kanban Board with Drag & Drop -->
 <div id="dealPipeline" class="page-container">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
-    .pipeline-container {
-      animation: fadeInUp 0.6s ease-out;
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .pipeline-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      padding: 24px;
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      border-radius: 24px;
-      backdrop-filter: blur(10px);
-    }
-
-    .pipeline-header h2 {
-      margin: 0;
-      color: white;
-      font-weight: 700;
-      font-size: 28px;
-    }
-
-    .pipeline-stats {
+    /* Pipeline Stats Bar */
+    .pipeline-stats-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
       margin-bottom: 24px;
-      animation: slideInDown 0.6s ease-out;
+      animation: slideDown 0.4s ease-out;
     }
 
-    @keyframes slideInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .stat-card {
-      background: linear-gradient(135deg, rgba(10, 15, 26, 0.8), rgba(15, 23, 42, 0.8));
-      padding: 20px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(59, 130, 246, 0.3);
       border-radius: 16px;
-      border: 2px solid rgba(59, 130, 246, 0.2);
+      padding: 20px;
       backdrop-filter: blur(10px);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
     }
@@ -77,15 +37,9 @@
       background: linear-gradient(90deg, #3B82F6, #06B6D4);
     }
 
-    .stat-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(59, 130, 246, 0.5);
-      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
-    }
-
     .stat-label {
-      color: #64748B;
       font-size: 12px;
+      color: #64748B;
       text-transform: uppercase;
       letter-spacing: 1.5px;
       font-weight: 600;
@@ -93,136 +47,172 @@
     }
 
     .stat-value {
-      color: white;
       font-size: 32px;
+      color: white;
       font-weight: 700;
       font-family: 'Orbitron', monospace;
       background: linear-gradient(135deg, #22C55E, #10B981);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
     }
 
-    .filters-bar {
+    .stat-subtitle {
+      font-size: 12px;
+      color: #64748B;
+      margin-top: 8px;
+    }
+
+    /* Top Bar */
+    .top-bar {
       display: flex;
-      gap: 16px;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 24px;
-      padding: 20px;
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
       border: 1px solid rgba(59, 130, 246, 0.3);
-      border-radius: 24px;
+      border-radius: 16px;
+      padding: 20px 24px;
       backdrop-filter: blur(10px);
     }
 
-    .filter-select {
-      padding: 12px 20px;
-      background: rgba(10, 15, 26, 0.6);
-      border: 2px solid rgba(59, 130, 246, 0.3);
-      border-radius: 12px;
+    .top-bar h2 {
+      font-size: 28px;
+      color: white;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .top-bar-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .filter-dropdown {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 8px 16px;
       color: white;
       font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .filter-select:hover {
-      border-color: #3B82F6;
-    }
-
-    .filter-select:focus {
       outline: none;
-      border-color: #3B82F6;
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+      cursor: pointer;
+      transition: all 0.3s;
     }
 
-    .kanban-board {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      padding-bottom: 40px;
-    }
-
-    .kanban-column {
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      border-radius: 24px;
-      padding: 20px;
-      min-height: 600px;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .kanban-column:hover {
+    .filter-dropdown:hover {
       border-color: rgba(59, 130, 246, 0.5);
+      background: rgba(30, 41, 59, 0.7);
+    }
+
+    /* Pipeline Board */
+    .pipeline-board {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 20px;
+    }
+
+    .pipeline-board::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .pipeline-board::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 10px;
+    }
+
+    .pipeline-board::-webkit-scrollbar-thumb {
+      background: rgba(59, 130, 246, 0.3);
+      border-radius: 10px;
+    }
+
+    .pipeline-column {
+      min-width: 300px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 16px;
+      padding: 16px;
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 400px);
+      transition: all 0.3s;
+    }
+
+    .pipeline-column.drag-over {
+      border-color: rgba(59, 130, 246, 0.6);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+      transform: scale(1.02);
     }
 
     .column-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid rgba(59, 130, 246, 0.2);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.2);
     }
 
     .column-title {
+      font-size: 14px;
       color: white;
       font-weight: 700;
-      font-size: 16px;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    .column-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 32px;
-      height: 32px;
-      padding: 0 10px;
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
-      border-radius: 10px;
-      color: white;
+    .column-count {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #3B82F6;
       font-weight: 700;
-      font-size: 14px;
       font-family: 'Orbitron', monospace;
-      animation: pulse-badge 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse-badge {
-      0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
-      }
-      50% {
-        transform: scale(1.05);
-        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
-      }
     }
 
     .column-value {
+      font-size: 12px;
+      color: #64748B;
+      margin-top: 4px;
+    }
+
+    .column-value .amount {
       color: #22C55E;
-      font-size: 14px;
       font-weight: 700;
-      font-family: 'Orbitron', monospace;
-      margin-top: 8px;
-      text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
     }
 
-    .deal-cards {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      min-height: 200px;
+    .column-cards {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 8px;
     }
 
+    .column-cards::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .column-cards::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 10px;
+    }
+
+    .column-cards::-webkit-scrollbar-thumb {
+      background: rgba(59, 130, 246, 0.3);
+      border-radius: 10px;
+    }
+
+    /* Deal Card */
     .deal-card {
-      background: linear-gradient(135deg, rgba(10, 15, 26, 0.8), rgba(15, 23, 42, 0.6));
+      background: rgba(30, 41, 59, 0.5);
       border: 1px solid rgba(59, 130, 246, 0.2);
-      border-radius: 16px;
-      padding: 16px;
-      cursor: move;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      cursor: grab;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
@@ -231,707 +221,855 @@
     .deal-card::before {
       content: '';
       position: absolute;
-      left: 0;
       top: 0;
-      bottom: 0;
+      left: 0;
       width: 4px;
-      background: linear-gradient(180deg, var(--stage-color), transparent);
+      height: 100%;
+      background: linear-gradient(180deg, #3B82F6, #06B6D4);
     }
 
     .deal-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
       border-color: rgba(59, 130, 246, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
     }
 
     .deal-card.dragging {
       opacity: 0.5;
-      transform: rotate(3deg);
+      cursor: grabbing;
     }
 
-    .deal-card-header {
+    .deal-card.high-priority::before {
+      background: linear-gradient(180deg, #EF4444, #DC2626);
+    }
+
+    .deal-card.medium-priority::before {
+      background: linear-gradient(180deg, #F59E0B, #D97706);
+    }
+
+    .deal-card.low-priority::before {
+      background: linear-gradient(180deg, #22C55E, #16A34A);
+    }
+
+    .deal-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
+      align-items: start;
+      margin-bottom: 10px;
     }
 
     .deal-client {
+      font-size: 15px;
       color: white;
       font-weight: 600;
-      font-size: 15px;
     }
 
-    .deal-urgency {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      box-shadow: 0 0 8px currentColor;
+    .priority-badge {
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
     }
 
-    .urgency-green {
-      background: #22C55E;
-      animation: none;
+    .priority-badge.high { background: rgba(239, 68, 68, 0.2); color: #EF4444; }
+    .priority-badge.medium { background: rgba(245, 158, 11, 0.2); color: #F59E0B; }
+    .priority-badge.low { background: rgba(34, 197, 94, 0.2); color: #22C55E; }
+
+    .deal-amount {
+      font-size: 18px;
+      color: #22C55E;
+      font-weight: 700;
+      font-family: 'Orbitron', monospace;
+      margin-bottom: 8px;
     }
 
-    .urgency-yellow {
-      background: #F59E0B;
+    .deal-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      color: #64748B;
+      margin-bottom: 10px;
     }
 
-    .urgency-red {
-      background: #EF4444;
-      animation: pulse-urgent 1.5s ease-in-out infinite;
+    .deal-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    @keyframes pulse-urgent {
-      0%, 100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-      50% {
-        opacity: 0.6;
-        transform: scale(1.3);
-      }
-    }
-
-    .deal-details {
-      display: grid;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .deal-detail-row {
+    .deal-footer {
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px solid rgba(59, 130, 246, 0.1);
     }
 
-    .detail-label {
-      color: #64748B;
-    }
-
-    .detail-value {
-      color: white;
+    .deal-agent {
+      font-size: 11px;
+      color: #3B82F6;
       font-weight: 600;
-      font-family: 'Orbitron', monospace;
     }
 
-    .detail-value.money {
-      color: #22C55E;
-    }
-
-    .deal-progress {
-      margin-top: 12px;
-    }
-
-    .progress-bar {
-      height: 6px;
-      background: rgba(10, 15, 26, 0.6);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-bottom: 6px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #3B82F6, #06B6D4);
-      border-radius: 3px;
-      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-    }
-
-    .progress-label {
+    .deal-days {
       font-size: 11px;
       color: #64748B;
     }
 
-    .deal-actions {
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
       display: flex;
-      gap: 8px;
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(59, 130, 246, 0.1);
     }
 
-    .action-icon-btn {
-      flex: 1;
-      padding: 8px;
-      background: rgba(59, 130, 246, 0.1);
+    .modal {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.95));
       border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 700px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .modal-title {
+      font-size: 22px;
+      color: white;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.4);
       border-radius: 8px;
-      color: #3B82F6;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 14px;
-      text-align: center;
-    }
-
-    .action-icon-btn:hover {
-      background: rgba(59, 130, 246, 0.2);
-      transform: translateY(-2px);
-    }
-
-    .drop-zone {
-      min-height: 100px;
-      border: 2px dashed rgba(59, 130, 246, 0.3);
-      border-radius: 12px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #64748B;
-      font-size: 14px;
+      color: #EF4444;
+      cursor: pointer;
       transition: all 0.3s;
     }
 
-    .drop-zone.drag-over {
-      border-color: #3B82F6;
-      background: rgba(59, 130, 246, 0.1);
+    .modal-close:hover {
+      background: rgba(239, 68, 68, 0.3);
+      transform: rotate(90deg);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 13px;
+      color: #94A3B8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: white;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: rgba(59, 130, 246, 0.5);
+      background: rgba(30, 41, 59, 0.7);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .creditor-row {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: grid;
+      grid-template-columns: 2fr 1.5fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #3B82F6, #2563EB);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #2563EB, #1D4ED8);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
       color: #3B82F6;
     }
 
-    /* Stage-specific colors */
-    .stage-new-lead { --stage-color: #3B82F6; }
-    .stage-contacted { --stage-color: #F59E0B; }
-    .stage-qualified { --stage-color: #06B6D4; }
-    .stage-enrolled { --stage-color: #8B5CF6; }
-    .stage-in-program { --stage-color: #EC4899; }
-    .stage-negotiating { --stage-color: #F97316; }
-    .stage-settled { --stage-color: #10B981; }
-    .stage-completed { --stage-color: #22C55E; }
+    .btn-secondary:hover {
+      background: rgba(59, 130, 246, 0.3);
+      box-shadow: none;
+    }
 
-    /* Deal Detail Slide-out Panel */
+    .btn-danger {
+      background: linear-gradient(135deg, #EF4444, #DC2626);
+    }
+
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #DC2626, #B91C1C);
+      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+    }
+
+    .add-btn {
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: #22C55E;
+      margin-top: 8px;
+    }
+
+    .add-btn:hover {
+      background: rgba(34, 197, 94, 0.3);
+    }
+
+    /* Detail Panel (slide-out) */
     .detail-panel {
       position: fixed;
       top: 0;
-      right: 0;
+      right: -600px;
       width: 600px;
       height: 100vh;
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(10, 15, 26, 0.98));
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.95));
+      border-left: 1px solid rgba(59, 130, 246, 0.3);
       backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-left: 2px solid rgba(59, 130, 246, 0.3);
-      box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      transform: translateX(100%);
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1001;
+      padding: 32px;
       overflow-y: auto;
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
     }
 
     .detail-panel.open {
-      transform: translateX(0);
+      right: 0;
     }
 
     .detail-panel-overlay {
+      display: none;
       position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(4px);
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(2px);
+      z-index: 1000;
     }
 
     .detail-panel-overlay.open {
-      opacity: 1;
-      pointer-events: all;
+      display: block;
     }
 
-    .detail-panel-header {
-      padding: 24px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.1));
-      border-bottom: 2px solid rgba(59, 130, 246, 0.3);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      backdrop-filter: blur(20px);
-    }
-
-    .detail-panel-title {
-      font-size: 24px;
-      font-weight: 700;
-      color: white;
-      font-family: 'Orbitron', sans-serif;
-    }
-
-    .detail-panel-close {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+    .detail-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
       background: rgba(239, 68, 68, 0.2);
-      border: 2px solid rgba(239, 68, 68, 0.3);
-      color: #EF4444;
-      cursor: pointer;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 8px;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #EF4444;
+      cursor: pointer;
       transition: all 0.3s;
     }
 
-    .detail-panel-close:hover {
-      background: rgba(239, 68, 68, 0.4);
-      transform: scale(1.1);
-      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+    .detail-close:hover {
+      background: rgba(239, 68, 68, 0.3);
+      transform: rotate(90deg);
     }
 
-    .detail-panel-content {
-      padding: 24px;
+    .detail-title {
+      font-size: 24px;
+      color: white;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .detail-subtitle {
+      font-size: 14px;
+      color: #64748B;
+      margin-bottom: 24px;
     }
 
     .detail-section {
-      margin-bottom: 32px;
-      padding: 20px;
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(59, 130, 246, 0.2);
-      border-radius: 16px;
+      margin-bottom: 24px;
     }
 
     .detail-section-title {
-      font-size: 18px;
+      font-size: 14px;
+      color: white;
       font-weight: 700;
-      color: #3B82F6;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
     }
 
-    .detail-field {
+    .detail-row {
       display: flex;
       justify-content: space-between;
-      padding: 12px 0;
+      padding: 10px 0;
       border-bottom: 1px solid rgba(59, 130, 246, 0.1);
     }
 
-    .detail-field:last-child {
-      border-bottom: none;
+    .detail-label {
+      font-size: 13px;
+      color: #64748B;
     }
 
-    .detail-field-label {
-      color: #94a3b8;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .detail-field-value {
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
-      text-align: right;
-    }
-
-    .detail-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 24px;
-    }
-
-    .detail-action-btn {
-      padding: 14px 20px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.1));
-      border: 2px solid rgba(59, 130, 246, 0.3);
-      border-radius: 12px;
+    .detail-value {
+      font-size: 13px;
       color: white;
       font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
+    }
+
+    .creditor-item {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
     }
 
-    .detail-action-btn:hover {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(6, 182, 212, 0.2));
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+    .creditor-name {
+      font-size: 14px;
+      color: white;
+      font-weight: 600;
     }
 
-    /* Mobile responsive */
-    @media (max-width: 1024px) {
-      .kanban-board {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      }
-    }
-
-    @media (max-width: 768px) {
-      .kanban-board {
-        grid-template-columns: 1fr;
-      }
-
-      .pipeline-stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .detail-panel {
-        width: 100%;
-      }
+    .creditor-balance {
+      font-size: 14px;
+      color: #22C55E;
+      font-weight: 700;
     }
   </style>
 
-  <div class="pipeline-container">
-    <!-- Header -->
-    <div class="pipeline-header">
-      <h2>Deal Pipeline</h2>
-      <div style="display: flex; gap: 12px;">
-        <button class="action-btn" onclick="refreshPipeline()">
-          <span>🔄 Refresh</span>
-        </button>
-      </div>
+  <!-- Pipeline Stats Bar -->
+  <div class="pipeline-stats-bar">
+    <div class="stat-card">
+      <div class="stat-label">Total Pipeline Value</div>
+      <div class="stat-value" id="totalPipelineValue">$0</div>
+      <div class="stat-subtitle" id="totalDealsCount">0 deals</div>
     </div>
-
-    <!-- Stats -->
-    <div class="pipeline-stats">
-      <div class="stat-card">
-        <div class="stat-label">Total Pipeline Value</div>
-        <div class="stat-value" id="totalValue">$0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Active Deals</div>
-        <div class="stat-value" id="activeDeals" style="background: linear-gradient(135deg, #3B82F6, #06B6D4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Avg. Time in Stage</div>
-        <div class="stat-value" id="avgTime" style="background: linear-gradient(135deg, #F59E0B, #F97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0d</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Conversion Rate</div>
-        <div class="stat-value" id="conversionRate" style="background: linear-gradient(135deg, #8B5CF6, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0%</div>
-      </div>
+    <div class="stat-card">
+      <div class="stat-label">Average Deal Size</div>
+      <div class="stat-value" id="avgDealSize">$0</div>
     </div>
+    <div class="stat-card">
+      <div class="stat-label">Conversion Rate</div>
+      <div class="stat-value" id="conversionRate">0%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Days to Close</div>
+      <div class="stat-value" id="avgDaysToClose">0</div>
+      <div class="stat-subtitle">days</div>
+    </div>
+  </div>
 
-    <!-- Filters -->
-    <div class="filters-bar">
-      <select class="filter-select" id="agentFilter" onchange="filterPipeline()">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <h2>Deal Pipeline</h2>
+    <div class="top-bar-actions">
+      <select class="filter-dropdown" id="agentFilter" onchange="filterPipeline()">
         <option value="">All Agents</option>
-        <option value="John Doe">John Doe</option>
-        <option value="Jane Smith">Jane Smith</option>
-        <option value="Mike Johnson">Mike Johnson</option>
       </select>
-      <select class="filter-select" id="dateFilter" onchange="filterPipeline()">
-        <option value="all">All Time</option>
-        <option value="today">Today</option>
-        <option value="week">This Week</option>
-        <option value="month">This Month</option>
-        <option value="quarter">This Quarter</option>
-      </select>
-      <select class="filter-select" id="amountFilter" onchange="filterPipeline()">
-        <option value="all">All Amounts</option>
-        <option value="small">Under $10k</option>
-        <option value="medium">$10k - $30k</option>
-        <option value="large">Over $30k</option>
-      </select>
+      <button class="btn" onclick="openAddDealModal()">
+        <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+        Add Deal
+      </button>
     </div>
+  </div>
 
-    <!-- Kanban Board -->
-    <div class="kanban-board" id="kanbanBoard">
-      <!-- Stages will be dynamically generated -->
+  <!-- Pipeline Board -->
+  <div class="pipeline-board" id="pipelineBoard">
+    <!-- Columns generated by JavaScript -->
+  </div>
+
+  <!-- Add Deal Modal -->
+  <div class="modal-overlay" id="addDealModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Add New Deal</h3>
+        <div class="modal-close" onclick="closeAddDealModal()">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </div>
+      </div>
+
+      <form id="addDealForm" onsubmit="submitAddDeal(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Client Name</label>
+            <input type="text" class="form-input" name="client" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Debt</label>
+            <input type="number" class="form-input" name="totalDebt" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Enrolled Debt</label>
+            <input type="number" class="form-input" name="enrolledDebt" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Monthly Payment</label>
+            <input type="number" class="form-input" name="monthlyPayment" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Program Length (months)</label>
+            <input type="number" class="form-input" name="programLength" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Assigned Agent</label>
+            <select class="form-select" name="assignedAgent" id="dealAgentSelect" required>
+              <option value="">Select Agent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select class="form-select" name="priority">
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stage</label>
+            <select class="form-select" name="stage">
+              <option value="New Lead">New Lead</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Qualified">Qualified</option>
+              <option value="Enrolled">Enrolled</option>
+              <option value="In Program">In Program</option>
+              <option value="Negotiating">Negotiating</option>
+              <option value="Settled">Settled</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group full-width" style="margin-top: 16px;">
+          <label class="form-label">Creditors</label>
+          <div id="dealCreditorsContainer">
+            <div class="creditor-row">
+              <div class="form-group" style="margin: 0;">
+                <input type="text" class="form-input" placeholder="Creditor Name (e.g., Chase)" name="creditorName[]" required>
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <input type="number" class="form-input" placeholder="Balance" name="creditorBalance[]" step="0.01" required>
+              </div>
+              <button type="button" class="btn-danger btn-icon" onclick="removeDealCreditorRow(this)" title="Remove">
+                <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+              </button>
+            </div>
+          </div>
+          <button type="button" class="btn add-btn" onclick="addDealCreditorRow()">
+            <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+            Add Creditor
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAddDealModal()">Cancel</button>
+          <button type="submit" class="btn">Create Deal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Deal Detail Panel -->
+  <div class="detail-panel-overlay" id="detailPanelOverlay" onclick="closeDealDetailPanel()"></div>
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-close" onclick="closeDealDetailPanel()">
+      <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+    </div>
+    <div id="detailPanelContent">
+      <!-- Content populated by JavaScript -->
     </div>
   </div>
 
   <script>
-    // Pipeline data
-    let deals = [];
-    const stages = [
-      { id: 'new-lead', name: 'New Lead', class: 'stage-new-lead' },
-      { id: 'contacted', name: 'Contacted', class: 'stage-contacted' },
-      { id: 'qualified', name: 'Qualified', class: 'stage-qualified' },
-      { id: 'enrolled', name: 'Enrolled', class: 'stage-enrolled' },
-      { id: 'in-program', name: 'In Program', class: 'stage-in-program' },
-      { id: 'negotiating', name: 'Negotiating', class: 'stage-negotiating' },
-      { id: 'settled', name: 'Settled', class: 'stage-settled' },
-      { id: 'completed', name: 'Completed', class: 'stage-completed' }
+    // Pipeline stages
+    const PIPELINE_STAGES = [
+      'New Lead',
+      'Contacted',
+      'Qualified',
+      'Enrolled',
+      'In Program',
+      'Negotiating',
+      'Settled',
+      'Completed'
     ];
 
-    let draggedCard = null;
+    // State
+    let deals = [];
+    let selectedDeal = null;
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
+    function initDealPipeline() {
       loadDeals();
+      loadAgentsForFilter();
       renderPipeline();
       updateStats();
       lucide.createIcons();
-    });
+    }
 
-    // Load deals from localStorage or generate sample
+    // Load deals from DebtDB
     function loadDeals() {
-      const stored = localStorage.getItem('pipelineDeals');
-      if (stored) {
-        deals = JSON.parse(stored);
-      } else {
-        deals = generateSampleDeals(40);
-        saveDeals();
+      deals = window.DebtDB.getDeals() || [];
+      
+      // If no deals, seed some demo data
+      if (deals.length === 0) {
+        seedDemoDeals();
+        deals = window.DebtDB.getDeals();
       }
     }
 
-    // Save deals
-    function saveDeals() {
-      localStorage.setItem('pipelineDeals', JSON.stringify(deals));
+    // Seed demo deals
+    function seedDemoDeals() {
+      const demoDeals = [
+        {
+          client: 'Jennifer Williams',
+          totalDebt: 42000,
+          enrolledDebt: 38000,
+          monthlyPayment: 650,
+          programLength: 48,
+          stage: 'New Lead',
+          assignedAgent: 'agent_001',
+          priority: 'high',
+          creditors: [
+            { name: 'Chase', balance: 15000 },
+            { name: 'Capital One', balance: 12000 },
+            { name: 'Discover', balance: 11000 }
+          ]
+        },
+        {
+          client: 'Robert Davis',
+          totalDebt: 58000,
+          enrolledDebt: 52000,
+          monthlyPayment: 890,
+          programLength: 60,
+          stage: 'Contacted',
+          assignedAgent: 'agent_002',
+          priority: 'medium',
+          creditors: [
+            { name: 'Bank of America', balance: 28000 },
+            { name: 'Citibank', balance: 24000 }
+          ]
+        },
+        {
+          client: 'Maria Garcia',
+          totalDebt: 35000,
+          enrolledDebt: 32000,
+          monthlyPayment: 550,
+          programLength: 48,
+          stage: 'Qualified',
+          assignedAgent: 'agent_001',
+          priority: 'medium',
+          creditors: [
+            { name: 'Discover', balance: 18000 },
+            { name: 'Chase', balance: 14000 }
+          ]
+        },
+        {
+          client: 'James Anderson',
+          totalDebt: 67000,
+          enrolledDebt: 60000,
+          monthlyPayment: 1100,
+          programLength: 60,
+          stage: 'Enrolled',
+          assignedAgent: 'agent_003',
+          priority: 'high',
+          creditors: [
+            { name: 'Capital One', balance: 25000 },
+            { name: 'Bank of America', balance: 22000 },
+            { name: 'Chase', balance: 13000 }
+          ]
+        },
+        {
+          client: 'Linda Martinez',
+          totalDebt: 29000,
+          enrolledDebt: 27000,
+          monthlyPayment: 480,
+          programLength: 48,
+          stage: 'In Program',
+          assignedAgent: 'agent_002',
+          priority: 'low',
+          creditors: [
+            { name: 'Discover', balance: 15000 },
+            { name: 'Citibank', balance: 12000 }
+          ]
+        },
+        {
+          client: 'Christopher Brown',
+          totalDebt: 51000,
+          enrolledDebt: 47000,
+          monthlyPayment: 820,
+          programLength: 60,
+          stage: 'Negotiating',
+          assignedAgent: 'agent_001',
+          priority: 'high',
+          creditors: [
+            { name: 'Chase', balance: 24000 },
+            { name: 'Capital One', balance: 18000 },
+            { name: 'Discover', balance: 5000 }
+          ]
+        }
+      ];
+
+      demoDeals.forEach(dealData => {
+        window.DebtDB.addDeal(dealData);
+      });
     }
 
-    // Generate sample deals
-    function generateSampleDeals(count) {
-      const clients = ['John Smith', 'Sarah Johnson', 'Michael Brown', 'Emily Davis', 'David Wilson', 'Jennifer Martinez', 'Robert Taylor', 'Lisa Anderson'];
-      const agents = ['John Doe', 'Jane Smith', 'Mike Johnson'];
+    // Load agents for filter
+    function loadAgentsForFilter() {
+      const agents = window.DebtDB.getAgents() || [];
+      const filterSelect = document.getElementById('agentFilter');
+      const dealSelect = document.getElementById('dealAgentSelect');
       
-      const sampleDeals = [];
-      stages.forEach((stage, stageIndex) => {
-        const dealsInStage = Math.floor(count / stages.length);
-        for (let i = 0; i < dealsInStage; i++) {
-          const totalDebt = Math.floor(Math.random() * 40000) + 5000;
-          const monthlyPayment = Math.floor(totalDebt * 0.015);
-          const daysInStage = Math.floor(Math.random() * 30) + 1;
-          
-          // Urgency based on days in stage
-          let urgency = 'green';
-          if (daysInStage > 14) urgency = 'red';
-          else if (daysInStage > 7) urgency = 'yellow';
+      agents.forEach(agent => {
+        const filterOption = document.createElement('option');
+        filterOption.value = agent.id;
+        filterOption.textContent = agent.name;
+        filterSelect.appendChild(filterOption);
 
-          const progress = Math.min(100, (stageIndex / stages.length) * 100 + Math.random() * 20);
-
-          sampleDeals.push({
-            id: `DEAL_${Date.now()}_${i}_${stageIndex}`,
-            clientName: clients[Math.floor(Math.random() * clients.length)],
-            totalDebt: totalDebt,
-            monthlyPayment: monthlyPayment,
-            enrollmentDate: new Date(Date.now() - daysInStage * 24 * 60 * 60 * 1000).toISOString(),
-            agent: agents[Math.floor(Math.random() * agents.length)],
-            stage: stage.id,
-            urgency: urgency,
-            progress: Math.round(progress),
-            daysInStage: daysInStage
-          });
-        }
+        const dealOption = document.createElement('option');
+        dealOption.value = agent.id;
+        dealOption.textContent = agent.name;
+        dealSelect.appendChild(dealOption);
       });
-      return sampleDeals;
     }
 
     // Render pipeline
     function renderPipeline() {
-      const board = document.getElementById('kanbanBoard');
-      const filtered = filterDeals();
+      const board = document.getElementById('pipelineBoard');
+      const agentFilter = document.getElementById('agentFilter').value;
 
-      board.innerHTML = stages.map(stage => {
-        const stageDeals = filtered.filter(d => d.stage === stage.id);
-        const stageValue = stageDeals.reduce((sum, d) => sum + d.totalDebt, 0);
+      let filteredDeals = deals;
+      if (agentFilter) {
+        filteredDeals = deals.filter(d => d.assignedAgent === agentFilter);
+      }
+
+      board.innerHTML = PIPELINE_STAGES.map(stage => {
+        const stageDeals = filteredDeals.filter(d => d.stage === stage);
+        const stageValue = stageDeals.reduce((sum, d) => sum + (d.enrolledDebt || 0), 0);
 
         return `
-          <div class="kanban-column" data-stage="${stage.id}">
+          <div class="pipeline-column" data-stage="${stage}" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
             <div class="column-header">
               <div>
-                <div class="column-title">${stage.name}</div>
-                <div class="column-value">$${stageValue.toLocaleString()}</div>
+                <div class="column-title">${stage}</div>
+                <div class="column-value">Total: <span class="amount">$${stageValue.toLocaleString()}</span></div>
               </div>
-              <div class="column-badge">${stageDeals.length}</div>
+              <div class="column-count">${stageDeals.length}</div>
             </div>
-            <div class="deal-cards" ondrop="handleDrop(event, '${stage.id}')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-              ${stageDeals.length === 0 ? `
-                <div class="drop-zone">
-                  Drop deals here
-                </div>
-              ` : stageDeals.map(deal => renderDealCard(deal, stage.class)).join('')}
+            <div class="column-cards">
+              ${stageDeals.map(deal => renderDealCard(deal)).join('')}
             </div>
           </div>
         `;
       }).join('');
 
-      // Add drag event listeners to cards
-      document.querySelectorAll('.deal-card').forEach(card => {
-        card.addEventListener('dragstart', handleDragStart);
-        card.addEventListener('dragend', handleDragEnd);
-        card.addEventListener('click', (e) => {
-          if (!e.target.closest('.action-icon-btn')) {
-            viewDealDetails(card.dataset.dealId);
-          }
-        });
-      });
+      lucide.createIcons();
     }
 
-    // Render individual deal card
-    function renderDealCard(deal, stageClass) {
-      const enrollDate = new Date(deal.enrollmentDate);
-      const daysSinceEnroll = Math.floor((Date.now() - enrollDate.getTime()) / (24 * 60 * 60 * 1000));
+    // Render deal card
+    function renderDealCard(deal) {
+      const agents = window.DebtDB.getAgents() || [];
+      const agent = agents.find(a => a.id === deal.assignedAgent);
+      const agentName = agent ? agent.name : 'Unassigned';
+
+      const daysInStage = Math.floor((new Date() - new Date(deal.updatedAt || deal.createdAt)) / (1000 * 60 * 60 * 24));
 
       return `
-        <div class="deal-card ${stageClass}" draggable="true" data-deal-id="${deal.id}">
-          <div class="deal-card-header">
-            <div class="deal-client">${deal.clientName}</div>
-            <div class="deal-urgency urgency-${deal.urgency}"></div>
+        <div 
+          class="deal-card ${deal.priority}-priority" 
+          draggable="true" 
+          data-deal-id="${deal.id}"
+          ondragstart="handleDragStart(event)"
+          ondragend="handleDragEnd(event)"
+          onclick="openDealDetailPanel('${deal.id}')"
+        >
+          <div class="deal-header">
+            <div class="deal-client">${deal.client}</div>
+            <div class="priority-badge ${deal.priority}">${deal.priority}</div>
           </div>
-          <div class="deal-details">
-            <div class="deal-detail-row">
-              <span class="detail-label">Total Debt:</span>
-              <span class="detail-value money">$${deal.totalDebt.toLocaleString()}</span>
+          <div class="deal-amount">$${(deal.enrolledDebt || 0).toLocaleString()}</div>
+          <div class="deal-meta">
+            <div class="deal-meta-item">
+              <i data-lucide="credit-card" style="width: 14px; height: 14px;"></i>
+              $${deal.monthlyPayment}/mo
             </div>
-            <div class="deal-detail-row">
-              <span class="detail-label">Monthly:</span>
-              <span class="detail-value">$${deal.monthlyPayment.toLocaleString()}</span>
-            </div>
-            <div class="deal-detail-row">
-              <span class="detail-label">Enrolled:</span>
-              <span class="detail-value">${enrollDate.toLocaleDateString()}</span>
-            </div>
-            <div class="deal-detail-row">
-              <span class="detail-label">Agent:</span>
-              <span class="detail-value">${deal.agent}</span>
+            <div class="deal-meta-item">
+              <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+              ${deal.programLength}mo
             </div>
           </div>
-          <div class="deal-progress">
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: ${deal.progress}%"></div>
-            </div>
-            <div class="progress-label">${deal.progress}% Complete • ${deal.daysInStage} days in stage</div>
-          </div>
-          <div class="deal-actions">
-            <button class="action-icon-btn" onclick="event.stopPropagation(); callClient('${deal.id}')" title="Call">📞</button>
-            <button class="action-icon-btn" onclick="event.stopPropagation(); emailClient('${deal.id}')" title="Email">📧</button>
-            <button class="action-icon-btn" onclick="event.stopPropagation(); addNote('${deal.id}')" title="Add Note">📝</button>
-            <button class="action-icon-btn" onclick="event.stopPropagation(); scheduleTask('${deal.id}')" title="Schedule">📅</button>
+          <div class="deal-footer">
+            <div class="deal-agent">${agentName}</div>
+            <div class="deal-days">${daysInStage}d in stage</div>
           </div>
         </div>
       `;
     }
 
+    // Update stats
+    function updateStats() {
+      const totalValue = deals.reduce((sum, d) => sum + (d.enrolledDebt || 0), 0);
+      const avgDealSize = deals.length > 0 ? totalValue / deals.length : 0;
+      
+      const completedDeals = deals.filter(d => d.stage === 'Completed').length;
+      const conversionRate = deals.length > 0 ? (completedDeals / deals.length) * 100 : 0;
+      
+      const completedDays = deals
+        .filter(d => d.stage === 'Completed')
+        .map(d => Math.floor((new Date(d.updatedAt || d.createdAt) - new Date(d.createdAt)) / (1000 * 60 * 60 * 24)));
+      const avgDays = completedDays.length > 0 ? completedDays.reduce((a, b) => a + b, 0) / completedDays.length : 0;
+
+      document.getElementById('totalPipelineValue').textContent = `$${totalValue.toLocaleString()}`;
+      document.getElementById('totalDealsCount').textContent = `${deals.length} deals`;
+      document.getElementById('avgDealSize').textContent = `$${avgDealSize.toLocaleString(undefined, {maximumFractionDigits: 0})}`;
+      document.getElementById('conversionRate').textContent = `${conversionRate.toFixed(1)}%`;
+      document.getElementById('avgDaysToClose').textContent = avgDays.toFixed(0);
+    }
+
     // Drag and drop handlers
+    let draggedDealId = null;
+
     function handleDragStart(e) {
-      draggedCard = e.currentTarget;
-      e.currentTarget.classList.add('dragging');
+      draggedDealId = e.target.dataset.dealId;
+      e.target.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
     }
 
     function handleDragEnd(e) {
-      e.currentTarget.classList.remove('dragging');
-      draggedCard = null;
+      e.target.classList.remove('dragging');
+      draggedDealId = null;
     }
 
     function handleDragOver(e) {
-      if (e.preventDefault) {
-        e.preventDefault();
-      }
+      e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
-      e.currentTarget.classList.add('drag-over');
-      return false;
+      const column = e.currentTarget;
+      column.classList.add('drag-over');
     }
 
     function handleDragLeave(e) {
-      e.currentTarget.classList.remove('drag-over');
+      const column = e.currentTarget;
+      column.classList.remove('drag-over');
     }
 
-    function handleDrop(e, targetStage) {
-      if (e.stopPropagation) {
-        e.stopPropagation();
-      }
-      e.currentTarget.classList.remove('drag-over');
-
-      if (draggedCard) {
-        const dealId = draggedCard.dataset.dealId;
-        const deal = deals.find(d => d.id === dealId);
+    function handleDrop(e) {
+      e.preventDefault();
+      const column = e.currentTarget;
+      column.classList.remove('drag-over');
+      
+      const newStage = column.dataset.stage;
+      
+      if (draggedDealId && newStage) {
+        window.DebtDB.moveDeal(draggedDealId, newStage);
+        window.DebtDB.addActivity({
+          type: 'deal_moved',
+          entityId: draggedDealId,
+          data: { stage: newStage }
+        });
         
-        if (deal && deal.stage !== targetStage) {
-          deal.stage = targetStage;
-          deal.daysInStage = 0;
-          saveDeals();
-          renderPipeline();
-          updateStats();
-        }
-      }
-
-      return false;
-    }
-
-    // Filter deals
-    function filterDeals() {
-      const agentFilter = document.getElementById('agentFilter').value;
-      const dateFilter = document.getElementById('dateFilter').value;
-      const amountFilter = document.getElementById('amountFilter').value;
-
-      return deals.filter(deal => {
-        const matchesAgent = !agentFilter || deal.agent === agentFilter;
+        loadDeals();
+        renderPipeline();
+        updateStats();
         
-        let matchesDate = true;
-        if (dateFilter !== 'all') {
-          const enrollDate = new Date(deal.enrollmentDate);
-          const now = new Date();
-          const daysDiff = Math.floor((now - enrollDate) / (24 * 60 * 60 * 1000));
-          
-          switch (dateFilter) {
-            case 'today':
-              matchesDate = daysDiff === 0;
-              break;
-            case 'week':
-              matchesDate = daysDiff <= 7;
-              break;
-            case 'month':
-              matchesDate = daysDiff <= 30;
-              break;
-            case 'quarter':
-              matchesDate = daysDiff <= 90;
-              break;
-          }
-        }
-
-        let matchesAmount = true;
-        if (amountFilter !== 'all') {
-          switch (amountFilter) {
-            case 'small':
-              matchesAmount = deal.totalDebt < 10000;
-              break;
-            case 'medium':
-              matchesAmount = deal.totalDebt >= 10000 && deal.totalDebt <= 30000;
-              break;
-            case 'large':
-              matchesAmount = deal.totalDebt > 30000;
-              break;
-          }
-        }
-
-        return matchesAgent && matchesDate && matchesAmount;
-      });
-    }
-
-    // Update pipeline stats
-    function updateStats() {
-      const filtered = filterDeals();
-      
-      const totalValue = filtered.reduce((sum, d) => sum + d.totalDebt, 0);
-      const activeDeals = filtered.length;
-      const avgDaysInStage = filtered.length > 0 
-        ? Math.round(filtered.reduce((sum, d) => sum + d.daysInStage, 0) / filtered.length)
-        : 0;
-      
-      const completedDeals = filtered.filter(d => d.stage === 'completed').length;
-      const conversionRate = filtered.length > 0 
-        ? Math.round((completedDeals / filtered.length) * 100)
-        : 0;
-
-      // Animate stats
-      animateValue('totalValue', 0, totalValue, 1000, true);
-      animateValue('activeDeals', 0, activeDeals, 800, false);
-      document.getElementById('avgTime').textContent = `${avgDaysInStage}d`;
-      document.getElementById('conversionRate').textContent = `${conversionRate}%`;
-    }
-
-    // Animate counter
-    function animateValue(id, start, end, duration, isMoney = false) {
-      const el = document.getElementById(id);
-      const range = end - start;
-      const increment = range / (duration / 16);
-      let current = start;
-      
-      const timer = setInterval(() => {
-        current += increment;
-        if (current >= end) {
-          current = end;
-          clearInterval(timer);
-        }
-        const value = Math.round(current);
-        el.textContent = isMoney ? `$${value.toLocaleString()}` : value.toString();
-      }, 16);
+        Toast.success(`Deal moved to ${newStage}`);
+      }
     }
 
     // Filter pipeline
@@ -940,195 +1078,184 @@
       updateStats();
     }
 
-    // Refresh pipeline
-    function refreshPipeline() {
-      renderPipeline();
-      updateStats();
+    // Modals
+    function openAddDealModal() {
+      document.getElementById('addDealModal').classList.add('active');
+      lucide.createIcons();
     }
 
-    // Deal actions
-    function viewDealDetails(dealId) {
-      const deal = deals.find(d => d.id === dealId);
-      if (deal) {
-        // TODO: Will be replaced with slide-out panel in next fix
-        openDealDetailPanel(deal);
+    function closeAddDealModal() {
+      document.getElementById('addDealModal').classList.remove('active');
+      document.getElementById('addDealForm').reset();
+    }
+
+    // Add/Remove creditor rows
+    function addDealCreditorRow() {
+      const container = document.getElementById('dealCreditorsContainer');
+      const row = document.createElement('div');
+      row.className = 'creditor-row';
+      row.innerHTML = `
+        <div class="form-group" style="margin: 0;">
+          <input type="text" class="form-input" placeholder="Creditor Name" name="creditorName[]" required>
+        </div>
+        <div class="form-group" style="margin: 0;">
+          <input type="number" class="form-input" placeholder="Balance" name="creditorBalance[]" step="0.01" required>
+        </div>
+        <button type="button" class="btn-danger btn-icon" onclick="removeDealCreditorRow(this)" title="Remove">
+          <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+        </button>
+      `;
+      container.appendChild(row);
+      lucide.createIcons();
+    }
+
+    function removeDealCreditorRow(btn) {
+      const row = btn.closest('.creditor-row');
+      const container = document.getElementById('dealCreditorsContainer');
+      if (container.children.length > 1) {
+        row.remove();
+      } else {
+        Toast.warning('At least one creditor is required');
       }
     }
 
-    function callClient(dealId) {
-      Toast.info('Opening Power Dialer with client phone number...');
-      // TODO: Integrate with Power Dialer
+    // Submit add deal
+    function submitAddDeal(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+
+      // Collect creditors
+      const creditors = [];
+      const creditorNames = formData.getAll('creditorName[]');
+      const creditorBalances = formData.getAll('creditorBalance[]');
+
+      for (let i = 0; i < creditorNames.length; i++) {
+        creditors.push({
+          name: creditorNames[i],
+          balance: parseFloat(creditorBalances[i])
+        });
+      }
+
+      const dealData = {
+        client: formData.get('client'),
+        totalDebt: parseFloat(formData.get('totalDebt')),
+        enrolledDebt: parseFloat(formData.get('enrolledDebt')),
+        monthlyPayment: parseFloat(formData.get('monthlyPayment')),
+        programLength: parseInt(formData.get('programLength')),
+        stage: formData.get('stage'),
+        assignedAgent: formData.get('assignedAgent'),
+        priority: formData.get('priority'),
+        creditors: creditors
+      };
+
+      const newDeal = window.DebtDB.addDeal(dealData);
+      deals.push(newDeal);
+      
+      closeAddDealModal();
+      renderPipeline();
+      updateStats();
+      
+      Toast.success('Deal created successfully!');
+    }
+
+    // Deal detail panel
+    function openDealDetailPanel(dealId) {
+      const deal = deals.find(d => d.id === dealId);
+      if (!deal) return;
+
+      selectedDeal = deal;
+
+      const agents = window.DebtDB.getAgents() || [];
+      const agent = agents.find(a => a.id === deal.assignedAgent);
+      const agentName = agent ? agent.name : 'Unassigned';
+
+      const content = `
+        <div class="detail-title">${deal.client}</div>
+        <div class="detail-subtitle">Deal ${deal.id} • ${deal.stage}</div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Deal Information</div>
+          <div class="detail-row">
+            <div class="detail-label">Total Debt</div>
+            <div class="detail-value">$${(deal.totalDebt || 0).toLocaleString()}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Enrolled Debt</div>
+            <div class="detail-value">$${(deal.enrolledDebt || 0).toLocaleString()}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Monthly Payment</div>
+            <div class="detail-value">$${deal.monthlyPayment}/month</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Program Length</div>
+            <div class="detail-value">${deal.programLength} months</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Assigned Agent</div>
+            <div class="detail-value">${agentName}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Priority</div>
+            <div class="detail-value"><span class="priority-badge ${deal.priority}">${deal.priority}</span></div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Created</div>
+            <div class="detail-value">${new Date(deal.createdAt).toLocaleDateString()}</div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Creditors</div>
+          ${(deal.creditors || []).map(cred => `
+            <div class="creditor-item">
+              <div class="creditor-name">${cred.name}</div>
+              <div class="creditor-balance">$${(cred.balance || 0).toLocaleString()}</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-top: 24px;">
+          <button class="btn btn-secondary" onclick="callDealClient()">
+            <i data-lucide="phone" style="width: 16px; height: 16px;"></i>
+            Call Client
+          </button>
+          <button class="btn btn-secondary" onclick="emailDealClient()">
+            <i data-lucide="mail" style="width: 16px; height: 16px;"></i>
+            Email
+          </button>
+        </div>
+      `;
+
+      document.getElementById('detailPanelContent').innerHTML = content;
+      document.getElementById('detailPanel').classList.add('open');
+      document.getElementById('detailPanelOverlay').classList.add('open');
+      
+      lucide.createIcons();
+    }
+
+    function closeDealDetailPanel() {
+      document.getElementById('detailPanel').classList.remove('open');
+      document.getElementById('detailPanelOverlay').classList.remove('open');
+      selectedDeal = null;
+    }
+
+    function callDealClient() {
+      Toast.info('Opening Power Dialer...');
       setTimeout(() => {
         window.location.hash = 'power-dialer';
       }, 1000);
     }
 
-    function emailClient(dealId) {
+    function emailDealClient() {
       Toast.info('Opening email composer...');
-      // TODO: Implement email functionality
     }
 
-    function addNote(dealId) {
-      const note = prompt('Add note:');
-      if (note) {
-        const deal = deals.find(d => d.id === dealId);
-        if (!deal.notes) deal.notes = [];
-        deal.notes.push({
-          text: note,
-          timestamp: new Date().toISOString(),
-          author: 'Current User'
-        });
-        saveDeals();
-        Toast.success('Note added successfully!');
-      }
+    // Initialize
+    document.addEventListener('DOMContentLoaded', initDealPipeline);
+    
+    if (document.readyState !== 'loading') {
+      initDealPipeline();
     }
-
-    function scheduleTask(dealId) {
-      const task = prompt('Schedule task:');
-      if (task) {
-        Toast.success(`Task "${task}" scheduled!`);
-        // TODO: Implement task scheduling
-      }
-    }
-
-    // Deal Detail Panel
-    function openDealDetailPanel(deal) {
-      const overlay = document.getElementById('dealDetailOverlay');
-      const panel = document.getElementById('dealDetailPanel');
-      
-      // Populate panel with deal data
-      document.getElementById('detailDealName').textContent = deal.clientName;
-      document.getElementById('detailDealId').textContent = deal.id;
-      document.getElementById('detailPhone').textContent = deal.phone || 'N/A';
-      document.getElementById('detailEmail').textContent = deal.email || 'N/A';
-      document.getElementById('detailAmount').textContent = `$${deal.amount.toLocaleString()}`;
-      document.getElementById('detailStage').textContent = deal.stage;
-      document.getElementById('detailOwner').textContent = deal.owner;
-      document.getElementById('detailProbability').textContent = `${deal.probability}%`;
-      document.getElementById('detailLastActivity').textContent = new Date(deal.lastActivity).toLocaleDateString();
-      document.getElementById('detailCreatedAt').textContent = new Date(deal.createdAt).toLocaleDateString();
-
-      // Show notes if available
-      const notesContainer = document.getElementById('detailNotes');
-      if (deal.notes && deal.notes.length > 0) {
-        notesContainer.innerHTML = deal.notes.map(note => `
-          <div class="detail-field">
-            <span class="detail-field-label">${new Date(note.timestamp).toLocaleString()}</span>
-            <span class="detail-field-value">${note.text}</span>
-          </div>
-        `).join('');
-      } else {
-        notesContainer.innerHTML = '<div class="detail-field"><span class="detail-field-label">No notes yet</span></div>';
-      }
-
-      // Show panel
-      overlay.classList.add('open');
-      panel.classList.add('open');
-    }
-
-    function closeDealDetailPanel() {
-      const overlay = document.getElementById('dealDetailOverlay');
-      const panel = document.getElementById('dealDetailPanel');
-      overlay.classList.remove('open');
-      panel.classList.remove('open');
-    }
-
-    // Close panel on overlay click
-    document.getElementById('dealDetailOverlay')?.addEventListener('click', closeDealDetailPanel);
   </script>
-
-  <!-- Deal Detail Slide-out Panel -->
-  <div id="dealDetailOverlay" class="detail-panel-overlay"></div>
-  <div id="dealDetailPanel" class="detail-panel">
-    <div class="detail-panel-header">
-      <h2 class="detail-panel-title" id="detailDealName">Deal Details</h2>
-      <button class="detail-panel-close" onclick="closeDealDetailPanel()">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-    </div>
-    <div class="detail-panel-content">
-      <!-- Basic Info Section -->
-      <div class="detail-section">
-        <div class="detail-section-title">
-          <i data-lucide="briefcase" class="w-5 h-5"></i>
-          Deal Information
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Deal ID</span>
-          <span class="detail-field-value" id="detailDealId">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Phone</span>
-          <span class="detail-field-value" id="detailPhone">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Email</span>
-          <span class="detail-field-value" id="detailEmail">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Deal Value</span>
-          <span class="detail-field-value" id="detailAmount">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Stage</span>
-          <span class="detail-field-value" id="detailStage">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Owner</span>
-          <span class="detail-field-value" id="detailOwner">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Probability</span>
-          <span class="detail-field-value" id="detailProbability">-</span>
-        </div>
-      </div>
-
-      <!-- Timeline Section -->
-      <div class="detail-section">
-        <div class="detail-section-title">
-          <i data-lucide="clock" class="w-5 h-5"></i>
-          Timeline
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Last Activity</span>
-          <span class="detail-field-value" id="detailLastActivity">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Created</span>
-          <span class="detail-field-value" id="detailCreatedAt">-</span>
-        </div>
-      </div>
-
-      <!-- Notes Section -->
-      <div class="detail-section">
-        <div class="detail-section-title">
-          <i data-lucide="file-text" class="w-5 h-5"></i>
-          Notes & Activity
-        </div>
-        <div id="detailNotes">
-          <!-- Dynamically populated -->
-        </div>
-      </div>
-
-      <!-- Actions -->
-      <div class="detail-actions">
-        <button class="detail-action-btn" onclick="window.location.hash='power-dialer'">
-          <i data-lucide="phone" class="w-4 h-4"></i>
-          Call Client
-        </button>
-        <button class="detail-action-btn" onclick="Toast.info('Email composer coming soon')">
-          <i data-lucide="mail" class="w-4 h-4"></i>
-          Send Email
-        </button>
-        <button class="detail-action-btn" onclick="Toast.info('Edit functionality coming soon')">
-          <i data-lucide="edit" class="w-4 h-4"></i>
-          Edit Deal
-        </button>
-        <button class="detail-action-btn" onclick="Toast.info('Task scheduler coming soon')">
-          <i data-lucide="calendar" class="w-4 h-4"></i>
-          Add Task
-        </button>
-      </div>
-    </div>
-  </div>
 </div>
