@@ -88,6 +88,17 @@ const VoiceAPI = {
   /**
    * Merge voice stack calls with local DebtDB calls, deduplicating by callSid.
    */
+  async fetchAgentStatus() {
+    try {
+      const resp = await fetch(`${this.BASE_URL}/api/agent/status`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      return await resp.json();
+    } catch (e) {
+      console.warn('Failed to fetch agent status:', e.message);
+      return null;
+    }
+  },
+
   mergeCalls(voiceCalls, localCalls) {
     const seen = new Set();
     const merged = [];
