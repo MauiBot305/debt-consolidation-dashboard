@@ -1,231 +1,15 @@
-<!-- Functionality verified by Agent 1 -->
-<div id="case-management-page" class="page-content">
+<!-- CASE MANAGEMENT - P0 PRIORITY - Bankruptcy-Grade Case Tracking -->
+<div id="caseManagement" class="page-container">
   <style>
-    /* Orbitron Font Import */
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
-    /* Root Variables */
-    :root {
-      --bg-primary: #0a0f1a;
-      --bg-card: rgba(15, 23, 42, 0.8);
-      --bg-glass: rgba(30, 41, 59, 0.6);
-      --primary: #3B82F6;
-      --primary-glow: rgba(59, 130, 246, 0.3);
-      --accent: #06B6D4;
-      --accent-glow: rgba(6, 182, 212, 0.3);
-      --success: #22C55E;
-      --success-glow: rgba(34, 197, 94, 0.3);
-      --warning: #F59E0B;
-      --warning-glow: rgba(245, 158, 11, 0.3);
-      --danger: #EF4444;
-      --danger-glow: rgba(239, 68, 68, 0.3);
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --border-subtle: rgba(148, 163, 184, 0.1);
-      --border-hover: rgba(148, 163, 184, 0.2);
-    }
-
-    /* Page Container */
-    #case-management-page {
-      font-family: 'Inter', sans-serif;
-      color: var(--text-primary);
-      min-height: 100vh;
-      padding: 1.5rem;
-    }
-
-    /* Header */
-    .cm-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .cm-header h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.75rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    /* Glass Card Base */
-    .glass-card {
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-subtle);
-      border-radius: 1rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .glass-card:hover {
-      border-color: var(--border-hover);
-      box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
-    }
-
-    /* Search & Filter Bar */
-    .cm-toolbar {
+    /* Layout */
+    .case-layout {
       display: grid;
-      grid-template-columns: 1fr auto auto auto auto;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .search-box {
-      position: relative;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 0.75rem 1rem 0.75rem 2.75rem;
-      background: var(--bg-glass);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
-      color: var(--text-primary);
-      font-size: 0.875rem;
-      transition: all 0.3s ease;
-    }
-
-    .search-box input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-glow);
-    }
-
-    .search-box i {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-    }
-
-    .filter-btn, .action-btn {
-      padding: 0.75rem 1.25rem;
-      background: var(--bg-glass);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.3s ease;
-    }
-
-    .filter-btn:hover, .action-btn:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-      transform: translateY(-2px);
-    }
-
-    .action-btn.primary {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      border: none;
-      color: white;
-    }
-
-    .action-btn.primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px var(--primary-glow);
-    }
-
-    /* Case List */
-    .case-list {
-      display: grid;
-      gap: 0.75rem;
-    }
-
-    .case-item {
-      display: grid;
-      grid-template-columns: auto 2fr 1fr 1fr 1fr auto;
-      gap: 1rem;
-      align-items: center;
-      padding: 1rem 1.25rem;
-      background: var(--bg-glass);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .case-item:hover {
-      border-color: var(--primary);
-      transform: translateX(4px);
-      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
-    }
-
-    .case-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 1rem;
-    }
-
-    .case-info h4 {
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-
-    .case-info p {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-    }
-
-    .case-stat {
-      text-align: center;
-    }
-
-    .case-stat .value {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .case-stat .label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .case-status {
-      padding: 0.5rem 1rem;
-      border-radius: 2rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .status-active { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
-    .status-negotiating { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-    .status-settled { background: rgba(34, 197, 94, 0.2); color: var(--success); }
-
-    /* Case Detail View */
-    .case-detail {
-      display: none;
-      animation: fadeIn 0.4s ease;
-    }
-
-    .case-detail.active {
-      display: block;
+      grid-template-columns: 380px 1fr;
+      gap: 20px;
+      height: calc(100vh - 180px);
+      animation: fadeIn 0.4s ease-out;
     }
 
     @keyframes fadeIn {
@@ -233,601 +17,639 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Case List Panel */
+    .case-list-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow: hidden;
+    }
+
+    .case-search-bar {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .case-search-input {
+      width: 100%;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: white;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .case-search-input:focus {
+      border-color: rgba(59, 130, 246, 0.5);
+      background: rgba(30, 41, 59, 0.8);
+    }
+
+    .case-filters {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 6px 12px;
+      color: #94A3B8;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .filter-chip:hover,
+    .filter-chip.active {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.5);
+      color: white;
+    }
+
+    .case-list-container {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .case-list-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .case-list-container::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 10px;
+    }
+
+    .case-list-container::-webkit-scrollbar-thumb {
+      background: rgba(59, 130, 246, 0.3);
+      border-radius: 10px;
+    }
+
+    .case-list-container::-webkit-scrollbar-thumb:hover {
+      background: rgba(59, 130, 246, 0.5);
+    }
+
+    .case-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .case-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, #3B82F6, #06B6D4);
+    }
+
+    .case-card:hover {
+      transform: translateX(4px);
+      border-color: rgba(59, 130, 246, 0.5);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+    }
+
+    .case-card.active {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+      border-color: rgba(59, 130, 246, 0.6);
+    }
+
+    .case-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+
+    .case-number {
+      font-family: 'Orbitron', monospace;
+      font-size: 13px;
+      color: #3B82F6;
+      font-weight: 600;
+    }
+
+    .case-type-badge {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 10px;
+      color: #3B82F6;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .case-type-badge.ch7 { background: rgba(168, 85, 247, 0.2); border-color: rgba(168, 85, 247, 0.4); color: #A855F7; }
+    .case-type-badge.ch13 { background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.4); color: #3B82F6; }
+    .case-type-badge.consolidation { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.4); color: #22C55E; }
+    .case-type-badge.settlement { background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4); color: #F59E0B; }
+
+    .case-client-name {
+      font-size: 15px;
+      color: white;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .case-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      color: #64748B;
+      margin-bottom: 8px;
+    }
+
+    .case-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .case-status {
+      display: inline-block;
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: #22C55E;
+      font-weight: 600;
+    }
+
+    .case-status.active { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.4); color: #22C55E; }
+    .case-status.negotiating { background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4); color: #F59E0B; }
+    .case-status.settled { background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.4); color: #3B82F6; }
+    .case-status.closed { background: rgba(100, 116, 139, 0.2); border-color: rgba(100, 116, 139, 0.4); color: #64748B; }
+
+    /* Case Detail Panel */
+    .case-detail-panel {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      overflow-y: auto;
+    }
+
+    .case-detail-panel::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .case-detail-panel::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 10px;
+    }
+
+    .case-detail-panel::-webkit-scrollbar-thumb {
+      background: rgba(59, 130, 246, 0.3);
+      border-radius: 10px;
+    }
+
     .detail-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.2);
     }
 
-    .back-btn {
+    .detail-title {
+      font-size: 24px;
+      color: white;
+      font-weight: 700;
+    }
+
+    .detail-subtitle {
+      font-size: 14px;
+      color: #64748B;
+      margin-top: 4px;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .detail-action-btn {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      border-radius: 8px;
+      padding: 8px 16px;
+      color: #3B82F6;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: transparent;
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.5rem;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.3s ease;
+      gap: 6px;
     }
 
-    .back-btn:hover {
-      border-color: var(--primary);
-      color: var(--primary);
+    .detail-action-btn:hover {
+      background: rgba(59, 130, 246, 0.3);
+      border-color: rgba(59, 130, 246, 0.6);
+      transform: translateY(-2px);
     }
 
-    /* Tabbed Interface */
-    .tabs-container {
-      background: var(--bg-glass);
-      border: 1px solid var(--border-subtle);
-      border-radius: 1rem;
-      overflow: hidden;
-    }
-
-    .tabs-nav {
+    /* Tabs */
+    .case-tabs {
       display: flex;
-      background: rgba(15, 23, 42, 0.5);
-      border-bottom: 1px solid var(--border-subtle);
-      position: relative;
+      gap: 4px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.2);
     }
 
-    .tab-btn {
-      flex: 1;
-      padding: 1rem 1.5rem;
+    .case-tab {
       background: transparent;
       border: none;
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      padding: 12px 20px;
+      color: #64748B;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
+      transition: all 0.3s;
     }
 
-    .tab-btn:hover {
-      color: var(--text-primary);
+    .case-tab:hover {
+      color: #94A3B8;
     }
 
-    .tab-btn.active {
-      color: var(--primary);
-    }
-
-    .tab-indicator {
-      position: absolute;
-      bottom: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      border-radius: 3px 3px 0 0;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 0 10px var(--primary-glow);
+    .case-tab.active {
+      color: white;
+      border-bottom-color: #3B82F6;
     }
 
     .tab-content {
-      padding: 1.5rem;
       display: none;
+      animation: fadeIn 0.3s ease-out;
     }
 
     .tab-content.active {
       display: block;
-      animation: fadeIn 0.3s ease;
     }
 
     /* Overview Tab */
     .overview-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
     }
 
-    .client-card {
-      padding: 1.5rem;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1));
-      border: 1px solid var(--border-subtle);
-      border-radius: 1rem;
+    .overview-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 12px;
+      padding: 16px;
     }
 
-    .client-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .client-avatar {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .client-name h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-
-    .client-name p {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-    }
-
-    .info-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .info-item {
-      padding: 0.75rem;
-      background: var(--bg-card);
-      border-radius: 0.5rem;
-    }
-
-    .info-item label {
-      display: block;
-      font-size: 0.75rem;
-      color: var(--text-muted);
+    .overview-label {
+      font-size: 12px;
+      color: #64748B;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.25rem;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
     }
 
-    .info-item span {
-      font-weight: 500;
-    }
-
-    /* Stats Cards */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .stat-card {
-      padding: 1.25rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--primary);
-    }
-
-    .stat-card .number {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.5rem;
+    .overview-value {
+      font-size: 20px;
+      color: white;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
+      font-family: 'Orbitron', monospace;
+    }
+
+    .overview-value.amount {
+      background: linear-gradient(135deg, #22C55E, #10B981);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
     }
 
-    .stat-card .label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
+    /* Creditors Table */
+    .creditors-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
     }
 
-    /* Milestone Tracker */
-    .milestone-section {
-      padding: 1.5rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 1rem;
-      margin-bottom: 1.5rem;
+    .creditors-table thead th {
+      background: rgba(30, 41, 59, 0.5);
+      padding: 12px;
+      text-align: left;
+      color: #64748B;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.2);
     }
 
-    .milestone-section h4 {
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .creditors-table tbody tr {
+      background: rgba(30, 41, 59, 0.3);
+      transition: all 0.3s;
     }
 
-    .milestone-tracker {
-      display: flex;
-      justify-content: space-between;
-      position: relative;
-    }
-
-    .milestone-tracker::before {
-      content: '';
-      position: absolute;
-      top: 20px;
-      left: 10%;
-      right: 10%;
-      height: 4px;
-      background: linear-gradient(90deg, var(--success) 60%, var(--text-muted) 60%);
-      border-radius: 2px;
-      z-index: 0;
-    }
-
-    .milestone {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .milestone-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-      transition: all 0.3s ease;
-    }
-
-    .milestone.completed .milestone-icon {
-      background: var(--success);
-      box-shadow: 0 0 20px var(--success-glow);
-    }
-
-    .milestone.current .milestone-icon {
-      background: var(--primary);
-      box-shadow: 0 0 25px var(--primary-glow);
-      animation: pulse-glow 2s ease-in-out infinite;
-    }
-
-    .milestone.pending .milestone-icon {
-      background: var(--bg-glass);
-      border: 2px solid var(--text-muted);
-    }
-
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
-      50% { box-shadow: 0 0 35px var(--primary-glow); }
-    }
-
-    .milestone-label {
-      margin-top: 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-align: center;
-    }
-
-    .milestone.completed .milestone-label { color: var(--success); }
-    .milestone.current .milestone-label { color: var(--primary); }
-    .milestone.pending .milestone-label { color: var(--text-muted); }
-
-    /* Creditor Cards */
-    .creditor-grid {
-      display: grid;
-      gap: 1rem;
-    }
-
-    .creditor-card {
-      display: grid;
-      grid-template-columns: auto 1fr auto auto auto auto;
-      gap: 1.5rem;
-      align-items: center;
-      padding: 1.25rem;
-      background: var(--bg-card);
-      border-radius: 0.75rem;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .creditor-card::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      background: linear-gradient(180deg, var(--warning), var(--danger));
-    }
-
-    .creditor-card.negotiating::before {
-      background: linear-gradient(180deg, var(--primary), var(--accent));
-    }
-
-    .creditor-card.settled::before {
-      background: linear-gradient(180deg, var(--success), var(--success));
-    }
-
-    .creditor-card:hover {
+    .creditors-table tbody tr:hover {
+      background: rgba(30, 41, 59, 0.5);
       transform: translateX(4px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     }
 
-    .creditor-icon {
+    .creditors-table tbody td {
+      padding: 14px 12px;
+      color: white;
+      font-size: 13px;
+      border-top: 1px solid rgba(59, 130, 246, 0.1);
+      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .creditors-table tbody td:first-child {
+      border-left: 1px solid rgba(59, 130, 246, 0.1);
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+    .creditors-table tbody td:last-child {
+      border-right: 1px solid rgba(59, 130, 246, 0.1);
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+
+    .creditor-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .creditor-status.active { background: rgba(239, 68, 68, 0.2); color: #EF4444; }
+    .creditor-status.negotiating { background: rgba(245, 158, 11, 0.2); color: #F59E0B; }
+    .creditor-status.settled { background: rgba(34, 197, 94, 0.2); color: #22C55E; }
+    .creditor-status.paid { background: rgba(59, 130, 246, 0.2); color: #3B82F6; }
+
+    /* Payments Table */
+    .payments-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+
+    .payments-table thead th {
+      background: rgba(30, 41, 59, 0.5);
+      padding: 12px;
+      text-align: left;
+      color: #64748B;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .payments-table tbody tr {
+      background: rgba(30, 41, 59, 0.3);
+      transition: all 0.3s;
+    }
+
+    .payments-table tbody tr:hover {
+      background: rgba(30, 41, 59, 0.5);
+    }
+
+    .payments-table tbody td {
+      padding: 12px;
+      color: white;
+      font-size: 13px;
+      border-top: 1px solid rgba(59, 130, 246, 0.1);
+      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .payments-table tbody td:first-child {
+      border-left: 1px solid rgba(59, 130, 246, 0.1);
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+    .payments-table tbody td:last-child {
+      border-right: 1px solid rgba(59, 130, 246, 0.1);
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+
+    .payment-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .payment-status.received { background: rgba(34, 197, 94, 0.2); color: #22C55E; }
+    .payment-status.pending { background: rgba(245, 158, 11, 0.2); color: #F59E0B; }
+    .payment-status.failed { background: rgba(239, 68, 68, 0.2); color: #EF4444; }
+
+    /* Documents Grid */
+    .documents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .document-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .document-card:hover {
+      background: rgba(30, 41, 59, 0.7);
+      border-color: rgba(59, 130, 246, 0.4);
+      transform: translateY(-4px);
+    }
+
+    .document-icon {
       width: 48px;
       height: 48px;
-      border-radius: 0.75rem;
-      background: var(--bg-glass);
+      background: rgba(59, 130, 246, 0.2);
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-bottom: 12px;
     }
 
-    .creditor-info h5 {
+    .document-name {
+      font-size: 13px;
+      color: white;
       font-weight: 600;
-      margin-bottom: 0.25rem;
+      margin-bottom: 4px;
     }
 
-    .creditor-info p {
-      color: var(--text-muted);
-      font-size: 0.75rem;
+    .document-meta {
+      font-size: 11px;
+      color: #64748B;
     }
 
-    .creditor-stat {
-      text-align: right;
-    }
-
-    .creditor-stat .value {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 600;
-    }
-
-    .creditor-stat .label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    /* Document Upload */
-    .upload-zone {
-      padding: 3rem 2rem;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(6, 182, 212, 0.05));
-      border: 2px dashed var(--border-subtle);
-      border-radius: 1rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-bottom: 1.5rem;
-    }
-
-    .upload-zone:hover, .upload-zone.drag-over {
-      border-color: var(--primary);
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1));
-      transform: scale(1.02);
-    }
-
-    .upload-zone i {
-      font-size: 3rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .upload-zone h4 {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .upload-zone p {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-    }
-
-    .document-list {
-      display: grid;
-      gap: 0.75rem;
-    }
-
-    .document-item {
+    /* Notes Feed */
+    .notes-feed {
       display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
-      transition: all 0.3s ease;
-    }
-
-    .document-item:hover {
-      border-color: var(--primary);
-      transform: translateX(4px);
-    }
-
-    .doc-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 0.5rem;
-      background: var(--bg-glass);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .doc-info {
-      flex: 1;
-    }
-
-    .doc-info h5 {
-      font-weight: 500;
-      margin-bottom: 0.25rem;
-    }
-
-    .doc-info p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .doc-badge {
-      padding: 0.35rem 0.75rem;
-      border-radius: 2rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .badge-pending { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-    .badge-approved { background: rgba(34, 197, 94, 0.2); color: var(--success); }
-    .badge-signed { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
-
-    /* Payment Timeline */
-    .payment-timeline {
-      position: relative;
-      padding-left: 2rem;
-    }
-
-    .payment-timeline::before {
-      content: '';
-      position: absolute;
-      left: 8px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: linear-gradient(180deg, var(--primary), var(--accent));
-    }
-
-    .timeline-item {
-      position: relative;
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
-      transition: all 0.3s ease;
-    }
-
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -1.75rem;
-      top: 1.5rem;
-      width: 12px;
-      height: 12px;
-      background: var(--primary);
-      border-radius: 50%;
-      box-shadow: 0 0 0 4px var(--bg-primary), 0 0 0 6px var(--primary);
-    }
-
-    .timeline-item:hover {
-      border-color: var(--primary);
-      transform: translateX(4px);
-    }
-
-    .timeline-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-
-    .timeline-date {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .timeline-amount {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 600;
-      color: var(--success);
-    }
-
-    /* Notes */
-    .notes-editor {
-      padding: 1.5rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .notes-textarea {
-      width: 100%;
-      min-height: 120px;
-      padding: 1rem;
-      background: var(--bg-glass);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.5rem;
-      color: var(--text-primary);
-      resize: vertical;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .notes-textarea:focus {
-      outline: none;
-      border-color: var(--primary);
+      flex-direction: column;
+      gap: 16px;
     }
 
     .note-item {
-      padding: 1.25rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.75rem;
-      margin-bottom: 1rem;
-      transition: all 0.3s ease;
-    }
-
-    .note-item:hover {
-      border-color: var(--primary);
+      background: rgba(30, 41, 59, 0.3);
+      border-left: 3px solid #3B82F6;
+      border-radius: 8px;
+      padding: 16px;
     }
 
     .note-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.75rem;
+      margin-bottom: 8px;
     }
 
     .note-author {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .note-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
+      font-size: 13px;
+      color: #3B82F6;
       font-weight: 600;
     }
 
-    .note-time {
-      font-size: 0.75rem;
-      color: var(--text-muted);
+    .note-timestamp {
+      font-size: 11px;
+      color: #64748B;
     }
 
-    /* Quick Actions */
-    .quick-actions {
+    .note-text {
+      font-size: 14px;
+      color: #E2E8F0;
+      line-height: 1.6;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, #3B82F6, rgba(59, 130, 246, 0.2));
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -24px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      background: #3B82F6;
+      border: 2px solid rgba(15, 23, 42, 1);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    }
+
+    .timeline-content {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+    }
+
+    .timeline-title {
+      font-size: 14px;
+      color: white;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .timeline-description {
+      font-size: 12px;
+      color: #94A3B8;
+      margin-bottom: 6px;
+    }
+
+    .timeline-timestamp {
+      font-size: 11px;
+      color: #64748B;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: 50%;
       display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-    }
-
-    /* Modals */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(5px);
-      display: none;
       align-items: center;
       justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .empty-title {
+      font-size: 18px;
+      color: white;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .empty-description {
+      font-size: 14px;
+      color: #64748B;
+      margin-bottom: 24px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
       z-index: 1000;
-      animation: fadeIn 0.3s ease;
+      align-items: center;
+      justify-content: center;
     }
 
     .modal-overlay.active {
@@ -835,1081 +657,1207 @@
     }
 
     .modal {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 700px;
       width: 90%;
-      max-width: 500px;
       max-height: 90vh;
       overflow-y: auto;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 1rem;
-      animation: modalIn 0.3s ease;
+      animation: modalSlideIn 0.3s ease-out;
     }
 
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.2);
     }
 
-    .modal-header h3 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.125rem;
+    .modal-title {
+      font-size: 22px;
+      color: white;
+      font-weight: 700;
     }
 
     .modal-close {
-      background: none;
-      border: none;
-      color: var(--text-muted);
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #EF4444;
       cursor: pointer;
-      padding: 0.5rem;
-      border-radius: 0.5rem;
-      transition: all 0.3s ease;
+      transition: all 0.3s;
     }
 
     .modal-close:hover {
-      background: var(--bg-glass);
-      color: var(--text-primary);
+      background: rgba(239, 68, 68, 0.3);
+      transform: rotate(90deg);
     }
 
-    .modal-body {
-      padding: 1.5rem;
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
     }
 
     .form-group {
-      margin-bottom: 1.25rem;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      background: var(--bg-glass);
-      border: 1px solid var(--border-subtle);
-      border-radius: 0.5rem;
-      color: var(--text-primary);
-      font-size: 0.875rem;
-      transition: all 0.3s ease;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-glow);
-    }
-
-    .modal-footer {
       display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-      padding: 1rem 1.5rem 1.5rem;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 13px;
+      color: #94A3B8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: white;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: rgba(59, 130, 246, 0.5);
+      background: rgba(30, 41, 59, 0.7);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .creditor-row {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 1.5fr 1fr auto;
+      gap: 12px;
+      align-items: end;
     }
 
     .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.5rem;
-      font-size: 0.875rem;
-      font-weight: 500;
+      background: linear-gradient(135deg, #3B82F6, #2563EB);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #2563EB, #1D4ED8);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
     }
 
     .btn-secondary {
-      background: transparent;
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #3B82F6;
     }
 
     .btn-secondary:hover {
-      border-color: var(--text-primary);
-      color: var(--text-primary);
+      background: rgba(59, 130, 246, 0.3);
+      box-shadow: none;
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      border: none;
-      color: white;
+    .btn-danger {
+      background: linear-gradient(135deg, #EF4444, #DC2626);
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px var(--primary-glow);
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #DC2626, #B91C1C);
+      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
     }
 
-    /* Skeleton Loading */
-    .skeleton {
-      background: linear-gradient(90deg, var(--bg-glass) 25%, var(--border-subtle) 50%, var(--bg-glass) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 0.5rem;
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
     }
 
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+    .add-btn {
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: #22C55E;
+      margin-top: 8px;
     }
 
-    /* Payment Calculator */
-    .calculator {
-      padding: 1.5rem;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1));
-      border: 1px solid var(--border-subtle);
-      border-radius: 1rem;
-      margin-top: 1.5rem;
+    .add-btn:hover {
+      background: rgba(34, 197, 94, 0.3);
     }
 
-    .calculator h4 {
-      margin-bottom: 1rem;
+    .top-bar {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 0.5rem;
+      margin-bottom: 24px;
     }
 
-    .calc-result {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .calc-item {
-      text-align: center;
-      padding: 1rem;
-      background: var(--bg-card);
-      border-radius: 0.5rem;
-    }
-
-    .calc-item .value {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--accent);
-    }
-
-    .calc-item .label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
+    .top-bar h2 {
+      font-size: 28px;
+      color: white;
+      font-weight: 700;
     }
   </style>
 
-  <!-- Case List View -->
-  <div id="caseListView" class="case-list-view">
-    <div class="cm-header">
-      <h1><i data-lucide="briefcase"></i> Case Management</h1>
-      <div style="display: flex; gap: 0.75rem;">
-        <button class="action-btn" onclick="refreshCases()">
-          <i data-lucide="refresh-cw"></i> Refresh
-        </button>
-        <button class="action-btn primary" onclick="openNewCaseModal()">
-          <i data-lucide="plus"></i> New Case
-        </button>
-      </div>
-    </div>
-
-    <div class="cm-toolbar">
-      <div class="search-box">
-        <i data-lucide="search"></i>
-        <input type="text" id="caseSearch" placeholder="Search cases by client name, case ID..." onkeyup="filterCases()">
-      </div>
-      <select class="filter-btn" id="statusFilter" onchange="filterCases()">
-        <option value="">All Status</option>
-        <option value="active">Active</option>
-        <option value="negotiating">In Negotiation</option>
-        <option value="settled">Settled</option>
-      </select>
-      <select class="filter-btn" id="agentFilter" onchange="filterCases()">
-        <option value="">All Agents</option>
-        <option value="Sarah Johnson">Sarah Johnson</option>
-        <option value="Mike Chen">Mike Chen</option>
-        <option value="Jessica Davis">Jessica Davis</option>
-      </select>
-      <select class="filter-btn" id="dateFilter" onchange="filterCases()">
-        <option value="">All Dates</option>
-        <option value="7">Last 7 Days</option>
-        <option value="30">Last 30 Days</option>
-        <option value="90">Last 90 Days</option>
-      </select>
-      <button class="filter-btn" onclick="resetFilters()">
-        <i data-lucide="x"></i> Clear
-      </button>
-    </div>
-
-    <div class="case-list" id="caseList">
-      <!-- Cases will be rendered here -->
-    </div>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <h2>Case Management</h2>
+    <button class="btn" onclick="openAddCaseModal()">
+      <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+      Add Case
+    </button>
   </div>
 
-  <!-- Case Detail View -->
-  <div id="caseDetailView" class="case-detail">
-    <div class="detail-header">
-      <button class="back-btn" onclick="showCaseList()">
-        <i data-lucide="arrow-left"></i> Back to Cases
-      </button>
-      <div class="quick-actions">
-        <button class="action-btn" onclick="openAddCreditorModal()">
-          <i data-lucide="credit-card"></i> Add Creditor
-        </button>
-        <button class="action-btn" onclick="openLogPaymentModal()">
-          <i data-lucide="dollar-sign"></i> Log Payment
-        </button>
-        <button class="action-btn" onclick="triggerUpload()">
-          <i data-lucide="file-up"></i> Upload Doc
-        </button>
-        <button class="action-btn" onclick="focusNotesTab()">
-          <i data-lucide="sticky-note"></i> Add Note
-        </button>
-        <button class="action-btn" onclick="openScheduleModal()">
-          <i data-lucide="calendar"></i> Schedule
-        </button>
+  <!-- Main Layout -->
+  <div class="case-layout">
+    <!-- Case List Panel -->
+    <div class="case-list-panel">
+      <div class="case-search-bar">
+        <input 
+          type="text" 
+          class="case-search-input" 
+          placeholder="Search cases by name, number, or status..."
+          id="caseSearchInput"
+          oninput="filterCases()"
+        >
+        <div class="case-filters">
+          <div class="filter-chip active" data-type="all" onclick="selectFilter(this, 'all')">All</div>
+          <div class="filter-chip" data-type="ch7" onclick="selectFilter(this, 'ch7')">Chapter 7</div>
+          <div class="filter-chip" data-type="ch13" onclick="selectFilter(this, 'ch13')">Chapter 13</div>
+          <div class="filter-chip" data-type="consolidation" onclick="selectFilter(this, 'consolidation')">Consolidation</div>
+          <div class="filter-chip" data-type="settlement" onclick="selectFilter(this, 'settlement')">Settlement</div>
+        </div>
+      </div>
+
+      <div class="case-list-container" id="caseListContainer">
+        <!-- Cases populated by JavaScript -->
       </div>
     </div>
 
-    <!-- Tabs Container -->
-    <div class="tabs-container">
-      <div class="tabs-nav">
-        <button class="tab-btn active" data-tab="overview">Overview</button>
-        <button class="tab-btn" data-tab="creditors">Creditors</button>
-        <button class="tab-btn" data-tab="documents">Documents</button>
-        <button class="tab-btn" data-tab="payments">Payments</button>
-        <button class="tab-btn" data-tab="timeline">Timeline</button>
-        <button class="tab-btn" data-tab="notes">Notes</button>
-        <div class="tab-indicator" style="left: 0; width: 16.66%;"></div>
-      </div>
-
-      <!-- Overview Tab -->
-      <div class="tab-content active" id="tab-overview">
-        <div class="overview-grid">
-          <div class="client-card">
-            <div class="client-header">
-              <div class="client-avatar" id="detailAvatar">JD</div>
-              <div class="client-name">
-                <h3 id="detailName">John Doe</h3>
-                <p id="detailId">Case #DC-2024-001</p>
-              </div>
-            </div>
-            <div class="info-row">
-              <div class="info-item">
-                <label>Phone</label>
-                <span id="detailPhone">(555) 123-4567</span>
-              </div>
-              <div class="info-item">
-                <label>Email</label>
-                <span id="detailEmail">john@example.com</span>
-              </div>
-              <div class="info-item">
-                <label>Agent</label>
-                <span id="detailAgent">Sarah Johnson</span>
-              </div>
-              <div class="info-item">
-                <label>Enrolled</label>
-                <span id="detailDate">Jan 15, 2024</span>
-              </div>
-            </div>
+    <!-- Case Detail Panel -->
+    <div class="case-detail-panel" id="caseDetailPanel">
+      <div id="caseDetailContent">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i data-lucide="briefcase" style="width: 40px; height: 40px; color: #3B82F6;"></i>
           </div>
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="number" id="statTotalDebt">$45,000</div>
-              <div class="label">Total Debt</div>
-            </div>
-            <div class="stat-card">
-              <div class="number" id="statEnrolled">$38,000</div>
-              <div class="label">Enrolled Debt</div>
-            </div>
-            <div class="stat-card">
-              <div class="number" id="statSettled">$12,500</div>
-              <div class="label">Settled</div>
-            </div>
-            <div class="stat-card">
-              <div class="number" id="statProgress">33%</div>
-              <div class="label">Progress</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="milestone-section">
-          <h4><i data-lucide="flag"></i> Case Milestones</h4>
-          <div class="milestone-tracker">
-            <div class="milestone completed">
-              <div class="milestone-icon"><i data-lucide="check"></i></div>
-              <div class="milestone-label">Enrollment</div>
-            </div>
-            <div class="milestone completed">
-              <div class="milestone-icon"><i data-lucide="check"></i></div>
-              <div class="milestone-label">Documents</div>
-            </div>
-            <div class="milestone current">
-              <div class="milestone-icon"><i data-lucide="loader"></i></div>
-              <div class="milestone-label">Negotiation</div>
-            </div>
-            <div class="milestone pending">
-              <div class="milestone-icon"><i data-lucide="handshake"></i></div>
-              <div class="milestone-label">Settlement</div>
-            </div>
-            <div class="milestone pending">
-              <div class="milestone-icon"><i data-lucide="award"></i></div>
-              <div class="milestone-label">Complete</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card" style="padding: 1.5rem;">
-          <h4 style="margin-bottom: 1rem;"><i data-lucide="trending-up"></i> Estimated Completion</h4>
-          <div style="display: flex; align-items: center; gap: 1rem;">
-            <div style="flex: 1; height: 8px; background: var(--bg-glass); border-radius: 4px; overflow: hidden;">
-              <div id="completionBar" style="width: 33%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 4px; transition: width 0.5s ease;"></div>
-            </div>
-            <span id="completionText" style="font-family: 'Orbitron', sans-serif; font-weight: 600; color: var(--accent);">~8 months</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Creditors Tab -->
-      <div class="tab-content" id="tab-creditors">
-        <div class="creditor-grid" id="creditorList">
-          <!-- Creditors rendered here -->
-        </div>
-      </div>
-
-      <!-- Documents Tab -->
-      <div class="tab-content" id="tab-documents">
-        <div class="upload-zone" id="uploadZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="document.getElementById('fileInput').click()">
-          <i data-lucide="upload-cloud"></i>
-          <h4>Drop documents here</h4>
-          <p>or click to browse • PDF, DOC, JPG up to 10MB</p>
-          <input type="file" id="fileInput" style="display: none;" multiple onchange="handleFileSelect(event)">
-        </div>
-        <div class="document-list" id="documentList">
-          <!-- Documents rendered here -->
-        </div>
-      </div>
-
-      <!-- Payments Tab -->
-      <div class="tab-content" id="tab-payments">
-        <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
-          <h4 style="margin-bottom: 1rem;"><i data-lucide="wallet"></i> Trust Account</h4>
-          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
-            <div class="stat-card">
-              <div class="number" id="trustBalance" style="color: var(--success);">$4,250</div>
-              <div class="label">Current Balance</div>
-            </div>
-            <div class="stat-card">
-              <div class="number" id="totalPaid">$8,500</div>
-              <div class="label">Total Paid</div>
-            </div>
-            <div class="stat-card">
-              <div class="number" id="nextPayment">$425</div>
-              <div class="label">Next Payment</div>
-            </div>
-            <div class="stat-card">
-              <div class="number" id="nextDueDate">Mar 1</div>
-              <div class="label">Due Date</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
-          <h4 style="margin-bottom: 1rem;"><i data-lucide="calendar-clock"></i> Payment Schedule</h4>
-          <div id="paymentSchedule">
-            <!-- Schedule rendered here -->
-          </div>
-        </div>
-
-        <div class="calculator">
-          <h4><i data-lucide="calculator"></i> Payment Calculator</h4>
-          <div class="form-group">
-            <label>Monthly Budget</label>
-            <input type="number" id="calcBudget" placeholder="e.g. 500" onkeyup="calculatePayments()">
-          </div>
-          <div class="calc-result" id="calcResult">
-            <div class="calc-item">
-              <div class="value" id="calcMonths">--</div>
-              <div class="label">Est. Months</div>
-            </div>
-            <div class="calc-item">
-              <div class="value" id="calcTotal">--</div>
-              <div class="label">Total Paid</div>
-            </div>
-            <div class="calc-item">
-              <div class="value" id="calcSavings">--</div>
-              <div class="label">Est. Savings</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Timeline Tab -->
-      <div class="tab-content" id="tab-timeline">
-        <div class="payment-timeline" id="timelineList">
-          <!-- Timeline items rendered here -->
-        </div>
-      </div>
-
-      <!-- Notes Tab -->
-      <div class="tab-content" id="tab-notes">
-        <div class="notes-editor">
-          <div class="form-group">
-            <label>Add Note</label>
-            <textarea class="notes-textarea" id="newNote" placeholder="Type your note here..."></textarea>
-          </div>
-          <div style="display: flex; justify-content: flex-end;">
-            <button class="btn btn-primary" onclick="addNote()">
-              <i data-lucide="plus"></i> Add Note
-            </button>
-          </div>
-        </div>
-        <div id="notesList">
-          <!-- Notes rendered here -->
+          <div class="empty-title">No Case Selected</div>
+          <div class="empty-description">Select a case from the list to view details</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modals -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal" id="modal">
+  <!-- Add Case Modal -->
+  <div class="modal-overlay" id="addCaseModal">
+    <div class="modal">
       <div class="modal-header">
-        <h3 id="modalTitle">Modal Title</h3>
-        <button class="modal-close" onclick="closeModal()">
-          <i data-lucide="x"></i>
-        </button>
+        <h3 class="modal-title">Add New Case</h3>
+        <div class="modal-close" onclick="closeAddCaseModal()">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </div>
       </div>
-      <div class="modal-body" id="modalBody">
-        <!-- Modal content -->
+
+      <form id="addCaseForm" onsubmit="submitAddCase(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Client Name</label>
+            <input type="text" class="form-input" name="clientName" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" name="email" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-input" name="phone" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Case Type</label>
+            <select class="form-select" name="caseType" required>
+              <option value="">Select Type</option>
+              <option value="ch7">Chapter 7</option>
+              <option value="ch13">Chapter 13</option>
+              <option value="consolidation">Debt Consolidation</option>
+              <option value="settlement">Debt Settlement</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Address</label>
+            <input type="text" class="form-input" name="address">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Debt</label>
+            <input type="number" class="form-input" name="totalDebt" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Assigned Agent</label>
+            <select class="form-select" name="assignedAgent" id="agentSelect" required>
+              <option value="">Select Agent</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group full-width" style="margin-top: 16px;">
+          <label class="form-label">Creditors</label>
+          <div id="creditorsContainer">
+            <div class="creditor-row">
+              <div class="form-group" style="margin: 0;">
+                <input type="text" class="form-input" placeholder="Creditor Name (e.g., Chase)" name="creditorName[]" required>
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <input type="text" class="form-input" placeholder="Account Number" name="creditorAccount[]">
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <input type="number" class="form-input" placeholder="Balance" name="creditorBalance[]" step="0.01" required>
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <select class="form-select" name="creditorStatus[]">
+                  <option value="active">Active</option>
+                  <option value="negotiating">Negotiating</option>
+                  <option value="settled">Settled</option>
+                  <option value="paid">Paid</option>
+                </select>
+              </div>
+              <button type="button" class="btn-danger btn-icon" onclick="removeCreditorRow(this)" title="Remove">
+                <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+              </button>
+            </div>
+          </div>
+          <button type="button" class="btn add-btn" onclick="addCreditorRow()">
+            <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+            Add Creditor
+          </button>
+        </div>
+
+        <div class="form-group full-width" style="margin-top: 16px;">
+          <label class="form-label">Initial Notes</label>
+          <textarea class="form-textarea" name="notes" placeholder="Add any initial case notes..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAddCaseModal()">Cancel</button>
+          <button type="submit" class="btn">Create Case</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Payment Modal -->
+  <div class="modal-overlay" id="addPaymentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Payment</h3>
+        <div class="modal-close" onclick="closeAddPaymentModal()">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </div>
       </div>
-      <div class="modal-footer" id="modalFooter">
-        <!-- Modal buttons -->
+
+      <form id="addPaymentForm" onsubmit="submitAddPayment(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Amount</label>
+            <input type="number" class="form-input" name="amount" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-input" name="date" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Method</label>
+            <select class="form-select" name="method" required>
+              <option value="Credit Card">Credit Card</option>
+              <option value="ACH">ACH</option>
+              <option value="Wire Transfer">Wire Transfer</option>
+              <option value="Check">Check</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-select" name="status" required>
+              <option value="received">Received</option>
+              <option value="pending">Pending</option>
+              <option value="failed">Failed</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Notes</label>
+            <textarea class="form-textarea" name="notes" placeholder="Payment notes..."></textarea>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAddPaymentModal()">Cancel</button>
+          <button type="submit" class="btn">Add Payment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Note Modal -->
+  <div class="modal-overlay" id="addNoteModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Note</h3>
+        <div class="modal-close" onclick="closeAddNoteModal()">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </div>
       </div>
+
+      <form id="addNoteForm" onsubmit="submitAddNote(event)">
+        <div class="form-group">
+          <label class="form-label">Note</label>
+          <textarea class="form-textarea" name="note" placeholder="Enter case note..." required style="min-height: 120px;"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAddNoteModal()">Cancel</button>
+          <button type="submit" class="btn">Add Note</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Document Modal -->
+  <div class="modal-overlay" id="addDocumentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Upload Document</h3>
+        <div class="modal-close" onclick="closeAddDocumentModal()">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </div>
+      </div>
+
+      <form id="addDocumentForm" onsubmit="submitAddDocument(event)">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label class="form-label">Document Name</label>
+            <input type="text" class="form-input" name="name" required placeholder="e.g., 2024 Tax Return">
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Category</label>
+            <select class="form-select" name="category" required>
+              <option value="">Select Category</option>
+              <option value="Financial Statements">Financial Statements</option>
+              <option value="Tax Returns">Tax Returns</option>
+              <option value="Pay Stubs">Pay Stubs</option>
+              <option value="Creditor Letters">Creditor Letters</option>
+              <option value="Court Documents">Court Documents</option>
+              <option value="Settlement Letters">Settlement Letters</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">File (Simulated Upload)</label>
+            <input type="text" class="form-input" name="filename" required placeholder="Enter filename (e.g., tax_return_2024.pdf)">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAddDocumentModal()">Cancel</button>
+          <button type="submit" class="btn">Upload Document</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <script>
     // State
-    let currentCase = null;
     let cases = [];
-    let currentTab = 'overview';
+    let selectedCase = null;
+    let selectedFilter = 'all';
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
+    function initCaseManagement() {
       loadCases();
-      initTabs();
-    });
-
-    // Tab Navigation
-    function initTabs() {
-      const tabs = document.querySelectorAll('.tab-btn');
-      const indicator = document.querySelector('.tab-indicator');
-      
-      tabs.forEach((tab, index) => {
-        tab.addEventListener('click', () => {
-          const tabId = tab.dataset.tab;
-          switchTab(tabId);
-          
-          // Animate indicator
-          const width = 100 / tabs.length;
-          indicator.style.left = `${index * width}%`;
-          indicator.style.width = `${width}%`;
-        });
-      });
+      loadAgents();
+      renderCaseList();
+      lucide.createIcons();
     }
 
-    function switchTab(tabId) {
-      currentTab = tabId;
-      
-      // Update buttons
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === tabId);
-      });
-      
-      // Update content
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-      });
-      document.getElementById(`tab-${tabId}`).classList.add('active');
-      
-      // Re-init icons
-      if (window.lucide) {
-        window.lucide.createIcons();
-      }
-    }
-
-    // Data Management
+    // Load cases from DebtDB
     function loadCases() {
-      const stored = localStorage.getItem('debtDB_cases');
-      if (stored) {
-        cases = JSON.parse(stored);
-      } else {
-        // Seed sample data
-        cases = [
-          {
-            id: 'DC-2024-001',
-            name: 'John Doe',
-            email: 'john@example.com',
-            phone: '(555) 123-4567',
-            agent: 'Sarah Johnson',
-            enrolledDate: '2024-01-15',
-            totalDebt: 45000,
-            enrolledDebt: 38000,
-            settledAmount: 12500,
-            status: 'negotiating',
-            creditors: [
-              { name: 'Chase Bank', originalBalance: 15000, currentBalance: 14200, rate: 22.99, status: 'negotiating', offer: 45, date: '2024-03-15' },
-              { name: 'Discover', originalBalance: 8000, currentBalance: 7500, rate: 19.99, status: 'active', offer: null, date: null },
-              { name: 'Capital One', originalBalance: 15000, currentBalance: 0, rate: 24.99, status: 'settled', offer: 35, date: '2024-02-01' }
-            ],
-            documents: [
-              { name: 'Power of Attorney', type: 'POA', date: '2024-01-15', status: 'signed' },
-              { name: 'Hardship Letter', type: 'Hardship', date: '2024-01-16', status: 'approved' },
-              { name: 'Creditor Agreement', type: 'Agreement', date: '2024-02-01', status: 'signed' }
-            ],
-            payments: [
-              { date: '2024-01-01', amount: 425, type: 'Monthly' },
-              { date: '2024-02-01', amount: 425, type: 'Monthly' },
-              { date: '2024-02-15', amount: 5000, type: 'Settlement' },
-              { date: '2024-03-01', amount: 425, type: 'Monthly' },
-              { date: '2024-04-01', amount: 425, type: 'Monthly' }
-            ],
-            notes: [
-              { author: 'Sarah Johnson', avatar: 'SJ', text: 'Client enrolled with 3 creditors. High motivation.', date: '2024-01-15 10:30 AM' },
-              { author: 'Mike Chen', avatar: 'MC', text: 'Capital One settlement approved at 35%. Great result!', date: '2024-02-01 2:15 PM' }
-            ]
-          },
-          {
-            id: 'DC-2024-002',
-            name: 'Jane Smith',
-            email: 'jane@example.com',
-            phone: '(555) 987-6543',
-            agent: 'Mike Chen',
-            enrolledDate: '2024-02-01',
-            totalDebt: 62000,
-            enrolledDebt: 55000,
-            settledAmount: 0,
-            status: 'active',
-            creditors: [
-              { name: 'Bank of America', originalBalance: 25000, currentBalance: 24800, rate: 18.99, status: 'active', offer: null, date: null },
-              { name: 'Citi', originalBalance: 18000, currentBalance: 17900, rate: 21.99, status: 'active', offer: null, date: null },
-              { name: 'Wells Fargo', originalBalance: 12000, currentBalance: 11900, rate: 20.99, status: 'active', offer: null, date: null }
-            ],
-            documents: [
-              { name: 'Power of Attorney', type: 'POA', date: '2024-02-01', status: 'pending' }
-            ],
-            payments: [
-              { date: '2024-02-01', amount: 550, type: 'Monthly' }
-            ],
-            notes: [
-              { author: 'Mike Chen', avatar: 'MC', text: 'New client, just enrolled. Awaiting POA signature.', date: '2024-02-01 9:00 AM' }
-            ]
-          }
-        ];
-        saveCases();
-      }
-      renderCases();
-    }
-
-    function saveCases() {
-      localStorage.setItem('debtDB_cases', JSON.stringify(cases));
-    }
-
-    // Rendering
-    function renderCases() {
-      const list = document.getElementById('caseList');
-      const filtered = getFilteredCases();
+      cases = window.DebtDB.getCases() || [];
       
-      list.innerHTML = filtered.map(c => `
-        <div class="case-item" onclick="openCase('${c.id}')">
-          <div class="case-avatar">${c.name.split(' ').map(n => n[0]).join('')}</div>
-          <div class="case-info">
-            <h4>${c.name}</h4>
-            <p>${c.id} • ${c.agent}</p>
+      // If no cases, seed some demo data
+      if (cases.length === 0) {
+        seedDemoCases();
+        cases = window.DebtDB.getCases();
+      }
+    }
+
+    // Seed demo cases
+    function seedDemoCases() {
+      const demoCreditors = [
+        { name: 'Chase Bank', account: '****4521', balance: 12500, status: 'active' },
+        { name: 'Capital One', account: '****8932', balance: 8900, status: 'negotiating' },
+        { name: 'Bank of America', account: '****1203', balance: 15600, status: 'active' },
+        { name: 'Discover', account: '****7845', balance: 6200, status: 'settled' },
+        { name: 'Citibank', account: '****3421', balance: 10300, status: 'active' }
+      ];
+
+      const demoCases = [
+        {
+          client: 'Michael Rodriguez',
+          email: 'michael.r@email.com',
+          phone: '(305) 555-0123',
+          address: '1234 Main St, Miami, FL 33101',
+          caseType: 'ch7',
+          totalDebt: 45200,
+          status: 'Active',
+          assignedAgent: 'agent_001',
+          creditors: [demoCreditors[0], demoCreditors[1], demoCreditors[3]]
+        },
+        {
+          client: 'Sarah Johnson',
+          email: 'sarah.j@email.com',
+          phone: '(312) 555-0456',
+          address: '5678 Oak Ave, Chicago, IL 60601',
+          caseType: 'ch13',
+          totalDebt: 67800,
+          status: 'Negotiating',
+          assignedAgent: 'agent_002',
+          creditors: [demoCreditors[2], demoCreditors[4]]
+        },
+        {
+          client: 'David Chen',
+          email: 'david.c@email.com',
+          phone: '(415) 555-0789',
+          address: '9012 Pine St, San Francisco, CA 94102',
+          caseType: 'consolidation',
+          totalDebt: 32100,
+          status: 'Active',
+          assignedAgent: 'agent_001',
+          creditors: [demoCreditors[1], demoCreditors[3]]
+        },
+        {
+          client: 'Emily Martinez',
+          email: 'emily.m@email.com',
+          phone: '(786) 555-0234',
+          address: '3456 Beach Rd, Miami Beach, FL 33139',
+          caseType: 'settlement',
+          totalDebt: 28900,
+          status: 'Settled',
+          assignedAgent: 'agent_003',
+          creditors: [demoCreditors[0], demoCreditors[2]]
+        }
+      ];
+
+      demoCases.forEach(caseData => {
+        window.DebtDB.addCase(caseData);
+      });
+    }
+
+    // Load agents for dropdown
+    function loadAgents() {
+      const agents = window.DebtDB.getAgents() || [];
+      const select = document.getElementById('agentSelect');
+      
+      agents.forEach(agent => {
+        const option = document.createElement('option');
+        option.value = agent.id;
+        option.textContent = agent.name;
+        select.appendChild(option);
+      });
+    }
+
+    // Render case list
+    function renderCaseList() {
+      const container = document.getElementById('caseListContainer');
+      const searchTerm = document.getElementById('caseSearchInput').value.toLowerCase();
+
+      let filteredCases = cases.filter(c => {
+        const matchesSearch = !searchTerm || 
+          c.client.toLowerCase().includes(searchTerm) ||
+          c.id.toLowerCase().includes(searchTerm) ||
+          c.status.toLowerCase().includes(searchTerm);
+
+        const matchesFilter = selectedFilter === 'all' || c.caseType === selectedFilter;
+
+        return matchesSearch && matchesFilter;
+      });
+
+      if (filteredCases.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state" style="padding: 40px 20px;">
+            <div class="empty-icon" style="width: 60px; height: 60px; margin: 0 auto 16px;">
+              <i data-lucide="search" style="width: 30px; height: 30px; color: #3B82F6;"></i>
+            </div>
+            <div class="empty-title" style="font-size: 16px;">No cases found</div>
+            <div class="empty-description">Try adjusting your search or filters</div>
           </div>
-          <div class="case-stat">
-            <div class="value">$${c.totalDebt.toLocaleString()}</div>
-            <div class="label">Total Debt</div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = filteredCases.map(caseItem => `
+        <div class="case-card ${selectedCase?.id === caseItem.id ? 'active' : ''}" onclick="selectCase('${caseItem.id}')">
+          <div class="case-card-header">
+            <div class="case-number">${caseItem.id}</div>
+            <div class="case-type-badge ${caseItem.caseType}">
+              ${getCaseTypeLabel(caseItem.caseType)}
+            </div>
           </div>
-          <div class="case-stat">
-            <div class="value">$${c.enrolledDebt.toLocaleString()}</div>
-            <div class="label">Enrolled</div>
+          <div class="case-client-name">${caseItem.client}</div>
+          <div class="case-meta">
+            <div class="case-meta-item">
+              <i data-lucide="dollar-sign" style="width: 14px; height: 14px;"></i>
+              $${(caseItem.totalDebt || 0).toLocaleString()}
+            </div>
+            <div class="case-meta-item">
+              <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+              ${new Date(caseItem.createdAt).toLocaleDateString()}
+            </div>
           </div>
-          <div class="case-stat">
-            <div class="value">${Math.round((c.settledAmount / c.enrolledDebt) * 100)}%</div>
-            <div class="label">Progress</div>
-          </div>
-          <div class="case-status status-${c.status}">${c.status}</div>
+          <div class="case-status ${caseItem.status.toLowerCase().replace(' ', '-')}">${caseItem.status}</div>
         </div>
       `).join('');
-      
-      if (window.lucide) {
-        window.lucide.createIcons();
+
+      lucide.createIcons();
+    }
+
+    // Get case type label
+    function getCaseTypeLabel(type) {
+      const labels = {
+        'ch7': 'Chapter 7',
+        'ch13': 'Chapter 13',
+        'consolidation': 'Consolidation',
+        'settlement': 'Settlement'
+      };
+      return labels[type] || type;
+    }
+
+    // Select case
+    function selectCase(caseId) {
+      selectedCase = cases.find(c => c.id === caseId);
+      if (selectedCase) {
+        renderCaseDetail();
+        renderCaseList(); // Re-render to update active state
       }
     }
 
-    function getFilteredCases() {
-      const search = document.getElementById('caseSearch')?.value.toLowerCase() || '';
-      const status = document.getElementById('statusFilter')?.value || '';
-      const agent = document.getElementById('agentFilter')?.value || '';
-      const days = document.getElementById('dateFilter')?.value || '';
-      
-      return cases.filter(c => {
-        const matchesSearch = !search || c.name.toLowerCase().includes(search) || c.id.toLowerCase().includes(search);
-        const matchesStatus = !status || c.status === status;
-        const matchesAgent = !agent || c.agent === agent;
-        const matchesDate = !days || (new Date() - new Date(c.enrolledDate)) / (1000 * 60 * 60 * 24) <= parseInt(days);
-        return matchesSearch && matchesStatus && matchesAgent && matchesDate;
+    // Render case detail
+    function renderCaseDetail() {
+      if (!selectedCase) return;
+
+      const agents = window.DebtDB.getAgents() || [];
+      const agent = agents.find(a => a.id === selectedCase.assignedAgent);
+      const agentName = agent ? agent.name : 'Unassigned';
+
+      const totalDebt = selectedCase.totalDebt || 0;
+      const creditors = selectedCase.creditors || [];
+      const settledAmount = creditors
+        .filter(c => c.status === 'settled' && c.settledAmount)
+        .reduce((sum, c) => sum + c.settledAmount, 0);
+      const savings = totalDebt - settledAmount;
+      const savingsPercent = totalDebt > 0 ? ((savings / totalDebt) * 100).toFixed(1) : 0;
+
+      const payments = selectedCase.payments || [];
+      const notes = selectedCase.notes || [];
+      const documents = selectedCase.documents || [];
+
+      const content = `
+        <div class="detail-header">
+          <div>
+            <div class="detail-title">${selectedCase.client}</div>
+            <div class="detail-subtitle">Case ${selectedCase.id} • ${getCaseTypeLabel(selectedCase.caseType)}</div>
+          </div>
+          <div class="detail-actions">
+            <button class="detail-action-btn" onclick="callClient()">
+              <i data-lucide="phone" style="width: 16px; height: 16px;"></i>
+              Call
+            </button>
+            <button class="detail-action-btn" onclick="emailClient()">
+              <i data-lucide="mail" style="width: 16px; height: 16px;"></i>
+              Email
+            </button>
+            <button class="detail-action-btn" onclick="updateCaseStatus()">
+              <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+              Update Status
+            </button>
+          </div>
+        </div>
+
+        <div class="case-tabs">
+          <button class="case-tab active" onclick="switchTab('overview')">Overview</button>
+          <button class="case-tab" onclick="switchTab('creditors')">Creditors</button>
+          <button class="case-tab" onclick="switchTab('payments')">Payments</button>
+          <button class="case-tab" onclick="switchTab('documents')">Documents</button>
+          <button class="case-tab" onclick="switchTab('notes')">Notes</button>
+          <button class="case-tab" onclick="switchTab('timeline')">Timeline</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="tabOverview" class="tab-content active">
+          <div class="overview-grid">
+            <div class="overview-card">
+              <div class="overview-label">Total Debt</div>
+              <div class="overview-value amount">$${totalDebt.toLocaleString()}</div>
+            </div>
+            <div class="overview-card">
+              <div class="overview-label">Settled Amount</div>
+              <div class="overview-value amount">$${settledAmount.toLocaleString()}</div>
+            </div>
+            <div class="overview-card">
+              <div class="overview-label">Savings</div>
+              <div class="overview-value amount">${savingsPercent}%</div>
+            </div>
+          </div>
+
+          <div style="background: rgba(30, 41, 59, 0.3); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+            <h4 style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 16px;">Client Information</h4>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+              <div>
+                <div style="font-size: 12px; color: #64748B; margin-bottom: 4px;">Email</div>
+                <div style="color: white; font-size: 14px;">${selectedCase.email}</div>
+              </div>
+              <div>
+                <div style="font-size: 12px; color: #64748B; margin-bottom: 4px;">Phone</div>
+                <div style="color: white; font-size: 14px;">${selectedCase.phone}</div>
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <div style="font-size: 12px; color: #64748B; margin-bottom: 4px;">Address</div>
+                <div style="color: white; font-size: 14px;">${selectedCase.address || 'Not provided'}</div>
+              </div>
+              <div>
+                <div style="font-size: 12px; color: #64748B; margin-bottom: 4px;">Assigned Agent</div>
+                <div style="color: white; font-size: 14px;">${agentName}</div>
+              </div>
+              <div>
+                <div style="font-size: 12px; color: #64748B; margin-bottom: 4px;">Status</div>
+                <div class="case-status ${selectedCase.status.toLowerCase().replace(' ', '-')}">${selectedCase.status}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Creditors Tab -->
+        <div id="tabCreditors" class="tab-content">
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+            <button class="btn btn-secondary" onclick="addCreditor()">
+              <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+              Add Creditor
+            </button>
+          </div>
+          <table class="creditors-table">
+            <thead>
+              <tr>
+                <th>Creditor</th>
+                <th>Account</th>
+                <th>Original Balance</th>
+                <th>Current Balance</th>
+                <th>Offer</th>
+                <th>Settled</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${creditors.length === 0 ? `
+                <tr>
+                  <td colspan="7" style="text-align: center; padding: 40px; color: #64748B;">
+                    No creditors added yet
+                  </td>
+                </tr>
+              ` : creditors.map(cred => `
+                <tr>
+                  <td style="font-weight: 600;">${cred.name}</td>
+                  <td>${cred.account || 'N/A'}</td>
+                  <td>$${(cred.balance || 0).toLocaleString()}</td>
+                  <td>$${(cred.currentBalance || cred.balance || 0).toLocaleString()}</td>
+                  <td>${cred.offer ? '$' + cred.offer.toLocaleString() : '—'}</td>
+                  <td>${cred.settledAmount ? '$' + cred.settledAmount.toLocaleString() : '—'}</td>
+                  <td><span class="creditor-status ${cred.status}">${cred.status}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Payments Tab -->
+        <div id="tabPayments" class="tab-content">
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+            <button class="btn btn-secondary" onclick="openAddPaymentModal()">
+              <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+              Add Payment
+            </button>
+          </div>
+          <table class="payments-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${payments.length === 0 ? `
+                <tr>
+                  <td colspan="5" style="text-align: center; padding: 40px; color: #64748B;">
+                    No payments recorded yet
+                  </td>
+                </tr>
+              ` : payments.map(payment => `
+                <tr>
+                  <td>${new Date(payment.createdAt).toLocaleDateString()}</td>
+                  <td style="font-weight: 600; color: #22C55E;">$${payment.amount.toLocaleString()}</td>
+                  <td>${payment.method || 'N/A'}</td>
+                  <td><span class="payment-status ${payment.status}">${payment.status}</span></td>
+                  <td style="color: #94A3B8;">${payment.notes || '—'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Documents Tab -->
+        <div id="tabDocuments" class="tab-content">
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+            <button class="btn btn-secondary" onclick="openAddDocumentModal()">
+              <i data-lucide="upload" style="width: 16px; height: 16px;"></i>
+              Upload Document
+            </button>
+          </div>
+          ${documents.length === 0 ? `
+            <div class="empty-state">
+              <div class="empty-icon">
+                <i data-lucide="file-text" style="width: 40px; height: 40px; color: #3B82F6;"></i>
+              </div>
+              <div class="empty-title">No Documents</div>
+              <div class="empty-description">Upload financial statements, tax returns, or court documents</div>
+            </div>
+          ` : `
+            <div class="documents-grid">
+              ${documents.map(doc => `
+                <div class="document-card">
+                  <div class="document-icon">
+                    <i data-lucide="file-text" style="width: 24px; height: 24px; color: #3B82F6;"></i>
+                  </div>
+                  <div class="document-name">${doc.name}</div>
+                  <div class="document-meta">${doc.category}</div>
+                  <div class="document-meta">${new Date(doc.uploadedAt).toLocaleDateString()}</div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+
+        <!-- Notes Tab -->
+        <div id="tabNotes" class="tab-content">
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+            <button class="btn btn-secondary" onclick="openAddNoteModal()">
+              <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+              Add Note
+            </button>
+          </div>
+          ${notes.length === 0 ? `
+            <div class="empty-state">
+              <div class="empty-icon">
+                <i data-lucide="message-square" style="width: 40px; height: 40px; color: #3B82F6;"></i>
+              </div>
+              <div class="empty-title">No Notes</div>
+              <div class="empty-description">Add case notes and updates</div>
+            </div>
+          ` : `
+            <div class="notes-feed">
+              ${notes.map(note => `
+                <div class="note-item">
+                  <div class="note-header">
+                    <div class="note-author">${note.createdBy || 'System'}</div>
+                    <div class="note-timestamp">${new Date(note.createdAt).toLocaleString()}</div>
+                  </div>
+                  <div class="note-text">${note.text}</div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+
+        <!-- Timeline Tab -->
+        <div id="tabTimeline" class="tab-content">
+          <div class="timeline">
+            ${generateTimeline(selectedCase)}
+          </div>
+        </div>
+      `;
+
+      document.getElementById('caseDetailContent').innerHTML = content;
+      lucide.createIcons();
+    }
+
+    // Generate timeline
+    function generateTimeline(caseItem) {
+      const events = [];
+
+      // Case created
+      events.push({
+        title: 'Case Created',
+        description: `${getCaseTypeLabel(caseItem.caseType)} case opened`,
+        timestamp: caseItem.createdAt
       });
+
+      // Notes
+      (caseItem.notes || []).forEach(note => {
+        events.push({
+          title: 'Note Added',
+          description: note.text,
+          timestamp: note.createdAt
+        });
+      });
+
+      // Payments
+      (caseItem.payments || []).forEach(payment => {
+        events.push({
+          title: 'Payment Received',
+          description: `$${payment.amount.toLocaleString()} via ${payment.method}`,
+          timestamp: payment.createdAt
+        });
+      });
+
+      // Documents
+      (caseItem.documents || []).forEach(doc => {
+        events.push({
+          title: 'Document Uploaded',
+          description: `${doc.name} (${doc.category})`,
+          timestamp: doc.uploadedAt
+        });
+      });
+
+      // Sort by timestamp (newest first)
+      events.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      if (events.length === 0) {
+        return `
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i data-lucide="clock" style="width: 40px; height: 40px; color: #3B82F6;"></i>
+            </div>
+            <div class="empty-title">No Timeline Events</div>
+            <div class="empty-description">Case activity will appear here</div>
+          </div>
+        `;
+      }
+
+      return events.map(event => `
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">${event.title}</div>
+            <div class="timeline-description">${event.description}</div>
+            <div class="timeline-timestamp">${new Date(event.timestamp).toLocaleString()}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Switch tab
+    function switchTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.case-tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.add('active');
+
+      lucide.createIcons();
+    }
+
+    // Filter cases
+    function selectFilter(chip, type) {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      selectedFilter = type;
+      renderCaseList();
     }
 
     function filterCases() {
-      renderCases();
-    }
-
-    function resetFilters() {
-      document.getElementById('caseSearch').value = '';
-      document.getElementById('statusFilter').value = '';
-      document.getElementById('agentFilter').value = '';
-      document.getElementById('dateFilter').value = '';
-      renderCases();
-    }
-
-    function refreshCases() {
-      const btn = document.querySelector('[onclick="refreshCases()"]');
-      btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> Loading...';
-      window.lucide?.createIcons();
-      
-      setTimeout(() => {
-        loadCases();
-        btn.innerHTML = '<i data-lucide="refresh-cw"></i> Refresh';
-        window.lucide?.createIcons();
-      }, 500);
-    }
-
-    // Case Detail
-    function openCase(caseId) {
-      currentCase = cases.find(c => c.id === caseId);
-      if (!currentCase) return;
-      
-      // Update detail view
-      document.getElementById('detailAvatar').textContent = currentCase.name.split(' ').map(n => n[0]).join('');
-      document.getElementById('detailName').textContent = currentCase.name;
-      document.getElementById('detailId').textContent = `Case #${currentCase.id}`;
-      document.getElementById('detailPhone').textContent = currentCase.phone;
-      document.getElementById('detailEmail').textContent = currentCase.email;
-      document.getElementById('detailAgent').textContent = currentCase.agent;
-      document.getElementById('detailDate').textContent = new Date(currentCase.enrolledDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      
-      // Stats
-      const progress = Math.round((currentCase.settledAmount / currentCase.enrolledDebt) * 100);
-      document.getElementById('statTotalDebt').textContent = `$${currentCase.totalDebt.toLocaleString()}`;
-      document.getElementById('statEnrolled').textContent = `$${currentCase.enrolledDebt.toLocaleString()}`;
-      document.getElementById('statSettled').textContent = `$${currentCase.settledAmount.toLocaleString()}`;
-      document.getElementById('statProgress').textContent = `${progress}%`;
-      
-      // Completion bar
-      document.getElementById('completionBar').style.width = `${progress}%`;
-      document.getElementById('completionText').textContent = `~${Math.ceil((currentCase.enrolledDebt - currentCase.settledAmount) / 500)} months`;
-      
-      // Render tabs
-      renderCreditors();
-      renderDocuments();
-      renderPayments();
-      renderTimeline();
-      renderNotes();
-      
-      // Switch views
-      document.getElementById('caseListView').style.display = 'none';
-      document.getElementById('caseDetailView').classList.add('active');
-      
-      if (window.lucide) {
-        window.lucide.createIcons();
-      }
-    }
-
-    function showCaseList() {
-      document.getElementById('caseListView').style.display = 'block';
-      document.getElementById('caseDetailView').classList.remove('active');
-      currentCase = null;
-    }
-
-    // Creditors Tab
-    function renderCreditors() {
-      if (!currentCase) return;
-      
-      const container = document.getElementById('creditorList');
-      container.innerHTML = currentCase.creditors.map(c => `
-        <div class="creditor-card ${c.status}">
-          <div class="creditor-icon">
-            <i data-lucide="building-2"></i>
-          </div>
-          <div class="creditor-info">
-            <h5>${c.name}</h5>
-            <p>${c.rate}% APR</p>
-          </div>
-          <div class="creditor-stat">
-            <div class="value">$${c.originalBalance.toLocaleString()}</div>
-            <div class="label">Original</div>
-          </div>
-          <div class="creditor-stat">
-            <div class="value" style="color: ${c.currentBalance === 0 ? 'var(--success)' : 'var(--text-primary)'}">$${c.currentBalance.toLocaleString()}</div>
-            <div class="label">Current</div>
-          </div>
-          <div class="creditor-stat">
-            <div class="value" style="color: ${c.offer ? 'var(--success)' : 'var(--text-muted)'}">${c.offer ? c.offer + '%' : '--'}</div>
-            <div class="label">Settlement</div>
-          </div>
-          <div class="case-status status-${c.status}">${c.status}</div>
-        </div>
-      `).join('');
-    }
-
-    // Documents Tab
-    function renderDocuments() {
-      if (!currentCase) return;
-      
-      const container = document.getElementById('documentList');
-      container.innerHTML = currentCase.documents.map(d => `
-        <div class="document-item">
-          <div class="doc-icon">
-            <i data-lucide="${d.type === 'POA' ? 'file-signature' : d.type === 'Hardship' ? 'file-heart' : 'file-text'}"></i>
-          </div>
-          <div class="doc-info">
-            <h5>${d.name}</h5>
-            <p>${d.type} • ${new Date(d.date).toLocaleDateString()}</p>
-          </div>
-          <div class="doc-badge badge-${d.status}">${d.status}</div>
-          <button class="action-btn" style="padding: 0.5rem;">
-            <i data-lucide="download"></i>
-          </button>
-        </div>
-      `).join('');
-    }
-
-    function handleDragOver(e) {
-      e.preventDefault();
-      e.currentTarget.classList.add('drag-over');
-    }
-
-    function handleDragLeave(e) {
-      e.currentTarget.classList.remove('drag-over');
-    }
-
-    function handleDrop(e) {
-      e.preventDefault();
-      e.currentTarget.classList.remove('drag-over');
-      const files = e.dataTransfer.files;
-      processFiles(files);
-    }
-
-    function handleFileSelect(e) {
-      processFiles(e.target.files);
-    }
-
-    function processFiles(files) {
-      Array.from(files).forEach(file => {
-        const doc = {
-          name: file.name,
-          type: 'Document',
-          date: new Date().toISOString().split('T')[0],
-          status: 'pending'
-        };
-        currentCase.documents.push(doc);
-      });
-      saveCases();
-      renderDocuments();
-      if (window.lucide) window.lucide.createIcons();
-    }
-
-    function triggerUpload() {
-      document.getElementById('tab-documents').classList.add('active');
-      switchTab('documents');
-      document.getElementById('fileInput').click();
-    }
-
-    // Payments Tab
-    function renderPayments() {
-      if (!currentCase) return;
-      
-      const totalPaid = currentCase.payments.reduce((sum, p) => sum + p.amount, 0);
-      document.getElementById('trustBalance').textContent = `$${(totalPaid - currentCase.settledAmount * 0.35).toLocaleString()}`;
-      document.getElementById('totalPaid').textContent = `$${totalPaid.toLocaleString()}`;
-      
-      // Payment schedule
-      const schedule = document.getElementById('paymentSchedule');
-      schedule.innerHTML = currentCase.payments.slice().reverse().map(p => `
-        <div class="timeline-item" style="margin-bottom: 0.75rem;">
-          <div class="timeline-header">
-            <span style="font-weight: 500;">${p.type} Payment</span>
-            <span class="timeline-date">${new Date(p.date).toLocaleDateString()}</span>
-          </div>
-          <div class="timeline-amount">+ $${p.amount.toLocaleString()}</div>
-        </div>
-      `).join('');
-    }
-
-    function calculatePayments() {
-      const budget = parseFloat(document.getElementById('calcBudget').value) || 0;
-      if (budget <= 0) return;
-      
-      const remaining = currentCase.enrolledDebt - currentCase.settledAmount;
-      const months = Math.ceil(remaining / budget);
-      const savings = remaining * 0.4; // Estimated 40% savings
-      
-      document.getElementById('calcMonths').textContent = months;
-      document.getElementById('calcTotal').textContent = `$${(budget * months).toLocaleString()}`;
-      document.getElementById('calcSavings').textContent = `$${Math.round(savings).toLocaleString()}`;
-    }
-
-    // Timeline Tab
-    function renderTimeline() {
-      if (!currentCase) return;
-      
-      const container = document.getElementById('timelineList');
-      const events = [
-        { date: currentCase.enrolledDate, title: 'Case Enrolled', desc: `Enrolled debt: $${currentCase.enrolledDebt.toLocaleString()}`, icon: 'user-plus' },
-        ...currentCase.payments.map(p => ({ date: p.date, title: `${p.type} Payment`, desc: `$${p.amount.toLocaleString()} added to trust account`, icon: 'dollar-sign' })),
-        ...currentCase.creditors.filter(c => c.status === 'settled').map(c => ({ date: c.date, title: 'Settlement Reached', desc: `${c.name} settled at ${c.offer}%`, icon: 'handshake' })),
-        ...currentCase.documents.map(d => ({ date: d.date, title: `Document ${d.status}`, desc: `${d.name} marked as ${d.status}`, icon: 'file-check' }))
-      ].sort((a, b) => new Date(b.date) - new Date(a.date));
-      
-      container.innerHTML = events.map(e => `
-        <div class="timeline-item">
-          <div class="timeline-header">
-            <span style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
-              <i data-lucide="${e.icon}"></i> ${e.title}
-            </span>
-            <span class="timeline-date">${new Date(e.date).toLocaleDateString()}</span>
-          </div>
-          <p style="color: var(--text-secondary); font-size: 0.875rem;">${e.desc}</p>
-        </div>
-      `).join('');
-    }
-
-    // Notes Tab
-    function renderNotes() {
-      if (!currentCase) return;
-      
-      const container = document.getElementById('notesList');
-      container.innerHTML = currentCase.notes.slice().reverse().map(n => `
-        <div class="note-item">
-          <div class="note-header">
-            <div class="note-author">
-              <div class="note-avatar">${n.avatar}</div>
-              <span style="font-weight: 500;">${n.author}</span>
-            </div>
-            <span class="note-time">${n.date}</span>
-          </div>
-          <p style="color: var(--text-secondary);">${n.text}</p>
-        </div>
-      `).join('');
-    }
-
-    function addNote() {
-      const text = document.getElementById('newNote').value.trim();
-      if (!text || !currentCase) return;
-      
-      currentCase.notes.push({
-        author: 'Current User',
-        avatar: 'CU',
-        text: text,
-        date: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })
-      });
-      
-      saveCases();
-      document.getElementById('newNote').value = '';
-      renderNotes();
-    }
-
-    function focusNotesTab() {
-      switchTab('notes');
-      document.getElementById('newNote').focus();
+      renderCaseList();
     }
 
     // Modals
-    function openModal(title, body, footer) {
-      document.getElementById('modalTitle').textContent = title;
-      document.getElementById('modalBody').innerHTML = body;
-      document.getElementById('modalFooter').innerHTML = footer;
-      document.getElementById('modalOverlay').classList.add('active');
-      window.lucide?.createIcons();
+    function openAddCaseModal() {
+      document.getElementById('addCaseModal').classList.add('active');
+      lucide.createIcons();
     }
 
-    function closeModal() {
-      document.getElementById('modalOverlay').classList.remove('active');
+    function closeAddCaseModal() {
+      document.getElementById('addCaseModal').classList.remove('active');
+      document.getElementById('addCaseForm').reset();
     }
 
-    function openNewCaseModal() {
-      openModal('New Case', `
-        <div class="form-group">
-          <label>Client Name</label>
-          <input type="text" id="newCaseName" placeholder="Full name">
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="newCaseEmail" placeholder="email@example.com">
-        </div>
-        <div class="form-group">
-          <label>Phone</label>
-          <input type="tel" id="newCasePhone" placeholder="(555) 000-0000">
-        </div>
-        <div class="form-group">
-          <label>Total Debt</label>
-          <input type="number" id="newCaseDebt" placeholder="Amount">
-        </div>
-      `, `
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="createNewCase()">Create Case</button>
-      `);
+    function openAddPaymentModal() {
+      document.getElementById('addPaymentModal').classList.add('active');
+      lucide.createIcons();
     }
 
-    function createNewCase() {
-      const name = document.getElementById('newCaseName').value;
-      const email = document.getElementById('newCaseEmail').value;
-      const phone = document.getElementById('newCasePhone').value;
-      const debt = parseFloat(document.getElementById('newCaseDebt').value) || 0;
-      
-      if (!name) return;
-      
-      const newCase = {
-        id: `DC-2024-${String(cases.length + 1).padStart(3, '0')}`,
-        name,
-        email,
-        phone,
-        agent: 'Current User',
-        enrolledDate: new Date().toISOString().split('T')[0],
-        totalDebt: debt,
-        enrolledDebt: debt,
-        settledAmount: 0,
-        status: 'active',
-        creditors: [],
-        documents: [],
+    function closeAddPaymentModal() {
+      document.getElementById('addPaymentModal').classList.remove('active');
+      document.getElementById('addPaymentForm').reset();
+    }
+
+    function openAddNoteModal() {
+      document.getElementById('addNoteModal').classList.add('active');
+      lucide.createIcons();
+    }
+
+    function closeAddNoteModal() {
+      document.getElementById('addNoteModal').classList.remove('active');
+      document.getElementById('addNoteForm').reset();
+    }
+
+    function openAddDocumentModal() {
+      document.getElementById('addDocumentModal').classList.add('active');
+      lucide.createIcons();
+    }
+
+    function closeAddDocumentModal() {
+      document.getElementById('addDocumentModal').classList.remove('active');
+      document.getElementById('addDocumentForm').reset();
+    }
+
+    // Add/Remove creditor rows
+    function addCreditorRow() {
+      const container = document.getElementById('creditorsContainer');
+      const row = document.createElement('div');
+      row.className = 'creditor-row';
+      row.innerHTML = `
+        <div class="form-group" style="margin: 0;">
+          <input type="text" class="form-input" placeholder="Creditor Name" name="creditorName[]" required>
+        </div>
+        <div class="form-group" style="margin: 0;">
+          <input type="text" class="form-input" placeholder="Account Number" name="creditorAccount[]">
+        </div>
+        <div class="form-group" style="margin: 0;">
+          <input type="number" class="form-input" placeholder="Balance" name="creditorBalance[]" step="0.01" required>
+        </div>
+        <div class="form-group" style="margin: 0;">
+          <select class="form-select" name="creditorStatus[]">
+            <option value="active">Active</option>
+            <option value="negotiating">Negotiating</option>
+            <option value="settled">Settled</option>
+            <option value="paid">Paid</option>
+          </select>
+        </div>
+        <button type="button" class="btn-danger btn-icon" onclick="removeCreditorRow(this)" title="Remove">
+          <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+        </button>
+      `;
+      container.appendChild(row);
+      lucide.createIcons();
+    }
+
+    function removeCreditorRow(btn) {
+      const row = btn.closest('.creditor-row');
+      const container = document.getElementById('creditorsContainer');
+      if (container.children.length > 1) {
+        row.remove();
+      } else {
+        Toast.warning('At least one creditor is required');
+      }
+    }
+
+    // Form submissions
+    function submitAddCase(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+
+      // Collect creditors
+      const creditors = [];
+      const creditorNames = formData.getAll('creditorName[]');
+      const creditorAccounts = formData.getAll('creditorAccount[]');
+      const creditorBalances = formData.getAll('creditorBalance[]');
+      const creditorStatuses = formData.getAll('creditorStatus[]');
+
+      for (let i = 0; i < creditorNames.length; i++) {
+        creditors.push({
+          name: creditorNames[i],
+          account: creditorAccounts[i],
+          balance: parseFloat(creditorBalances[i]),
+          currentBalance: parseFloat(creditorBalances[i]),
+          status: creditorStatuses[i]
+        });
+      }
+
+      const caseData = {
+        client: formData.get('clientName'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        address: formData.get('address'),
+        caseType: formData.get('caseType'),
+        totalDebt: parseFloat(formData.get('totalDebt')),
+        assignedAgent: formData.get('assignedAgent'),
+        status: 'Active',
+        creditors: creditors,
+        notes: formData.get('notes') ? [{
+          text: formData.get('notes'),
+          createdAt: new Date().toISOString(),
+          createdBy: 'Current User'
+        }] : [],
         payments: [],
-        notes: []
+        documents: []
       };
-      
+
+      const newCase = window.DebtDB.addCase(caseData);
       cases.push(newCase);
-      saveCases();
-      renderCases();
-      closeModal();
+      
+      closeAddCaseModal();
+      renderCaseList();
+      selectCase(newCase.id);
+      
+      Toast.success('Case created successfully!');
     }
 
-    function openAddCreditorModal() {
-      openModal('Add Creditor', `
-        <div class="form-group">
-          <label>Creditor Name</label>
-          <input type="text" id="creditorName" placeholder="e.g. Chase Bank">
-        </div>
-        <div class="form-group">
-          <label>Original Balance</label>
-          <input type="number" id="creditorBalance" placeholder="Amount">
-        </div>
-        <div class="form-group">
-          <label>Interest Rate</label>
-          <input type="number" step="0.01" id="creditorRate" placeholder="e.g. 22.99">
-        </div>
-      `, `
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="addCreditor()">Add Creditor</button>
-      `);
+    function submitAddPayment(e) {
+      e.preventDefault();
+      if (!selectedCase) return;
+
+      const formData = new FormData(e.target);
+      const paymentData = {
+        amount: parseFloat(formData.get('amount')),
+        date: formData.get('date'),
+        method: formData.get('method'),
+        status: formData.get('status'),
+        notes: formData.get('notes')
+      };
+
+      window.DebtDB.addCasePayment(selectedCase.id, paymentData);
+      loadCases();
+      selectedCase = cases.find(c => c.id === selectedCase.id);
+      
+      closeAddPaymentModal();
+      renderCaseDetail();
+      
+      Toast.success('Payment added successfully!');
+    }
+
+    function submitAddNote(e) {
+      e.preventDefault();
+      if (!selectedCase) return;
+
+      const formData = new FormData(e.target);
+      const noteText = formData.get('note');
+
+      window.DebtDB.addCaseNote(selectedCase.id, noteText);
+      loadCases();
+      selectedCase = cases.find(c => c.id === selectedCase.id);
+      
+      closeAddNoteModal();
+      renderCaseDetail();
+      
+      Toast.success('Note added successfully!');
+    }
+
+    function submitAddDocument(e) {
+      e.preventDefault();
+      if (!selectedCase) return;
+
+      const formData = new FormData(e.target);
+      const docData = {
+        name: formData.get('name'),
+        category: formData.get('category'),
+        filename: formData.get('filename')
+      };
+
+      window.DebtDB.addCaseDocument(selectedCase.id, docData);
+      loadCases();
+      selectedCase = cases.find(c => c.id === selectedCase.id);
+      
+      closeAddDocumentModal();
+      renderCaseDetail();
+      
+      Toast.success('Document uploaded successfully!');
+    }
+
+    // Quick actions
+    function callClient() {
+      Toast.info('Opening Power Dialer...');
+      setTimeout(() => {
+        window.location.hash = 'power-dialer';
+      }, 1000);
+    }
+
+    function emailClient() {
+      Toast.info('Opening email composer...');
+    }
+
+    function updateCaseStatus() {
+      const statuses = ['Active', 'Under Review', 'Negotiating', 'Settlement Offered', 'Settled', 'Completed', 'Closed'];
+      const currentIndex = statuses.indexOf(selectedCase.status);
+      const nextStatus = statuses[(currentIndex + 1) % statuses.length];
+      
+      window.DebtDB.updateCase(selectedCase.id, { status: nextStatus });
+      loadCases();
+      selectedCase = cases.find(c => c.id === selectedCase.id);
+      
+      renderCaseDetail();
+      renderCaseList();
+      
+      Toast.success(`Case status updated to ${nextStatus}`);
     }
 
     function addCreditor() {
-      const name = document.getElementById('creditorName').value;
-      const balance = parseFloat(document.getElementById('creditorBalance').value) || 0;
-      const rate = parseFloat(document.getElementById('creditorRate').value) || 0;
-      
-      if (!name || !currentCase) return;
-      
-      currentCase.creditors.push({
-        name,
-        originalBalance: balance,
-        currentBalance: balance,
-        rate,
-        status: 'active',
-        offer: null,
-        date: null
-      });
-      
-      saveCases();
-      renderCreditors();
-      closeModal();
+      Toast.info('Add creditor functionality coming soon');
     }
 
-    function openLogPaymentModal() {
-      openModal('Log Payment', `
-        <div class="form-group">
-          <label>Amount</label>
-          <input type="number" id="paymentAmount" placeholder="0.00">
-        </div>
-        <div class="form-group">
-          <label>Date</label>
-          <input type="date" id="paymentDate" value="${new Date().toISOString().split('T')[0]}">
-        </div>
-        <div class="form-group">
-          <label>Type</label>
-          <select id="paymentType">
-            <option value="Monthly">Monthly Payment</option>
-            <option value="Settlement">Settlement Payment</option>
-            <option value="Additional">Additional Payment</option>
-          </select>
-        </div>
-      `, `
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="logPayment()">Log Payment</button>
-      `);
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', initCaseManagement);
+    
+    // Also init immediately if DOM already loaded
+    if (document.readyState === 'loading') {
+      // Still loading
+    } else {
+      initCaseManagement();
     }
-
-    function logPayment() {
-      const amount = parseFloat(document.getElementById('paymentAmount').value) || 0;
-      const date = document.getElementById('paymentDate').value;
-      const type = document.getElementById('paymentType').value;
-      
-      if (!amount || !currentCase) return;
-      
-      currentCase.payments.push({ date, amount, type });
-      saveCases();
-      renderPayments();
-      closeModal();
-    }
-
-    function openScheduleModal() {
-      openModal('Schedule Follow-up', `
-        <div class="form-group">
-          <label>Follow-up Date</label>
-          <input type="datetime-local" id="followupDate">
-        </div>
-        <div class="form-group">
-          <label>Notes</label>
-          <textarea id="followupNotes" placeholder="What needs to be followed up?"></textarea>
-        </div>
-      `, `
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="scheduleFollowup()">Schedule</button>
-      `);
-    }
-
-    function scheduleFollowup() {
-      closeModal();
-      Toast.success('Follow-up scheduled successfully!');
-      // TODO: Save to calendar/database
-    }
-
-    // Close modal on overlay click
-    document.getElementById('modalOverlay')?.addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) closeModal();
-    });
   </script>
 </div>
