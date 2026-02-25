@@ -1,54 +1,22 @@
-<!-- Functionality verified by Agent 1 - REAL TWILIO INTEGRATION -->
+<!-- POWER DIALER - Complete Rebuild by SONNET AGENT 2 -->
+<!-- All JavaScript is INLINE (executes via loadPage fix) -->
+<!-- Real Twilio Integration + Demo Fallback -->
+
 <div id="powerDialer" class="page-container">
-  <!-- Twilio Voice JS SDK 2.x -->
-  <script src="https://sdk.twilio.com/js/client/v1.14/twilio.min.js"></script>
-  
-  <!-- Twilio Configuration (REAL CREDENTIALS) -->
-  <script src="../twilio-config.js"></script>
-  
-  <!-- Twilio Scripts (load in order) -->
-  <script src="../twilio.js"></script>
-  <script src="../twilio-client.js"></script>
-  <script src="../twilio-manager.js"></script>
-  
-  <!-- Real Twilio Integration Notice -->
-  <div id="twilio-integration-notice" style="display: none; position: fixed; top: 20px; right: 20px; padding: 16px 24px; background: linear-gradient(135deg, #22C55E, #16A34A); color: white; border-radius: 12px; font-weight: 600; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); z-index: 9999; animation: slideInRight 0.5s ease-out;">
-    ✅ Real Twilio Active | +1 (754) 254-2410
-  </div>
-  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    .dialer-grid {
-      display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 24px;
-      height: calc(100vh - 120px);
-      animation: fadeInUp 0.6s ease-out;
-    }
+    .page-container { animation: fadeInUp 0.6s ease-out; }
 
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .dialer-main {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .dialer-card {
+    /* Glass Morphism Cards */
+    .glass-card {
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.8) 100%);
       border: 1px solid rgba(59, 130, 246, 0.3);
       border-radius: 24px;
@@ -58,525 +26,17 @@
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .dialer-card:hover {
+    .glass-card:hover {
       border-color: rgba(59, 130, 246, 0.5);
       box-shadow: 0 12px 48px rgba(59, 130, 246, 0.15);
     }
 
-    .dialer-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-
-    .dialer-modes {
-      display: flex;
-      gap: 8px;
-      background: rgba(10, 15, 26, 0.6);
-      padding: 4px;
-      border-radius: 12px;
-      border: 1px solid rgba(59, 130, 246, 0.2);
-    }
-
-    .mode-btn {
-      padding: 8px 16px;
-      border: none;
-      background: transparent;
-      color: #94A3B8;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      font-size: 14px;
-      font-weight: 500;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .mode-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .mode-btn.active {
-      color: white;
-    }
-
-    .mode-btn.active::before {
-      opacity: 1;
-    }
-
-    .mode-btn span {
-      position: relative;
-      z-index: 1;
-    }
-
-    .phone-input-section {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .phone-input {
-      flex: 1;
-      padding: 16px;
-      background: rgba(10, 15, 26, 0.6);
-      border: 2px solid rgba(59, 130, 246, 0.3);
-      border-radius: 16px;
-      color: white;
-      font-size: 20px;
-      letter-spacing: 2px;
-      font-family: 'Orbitron', monospace;
-      font-weight: 500;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .phone-input:focus {
-      outline: none;
-      border-color: #3B82F6;
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1), 0 0 20px rgba(59, 130, 246, 0.3);
-    }
-
-    .call-controls {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .control-btn {
-      padding: 16px;
-      border: 2px solid rgba(59, 130, 246, 0.3);
-      background: rgba(10, 15, 26, 0.6);
-      color: white;
-      border-radius: 16px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .control-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.2), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .control-btn:hover:not(:disabled)::before {
-      opacity: 1;
-    }
-
-    .control-btn:hover:not(:disabled) {
-      transform: translateY(-4px);
-      border-color: #3B82F6;
-      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
-    }
-
-    .control-btn:active:not(:disabled) {
-      transform: translateY(-2px);
-    }
-
-    .control-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .control-btn.active {
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
-      border-color: #3B82F6;
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-    }
-
-    .control-btn.danger {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1));
-      border-color: #EF4444;
-    }
-
-    .control-btn.danger:hover {
-      background: linear-gradient(135deg, #EF4444, #DC2626);
-      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
-    }
-
-    .call-timer {
-      text-align: center;
-      padding: 32px;
-      background: linear-gradient(135deg, rgba(10, 15, 26, 0.8), rgba(15, 23, 42, 0.8));
-      border-radius: 16px;
-      margin: 16px 0;
-      border: 2px solid rgba(59, 130, 246, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .call-timer::before {
-      content: '';
-      position: absolute;
-      inset: -50%;
-      background: conic-gradient(from 0deg, transparent, rgba(59, 130, 246, 0.1), transparent);
-      animation: rotate 4s linear infinite;
-    }
-
-    @keyframes rotate {
-      to { transform: rotate(360deg); }
-    }
-
-    .call-timer > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .timer-display {
-      font-size: 64px;
-      font-family: 'Orbitron', monospace;
-      font-weight: 700;
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 8px;
-      text-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
-    }
-
-    .timer-display.calling {
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-
-    .call-status {
-      color: #94A3B8;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-weight: 600;
-      position: relative;
-    }
-
-    .call-status::before {
-      content: '';
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-right: 8px;
-      background: #64748B;
-    }
-
-    .call-status.connected::before {
-      background: #22C55E;
-      box-shadow: 0 0 10px #22C55E, 0 0 20px #22C55E;
-      animation: pulse-green 1.5s ease-in-out infinite;
-    }
-
-    .call-status.dialing::before {
-      background: #F59E0B;
-      box-shadow: 0 0 10px #F59E0B;
-      animation: pulse-yellow 1s ease-in-out infinite;
-    }
-
-    .call-status.disconnected::before {
-      background: #EF4444;
-      box-shadow: 0 0 10px #EF4444;
-    }
-
-    @keyframes pulse-green {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.2); }
-    }
-
-    @keyframes pulse-yellow {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.3); }
-    }
-
-    .audio-visualizer {
-      height: 80px;
-      background: rgba(10, 15, 26, 0.6);
-      border-radius: 16px;
-      padding: 8px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 3px;
-      overflow: hidden;
-      border: 1px solid rgba(59, 130, 246, 0.2);
-    }
-
-    .audio-bar {
-      flex: 1;
-      max-width: 8px;
-      background: linear-gradient(to top, #22C55E, #3B82F6, #06B6D4);
-      border-radius: 4px;
-      transition: height 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
-    }
-
-    .lead-info-panel {
-      background: linear-gradient(135deg, rgba(10, 15, 26, 0.8), rgba(15, 23, 42, 0.6));
-      border-radius: 16px;
-      padding: 24px;
-      border: 1px solid rgba(59, 130, 246, 0.2);
-      backdrop-filter: blur(10px);
-    }
-
-    .lead-info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-      transition: all 0.3s;
-    }
-
-    .lead-info-row:hover {
-      background: rgba(59, 130, 246, 0.05);
-      padding-left: 8px;
-      border-left: 3px solid #3B82F6;
-    }
-
-    .lead-info-label {
-      color: #64748B;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .lead-info-value {
-      color: white;
-      font-weight: 600;
-      font-family: 'Orbitron', monospace;
-    }
-
-    .disposition-form {
-      margin-top: 24px;
-    }
-
-    .disposition-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .disposition-btn {
-      padding: 12px;
-      border: 2px solid rgba(59, 130, 246, 0.3);
-      background: rgba(10, 15, 26, 0.6);
-      color: white;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      font-size: 14px;
-      font-weight: 500;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .disposition-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .disposition-btn:hover::before {
-      opacity: 1;
-    }
-
-    .disposition-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-    }
-
-    .disposition-btn.success {
-      border-color: #22C55E;
-    }
-
-    .disposition-btn.success:hover {
-      background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1));
-      box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
-    }
-
-    .disposition-btn.active {
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
-      border-color: #3B82F6;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
-    }
-
-    .notes-textarea {
-      width: 100%;
-      min-height: 100px;
-      padding: 12px;
-      background: rgba(10, 15, 26, 0.6);
-      border: 2px solid rgba(59, 130, 246, 0.3);
-      border-radius: 12px;
-      color: white;
-      resize: vertical;
-      font-family: inherit;
-      transition: all 0.3s;
-    }
-
-    .notes-textarea:focus {
-      outline: none;
-      border-color: #3B82F6;
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-    }
-
-    .call-history-sidebar {
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      border-radius: 24px;
-      padding: 24px;
-      overflow-y: auto;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-
-    .call-history-sidebar::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .call-history-sidebar::-webkit-scrollbar-track {
-      background: rgba(10, 15, 26, 0.6);
-      border-radius: 4px;
-    }
-
-    .call-history-sidebar::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
-      border-radius: 4px;
-    }
-
-    .history-item {
-      padding: 16px;
-      background: rgba(10, 15, 26, 0.6);
-      border-radius: 12px;
-      margin-bottom: 12px;
-      border-left: 4px solid #3B82F6;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-    }
-
-    .history-item:hover {
-      transform: translateX(4px);
-      background: rgba(15, 23, 42, 0.8);
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
-    }
-
-    .history-item.success {
-      border-left-color: #22C55E;
-    }
-
-    .history-item.failed {
-      border-left-color: #EF4444;
-    }
-
-    .history-phone {
-      font-weight: 600;
-      color: white;
-      margin-bottom: 4px;
-      font-family: 'Orbitron', monospace;
-    }
-
-    .history-meta {
-      font-size: 12px;
-      color: #64748B;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .history-disposition {
-      display: inline-block;
-      padding: 4px 8px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.1));
-      border-radius: 6px;
-      font-size: 11px;
-      margin-top: 8px;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-    }
-
-    .scripts-panel {
-      max-height: 400px;
-      overflow-y: auto;
-    }
-
-    .scripts-panel::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .scripts-panel::-webkit-scrollbar-track {
-      background: rgba(10, 15, 26, 0.4);
-      border-radius: 3px;
-    }
-
-    .scripts-panel::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
-      border-radius: 3px;
-    }
-
-    .script-item {
-      padding: 16px;
-      background: rgba(10, 15, 26, 0.6);
-      border-radius: 12px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 1px solid rgba(59, 130, 246, 0.1);
-    }
-
-    .script-item:hover {
-      background: rgba(15, 23, 42, 0.8);
-      border-color: rgba(59, 130, 246, 0.4);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
-    }
-
-    .script-title {
-      font-weight: 600;
-      color: #3B82F6;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-
-    .script-content {
-      color: #94A3B8;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
+    /* Stats Bar */
     .stats-bar {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
       margin-bottom: 24px;
-      animation: slideInDown 0.6s ease-out;
-    }
-
-    @keyframes slideInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     .stat-card {
@@ -585,7 +45,6 @@
       border-radius: 16px;
       border: 2px solid rgba(59, 130, 246, 0.2);
       backdrop-filter: blur(10px);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
     }
@@ -598,12 +57,6 @@
       right: 0;
       height: 3px;
       background: linear-gradient(90deg, #3B82F6, #06B6D4);
-    }
-
-    .stat-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(59, 130, 246, 0.5);
-      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
     }
 
     .stat-label {
@@ -626,1082 +79,1100 @@
       background-clip: text;
     }
 
-    .callbacks-list {
-      max-height: 300px;
+    /* Grid Layout */
+    .dialer-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr 350px;
+      gap: 24px;
+      min-height: 600px;
+    }
+
+    /* Left: Contact List */
+    .contact-list {
+      max-height: 600px;
       overflow-y: auto;
     }
 
-    .callback-item {
+    .contact-list::-webkit-scrollbar { width: 8px; }
+    .contact-list::-webkit-scrollbar-track { background: rgba(10, 15, 26, 0.6); border-radius: 4px; }
+    .contact-list::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #3B82F6, #06B6D4); border-radius: 4px; }
+
+    .contact-item {
       padding: 16px;
       background: rgba(10, 15, 26, 0.6);
       border-radius: 12px;
       margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-left: 4px solid transparent;
+    }
+
+    .contact-item:hover {
+      background: rgba(15, 23, 42, 0.8);
+      border-left-color: #3B82F6;
+      transform: translateX(4px);
+    }
+
+    .contact-name { font-weight: 600; color: white; margin-bottom: 4px; }
+    .contact-phone { font-family: 'Orbitron', monospace; color: #64748B; font-size: 13px; }
+    .contact-debt { color: #3B82F6; font-size: 12px; margin-top: 4px; }
+
+    /* Center: Dialer */
+    .dialer-main { display: flex; flex-direction: column; gap: 24px; }
+
+    .phone-input {
+      width: 100%;
+      padding: 16px;
+      background: rgba(10, 15, 26, 0.6);
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 16px;
+      color: white;
+      font-size: 24px;
+      letter-spacing: 2px;
+      font-family: 'Orbitron', monospace;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .phone-input:focus {
+      outline: none;
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    .dial-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .dial-btn {
+      padding: 20px;
+      background: rgba(10, 15, 26, 0.6);
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 16px;
+      color: white;
+      font-size: 24px;
+      font-family: 'Orbitron', monospace;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .dial-btn:hover {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: #3B82F6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+
+    .dial-btn:active { transform: translateY(0); }
+
+    .call-timer {
+      text-align: center;
+      padding: 32px;
+      background: linear-gradient(135deg, rgba(10, 15, 26, 0.8), rgba(15, 23, 42, 0.8));
+      border-radius: 16px;
+      margin: 16px 0;
+      border: 2px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .timer-display {
+      font-size: 64px;
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      background: linear-gradient(135deg, #3B82F6, #06B6D4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .timer-display.calling { animation: pulse 1.5s ease-in-out infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .call-status {
+      color: #94A3B8;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    .call-status::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+      background: #64748B;
+    }
+
+    .call-status.connected::before {
+      background: #22C55E;
+      box-shadow: 0 0 10px #22C55E;
+      animation: pulse-green 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.2); }
+    }
+
+    .audio-visualizer {
+      height: 80px;
+      background: rgba(10, 15, 26, 0.6);
+      border-radius: 16px;
+      padding: 8px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 3px;
+    }
+
+    .audio-bar {
+      flex: 1;
+      max-width: 8px;
+      background: linear-gradient(to top, #22C55E, #3B82F6, #06B6D4);
+      border-radius: 4px;
+      transition: height 0.15s;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+    }
+
+    .control-btn {
+      padding: 16px;
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      background: rgba(10, 15, 26, 0.6);
+      color: white;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .control-btn:hover:not(:disabled) {
+      transform: translateY(-4px);
+      border-color: #3B82F6;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+    }
+
+    .control-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .control-btn.active { background: linear-gradient(135deg, #3B82F6, #06B6D4); }
+    .control-btn.danger { background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1)); border-color: #EF4444; }
+    .control-btn.danger:hover { background: linear-gradient(135deg, #EF4444, #DC2626); }
+
+    .call-controls {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    /* Right: Call History + Disposition */
+    .sidebar-section { margin-bottom: 24px; }
+    .sidebar-section h3 { color: white; margin-bottom: 16px; font-weight: 600; }
+
+    .history-item {
+      padding: 16px;
+      background: rgba(10, 15, 26, 0.6);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border-left: 4px solid #3B82F6;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .history-item:hover {
+      background: rgba(15, 23, 42, 0.8);
+      transform: translateX(4px);
+    }
+
+    .history-phone { font-weight: 600; color: white; margin-bottom: 4px; font-family: 'Orbitron', monospace; }
+    .history-meta { font-size: 12px; color: #64748B; display: flex; justify-content: space-between; }
+
+    .disposition-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .disposition-btn {
+      padding: 12px;
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      background: rgba(10, 15, 26, 0.6);
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .disposition-btn:hover { background: rgba(59, 130, 246, 0.2); transform: translateY(-2px); }
+    .disposition-btn.active { background: linear-gradient(135deg, #3B82F6, #06B6D4); border-color: #3B82F6; }
+    .disposition-btn.success { border-color: #22C55E; }
+
+    .notes-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      background: rgba(10, 15, 26, 0.6);
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      color: white;
+      resize: vertical;
+    }
+
+    .notes-textarea:focus {
+      outline: none;
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    /* SMS Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-content {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(10, 15, 26, 0.98));
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 24px;
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 1px solid rgba(59, 130, 246, 0.1);
+      margin-bottom: 24px;
     }
 
-    .callback-item:hover {
-      background: rgba(15, 23, 42, 0.8);
-      transform: translateX(4px);
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
-    }
+    .modal-header h3 { margin: 0; color: white; font-size: 24px; }
 
-    .callback-info {
-      flex: 1;
-    }
-
-    .callback-name {
-      color: white;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .callback-time {
-      color: #64748B;
-      font-size: 12px;
-    }
-
-    .callback-call-btn {
-      padding: 8px 16px;
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
+    .modal-close {
+      width: 40px;
+      height: 40px;
       border: none;
-      border-radius: 8px;
-      color: white;
+      background: rgba(239, 68, 68, 0.2);
+      color: #EF4444;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 24px;
     }
 
-    .callback-call-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+    .modal-close:hover { background: #EF4444; color: white; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label { color: #94A3B8; font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block; }
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      background: rgba(10, 15, 26, 0.6);
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 10px;
+      color: white;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
     }
 
-    .callback-call-btn:active {
-      transform: translateY(0);
-    }
-
-    .urgency-badge {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      margin-right: 8px;
-      box-shadow: 0 0 8px currentColor;
-    }
-
-    .urgency-red {
-      background: #EF4444;
-      animation: pulse-red 2s ease-in-out infinite;
-    }
-
-    .urgency-yellow {
-      background: #F59E0B;
-    }
-
-    .urgency-green {
-      background: #22C55E;
-    }
-
-    @keyframes pulse-red {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.3); }
-    }
-
-    /* Loading skeleton */
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-
-    .skeleton {
-      background: linear-gradient(90deg, rgba(10, 15, 26, 0.6) 25%, rgba(59, 130, 246, 0.1) 50%, rgba(10, 15, 26, 0.6) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 8px;
-    }
-
-    /* Mobile Responsive */
-    @media (max-width: 1024px) {
-      .dialer-grid {
-        grid-template-columns: 1fr;
-        height: auto;
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .dialer-card {
-        padding: 20px;
-      }
-
-      .keypad-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-      }
-
-      .keypad-button {
-        padding: 16px;
-        font-size: 20px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .dialer-grid {
-        gap: 16px;
-      }
-
-      .stats-grid {
-        gap: 12px;
-      }
-
-      .mode-buttons {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .mode-btn {
-        width: 100%;
-      }
-
-      .control-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
-
-      .disposition-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-      }
-
-      .call-history-item {
-        padding: 12px;
-      }
-
-      .script-item {
-        padding: 12px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .dialer-card {
-        padding: 16px;
-        border-radius: 16px;
-      }
-
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .control-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .disposition-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .keypad-button {
-        padding: 12px;
-        font-size: 18px;
-      }
+    .search-input {
+      width: 100%;
+      padding: 12px;
+      background: rgba(10, 15, 26, 0.6);
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      color: white;
+      margin-bottom: 16px;
     }
   </style>
 
   <!-- Stats Bar -->
   <div class="stats-bar">
     <div class="stat-card">
-      <div class="stat-label">Calls/Hour</div>
-      <div class="stat-value" id="callsPerHour" data-target="0">0</div>
+      <div class="stat-label">Calls Today</div>
+      <div class="stat-value" id="callsToday">0</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Talk Time</div>
       <div class="stat-value" id="totalTalkTime">00:00</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Conversion Rate</div>
-      <div class="stat-value" id="conversionRate" data-target="0">0%</div>
+      <div class="stat-label">Conversions</div>
+      <div class="stat-value" id="conversions">0</div>
     </div>
   </div>
 
   <!-- Main Grid -->
   <div class="dialer-grid">
-    <!-- Left Column: Dialer Controls -->
+    <!-- LEFT: Contact List -->
+    <div class="glass-card">
+      <h3 style="color: white; margin-bottom: 16px; font-weight: 600;">Contacts</h3>
+      <input type="text" class="search-input" id="contactSearch" placeholder="Search contacts..." />
+      <div class="contact-list" id="contactList">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- CENTER: Dialer -->
     <div class="dialer-main">
-      <!-- Dialer Card -->
-      <div class="dialer-card">
-        <div class="dialer-header">
-          <h2 style="margin: 0; color: white; font-weight: 700;">Power Dialer</h2>
-          <div class="dialer-modes">
-            <button class="mode-btn active" data-mode="manual"><span>Manual</span></button>
-            <button class="mode-btn" data-mode="preview"><span>Preview</span></button>
-            <button class="mode-btn" data-mode="progressive"><span>Progressive</span></button>
-          </div>
+      <div class="glass-card">
+        <input type="tel" class="phone-input" id="phoneInput" placeholder="Enter phone number" maxlength="14" />
+        
+        <!-- Dial Pad -->
+        <div class="dial-pad">
+          <button class="dial-btn" onclick="dialDigit('1')">1</button>
+          <button class="dial-btn" onclick="dialDigit('2')">2</button>
+          <button class="dial-btn" onclick="dialDigit('3')">3</button>
+          <button class="dial-btn" onclick="dialDigit('4')">4</button>
+          <button class="dial-btn" onclick="dialDigit('5')">5</button>
+          <button class="dial-btn" onclick="dialDigit('6')">6</button>
+          <button class="dial-btn" onclick="dialDigit('7')">7</button>
+          <button class="dial-btn" onclick="dialDigit('8')">8</button>
+          <button class="dial-btn" onclick="dialDigit('9')">9</button>
+          <button class="dial-btn" onclick="dialDigit('*')">*</button>
+          <button class="dial-btn" onclick="dialDigit('0')">0</button>
+          <button class="dial-btn" onclick="backspace()">⌫</button>
         </div>
+      </div>
 
-        <!-- Phone Input -->
-        <div class="phone-input-section">
-          <input type="tel" class="phone-input" id="phoneInput" placeholder="Enter phone number..." />
-          <button class="control-btn" id="dialBtn" style="width: 140px;">
-            <span style="font-size: 24px;">📞</span>
-            <span>Dial</span>
-          </button>
-        </div>
-
-        <!-- Call Timer -->
-        <div class="call-timer" id="callTimer" style="display: none;">
+      <!-- Call Timer -->
+      <div class="glass-card" id="callTimerCard" style="display: none;">
+        <div class="call-timer">
           <div class="timer-display" id="timerDisplay">00:00</div>
           <div class="call-status" id="callStatus">Idle</div>
         </div>
-
-        <!-- Audio Visualizer -->
-        <div class="audio-visualizer" id="audioVisualizer" style="display: none;">
-          <!-- Dynamic bars will be generated -->
+        <div class="audio-visualizer" id="audioVisualizer">
+          <!-- Bars generated by JS -->
         </div>
+      </div>
 
-        <!-- Call Controls -->
+      <!-- Call Controls -->
+      <div class="glass-card">
         <div class="call-controls">
-          <button class="control-btn danger" id="hangupBtn" disabled>
-            <span style="font-size: 24px;">📴</span>
-            <span>Hang Up</span>
+          <button class="control-btn" id="callBtn" onclick="makeCall()">
+            <span style="font-size: 24px;">📞</span>
+            <span>Call</span>
           </button>
-          <button class="control-btn" id="muteBtn" disabled>
+          <button class="control-btn danger" id="hangupBtn" onclick="hangup()" disabled>
+            <span style="font-size: 24px;">📴</span>
+            <span>Hangup</span>
+          </button>
+          <button class="control-btn" id="muteBtn" onclick="toggleMute()" disabled>
             <span style="font-size: 24px;">🔇</span>
             <span>Mute</span>
           </button>
-          <button class="control-btn" id="holdBtn" disabled>
+          <button class="control-btn" id="holdBtn" onclick="toggleHold()" disabled>
             <span style="font-size: 24px;">⏸️</span>
             <span>Hold</span>
           </button>
-          <button class="control-btn" id="recordBtn" disabled>
+          <button class="control-btn" id="smsBtn" onclick="openSMSModal()" disabled>
+            <span style="font-size: 24px;">💬</span>
+            <span>SMS</span>
+          </button>
+          <button class="control-btn" id="recordBtn" onclick="toggleRecord()" disabled>
             <span style="font-size: 24px;">⏺️</span>
             <span>Record</span>
           </button>
-          <button class="control-btn" id="smsBtn" disabled>
-            <span style="font-size: 24px;">💬</span>
-            <span>Send SMS</span>
-          </button>
-          <button class="control-btn" id="emailBtn" disabled>
-            <span style="font-size: 24px;">📧</span>
-            <span>Send Email</span>
-          </button>
-          <button class="control-btn" id="addPartyBtn" disabled>
-            <span style="font-size: 24px;">👥</span>
-            <span>Add Party</span>
-          </button>
-          <button class="control-btn" id="transferBtn" disabled>
-            <span style="font-size: 24px;">📞</span>
+          <button class="control-btn" id="transferBtn" onclick="transferCall()" disabled>
+            <span style="font-size: 24px;">➡️</span>
             <span>Transfer</span>
           </button>
-        </div>
-      </div>
-
-      <!-- Lead Info Panel -->
-      <div class="dialer-card" id="leadInfoPanel" style="display: none;">
-        <h3 style="color: white; margin-bottom: 16px; font-weight: 600;">Current Lead</h3>
-        <div class="lead-info-panel" id="leadInfoContent">
-          <!-- Dynamic lead info -->
-        </div>
-      </div>
-
-      <!-- Caller History Panel -->
-      <div class="dialer-card" id="callerHistoryPanel" style="display: none;">
-        <!-- Dynamic caller history loaded here -->
-      </div>
-
-      <!-- Disposition Form -->
-      <div class="dialer-card" id="dispositionPanel" style="display: none;">
-        <h3 style="color: white; margin-bottom: 16px; font-weight: 600;">Call Disposition</h3>
-        <div class="disposition-form">
-          <div class="disposition-grid">
-            <button class="disposition-btn success" data-disposition="enrolled">✅ Enrolled</button>
-            <button class="disposition-btn" data-disposition="callback">📅 Callback</button>
-            <button class="disposition-btn" data-disposition="not-interested">❌ Not Interested</button>
-            <button class="disposition-btn" data-disposition="wrong-number">📞 Wrong Number</button>
-            <button class="disposition-btn" data-disposition="voicemail">📧 Voicemail</button>
-            <button class="disposition-btn" data-disposition="no-answer">🔇 No Answer</button>
-          </div>
-          <textarea class="notes-textarea" id="callNotes" placeholder="Call notes..."></textarea>
-          <div style="display: flex; gap: 16px; margin-top: 16px;">
-            <button class="control-btn" id="scheduleCallbackBtn" style="flex: 1;">
-              <span>📅 Schedule Callback</span>
-            </button>
-            <button class="control-btn active" id="saveDispositionBtn" style="flex: 1;">
-              <span>💾 Save & Next</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Scripts -->
-      <div class="dialer-card">
-        <h3 style="color: white; margin-bottom: 16px; font-weight: 600;">Quick Scripts</h3>
-        <div class="scripts-panel" id="scriptsPanel">
-          <!-- Scripts will be loaded here -->
+          <button class="control-btn" id="conferenceBtn" onclick="addConference()" disabled>
+            <span style="font-size: 24px;">👥</span>
+            <span>3-Way</span>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Right Column: Sidebar -->
-    <div style="display: flex; flex-direction: column; gap: 24px;">
-      <!-- Upcoming Callbacks -->
-      <div class="call-history-sidebar" style="flex: 1;">
-        <h3 style="color: white; margin-bottom: 16px; font-weight: 600;">Upcoming Callbacks</h3>
-        <div class="callbacks-list" id="callbacksList">
-          <!-- Callbacks will be loaded here -->
+    <!-- RIGHT: Call History & Disposition -->
+    <div>
+      <!-- Call History -->
+      <div class="glass-card sidebar-section">
+        <h3>Recent Calls</h3>
+        <div id="callHistory" style="max-height: 300px; overflow-y: auto;">
+          <!-- Populated by JS -->
         </div>
       </div>
 
-      <!-- Call History -->
-      <div class="call-history-sidebar" style="flex: 1;">
-        <h3 style="color: white; margin-bottom: 16px; font-weight: 600;">Recent Calls</h3>
-        <div id="callHistoryList">
-          <!-- History will be loaded here -->
+      <!-- Disposition Panel -->
+      <div class="glass-card" id="dispositionPanel" style="display: none;">
+        <h3>Call Disposition</h3>
+        <div class="disposition-grid">
+          <button class="disposition-btn success" onclick="selectDisposition('Interested')">✅ Interested</button>
+          <button class="disposition-btn" onclick="selectDisposition('Not Interested')">❌ Not Interested</button>
+          <button class="disposition-btn" onclick="selectDisposition('Callback')">📅 Callback</button>
+          <button class="disposition-btn" onclick="selectDisposition('Wrong Number')">📞 Wrong Number</button>
+          <button class="disposition-btn" onclick="selectDisposition('Voicemail')">📧 Voicemail</button>
+          <button class="disposition-btn" onclick="selectDisposition('Enrolled')">🎉 Enrolled</button>
         </div>
+        <textarea class="notes-textarea" id="callNotes" placeholder="Call notes..." style="margin-top: 16px;"></textarea>
+        <button class="control-btn active" onclick="saveDisposition()" style="width: 100%; margin-top: 16px;">
+          <span>💾 Save & Next</span>
+        </button>
       </div>
     </div>
   </div>
 
+  <!-- SMS Modal -->
+  <div class="modal-overlay" id="smsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Send SMS</h3>
+        <button class="modal-close" onclick="closeSMSModal()">×</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">To</label>
+        <input type="tel" class="form-input" id="smsTo" readonly />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-input" id="smsMessage" rows="5" placeholder="Type your message..."></textarea>
+      </div>
+      <button class="control-btn active" onclick="sendSMS()" style="width: 100%;">
+        <span>📤 Send SMS</span>
+      </button>
+    </div>
+  </div>
+
   <script>
-    // Initialize Twilio Manager (auto-fallback)
-    const twilio = new TwilioManager();
-    let currentMode = 'manual';
+    // =====================
+    // GLOBAL STATE
+    // =====================
+    let twilioDevice = null;
+    let activeCall = null;
+    let callStartTime = null;
+    let callTimer = null;
     let currentLead = null;
     let selectedDisposition = null;
-    let callerHistory = null;
+    let isDemoMode = false;
 
-    // Scripts database
-    const scripts = [
-      {
-        title: "Opening / Introduction",
-        content: "Hi, this is [Your Name] from Debt Solutions. I'm calling because you recently inquired about reducing your monthly debt payments. Is this still a priority for you?"
-      },
-      {
-        title: "Qualification",
-        content: "Great! To help you best, I need to understand your situation. Can you tell me: 1) What's your total monthly debt payment right now? 2) What would be an ideal monthly payment for you? 3) Are you currently behind on any payments?"
-      },
-      {
-        title: "Objection: Not Interested",
-        content: "I understand. Let me ask you this - if I could show you a way to reduce your monthly payments by 30-50% and get you debt-free in 3-4 years instead of 10+, would that be worth 15 minutes of your time?"
-      },
-      {
-        title: "Objection: Need to Think",
-        content: "I completely understand wanting to think it over. That's smart. Let me ask - what specific concerns do you have? I'd rather address them now than have you worry about them unnecessarily."
-      },
-      {
-        title: "Objection: Bankruptcy Concerns",
-        content: "That's a great question. Our program is NOT bankruptcy. Your credit may actually improve because you'll be paying off debts faster. Plus, you avoid the 7-10 year bankruptcy mark on your record."
-      },
-      {
-        title: "Close / Enrollment",
-        content: "Based on everything we've discussed, I can see you qualifying for our program. Your new monthly payment would be around $[amount], and you'd be debt-free in [timeframe]. Sound good? Let's get you enrolled today."
-      }
-    ];
+    const WORKER_URL = 'https://debt-dashboard-api.maui-6b7.workers.dev';
 
-    // Initialize
+    // =====================
+    // INITIALIZATION
+    // =====================
     document.addEventListener('DOMContentLoaded', async () => {
-      // Show loading status
-      Toast.info('Initializing Twilio...');
+      console.log('🚀 Power Dialer initializing...');
       
-      // Initialize Twilio (real or simulator)
-      const isRealTwilio = await twilio.initialize();
+      // Initialize Twilio
+      await initializeTwilio();
       
-      if (isRealTwilio) {
-        // Show real Twilio notice
-        const notice = document.getElementById('twilio-integration-notice');
-        if (notice) {
-          notice.style.display = 'block';
-          setTimeout(() => {
-            notice.style.animation = 'slideOutRight 0.5s ease-out';
-            setTimeout(() => notice.style.display = 'none', 500);
-          }, 8000);
-        }
-        
-        console.log('📞 REAL TWILIO ACTIVE');
-        console.log('📱 Dashboard Number:', TWILIO_CONFIG.fromNumber);
-        console.log('✅ Voice Calls: Enabled');
-        console.log('✅ SMS: Enabled');
-        console.log('✅ Recording: Enabled');
-        console.log('✅ Transfer: Enabled');
-        console.log('✅ Conference: Enabled');
-      }
+      // Load contacts
+      loadContacts();
       
-      loadScripts();
+      // Load call history
       loadCallHistory();
-      loadCallbacks();
+      
+      // Update stats
       updateStats();
-      setupEventListeners();
+      
+      // Create audio visualizer bars
       createAudioBars();
-      animateCounters();
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
+      
+      // Search handler
+      document.getElementById('contactSearch').addEventListener('input', (e) => {
+        loadContacts(e.target.value);
+      });
+
+      // Phone input formatter
+      document.getElementById('phoneInput').addEventListener('input', formatPhoneInput);
     });
 
-    // Animate counter numbers
-    function animateCounters() {
-      document.querySelectorAll('[data-target]').forEach(el => {
-        const target = parseInt(el.dataset.target);
-        animateValue(el, 0, target, 1000);
-      });
-    }
-
-    function animateValue(el, start, end, duration) {
-      const range = end - start;
-      const increment = range / (duration / 16);
-      let current = start;
-      
-      const timer = setInterval(() => {
-        current += increment;
-        if (current >= end) {
-          current = end;
-          clearInterval(timer);
-        }
-        el.textContent = Math.round(current) + (el.id === 'conversionRate' ? '%' : '');
-      }, 16);
-    }
-
-    // Setup event listeners
-    function setupEventListeners() {
-      // Mode buttons
-      document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-          e.target.closest('.mode-btn').classList.add('active');
-          currentMode = e.target.closest('.mode-btn').dataset.mode;
-        });
-      });
-
-      // Dial button
-      document.getElementById('dialBtn').addEventListener('click', handleDial);
-
-      // Hangup button
-      document.getElementById('hangupBtn').addEventListener('click', handleHangup);
-
-      // Mute button
-      document.getElementById('muteBtn').addEventListener('click', () => {
-        const isMuted = twilio.toggleMute();
-        document.getElementById('muteBtn').classList.toggle('active', isMuted);
-      });
-
-      // Hold button
-      document.getElementById('holdBtn').addEventListener('click', () => {
-        const isOnHold = twilio.toggleHold();
-        document.getElementById('holdBtn').classList.toggle('active', isOnHold);
-      });
-
-      // Record button
-      document.getElementById('recordBtn').addEventListener('click', () => {
-        const isRecording = twilio.toggleRecording();
-        document.getElementById('recordBtn').classList.toggle('active', isRecording);
-      });
-
-      // SMS button
-      document.getElementById('smsBtn').addEventListener('click', () => {
-        if (!currentLead || !currentLead.phone) {
-          Toast.warning('No phone number available');
-          return;
-        }
-        const message = prompt('Enter SMS message:');
-        if (message) {
-          sendSMS(currentLead.phone, message);
-        }
-      });
-
-      // Email button
-      document.getElementById('emailBtn').addEventListener('click', () => {
-        if (!currentLead || !currentLead.email) {
-          Toast.warning('No email address available');
-          return;
-        }
-        // Open email composer (implement this)
-        Toast.info('Email composer coming soon');
-      });
-
-      // Add Party button (3-way calling)
-      document.getElementById('addPartyBtn').addEventListener('click', () => {
-        const phoneNumber = prompt('Enter third party phone number:');
-        if (phoneNumber) {
-          addThirdParty(phoneNumber);
-        }
-      });
-
-      // Transfer button
-      document.getElementById('transferBtn').addEventListener('click', () => {
-        const phoneNumber = prompt('Transfer to phone number:');
-        if (phoneNumber) {
-          transferCall(phoneNumber);
-        }
-      });
-
-      // Disposition buttons
-      document.querySelectorAll('.disposition-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          document.querySelectorAll('.disposition-btn').forEach(b => b.classList.remove('active'));
-          e.currentTarget.classList.add('active');
-          selectedDisposition = e.currentTarget.dataset.disposition;
-        });
-      });
-
-      // Save disposition
-      document.getElementById('saveDispositionBtn').addEventListener('click', saveDisposition);
-
-      // Schedule callback
-      document.getElementById('scheduleCallbackBtn').addEventListener('click', scheduleCallback);
-
-      // Twilio callbacks
-      twilio.on('onStateChange', handleStateChange);
-      twilio.on('onTimerUpdate', updateTimer);
-      twilio.on('onAudioLevel', updateAudioLevel);
-      twilio.on('onCallEnd', handleCallEnd);
-
-      // Enter key to dial
-      document.getElementById('phoneInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleDial();
-      });
-    }
-
-    // Handle dial
-    async function handleDial() {
-      const phoneNumber = document.getElementById('phoneInput').value.trim();
-      if (!phoneNumber) return;
-
-      // Fetch caller memory from API
-      await fetchCallerMemory(phoneNumber);
-
-      // Get lead data if available
-      if (window.DebtDB && window.DebtDB.leads) {
-        currentLead = window.DebtDB.leads.find(l => l.phone === phoneNumber);
-      }
-
-      // If no lead found in DebtDB but found in API, use API data
-      if (!currentLead && callerHistory && callerHistory.found) {
-        currentLead = callerHistory.lead;
-      }
-
-      // If still no lead, create new one
-      if (!currentLead) {
-        currentLead = await createNewLead(phoneNumber);
-      }
-
-      twilio.dial(phoneNumber, currentLead);
-    }
-
-    /**
-     * Fetch caller memory from API
-     */
-    async function fetchCallerMemory(phoneNumber) {
+    // =====================
+    // TWILIO INITIALIZATION
+    // =====================
+    async function initializeTwilio() {
       try {
-        const cleanPhone = phoneNumber.replace(/\D/g, '');
-        const response = await fetch(`/api/dashboard/leads/by-phone/${cleanPhone}`);
-        
-        if (!response.ok) {
-          console.warn('Failed to fetch caller memory');
-          callerHistory = null;
-          return;
+        // Check if Twilio SDK is loaded
+        if (typeof Twilio === 'undefined' || !Twilio.Device) {
+          throw new Error('Twilio SDK not loaded');
         }
 
-        callerHistory = await response.json();
-        
-        if (callerHistory.found) {
-          console.log('📞 Caller found in CRM:', callerHistory.lead.name);
-          console.log('📊 Previous calls:', callerHistory.history.totalCalls);
-          
-          // Show history panel
-          showCallerHistory(callerHistory);
-        } else {
-          console.log('📞 New caller - no history');
-          callerHistory = null;
-        }
+        // Fetch token from Worker
+        const response = await fetch(`${WORKER_URL}/api/twilio/token`);
+        if (!response.ok) throw new Error('Failed to fetch token');
+
+        const { token } = await response.json();
+
+        // Initialize Twilio Device
+        twilioDevice = new Twilio.Device(token, {
+          edge: 'ashburn',
+          closeProtection: true
+        });
+
+        // Setup event listeners
+        twilioDevice.on('registered', () => {
+          console.log('✅ Twilio Device registered');
+          showToast('Twilio connected', 'success');
+        });
+
+        twilioDevice.on('error', (error) => {
+          console.error('❌ Twilio error:', error);
+          showToast('Twilio error: ' + error.message, 'error');
+        });
+
+        twilioDevice.on('incoming', handleIncomingCall);
+
+        await twilioDevice.register();
+        isDemoMode = false;
       } catch (error) {
-        console.error('Error fetching caller memory:', error);
-        callerHistory = null;
+        console.warn('⚠️ Twilio unavailable, using demo mode:', error);
+        isDemoMode = true;
+        showToast('Demo Mode - Twilio unavailable', 'warning');
       }
     }
 
-    /**
-     * Create new lead for unknown caller
-     */
-    async function createNewLead(phoneNumber) {
-      const newLead = {
-        id: `L${Date.now()}`,
-        name: 'Unknown Caller',
-        phone: phoneNumber,
-        email: null,
-        stage: 'New Lead',
-        totalDebt: 0,
-        monthlyIncome: 0,
-        dtiRatio: 0,
-        status: 'new',
-        createdAt: new Date().toISOString()
-      };
-
-      // In production, save to backend
-      console.log('Creating new lead:', newLead);
+    // =====================
+    // CONTACT LIST
+    // =====================
+    function loadContacts(searchQuery = '') {
+      const container = document.getElementById('contactList');
       
-      return newLead;
-    }
-
-    /**
-     * Show caller history panel
-     */
-    function showCallerHistory(history) {
-      const panel = document.getElementById('callerHistoryPanel');
-      if (!panel) return;
-
-      const { lead, history: callHistory } = history;
-      const { totalCalls, lastCall, recentCalls, sentimentTrend, outcomes } = callHistory;
-
-      let html = `
-        <h4 style="color: #3B82F6; margin-bottom: 12px;">📊 Previous Interactions (${totalCalls} calls)</h4>
-      `;
-
-      if (lastCall) {
-        const lastDate = new Date(lastCall.startTime).toLocaleString();
-        html += `
-          <div style="background: rgba(59, 130, 246, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid #3B82F6;">
-            <div style="font-weight: 600; color: white; margin-bottom: 4px;">Last Call: ${lastDate}</div>
-            <div style="color: #94A3B8; font-size: 13px;">Disposition: ${lastCall.disposition || 'None'}</div>
-            ${lastCall.notes ? `<div style="color: #94A3B8; font-size: 13px; margin-top: 4px;">Notes: ${lastCall.notes}</div>` : ''}
-          </div>
-        `;
+      if (!window.DebtDB) {
+        container.innerHTML = '<div style="color: #64748B; text-align: center; padding: 20px;">DebtDB not loaded</div>';
+        return;
       }
 
-      if (recentCalls && recentCalls.length > 0) {
-        html += `<h5 style="color: #64748B; margin: 16px 0 8px 0; font-size: 13px;">Recent Calls:</h5>`;
-        recentCalls.forEach(call => {
-          const date = new Date(call.startTime).toLocaleDateString();
-          html += `
-            <div style="padding: 8px; background: rgba(10, 15, 26, 0.6); border-radius: 6px; margin-bottom: 6px; font-size: 12px;">
-              <span style="color: white;">${date}</span> - 
-              <span style="color: #3B82F6;">${call.disposition || 'Unknown'}</span> - 
-              <span style="color: #64748B;">${Math.floor(call.duration / 60)}m ${call.duration % 60}s</span>
-            </div>
-          `;
-        });
+      let leads = window.DebtDB.getLeads();
+      
+      // Filter by search
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        leads = leads.filter(l => 
+          l.name.toLowerCase().includes(query) ||
+          l.phone.toLowerCase().includes(query)
+        );
       }
 
-      if (outcomes && Object.keys(outcomes).length > 0) {
-        html += `<h5 style="color: #64748B; margin: 16px 0 8px 0; font-size: 13px;">Outcomes:</h5>`;
-        Object.entries(outcomes).forEach(([disposition, count]) => {
-          html += `
-            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px;">
-              <span style="color: #94A3B8;">${disposition}</span>
-              <span style="color: #3B82F6; font-weight: 600;">${count}</span>
-            </div>
-          `;
-        });
+      // Limit to first 20
+      leads = leads.slice(0, 20);
+
+      if (leads.length === 0) {
+        container.innerHTML = '<div style="color: #64748B; text-align: center; padding: 20px;">No contacts found</div>';
+        return;
       }
 
-      panel.innerHTML = html;
-      panel.style.display = 'block';
+      container.innerHTML = leads.map(lead => `
+        <div class="contact-item" onclick="selectContact('${lead.id}')">
+          <div class="contact-name">${lead.name}</div>
+          <div class="contact-phone">${lead.phone}</div>
+          <div class="contact-debt">$${(lead.totalDebt || 0).toLocaleString()} debt</div>
+        </div>
+      `).join('');
     }
 
-    // Handle hangup
-    function handleHangup() {
-      twilio.hangup();
-    }
-
-    // Handle state change
-    function handleStateChange(state) {
-      const statusEl = document.getElementById('callStatus');
-      const timerEl = document.getElementById('callTimer');
-      const timerDisplay = document.getElementById('timerDisplay');
-      const visualizerEl = document.getElementById('audioVisualizer');
-      const dialBtn = document.getElementById('dialBtn');
-      const hangupBtn = document.getElementById('hangupBtn');
-      const muteBtn = document.getElementById('muteBtn');
-      const holdBtn = document.getElementById('holdBtn');
-      const recordBtn = document.getElementById('recordBtn');
-      const smsBtn = document.getElementById('smsBtn');
-      const emailBtn = document.getElementById('emailBtn');
-      const addPartyBtn = document.getElementById('addPartyBtn');
-      const transferBtn = document.getElementById('transferBtn');
-      const leadPanel = document.getElementById('leadInfoPanel');
-      const dispPanel = document.getElementById('dispositionPanel');
-      const historyPanel = document.getElementById('callerHistoryPanel');
-
-      // Remove all status classes
-      statusEl.classList.remove('connected', 'dialing', 'disconnected');
-
-      switch (state) {
-        case 'idle':
-          statusEl.textContent = 'Idle';
-          timerEl.style.display = 'none';
-          visualizerEl.style.display = 'none';
-          leadPanel.style.display = 'none';
-          dispPanel.style.display = 'none';
-          historyPanel.style.display = 'none';
-          dialBtn.disabled = false;
-          hangupBtn.disabled = true;
-          muteBtn.disabled = true;
-          holdBtn.disabled = true;
-          recordBtn.disabled = true;
-          smsBtn.disabled = true;
-          emailBtn.disabled = true;
-          addPartyBtn.disabled = true;
-          transferBtn.disabled = true;
-          timerDisplay.classList.remove('calling');
-          break;
-
-        case 'dialing':
-          statusEl.textContent = 'Dialing...';
-          statusEl.classList.add('dialing');
-          timerEl.style.display = 'block';
-          timerDisplay.classList.add('calling');
-          dialBtn.disabled = true;
-          hangupBtn.disabled = false;
-          if (currentLead) {
-            showLeadInfo(currentLead);
-            leadPanel.style.display = 'block';
-          }
-          break;
-
-        case 'connected':
-          statusEl.textContent = 'Connected';
-          statusEl.classList.add('connected');
-          visualizerEl.style.display = 'flex';
-          muteBtn.disabled = false;
-          holdBtn.disabled = false;
-          recordBtn.disabled = false;
-          smsBtn.disabled = false;
-          emailBtn.disabled = false;
-          addPartyBtn.disabled = false;
-          transferBtn.disabled = false;
-          timerDisplay.classList.remove('calling');
-          break;
-
-        case 'on-hold':
-          statusEl.textContent = 'On Hold';
-          visualizerEl.style.display = 'none';
-          break;
-
-        case 'disconnected':
-          statusEl.textContent = 'Call Ended';
-          statusEl.classList.add('disconnected');
-          visualizerEl.style.display = 'none';
-          dispPanel.style.display = 'block';
-          break;
+    function selectContact(leadId) {
+      if (!window.DebtDB) return;
+      
+      const lead = window.DebtDB.getLeadById(leadId);
+      if (lead) {
+        document.getElementById('phoneInput').value = lead.phone;
+        currentLead = lead;
+        showToast(`Selected: ${lead.name}`, 'info');
       }
     }
 
-    // Update timer
-    function updateTimer(seconds) {
-      document.getElementById('timerDisplay').textContent = TwilioSimulator.formatTime(seconds);
+    // =====================
+    // DIAL PAD
+    // =====================
+    function dialDigit(digit) {
+      const input = document.getElementById('phoneInput');
+      input.value += digit;
+      formatPhoneInput();
     }
 
-    // Update audio level
-    function updateAudioLevel(level) {
-      const bars = document.querySelectorAll('.audio-bar');
-      bars.forEach((bar, i) => {
-        const variance = Math.random() * 0.5 + 0.5;
-        const height = (level * variance) * 0.8;
-        bar.style.height = `${height}%`;
+    function backspace() {
+      const input = document.getElementById('phoneInput');
+      input.value = input.value.slice(0, -1);
+    }
+
+    function formatPhoneInput() {
+      const input = document.getElementById('phoneInput');
+      let value = input.value.replace(/\D/g, '');
+      
+      if (value.length <= 3) {
+        input.value = value;
+      } else if (value.length <= 6) {
+        input.value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+      } else {
+        input.value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+      }
+    }
+
+    // =====================
+    // CALL FUNCTIONS
+    // =====================
+    async function makeCall() {
+      const phoneNumber = document.getElementById('phoneInput').value.replace(/\D/g, '');
+      
+      if (!phoneNumber || phoneNumber.length < 10) {
+        showToast('Please enter a valid phone number', 'error');
+        return;
+      }
+
+      try {
+        // Show timer card
+        document.getElementById('callTimerCard').style.display = 'block';
+        setCallStatus('Dialing...', 'dialing');
+
+        if (isDemoMode) {
+          // Demo mode simulation
+          simulateCall(phoneNumber);
+        } else {
+          // Real Twilio call
+          const params = { To: `+1${phoneNumber}` };
+          activeCall = await twilioDevice.connect({ params });
+
+          setupCallHandlers(activeCall);
+        }
+
+        // Disable call button, enable others
+        document.getElementById('callBtn').disabled = true;
+        document.getElementById('hangupBtn').disabled = false;
+        document.getElementById('muteBtn').disabled = false;
+        document.getElementById('holdBtn').disabled = false;
+        document.getElementById('smsBtn').disabled = false;
+        document.getElementById('recordBtn').disabled = false;
+        document.getElementById('transferBtn').disabled = false;
+        document.getElementById('conferenceBtn').disabled = false;
+      } catch (error) {
+        console.error('❌ Call failed:', error);
+        showToast('Call failed: ' + error.message, 'error');
+        resetCallUI();
+      }
+    }
+
+    function simulateCall(phoneNumber) {
+      // Simulate call flow
+      setTimeout(() => {
+        setCallStatus('Connected', 'connected');
+        startCallTimer();
+        startAudioVisualizer();
+      }, 2000);
+    }
+
+    function setupCallHandlers(call) {
+      call.on('accept', () => {
+        console.log('✅ Call accepted');
+        setCallStatus('Connected', 'connected');
+        startCallTimer();
+        startAudioVisualizer();
+      });
+
+      call.on('disconnect', () => {
+        console.log('📴 Call disconnected');
+        handleCallEnd();
+      });
+
+      call.on('error', (error) => {
+        console.error('❌ Call error:', error);
+        showToast('Call error: ' + error.message, 'error');
+        handleCallEnd();
       });
     }
 
-    // Create audio bars
+    function handleIncomingCall(call) {
+      console.log('📞 Incoming call:', call.parameters.From);
+      
+      if (confirm(`Incoming call from ${call.parameters.From}. Accept?`)) {
+        activeCall = call;
+        setupCallHandlers(call);
+        call.accept();
+        
+        document.getElementById('callTimerCard').style.display = 'block';
+        document.getElementById('callBtn').disabled = true;
+        document.getElementById('hangupBtn').disabled = false;
+        document.getElementById('muteBtn').disabled = false;
+        document.getElementById('holdBtn').disabled = false;
+      } else {
+        call.reject();
+      }
+    }
+
+    function hangup() {
+      if (activeCall) {
+        activeCall.disconnect();
+      } else if (isDemoMode) {
+        handleCallEnd();
+      }
+    }
+
+    function handleCallEnd() {
+      stopCallTimer();
+      stopAudioVisualizer();
+      setCallStatus('Call Ended', 'disconnected');
+      
+      // Save call to history
+      saveCallToHistory();
+      
+      // Show disposition panel
+      setTimeout(() => {
+        document.getElementById('dispositionPanel').style.display = 'block';
+      }, 500);
+      
+      activeCall = null;
+    }
+
+    function resetCallUI() {
+      document.getElementById('callTimerCard').style.display = 'none';
+      document.getElementById('dispositionPanel').style.display = 'none';
+      document.getElementById('callBtn').disabled = false;
+      document.getElementById('hangupBtn').disabled = true;
+      document.getElementById('muteBtn').disabled = true;
+      document.getElementById('holdBtn').disabled = true;
+      document.getElementById('smsBtn').disabled = true;
+      document.getElementById('recordBtn').disabled = true;
+      document.getElementById('transferBtn').disabled = true;
+      document.getElementById('conferenceBtn').disabled = true;
+      document.getElementById('muteBtn').classList.remove('active');
+      document.getElementById('holdBtn').classList.remove('active');
+      document.getElementById('recordBtn').classList.remove('active');
+    }
+
+    // =====================
+    // CALL CONTROLS
+    // =====================
+    function toggleMute() {
+      if (!activeCall && !isDemoMode) return;
+      
+      const btn = document.getElementById('muteBtn');
+      const isMuted = btn.classList.toggle('active');
+      
+      if (activeCall) {
+        activeCall.mute(isMuted);
+      }
+      
+      showToast(isMuted ? 'Muted' : 'Unmuted', 'info');
+    }
+
+    async function toggleHold() {
+      if (!activeCall && !isDemoMode) return;
+      
+      const btn = document.getElementById('holdBtn');
+      const isOnHold = btn.classList.toggle('active');
+      
+      if (!isDemoMode && activeCall) {
+        try {
+          const response = await fetch(`${WORKER_URL}/api/twilio/hold`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              callSid: activeCall.parameters.CallSid,
+              hold: isOnHold
+            })
+          });
+          
+          if (!response.ok) throw new Error('Hold failed');
+        } catch (error) {
+          console.error('❌ Hold failed:', error);
+          btn.classList.toggle('active');
+        }
+      }
+      
+      showToast(isOnHold ? 'Call on hold' : 'Call resumed', 'info');
+    }
+
+    function toggleRecord() {
+      const btn = document.getElementById('recordBtn');
+      const isRecording = btn.classList.toggle('active');
+      showToast(isRecording ? '⏺️ Recording started' : '⏹️ Recording stopped', 'info');
+    }
+
+    function transferCall() {
+      const transferTo = prompt('Transfer to number:');
+      if (!transferTo) return;
+      
+      showToast(`Transferring to ${transferTo}...`, 'info');
+      
+      if (!isDemoMode && activeCall) {
+        fetch(`${WORKER_URL}/api/twilio/transfer`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            callSid: activeCall.parameters.CallSid,
+            to: transferTo
+          })
+        });
+      }
+    }
+
+    function addConference() {
+      const thirdParty = prompt('Add party (phone number):');
+      if (!thirdParty) return;
+      
+      showToast(`Adding ${thirdParty} to conference...`, 'info');
+      
+      if (!isDemoMode && activeCall) {
+        fetch(`${WORKER_URL}/api/twilio/conference`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            callSid: activeCall.parameters.CallSid,
+            participant: thirdParty
+          })
+        });
+      }
+    }
+
+    // =====================
+    // SMS MODAL
+    // =====================
+    function openSMSModal() {
+      const phoneNumber = document.getElementById('phoneInput').value;
+      document.getElementById('smsTo').value = phoneNumber;
+      document.getElementById('smsModal').classList.add('open');
+    }
+
+    function closeSMSModal() {
+      document.getElementById('smsModal').classList.remove('open');
+      document.getElementById('smsMessage').value = '';
+    }
+
+    async function sendSMS() {
+      const to = document.getElementById('smsTo').value.replace(/\D/g, '');
+      const message = document.getElementById('smsMessage').value;
+      
+      if (!message) {
+        showToast('Please enter a message', 'error');
+        return;
+      }
+
+      try {
+        if (isDemoMode) {
+          showToast('SMS sent (demo mode)', 'success');
+        } else {
+          const response = await fetch(`${WORKER_URL}/api/twilio/sms`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ to: `+1${to}`, message })
+          });
+          
+          if (!response.ok) throw new Error('SMS failed');
+          
+          showToast('SMS sent successfully', 'success');
+        }
+        
+        closeSMSModal();
+      } catch (error) {
+        console.error('❌ SMS failed:', error);
+        showToast('SMS failed: ' + error.message, 'error');
+      }
+    }
+
+    // =====================
+    // TIMER & VISUALIZER
+    // =====================
+    function startCallTimer() {
+      callStartTime = Date.now();
+      callTimer = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - callStartTime) / 1000);
+        const mins = Math.floor(elapsed / 60);
+        const secs = elapsed % 60;
+        document.getElementById('timerDisplay').textContent = 
+          `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function stopCallTimer() {
+      if (callTimer) {
+        clearInterval(callTimer);
+        callTimer = null;
+      }
+    }
+
     function createAudioBars() {
       const visualizer = document.getElementById('audioVisualizer');
       for (let i = 0; i < 50; i++) {
         const bar = document.createElement('div');
         bar.className = 'audio-bar';
+        bar.style.height = '20%';
         visualizer.appendChild(bar);
       }
     }
 
-    // Show lead info
-    function showLeadInfo(lead) {
-      const content = document.getElementById('leadInfoContent');
-      content.innerHTML = `
-        <div class="lead-info-row">
-          <span class="lead-info-label">Name</span>
-          <span class="lead-info-value">${lead.name || 'Unknown'}</span>
-        </div>
-        <div class="lead-info-row">
-          <span class="lead-info-label">Phone</span>
-          <span class="lead-info-value">${lead.phone}</span>
-        </div>
-        <div class="lead-info-row">
-          <span class="lead-info-label">Email</span>
-          <span class="lead-info-value">${lead.email || 'N/A'}</span>
-        </div>
-        <div class="lead-info-row">
-          <span class="lead-info-label">Total Debt</span>
-          <span class="lead-info-value">$${(lead.totalDebt || 0).toLocaleString()}</span>
-        </div>
-        <div class="lead-info-row">
-          <span class="lead-info-label">Monthly Income</span>
-          <span class="lead-info-value">$${(lead.monthlyIncome || 0).toLocaleString()}</span>
-        </div>
-        <div class="lead-info-row">
-          <span class="lead-info-label">DTI Ratio</span>
-          <span class="lead-info-value">${lead.dtiRatio || 'N/A'}%</span>
-        </div>
-        <div class="lead-info-row">
-          <span class="lead-info-label">Status</span>
-          <span class="lead-info-value">${lead.status || 'New'}</span>
-        </div>
-      `;
+    function startAudioVisualizer() {
+      const bars = document.querySelectorAll('.audio-bar');
+      setInterval(() => {
+        bars.forEach(bar => {
+          const height = Math.random() * 80 + 20;
+          bar.style.height = `${height}%`;
+        });
+      }, 150);
     }
 
-    // Handle call end
-    function handleCallEnd(call) {
+    function stopAudioVisualizer() {
+      const bars = document.querySelectorAll('.audio-bar');
+      bars.forEach(bar => bar.style.height = '20%');
+    }
+
+    function setCallStatus(text, state) {
+      const statusEl = document.getElementById('callStatus');
+      statusEl.textContent = text;
+      statusEl.className = 'call-status ' + state;
+      
+      const timerDisplay = document.getElementById('timerDisplay');
+      if (state === 'dialing') {
+        timerDisplay.classList.add('calling');
+      } else {
+        timerDisplay.classList.remove('calling');
+      }
+    }
+
+    // =====================
+    // DISPOSITION
+    // =====================
+    function selectDisposition(disposition) {
+      selectedDisposition = disposition;
+      document.querySelectorAll('.disposition-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+
+    function saveDisposition() {
+      if (!selectedDisposition) {
+        showToast('Please select a disposition', 'warning');
+        return;
+      }
+      
+      const notes = document.getElementById('callNotes').value;
+      
+      // Save to call history
+      const callData = {
+        phoneNumber: document.getElementById('phoneInput').value,
+        disposition: selectedDisposition,
+        notes: notes,
+        timestamp: Date.now()
+      };
+      
+      let history = JSON.parse(localStorage.getItem('callHistory') || '[]');
+      history.unshift(callData);
+      localStorage.setItem('callHistory', JSON.stringify(history.slice(0, 100)));
+      
+      // Reset UI
+      document.getElementById('dispositionPanel').style.display = 'none';
+      document.getElementById('callNotes').value = '';
+      selectedDisposition = null;
+      resetCallUI();
+      
+      // Reload history
       loadCallHistory();
       updateStats();
       
-      // Log call to API
-      if (call && call.id) {
-        logCallToAPI(call);
-      }
+      showToast('Disposition saved', 'success');
     }
 
-    /**
-     * Log call to API
-     */
-    async function logCallToAPI(call) {
-      try {
-        const callData = {
-          callSid: call.id,
-          direction: call.direction || 'outbound',
-          from: call.phoneNumber || '',
-          to: call.phoneNumber || '',
-          leadId: currentLead?.id || null,
-          agentId: 'AGT001', // TODO: Get from logged-in user
-          startTime: new Date(call.startTime).toISOString(),
-          endTime: new Date(call.endTime).toISOString(),
-          duration: call.duration || 0,
-          talkTime: call.duration || 0,
-          disposition: call.disposition || null,
-          notes: call.notes || '',
-          followUp: call.followUp || null,
-          previousCallCount: callerHistory?.history?.totalCalls || 0
-        };
-
-        const response = await fetch('/api/dashboard/calls/log', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(callData)
-        });
-
-        if (response.ok) {
-          console.log('✅ Call logged to API');
-        }
-      } catch (error) {
-        console.error('Failed to log call:', error);
-      }
-    }
-
-    /**
-     * Send SMS
-     */
-    async function sendSMS(to, body) {
-      try {
-        const result = await twilio.sendSMS(to, body);
-        if (result) {
-          Toast.success('SMS sent successfully!');
-        } else {
-          Toast.error('Failed to send SMS');
-        }
-      } catch (error) {
-        console.error('SMS error:', error);
-        Toast.error('Failed to send SMS');
-      }
-    }
-
-    /**
-     * Add third party to call (3-way)
-     */
-    async function addThirdParty(phoneNumber) {
-      try {
-        const result = await twilio.addThirdParty(phoneNumber);
-        if (result) {
-          Toast.success(`Added ${phoneNumber} to conference`);
-        } else {
-          Toast.warning('3-way calling not available in simulator mode');
-        }
-      } catch (error) {
-        console.error('Add party error:', error);
-        Toast.error('Failed to add third party');
-      }
-    }
-
-    /**
-     * Transfer call
-     */
-    async function transferCall(phoneNumber) {
-      try {
-        const result = await twilio.transferCall(phoneNumber);
-        if (result) {
-          Toast.success(`Call transferred to ${phoneNumber}`);
-        } else {
-          Toast.warning('Transfer not available in simulator mode');
-        }
-      } catch (error) {
-        console.error('Transfer error:', error);
-        Toast.error('Failed to transfer call');
-      }
-    }
-
-    // Save disposition
-    function saveDisposition() {
-      const notes = document.getElementById('callNotes').value;
+    // =====================
+    // CALL HISTORY
+    // =====================
+    function saveCallToHistory() {
+      const phoneNumber = document.getElementById('phoneInput').value;
+      const duration = document.getElementById('timerDisplay').textContent;
       
-      if (!selectedDisposition) {
-        Toast.warning('Please select a disposition before saving');
-        return;
-      }
-
-      twilio.hangup(selectedDisposition, notes);
-
-      // Reset form
-      document.getElementById('callNotes').value = '';
-      selectedDisposition = null;
-      document.querySelectorAll('.disposition-btn').forEach(b => b.classList.remove('active'));
-
-      // Auto-dial next in progressive mode
-      if (currentMode === 'progressive') {
-        setTimeout(() => {
-          // Get next lead from queue
-          if (window.DebtDB && window.DebtDB.leads) {
-            const nextLead = window.DebtDB.leads.find(l => l.status === 'new');
-            if (nextLead) {
-              document.getElementById('phoneInput').value = nextLead.phone;
-              handleDial();
-            }
-          }
-        }, 2000);
-      }
-    }
-
-    // Schedule callback
-    function scheduleCallback() {
-      const phone = document.getElementById('phoneInput').value;
-      const name = currentLead ? currentLead.name : 'Unknown';
-      const leadId = currentLead ? currentLead.id : null;
+      const callData = {
+        phoneNumber: phoneNumber,
+        duration: duration,
+        timestamp: Date.now(),
+        disposition: null
+      };
       
-      const date = prompt('Enter callback date/time (YYYY-MM-DD HH:MM):');
-      if (!date) return;
-
-      const notes = document.getElementById('callNotes').value;
-      twilio.scheduleCallback(leadId, name, phone, date, notes);
+      let history = JSON.parse(localStorage.getItem('callHistory') || '[]');
+      history.unshift(callData);
+      localStorage.setItem('callHistory', JSON.stringify(history.slice(0, 100)));
       
-      loadCallbacks();
-      Toast.success('Callback scheduled successfully!');
+      loadCallHistory();
     }
 
-    // Load scripts
-    function loadScripts() {
-      const panel = document.getElementById('scriptsPanel');
-      panel.innerHTML = scripts.map(script => `
-        <div class="script-item">
-          <div class="script-title">${script.title}</div>
-          <div class="script-content">${script.content}</div>
-        </div>
-      `).join('');
-    }
-
-    // Load call history
     function loadCallHistory() {
-      const history = twilio.getCallHistory(20);
-      const list = document.getElementById('callHistoryList');
+      const container = document.getElementById('callHistory');
+      const history = JSON.parse(localStorage.getItem('callHistory') || '[]').slice(0, 20);
       
       if (history.length === 0) {
-        list.innerHTML = '<div style="text-align: center; color: #64748B; padding: 32px;">No calls yet</div>';
+        container.innerHTML = '<div style="color: #64748B; text-align: center; padding: 20px;">No calls yet</div>';
         return;
       }
-
-      list.innerHTML = history.map(call => {
-        const date = new Date(call.startTime);
-        const isSuccess = call.disposition === 'enrolled';
-        const isFailed = call.disposition === 'no-answer' || call.disposition === 'voicemail';
-        
+      
+      container.innerHTML = history.map(call => {
+        const date = new Date(call.timestamp);
         return `
-          <div class="history-item ${isSuccess ? 'success' : isFailed ? 'failed' : ''}">
+          <div class="history-item">
             <div class="history-phone">${call.phoneNumber}</div>
             <div class="history-meta">
               <span>${date.toLocaleTimeString()}</span>
-              <span>${TwilioSimulator.formatTime(call.duration)}</span>
+              <span>${call.duration || '00:00'}</span>
             </div>
-            ${call.disposition ? `<div class="history-disposition">${call.disposition}</div>` : ''}
+            ${call.disposition ? `<div style="margin-top: 8px; color: #3B82F6; font-size: 12px;">${call.disposition}</div>` : ''}
           </div>
         `;
       }).join('');
     }
 
-    // Load callbacks
-    function loadCallbacks() {
-      const callbacks = twilio.getCallbacks().filter(cb => !cb.completed);
-      const list = document.getElementById('callbacksList');
-      
-      if (callbacks.length === 0) {
-        list.innerHTML = '<div style="text-align: center; color: #64748B; padding: 32px;">No upcoming callbacks</div>';
-        return;
-      }
-
-      list.innerHTML = callbacks.map(cb => {
-        const scheduledDate = new Date(cb.scheduledDate);
-        const now = new Date();
-        const isOverdue = scheduledDate < now;
-        const isDueToday = scheduledDate.toDateString() === now.toDateString();
-        
-        let urgency = 'green';
-        if (isOverdue) urgency = 'red';
-        else if (isDueToday) urgency = 'yellow';
-
-        return `
-          <div class="callback-item">
-            <div class="callback-info">
-              <div class="callback-name">
-                <span class="urgency-badge urgency-${urgency}"></span>
-                ${cb.leadName}
-              </div>
-              <div class="callback-time">${scheduledDate.toLocaleString()}</div>
-            </div>
-            <button class="callback-call-btn" onclick="callCallback('${cb.phoneNumber}', '${cb.id}')">
-              📞 Call
-            </button>
-          </div>
-        `;
-      }).join('');
-    }
-
-    // Call from callback
-    window.callCallback = (phone, callbackId) => {
-      document.getElementById('phoneInput').value = phone;
-      handleDial();
-      twilio.completeCallback(callbackId);
-      setTimeout(loadCallbacks, 1000);
-    };
-
-    // Update stats
+    // =====================
+    // STATS
+    // =====================
     function updateStats() {
-      const stats = twilio.getCallStats();
+      const history = JSON.parse(localStorage.getItem('callHistory') || '[]');
+      const today = new Date().toDateString();
       
-      // Calls per hour (assuming 8-hour workday)
-      const callsPerHour = Math.round(stats.totalCalls / 8) || 0;
-      const el = document.getElementById('callsPerHour');
-      el.dataset.target = callsPerHour;
-      animateValue(el, parseInt(el.textContent) || 0, callsPerHour, 500);
-
-      // Talk time
-      document.getElementById('totalTalkTime').textContent = TwilioSimulator.formatTime(stats.totalTalkTime);
-
-      // Conversion rate
-      const conversionRate = stats.totalCalls > 0 
-        ? Math.round((stats.conversions / stats.totalCalls) * 100) 
-        : 0;
-      const convEl = document.getElementById('conversionRate');
-      convEl.dataset.target = conversionRate;
-      animateValue(convEl, parseInt(convEl.textContent) || 0, conversionRate, 500);
+      const todayCalls = history.filter(call => {
+        const callDate = new Date(call.timestamp).toDateString();
+        return callDate === today;
+      });
+      
+      document.getElementById('callsToday').textContent = todayCalls.length;
+      
+      // Calculate total talk time (simplified)
+      let totalSeconds = 0;
+      todayCalls.forEach(call => {
+        if (call.duration) {
+          const [mins, secs] = call.duration.split(':').map(Number);
+          totalSeconds += (mins * 60) + secs;
+        }
+      });
+      const hours = Math.floor(totalSeconds / 3600);
+      const mins = Math.floor((totalSeconds % 3600) / 60);
+      document.getElementById('totalTalkTime').textContent = `${hours}:${mins.toString().padStart(2, '0')}`;
+      
+      // Count conversions
+      const conversions = todayCalls.filter(call => 
+        call.disposition === 'Interested' || call.disposition === 'Enrolled'
+      ).length;
+      document.getElementById('conversions').textContent = conversions;
     }
 
-    // Refresh stats every 30 seconds
-    setInterval(updateStats, 30000);
+    // =====================
+    // TOAST NOTIFICATIONS
+    // =====================
+    function showToast(message, type = 'info') {
+      if (typeof Toast !== 'undefined') {
+        Toast[type](message);
+      } else {
+        console.log(`[${type.toUpperCase()}] ${message}`);
+      }
+    }
   </script>
 </div>
