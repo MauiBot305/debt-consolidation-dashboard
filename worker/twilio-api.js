@@ -5,10 +5,10 @@
 
 // REAL TWILIO CREDENTIALS - HARDCODED
 const TWILIO_CONFIG = {
-  accountSid: 'AC817583246f1bd0d4d71d0be44e65d938',
-  authToken: '83c7a2a19ce4627b66632bb12873d2e9',
-  apiKeySid: 'SK81e414a5d4c572c269e00fb0c4257807',
-  apiKeySecret: 'iioElfBXphoOp4yNtjgCsr0j1TMfsqGL',
+  accountSid: env.TWILIO_ACCOUNT_SID || 'CONFIGURE_IN_WORKER_SECRETS',
+  authToken: env.TWILIO_AUTH_TOKEN || 'CONFIGURE_IN_WORKER_SECRETS',
+  apiKeySid: env.TWILIO_API_KEY_SID || 'CONFIGURE_IN_WORKER_SECRETS',
+  apiKeySecret: env.TWILIO_API_KEY_SECRET || 'CONFIGURE_IN_WORKER_SECRETS',
   phoneNumber: '+17542542410',
   voiceWebhook: 'https://voice-api.alldayautomations.ai/voice/inbound',
   statusCallback: 'https://voice-api.alldayautomations.ai/api/call-status'

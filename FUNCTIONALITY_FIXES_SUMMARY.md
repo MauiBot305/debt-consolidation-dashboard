@@ -45,7 +45,7 @@ Made EVERY button, form, modal, dropdown, toggle, and interactive element FULLY 
 
 #### CRITICAL UPGRADE: Real Twilio Integration
 **Dedicated Number:** +1 (754) 254-2410  
-**Twilio Account SID:** AC817583246f1bd0d4d71d0be44e65d938
+**Twilio Account SID:** [SET_VIA_ENV]
 
 #### Features Implemented:
 - ✅ **Outbound Calls** - Real Twilio Voice via browser (Twilio Device SDK)

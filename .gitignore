@@ -4,3 +4,9 @@ node_modules/
 .dev.vars
 *.log
 recordings/
+
+# Environment secrets
+.env
+.env.local
+.env.production
+*.secrets
