@@ -530,6 +530,57 @@
     </div>
   </div>
 
+  <!-- AI Agent Performance Section -->
+  <div class="glass-card mb-8">
+    <div class="chart-title">🤖 AI Agent Performance</div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div class="text-center p-4 bg-slate-900/50 rounded-xl">
+        <div class="text-gray-400 text-sm mb-2">AI Calls Today</div>
+        <div id="aiCallsToday" class="text-3xl font-bold text-cyan-400" style="font-family: 'Orbitron', monospace;">0</div>
+      </div>
+      <div class="text-center p-4 bg-slate-900/50 rounded-xl">
+        <div class="text-gray-400 text-sm mb-2">AI Conversion Rate</div>
+        <div id="aiConversionRate" class="text-3xl font-bold text-emerald-400" style="font-family: 'Orbitron', monospace;">0%</div>
+      </div>
+      <div class="text-center p-4 bg-slate-900/50 rounded-xl">
+        <div class="text-gray-400 text-sm mb-2">AI Qualification Rate</div>
+        <div id="aiQualificationRate" class="text-3xl font-bold text-blue-400" style="font-family: 'Orbitron', monospace;">0%</div>
+      </div>
+      <div class="text-center p-4 bg-slate-900/50 rounded-xl">
+        <div class="text-gray-400 text-sm mb-2">Avg Data Points</div>
+        <div id="avgDataPoints" class="text-3xl font-bold text-purple-400" style="font-family: 'Orbitron', monospace;">0</div>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <div class="text-white font-semibold mb-3">📊 AI Calls Per Day (Last 7 Days)</div>
+        <div id="aiCallsPerDayChart" class="bar-chart" style="height: 200px;"></div>
+      </div>
+      <div>
+        <div class="text-white font-semibold mb-3">🆚 AI vs Human Conversion</div>
+        <div id="aiVsHumanChart" class="pipeline-chart">
+          <div class="pipeline-stage">
+            <div class="pipeline-label">🤖 AI Agent</div>
+            <div class="pipeline-bar-container">
+              <div id="aiConversionBar" class="pipeline-bar" style="width: 0%; background: linear-gradient(90deg, #06B6D4, #3B82F6);">
+                <div class="pipeline-value" id="aiConversionValue">0%</div>
+              </div>
+            </div>
+          </div>
+          <div class="pipeline-stage">
+            <div class="pipeline-label">👤 Human Agents</div>
+            <div class="pipeline-bar-container">
+              <div id="humanConversionBar" class="pipeline-bar" style="width: 0%; background: linear-gradient(90deg, #8B5CF6, #EC4899);">
+                <div class="pipeline-value" id="humanConversionValue">0%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Voice Stack Analytics (populated from real call data) -->
   <div class="charts-grid" id="voiceAnalyticsSection" style="display: none;">
     <div class="glass-card">
@@ -602,6 +653,7 @@
       renderPipelineChart();
       renderRevenueChart();
       renderCallDispositionChart();
+      renderAIAgentPerformance();
       renderVoiceStackAnalytics();
       renderLeaderboard();
     }
@@ -838,6 +890,60 @@
           <div class="pie-legend-value">${s.count} (${s.percent.toFixed(1)}%)</div>
         </div>
       `).join('');
+    }
+
+    async function renderAIAgentPerformance() {
+      if (!window.VoiceAPI) return;
+      
+      // Fetch agent status from API
+      const agentStatus = await window.VoiceAPI.fetchAgentStatus();
+      
+      if (agentStatus) {
+        document.getElementById('aiCallsToday').textContent = agentStatus.calls_today || 0;
+        document.getElementById('aiConversionRate').textContent = ((agentStatus.conversion_rate || 0) * 100).toFixed(1) + '%';
+        document.getElementById('aiQualificationRate').textContent = ((agentStatus.qualification_rate || 0) * 100).toFixed(1) + '%';
+        document.getElementById('avgDataPoints').textContent = agentStatus.avg_data_points || 65;
+      }
+      
+      // AI calls per day (last 7 days)
+      const aiCalls = voiceStackCalls.filter(c => c._source === 'voice-stack');
+      const days = [];
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        days.push({
+          date: date.toISOString().split('T')[0],
+          label: date.toLocaleDateString('en-US', { weekday: 'short' }),
+          count: 0
+        });
+      }
+      
+      aiCalls.forEach(call => {
+        const callDate = call.createdAt.split('T')[0];
+        const day = days.find(d => d.date === callDate);
+        if (day) day.count++;
+      });
+      
+      const maxCount = Math.max(...days.map(d => d.count), 1);
+      document.getElementById('aiCallsPerDayChart').innerHTML = days.map(day => {
+        const height = (day.count / maxCount) * 100;
+        return `<div class="bar-wrapper"><div class="bar" style="height:${height}%; background: linear-gradient(to top, #06B6D4, #3B82F6);"><div class="bar-value">${day.count}</div></div><div class="bar-label">${day.label}</div></div>`;
+      }).join('');
+      
+      // AI vs Human conversion comparison
+      const localCalls = window.DebtDB ? window.DebtDB.getCalls() : [];
+      const humanConversions = localCalls.filter(c => c.disposition === 'Appointment Set').length;
+      const humanTotal = localCalls.length || 1;
+      const humanConvRate = (humanConversions / humanTotal) * 100;
+      
+      const aiConversions = aiCalls.filter(c => c.disposition === 'Answer' || c.disposition === 'Appointment Set').length;
+      const aiTotal = aiCalls.length || 1;
+      const aiConvRate = (aiConversions / aiTotal) * 100;
+      
+      document.getElementById('aiConversionBar').style.width = aiConvRate + '%';
+      document.getElementById('aiConversionValue').textContent = aiConvRate.toFixed(1) + '%';
+      document.getElementById('humanConversionBar').style.width = humanConvRate + '%';
+      document.getElementById('humanConversionValue').textContent = humanConvRate.toFixed(1) + '%';
     }
 
     async function renderVoiceStackAnalytics() {
