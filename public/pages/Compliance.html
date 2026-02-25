@@ -1,0 +1,1322 @@
+<div id="compliance-page" class="page-content">
+  <style>
+    /* Orbitron Font Import */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Root Variables */
+    :root {
+      --bg-primary: #0a0f1a;
+      --bg-card: rgba(15, 23, 42, 0.8);
+      --bg-glass: rgba(30, 41, 59, 0.6);
+      --primary: #3B82F6;
+      --primary-glow: rgba(59, 130, 246, 0.3);
+      --accent: #06B6D4;
+      --accent-glow: rgba(6, 182, 212, 0.3);
+      --success: #22C55E;
+      --success-glow: rgba(34, 197, 94, 0.3);
+      --warning: #F59E0B;
+      --warning-glow: rgba(245, 158, 11, 0.3);
+      --danger: #EF4444;
+      --danger-glow: rgba(239, 68, 68, 0.3);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-subtle: rgba(148, 163, 184, 0.1);
+      --border-hover: rgba(148, 163, 184, 0.2);
+    }
+
+    #compliance-page {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    /* Header */
+    .compliance-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .compliance-header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--success), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Glass Card */
+    .glass-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Dashboard Grid */
+    .compliance-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Gauge Visualization */
+    .gauge-container {
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .gauge-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.125rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .gauge-svg {
+      width: 200px;
+      height: 120px;
+      margin: 0 auto;
+    }
+
+    .gauge-bg {
+      fill: none;
+      stroke: var(--border-subtle);
+      stroke-width: 20;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke: url(#gaugeGradient);
+      stroke-width: 20;
+      stroke-linecap: round;
+      stroke-dasharray: 251;
+      stroke-dashoffset: 251;
+      transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .gauge-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-top: 1rem;
+    }
+
+    .gauge-label {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .gauge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+
+    .status-excellent { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+    .status-good { background: rgba(6, 182, 212, 0.2); color: var(--accent); }
+    .status-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+    .status-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+    /* Live Pulse */
+    .live-indicator {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: live-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes live-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      50% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+    }
+
+    /* Alerts Section */
+    .alerts-section {
+      padding: 1.5rem;
+    }
+
+    .alerts-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .alert-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      margin-bottom: 0.75rem;
+      transition: all 0.3s ease;
+      animation: slideIn 0.4s ease backwards;
+    }
+
+    .alert-item:nth-child(2) { animation-delay: 0.1s; }
+    .alert-item:nth-child(3) { animation-delay: 0.2s; }
+    .alert-item:nth-child(4) { animation-delay: 0.3s; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .alert-item:hover {
+      border-color: var(--border-hover);
+      transform: translateX(4px);
+    }
+
+    .alert-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .alert-danger .alert-icon { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+    .alert-warning .alert-icon { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+    .alert-info .alert-icon { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
+
+    .alert-content {
+      flex: 1;
+    }
+
+    .alert-content h4 {
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .alert-content p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .alert-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* State Licensing Grid */
+    .licensing-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .section-header h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.125rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .state-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .state-cell {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .state-cell:hover {
+      transform: scale(1.1);
+      z-index: 10;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .state-cell.active {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: var(--success);
+    }
+
+    .state-cell.pending {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: var(--warning);
+    }
+
+    .state-cell.expired {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--danger);
+    }
+
+    .state-cell.not-licensed {
+      background: var(--bg-glass);
+      opacity: 0.5;
+    }
+
+    .state-code {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .state-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-top: 0.25rem;
+    }
+
+    .state-cell.active .state-status-dot { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .state-cell.pending .state-status-dot { background: var(--warning); box-shadow: 0 0 6px var(--warning); }
+    .state-cell.expired .state-status-dot { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+    .state-cell.not-licensed .state-status-dot { background: var(--text-muted); }
+
+    /* Tooltip */
+    .state-cell:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 20;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Checklist */
+    .checklist-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .checklist-item:hover {
+      border-color: var(--primary);
+    }
+
+    .checklist-checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--text-muted);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .checklist-item.checked .checklist-checkbox {
+      background: var(--success);
+      border-color: var(--success);
+      transform: scale(1.1);
+    }
+
+    .checklist-checkbox svg {
+      width: 16px;
+      height: 16px;
+      color: white;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .checklist-item.checked .checklist-checkbox svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .checklist-content {
+      flex: 1;
+    }
+
+    .checklist-content h4 {
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .checklist-item.checked .checklist-content h4 {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .checklist-content p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .checklist-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .checklist-badge {
+      padding: 0.35rem 0.75rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Risk Matrix */
+    .risk-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .risk-matrix {
+      display: grid;
+      grid-template-columns: auto repeat(3, 1fr);
+      gap: 0.5rem;
+      padding: 1rem;
+    }
+
+    .risk-header {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 0.5rem;
+    }
+
+    .risk-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 0.75rem;
+    }
+
+    .risk-cell {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .risk-cell:hover {
+      transform: scale(1.05);
+      z-index: 10;
+    }
+
+    .risk-cell.low-low { background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1)); }
+    .risk-cell.low-med { background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(6, 182, 212, 0.1)); }
+    .risk-cell.low-high { background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(245, 158, 11, 0.1)); }
+    .risk-cell.med-low { background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(6, 182, 212, 0.1)); }
+    .risk-cell.med-med { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1)); }
+    .risk-cell.med-high { background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(239, 68, 68, 0.1)); }
+    .risk-cell.high-low { background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(245, 158, 11, 0.1)); }
+    .risk-cell.high-med { background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(239, 68, 68, 0.1)); }
+    .risk-cell.high-high { background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1)); }
+
+    .risk-cell.active {
+      box-shadow: 0 0 20px currentColor;
+      border: 2px solid currentColor;
+    }
+
+    .risk-count {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    /* Audit Log */
+    .audit-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .audit-toolbar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .audit-search {
+      flex: 1;
+      position: relative;
+    }
+
+    .audit-search input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      transition: all 0.3s ease;
+    }
+
+    .audit-search input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .audit-search i {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .audit-table {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    td {
+      padding: 1rem;
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .audit-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.75rem;
+      background: var(--bg-glass);
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .audit-user {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Disclosure Tracking */
+    .disclosure-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .disclosure-card {
+      padding: 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .disclosure-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .disclosure-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .disclosure-header h4 {
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .disclosure-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .disclosure-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.5rem;
+      background: var(--bg-glass);
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+    }
+
+    .disclosure-item.signed { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+    .disclosure-item.unsigned { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+
+    /* Attorney Queue */
+    .queue-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      margin-bottom: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .queue-item:hover {
+      border-color: var(--primary);
+      transform: translateX(4px);
+    }
+
+    .queue-priority {
+      width: 4px;
+      height: 40px;
+      border-radius: 2px;
+    }
+
+    .priority-high { background: var(--danger); box-shadow: 0 0 10px var(--danger-glow); }
+    .priority-medium { background: var(--warning); box-shadow: 0 0 10px var(--warning-glow); }
+    .priority-low { background: var(--success); box-shadow: 0 0 10px var(--success-glow); }
+
+    .queue-content {
+      flex: 1;
+    }
+
+    .queue-content h4 {
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .queue-content p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .queue-meta {
+      text-align: right;
+    }
+
+    .queue-days {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--danger);
+    }
+
+    .queue-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Export Button */
+    .export-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, var(--success), var(--accent));
+      border: none;
+      border-radius: 0.75rem;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .export-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+    }
+
+    /* Two Column Layout */
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1200px) {
+      .compliance-grid { grid-template-columns: 1fr; }
+      .two-column { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <!-- SVG Definitions for Gradient -->
+  <svg width="0" height="0">
+    <defs>
+      <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#EF4444" />
+        <stop offset="50%" style="stop-color:#F59E0B" />
+        <stop offset="100%" style="stop-color:#22C55E" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="compliance-header">
+    <h1><i data-lucide="shield-check"></i> Compliance Dashboard</h1>
+    <div style="display: flex; gap: 0.75rem;">
+      <button class="export-btn" onclick="exportReport()">
+        <i data-lucide="download"></i> Export Report
+      </button>
+    </div>
+  </div>
+
+  <div class="compliance-grid">
+    <!-- Compliance Score Gauge -->
+    <div class="glass-card gauge-container">
+      <h2 class="gauge-title"><i data-lucide="activity"></i> Compliance Score</h2>
+      <svg class="gauge-svg" viewBox="0 0 200 120">
+        <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" />
+        <path id="gaugeArc" class="gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100" />
+      </svg>
+      <div class="gauge-value" id="gaugeValue">0</div>
+      <div class="gauge-label">Overall Compliance Rating</div>
+      <div class="gauge-status status-excellent" id="gaugeStatus">
+        <span class="live-indicator"></span> Excellent
+      </div>
+    </div>
+
+    <!-- Alerts Panel -->
+    <div class="glass-card alerts-section">
+      <h2 class="alerts-title"><i data-lucide="bell"></i> Compliance Alerts</h2>
+      <div id="alertsList">
+        <!-- Alerts rendered here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- State Licensing Grid -->
+  <div class="glass-card licensing-section" style="padding: 1.5rem;">
+    <div class="section-header">
+      <h2><i data-lucide="map"></i> State Licensing Status</h2>
+      <div style="display: flex; gap: 1rem; font-size: 0.875rem;">
+        <span style="display: flex; align-items: center; gap: 0.35rem;">
+          <span style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></span> Active
+        </span>
+        <span style="display: flex; align-items: center; gap: 0.35rem;">
+          <span style="width: 8px; height: 8px; background: var(--warning); border-radius: 50%;"></span> Pending
+        </span>
+        <span style="display: flex; align-items: center; gap: 0.35rem;">
+          <span style="width: 8px; height: 8px; background: var(--danger); border-radius: 50%;"></span> Expired
+        </span>
+      </div>
+    </div>
+    <div class="state-grid" id="stateGrid">
+      <!-- States rendered here -->
+    </div>
+  </div>
+
+  <div class="two-column">
+    <!-- TSR/FTC Checklist -->
+    <div class="glass-card checklist-section" style="padding: 1.5rem;">
+      <div class="section-header">
+        <h2><i data-lucide="clipboard-check"></i> TSR/FTC Compliance</h2>
+        <span id="checklistProgress" style="font-family: 'Orbitron', sans-serif; color: var(--accent);">0/8</span>
+      </div>
+      <div class="checklist" id="checklist">
+        <!-- Checklist items rendered here -->
+      </div>
+    </div>
+
+    <!-- Risk Assessment Matrix -->
+    <div class="glass-card risk-section" style="padding: 1.5rem;">
+      <div class="section-header">
+        <h2><i data-lucide="grid"></i> Risk Assessment Matrix</h2>
+        <span style="font-size: 0.875rem; color: var(--text-muted);">Click cells to filter</span>
+      </div>
+      <div class="risk-matrix">
+        <div></div>
+        <div class="risk-header">Low Impact</div>
+        <div class="risk-header">Medium Impact</div>
+        <div class="risk-header">High Impact</div>
+        
+        <div class="risk-label">High Probability</div>
+        <div class="risk-cell high-low" data-risk="high-low" onclick="filterByRisk('high-low')">
+          <span class="risk-count">3</span>
+          <span>Medium</span>
+        </div>
+        <div class="risk-cell high-med" data-risk="high-med" onclick="filterByRisk('high-med')">
+          <span class="risk-count">1</span>
+          <span>High</span>
+        </div>
+        <div class="risk-cell high-high" data-risk="high-high" onclick="filterByRisk('high-high')">
+          <span class="risk-count">0</span>
+          <span>Critical</span>
+        </div>
+        
+        <div class="risk-label">Medium Probability</div>
+        <div class="risk-cell med-low" data-risk="med-low" onclick="filterByRisk('med-low')">
+          <span class="risk-count">5</span>
+          <span>Low</span>
+        </div>
+        <div class="risk-cell med-med" data-risk="med-med" onclick="filterByRisk('med-med')">
+          <span class="risk-count">2</span>
+          <span>Medium</span>
+        </div>
+        <div class="risk-cell med-high" data-risk="med-high" onclick="filterByRisk('med-high')">
+          <span class="risk-count">1</span>
+          <span>High</span>
+        </div>
+        
+        <div class="risk-label">Low Probability</div>
+        <div class="risk-cell low-low" data-risk="low-low" onclick="filterByRisk('low-low')">
+          <span class="risk-count">8</span>
+          <span>Low</span>
+        </div>
+        <div class="risk-cell low-med" data-risk="low-med" onclick="filterByRisk('low-med')">
+          <span class="risk-count">4</span>
+          <span>Low</span>
+        </div>
+        <div class="risk-cell low-high" data-risk="low-high" onclick="filterByRisk('low-high')">
+          <span class="risk-count">2</span>
+          <span>Medium</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Disclosure Tracking -->
+  <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+    <div class="section-header">
+      <h2><i data-lucide="file-check"></i> Client Disclosure Tracking</h2>
+      <div class="audit-toolbar" style="margin-bottom: 0;">
+        <div class="audit-search" style="width: 250px;">
+          <i data-lucide="search"></i>
+          <input type="text" id="disclosureSearch" placeholder="Search clients..." onkeyup="filterDisclosures()">
+        </div>
+      </div>
+    </div>
+    <div class="disclosure-grid" id="disclosureGrid">
+      <!-- Disclosures rendered here -->
+    </div>
+  </div>
+
+  <!-- Attorney Review Queue -->
+  <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+    <div class="section-header">
+      <h2><i data-lucide="scale"></i> Attorney Review Queue</h2>
+      <span id="queueCount" style="font-family: 'Orbitron', sans-serif; color: var(--warning);">3 Pending</span>
+    </div>
+    <div id="attorneyQueue">
+      <!-- Queue items rendered here -->
+    </div>
+  </div>
+
+  <!-- Audit Log -->
+  <div class="glass-card audit-section" style="padding: 1.5rem;">
+    <div class="section-header">
+      <h2><i data-lucide="history"></i> Audit Log</h2>
+      <div class="audit-toolbar" style="margin-bottom: 0;">
+        <div class="audit-search">
+          <i data-lucide="search"></i>
+          <input type="text" id="auditSearch" placeholder="Search audit log..." onkeyup="filterAuditLog()">
+        </div>
+        <select style="padding: 0.75rem; background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: 0.5rem; color: var(--text-primary);">
+          <option>All Actions</option>
+          <option>Case Updates</option>
+          <option>Document Access</option>
+          <option>Payments</option>
+          <option>Compliance</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="audit-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Details</th>
+            <th>IP Address</th>
+          </tr>
+        </thead>
+        <tbody id="auditTableBody">
+          <!-- Audit rows rendered here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let complianceScore = 94;
+    let selectedRisk = null;
+
+    // Data
+    const states = [
+      { code: 'AL', name: 'Alabama', status: 'active', expiry: '2025-06-30' },
+      { code: 'AK', name: 'Alaska', status: 'active', expiry: '2025-12-31' },
+      { code: 'AZ', name: 'Arizona', status: 'active', expiry: '2025-09-15' },
+      { code: 'AR', name: 'Arkansas', status: 'pending', expiry: null },
+      { code: 'CA', name: 'California', status: 'active', expiry: '2026-01-31' },
+      { code: 'CO', name: 'Colorado', status: 'active', expiry: '2025-08-20' },
+      { code: 'CT', name: 'Connecticut', status: 'active', expiry: '2025-11-30' },
+      { code: 'DE', name: 'Delaware', status: 'active', expiry: '2025-07-15' },
+      { code: 'FL', name: 'Florida', status: 'active', expiry: '2025-10-31' },
+      { code: 'GA', name: 'Georgia', status: 'active', expiry: '2025-12-31' },
+      { code: 'HI', name: 'Hawaii', status: 'not-licensed', expiry: null },
+      { code: 'ID', name: 'Idaho', status: 'active', expiry: '2025-09-30' },
+      { code: 'IL', name: 'Illinois', status: 'active', expiry: '2025-08-31' },
+      { code: 'IN', name: 'Indiana', status: 'active', expiry: '2025-11-15' },
+      { code: 'IA', name: 'Iowa', status: 'active', expiry: '2025-06-15' },
+      { code: 'KS', name: 'Kansas', status: 'expired', expiry: '2024-12-31' },
+      { code: 'KY', name: 'Kentucky', status: 'active', expiry: '2025-10-15' },
+      { code: 'LA', name: 'Louisiana', status: 'pending', expiry: null },
+      { code: 'ME', name: 'Maine', status: 'active', expiry: '2025-07-31' },
+      { code: 'MD', name: 'Maryland', status: 'active', expiry: '2025-12-15' },
+      { code: 'MA', name: 'Massachusetts', status: 'active', expiry: '2025-09-30' },
+      { code: 'MI', name: 'Michigan', status: 'active', expiry: '2025-08-15' },
+      { code: 'MN', name: 'Minnesota', status: 'active', expiry: '2025-11-30' },
+      { code: 'MS', name: 'Mississippi', status: 'active', expiry: '2025-06-30' },
+      { code: 'MO', name: 'Missouri', status: 'active', expiry: '2025-10-31' },
+      { code: 'MT', name: 'Montana', status: 'not-licensed', expiry: null },
+      { code: 'NE', name: 'Nebraska', status: 'active', expiry: '2025-09-15' },
+      { code: 'NV', name: 'Nevada', status: 'active', expiry: '2025-07-31' },
+      { code: 'NH', name: 'New Hampshire', status: 'active', expiry: '2025-12-31' },
+      { code: 'NJ', name: 'New Jersey', status: 'active', expiry: '2025-08-31' },
+      { code: 'NM', name: 'New Mexico', status: 'active', expiry: '2025-10-15' },
+      { code: 'NY', name: 'New York', status: 'active', expiry: '2026-01-15' },
+      { code: 'NC', name: 'North Carolina', status: 'active', expiry: '2025-09-30' },
+      { code: 'ND', name: 'North Dakota', status: 'active', expiry: '2025-07-15' },
+      { code: 'OH', name: 'Ohio', status: 'active', expiry: '2025-11-30' },
+      { code: 'OK', name: 'Oklahoma', status: 'active', expiry: '2025-08-20' },
+      { code: 'OR', name: 'Oregon', status: 'active', expiry: '2025-12-15' },
+      { code: 'PA', name: 'Pennsylvania', status: 'active', expiry: '2025-10-31' },
+      { code: 'RI', name: 'Rhode Island', status: 'active', expiry: '2025-06-30' },
+      { code: 'SC', name: 'South Carolina', status: 'active', expiry: '2025-09-15' },
+      { code: 'SD', name: 'South Dakota', status: 'active', expiry: '2025-07-31' },
+      { code: 'TN', name: 'Tennessee', status: 'active', expiry: '2025-11-15' },
+      { code: 'TX', name: 'Texas', status: 'active', expiry: '2025-08-31' },
+      { code: 'UT', name: 'Utah', status: 'active', expiry: '2025-12-31' },
+      { code: 'VT', name: 'Vermont', status: 'active', expiry: '2025-09-30' },
+      { code: 'VA', name: 'Virginia', status: 'active', expiry: '2025-10-15' },
+      { code: 'WA', name: 'Washington', status: 'active', expiry: '2025-07-31' },
+      { code: 'WV', name: 'West Virginia', status: 'active', expiry: '2025-11-30' },
+      { code: 'WI', name: 'Wisconsin', status: 'active', expiry: '2025-08-15' },
+      { code: 'WY', name: 'Wyoming', status: 'not-licensed', expiry: null }
+    ];
+
+    const checklistItems = [
+      { id: 1, title: 'Advance Fee Prohibition', desc: 'No fees collected before settlement', checked: true, category: 'TSR' },
+      { id: 2, title: 'Required Disclosures', desc: 'All mandatory disclosures provided', checked: true, category: 'TSR' },
+      { id: 3, title: 'Cancellation Rights', desc: 'Right to cancel within 3 days', checked: true, category: 'TSR' },
+      { id: 4, title: 'Truth in Advertising', desc: 'No misleading claims in marketing', checked: true, category: 'FTC' },
+      { id: 5, title: 'Debt Relief Outcomes', desc: 'Realistic outcome estimates provided', checked: true, category: 'FTC' },
+      { id: 6, title: 'Fee Structure Clarity', desc: 'Fee calculation clearly explained', checked: true, category: 'FTC' },
+      { id: 7, title: 'Privacy Compliance', desc: 'GLBA and state privacy laws', checked: false, category: 'Privacy' },
+      { id: 8, title: 'HIPAA Readiness', desc: 'Medical debt handling procedures', checked: true, category: 'Healthcare' }
+    ];
+
+    const alerts = [
+      { type: 'danger', icon: 'alert-circle', title: 'License Expiring Soon', desc: 'Kansas license expires in 5 days', time: '2h ago' },
+      { type: 'warning', icon: 'file-warning', title: 'Unsigned Disclosure', desc: 'DC-2024-002 missing TSR disclosure', time: '5h ago' },
+      { type: 'info', icon: 'calendar', title: 'Upcoming Renewal', desc: 'Florida license renewal due in 30 days', time: '1d ago' },
+      { type: 'warning', icon: 'clock', title: 'Pending Review', desc: '3 cases in attorney review queue', time: '2d ago' }
+    ];
+
+    const disclosures = [
+      { client: 'John Doe', caseId: 'DC-2024-001', items: [{ name: 'TSR Disclosure', status: 'signed' }, { name: 'Fee Agreement', status: 'signed' }, { name: 'Privacy Notice', status: 'signed' }] },
+      { client: 'Jane Smith', caseId: 'DC-2024-002', items: [{ name: 'TSR Disclosure', status: 'unsigned' }, { name: 'Fee Agreement', status: 'unsigned' }, { name: 'Privacy Notice', status: 'pending' }] },
+      { client: 'Bob Johnson', caseId: 'DC-2024-003', items: [{ name: 'TSR Disclosure', status: 'signed' }, { name: 'Fee Agreement', status: 'signed' }, { name: 'Privacy Notice', status: 'signed' }] },
+      { client: 'Alice Williams', caseId: 'DC-2024-004', items: [{ name: 'TSR Disclosure', status: 'signed' }, { name: 'Fee Agreement', status: 'unsigned' }, { name: 'Privacy Notice', status: 'signed' }] }
+    ];
+
+    const attorneyQueue = [
+      { caseId: 'DC-2024-015', title: 'Settlement Review - Chase Bank', reason: 'Counter-offer requires review', priority: 'high', days: 2 },
+      { caseId: 'DC-2024-012', title: 'Legal Threat Response', reason: 'Creditor threatening litigation', priority: 'high', days: 5 },
+      { caseId: 'DC-2024-008', title: 'Contract Amendment', reason: 'Client requested changes', priority: 'medium', days: 12 }
+    ];
+
+    const auditLog = [
+      { time: '2024-02-24 14:32:15', user: 'Sarah Johnson', action: 'Case Update', details: 'Updated creditor status for DC-2024-001', ip: '192.168.1.45' },
+      { time: '2024-02-24 13:15:42', user: 'Mike Chen', action: 'Document Upload', details: 'Uploaded settlement letter to DC-2024-003', ip: '192.168.1.52' },
+      { time: '2024-02-24 12:48:09', user: 'System', action: 'Payment Processed', details: 'Monthly payment received for DC-2024-002', ip: '10.0.0.5' },
+      { time: '2024-02-24 11:22:33', user: 'Jessica Davis', action: 'Compliance Check', details: 'Reviewed TSR compliance for 5 cases', ip: '192.168.1.38' },
+      { time: '2024-02-24 10:05:17', user: 'Sarah Johnson', action: 'Note Added', details: 'Added client communication note', ip: '192.168.1.45' },
+      { time: '2024-02-24 09:45:51', user: 'System', action: 'Alert Triggered', details: 'License expiration warning for Kansas', ip: '10.0.0.5' },
+      { time: '2024-02-24 08:30:22', user: 'Mike Chen', action: 'Case Created', details: 'New case enrolled: DC-2024-018', ip: '192.168.1.52' },
+      { time: '2024-02-23 17:15:08', user: 'Sarah Johnson', action: 'Settlement Logged', details: 'Recorded Capital One settlement', ip: '192.168.1.45' }
+    ];
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadData();
+      renderAll();
+      animateGauge();
+    });
+
+    function loadData() {
+      const stored = localStorage.getItem('debtDB_compliance');
+      if (stored) {
+        const data = JSON.parse(stored);
+        complianceScore = data.score || 94;
+        checklistItems.forEach((item, i) => {
+          if (data.checklist?.[i] !== undefined) {
+            item.checked = data.checklist[i];
+          }
+        });
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem('debtDB_compliance', JSON.stringify({
+        score: complianceScore,
+        checklist: checklistItems.map(i => i.checked)
+      }));
+    }
+
+    function renderAll() {
+      renderGauge();
+      renderAlerts();
+      renderStates();
+      renderChecklist();
+      renderDisclosures();
+      renderAttorneyQueue();
+      renderAuditLog();
+      window.lucide?.createIcons();
+    }
+
+    // Gauge Animation
+    function animateGauge() {
+      setTimeout(() => {
+        const arc = document.getElementById('gaugeArc');
+        const value = document.getElementById('gaugeValue');
+        const offset = 251 - (251 * complianceScore / 100);
+        arc.style.strokeDashoffset = offset;
+        
+        // Count up animation
+        let current = 0;
+        const increment = complianceScore / 50;
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= complianceScore) {
+            current = complianceScore;
+            clearInterval(timer);
+          }
+          value.textContent = Math.round(current);
+        }, 30);
+      }, 300);
+    }
+
+    function renderGauge() {
+      const statusEl = document.getElementById('gaugeStatus');
+      if (complianceScore >= 90) {
+        statusEl.className = 'gauge-status status-excellent';
+        statusEl.innerHTML = '<span class="live-indicator"></span> Excellent';
+      } else if (complianceScore >= 75) {
+        statusEl.className = 'gauge-status status-good';
+        statusEl.innerHTML = '<span class="live-indicator" style="background: var(--accent);"></span> Good';
+      } else if (complianceScore >= 60) {
+        statusEl.className = 'gauge-status status-warning';
+        statusEl.innerHTML = '<span class="live-indicator" style="background: var(--warning);"></span> Needs Attention';
+      } else {
+        statusEl.className = 'gauge-status status-danger';
+        statusEl.innerHTML = '<span class="live-indicator" style="background: var(--danger);"></span> Critical';
+      }
+    }
+
+    function renderAlerts() {
+      const container = document.getElementById('alertsList');
+      container.innerHTML = alerts.map(a => `
+        <div class="alert-item alert-${a.type}">
+          <div class="alert-icon">
+            <i data-lucide="${a.icon}"></i>
+          </div>
+          <div class="alert-content">
+            <h4>${a.title}</h4>
+            <p>${a.desc}</p>
+          </div>
+          <div class="alert-time">${a.time}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderStates() {
+      const container = document.getElementById('stateGrid');
+      container.innerHTML = states.map(s => {
+        const tooltip = s.status === 'active' ? `${s.name}: Expires ${s.expiry}` :
+                       s.status === 'pending' ? `${s.name}: Application pending` :
+                       s.status === 'expired' ? `${s.name}: EXPIRED - Action required` :
+                       `${s.name}: Not licensed`;
+        return `
+          <div class="state-cell ${s.status}" data-tooltip="${tooltip}" onclick="showStateDetails('${s.code}')">
+            <span class="state-code">${s.code}</span>
+            <span class="state-status-dot"></span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderChecklist() {
+      const container = document.getElementById('checklist');
+      const checked = checklistItems.filter(i => i.checked).length;
+      document.getElementById('checklistProgress').textContent = `${checked}/${checklistItems.length}`;
+      
+      container.innerHTML = checklistItems.map(item => `
+        <div class="checklist-item ${item.checked ? 'checked' : ''}" onclick="toggleChecklist(${item.id})">
+          <div class="checklist-checkbox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="checklist-content">
+            <h4>${item.title}</h4>
+            <p>${item.desc}</p>
+          </div>
+          <div class="checklist-meta">
+            <span class="checklist-badge">${item.category}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleChecklist(id) {
+      const item = checklistItems.find(i => i.id === id);
+      if (item) {
+        item.checked = !item.checked;
+        const checked = checklistItems.filter(i => i.checked).length;
+        complianceScore = Math.round((checked / checklistItems.length) * 100);
+        saveData();
+        renderChecklist();
+        renderGauge();
+        
+        // Re-animate gauge
+        const arc = document.getElementById('gaugeArc');
+        const offset = 251 - (251 * complianceScore / 100);
+        arc.style.strokeDashoffset = offset;
+        document.getElementById('gaugeValue').textContent = complianceScore;
+      }
+    }
+
+    function renderDisclosures() {
+      const container = document.getElementById('disclosureGrid');
+      container.innerHTML = disclosures.map(d => `
+        <div class="disclosure-card">
+          <div class="disclosure-header">
+            <h4>${d.client}</h4>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">${d.caseId}</span>
+          </div>
+          <div class="disclosure-meta">
+            ${d.items.map(i => `
+              <span class="disclosure-item ${i.status}">
+                <i data-lucide="${i.status === 'signed' ? 'check' : i.status === 'unsigned' ? 'x' : 'clock'}" style="width: 12px; height: 12px;"></i>
+                ${i.name}
+              </span>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderAttorneyQueue() {
+      const container = document.getElementById('attorneyQueue');
+      container.innerHTML = attorneyQueue.map(q => `
+        <div class="queue-item">
+          <div class="queue-priority priority-${q.priority}"></div>
+          <div class="queue-content">
+            <h4>${q.title}</h4>
+            <p>${q.caseId} • ${q.reason}</p>
+          </div>
+          <div class="queue-meta">
+            <div class="queue-days">${q.days}d</div>
+            <div class="queue-label">In queue</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderAuditLog() {
+      const tbody = document.getElementById('auditTableBody');
+      tbody.innerHTML = auditLog.map(a => `
+        <tr>
+          <td>${a.time}</td>
+          <td>
+            <div class="audit-user">
+              <div class="user-avatar">${a.user.split(' ').map(n => n[0]).join('')}</div>
+              ${a.user}
+            </div>
+          </td>
+          <td>
+            <span class="audit-action">
+              <i data-lucide="${getActionIcon(a.action)}" style="width: 14px; height: 14px;"></i>
+              ${a.action}
+            </span>
+          </td>
+          <td>${a.details}</td>
+          <td>${a.ip}</td>
+        </tr>
+      `).join('');
+    }
+
+    function getActionIcon(action) {
+      const icons = {
+        'Case Update': 'edit-3',
+        'Document Upload': 'upload',
+        'Payment Processed': 'credit-card',
+        'Compliance Check': 'shield',
+        'Note Added': 'message-square',
+        'Alert Triggered': 'bell',
+        'Case Created': 'plus-circle',
+        'Settlement Logged': 'handshake'
+      };
+      return icons[action] || 'activity';
+    }
+
+    function showStateDetails(code) {
+      const state = states.find(s => s.code === code);
+      if (!state) return;
+      
+      const statusText = state.status === 'active' ? 'Active' :
+                        state.status === 'pending' ? 'Pending' :
+                        state.status === 'expired' ? 'EXPIRED' : 'Not Licensed';
+      
+      alert(`${state.name} (${state.code})\n\nStatus: ${statusText}\n${state.expiry ? `Expiry: ${state.expiry}` : 'No license information'}\n\nClick OK to view full license details.`);
+    }
+
+    function filterByRisk(risk) {
+      document.querySelectorAll('.risk-cell').forEach(cell => {
+        cell.classList.toggle('active', cell.dataset.risk === risk);
+      });
+      selectedRisk = risk;
+    }
+
+    function filterDisclosures() {
+      const search = document.getElementById('disclosureSearch').value.toLowerCase();
+      const cards = document.querySelectorAll('.disclosure-card');
+      cards.forEach((card, i) => {
+        const visible = disclosures[i].client.toLowerCase().includes(search) ||
+                       disclosures[i].caseId.toLowerCase().includes(search);
+        card.style.display = visible ? 'block' : 'none';
+      });
+    }
+
+    function filterAuditLog() {
+      const search = document.getElementById('auditSearch').value.toLowerCase();
+      const rows = document.querySelectorAll('#auditTableBody tr');
+      rows.forEach((row, i) => {
+        const visible = Object.values(auditLog[i]).some(v => 
+          String(v).toLowerCase().includes(search)
+        );
+        row.style.display = visible ? '' : 'none';
+      });
+    }
+
+    function exportReport() {
+      const report = {
+        generated: new Date().toISOString(),
+        complianceScore,
+        states: states.filter(s => s.status === 'active').length,
+        checklist: checklistItems,
+        alerts: alerts.length
+      };
+      
+      const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `compliance-report-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</div>
