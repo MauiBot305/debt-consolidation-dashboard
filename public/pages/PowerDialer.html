@@ -772,31 +772,68 @@
         document.getElementById('callTimerCard').style.display = 'block';
         setCallStatus('Dialing...', 'dialing');
 
-        if (isDemoMode) {
-          // Demo mode simulation
-          simulateCall(phoneNumber);
-        } else {
-          // Real Twilio call
-          const params = { To: `+1${phoneNumber}` };
-          activeCall = await twilioDevice.connect({ params });
+        // Use voice stack API to place AI outbound call
+        const formattedNumber = phoneNumber.startsWith('1') ? `+${phoneNumber}` : `+1${phoneNumber}`;
+        const response = await fetch(`${WORKER_URL}/api/calls/outbound-ai`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            to: formattedNumber, 
+            from: '+17542542410',
+            purpose: 'Outbound dialer call'
+          })
+        });
 
-          setupCallHandlers(activeCall);
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+          console.log('✅ AI call initiated:', result.call_sid);
+          showToast('AI Agent is calling ' + formattedNumber, 'success');
+          activeCallSid = result.call_sid;
+          setCallStatus('AI Agent Calling...', 'connected');
+          startCallTimer();
+          
+          // Poll for call status
+          pollCallStatus(result.call_sid);
+        } else {
+          throw new Error(result.detail || 'Call failed');
         }
 
-        // Disable call button, enable others
+        // Disable call button, enable hangup
         document.getElementById('callBtn').disabled = true;
         document.getElementById('hangupBtn').disabled = false;
-        document.getElementById('muteBtn').disabled = false;
-        document.getElementById('holdBtn').disabled = false;
+        document.getElementById('muteBtn').disabled = true;
+        document.getElementById('holdBtn').disabled = true;
         document.getElementById('smsBtn').disabled = false;
-        document.getElementById('recordBtn').disabled = false;
-        document.getElementById('transferBtn').disabled = false;
-        document.getElementById('conferenceBtn').disabled = false;
+        document.getElementById('recordBtn').disabled = true;
+        document.getElementById('transferBtn').disabled = true;
+        document.getElementById('conferenceBtn').disabled = true;
       } catch (error) {
         console.error('❌ Call failed:', error);
         showToast('Call failed: ' + error.message, 'error');
         resetCallUI();
       }
+    }
+
+    let activeCallSid = null;
+    
+    async function pollCallStatus(callSid) {
+      const poll = setInterval(async () => {
+        try {
+          const r = await fetch(`${WORKER_URL}/api/calls/${callSid}`);
+          if (r.ok) {
+            const data = await r.json();
+            if (data.status === 'completed' || data.status === 'failed' || data.status === 'no-answer') {
+              clearInterval(poll);
+              setCallStatus('Call Ended', 'disconnected');
+              showToast(`Call ${data.status}` + (data.duration ? ` (${data.duration}s)` : ''), 'info');
+              setTimeout(resetCallUI, 3000);
+            }
+          }
+        } catch(e) { /* ignore poll errors */ }
+      }, 3000);
+      // Stop polling after 10 minutes max
+      setTimeout(() => clearInterval(poll), 600000);
     }
 
     function simulateCall(phoneNumber) {
@@ -846,12 +883,19 @@
       }
     }
 
-    function hangup() {
+    async function hangup() {
+      if (activeCallSid) {
+        try {
+          // End call via Twilio API through voice stack
+          await fetch(`${WORKER_URL}/api/calls/${activeCallSid}/end`, { method: 'POST' });
+          showToast('Call ended', 'info');
+        } catch(e) { console.error('Hangup error:', e); }
+        activeCallSid = null;
+      }
       if (activeCall) {
         activeCall.disconnect();
-      } else if (isDemoMode) {
-        handleCallEnd();
       }
+      handleCallEnd();
     }
 
     function handleCallEnd() {
