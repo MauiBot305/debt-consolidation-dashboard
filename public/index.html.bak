@@ -1054,12 +1054,6 @@
         }
       }
     };
-  <!-- Debt DB Storage & Page Functionality Scripts -->
-  <script src="/debtdb-storage.js"></script>
-  <script src="/pages/compliance-functions.js"></script>
-  <script src="/pages/financial-functions.js"></script>
-  <script src="/pages/marketing-analytics-gamification-functions.js"></script>
-
 
     // Initialize app on load
     document.addEventListener('DOMContentLoaded', () => {
