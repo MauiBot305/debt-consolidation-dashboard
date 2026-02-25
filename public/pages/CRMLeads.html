@@ -1,23 +1,21 @@
-<!-- Functionality verified by Agent 1 -->
+<!-- CRM LEADS - Complete Rebuild by SONNET AGENT 2 -->
+<!-- Enterprise-scale for 7,840+ client base -->
+<!-- All JavaScript is INLINE (executes via loadPage fix) -->
+
 <div id="crmLeads" class="page-container">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght:400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
-    .leads-container {
-      animation: fadeInUp 0.6s ease-out;
-    }
+    * { box-sizing: border-box; }
+
+    .page-container { animation: fadeInUp 0.6s ease-out; }
 
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Header */
     .leads-header {
       display: flex;
       justify-content: space-between;
@@ -30,17 +28,9 @@
       backdrop-filter: blur(10px);
     }
 
-    .leads-header h2 {
-      margin: 0;
-      color: white;
-      font-weight: 700;
-      font-size: 28px;
-    }
+    .leads-header h2 { margin: 0; color: white; font-weight: 700; font-size: 28px; }
 
-    .header-actions {
-      display: flex;
-      gap: 12px;
-    }
+    .header-actions { display: flex; gap: 12px; }
 
     .action-btn {
       padding: 12px 24px;
@@ -50,22 +40,7 @@
       border-radius: 12px;
       cursor: pointer;
       font-weight: 600;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .action-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .action-btn:hover::before {
-      opacity: 1;
+      transition: all 0.3s;
     }
 
     .action-btn:hover {
@@ -74,16 +49,12 @@
       border-color: #3B82F6;
     }
 
-    .action-btn span {
-      position: relative;
-      z-index: 1;
-    }
-
     .action-btn.primary {
       background: linear-gradient(135deg, #3B82F6, #06B6D4);
       border-color: #3B82F6;
     }
 
+    /* Filters Bar */
     .filters-bar {
       display: flex;
       gap: 16px;
@@ -93,12 +64,10 @@
       border: 1px solid rgba(59, 130, 246, 0.3);
       border-radius: 24px;
       backdrop-filter: blur(10px);
+      flex-wrap: wrap;
     }
 
-    .search-box {
-      flex: 1;
-      position: relative;
-    }
+    .search-box { flex: 1; position: relative; min-width: 300px; }
 
     .search-input {
       width: 100%;
@@ -108,7 +77,7 @@
       border-radius: 12px;
       color: white;
       font-size: 15px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
     }
 
     .search-input:focus {
@@ -134,12 +103,10 @@
       color: white;
       font-size: 14px;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
     }
 
-    .filter-select:hover {
-      border-color: #3B82F6;
-    }
+    .filter-select:hover { border-color: #3B82F6; }
 
     .filter-select:focus {
       outline: none;
@@ -147,6 +114,7 @@
       box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
     }
 
+    /* Table Container */
     .leads-table-container {
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
       border: 1px solid rgba(59, 130, 246, 0.3);
@@ -181,10 +149,7 @@
       user-select: none;
     }
 
-    .leads-table th:hover {
-      color: #3B82F6;
-      background: rgba(59, 130, 246, 0.05);
-    }
+    .leads-table th:hover { color: #3B82F6; background: rgba(59, 130, 246, 0.05); }
 
     .leads-table th.sortable::after {
       content: ' ⇅';
@@ -206,17 +171,15 @@
 
     .leads-table tbody tr {
       border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
       cursor: pointer;
     }
 
-    .leads-table tbody tr:nth-child(even) {
-      background: rgba(10, 15, 26, 0.3);
-    }
+    .leads-table tbody tr:nth-child(even) { background: rgba(10, 15, 26, 0.3); }
 
     .leads-table tbody tr:hover {
       background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
-      box-shadow: inset 4px 0 0 #3B82F6, 0 2px 8px rgba(59, 130, 246, 0.2);
+      box-shadow: inset 4px 0 0 #3B82F6;
       transform: translateX(4px);
     }
 
@@ -226,71 +189,13 @@
       font-size: 14px;
     }
 
-    .lead-name {
-      font-weight: 600;
-      color: #3B82F6;
-    }
+    .lead-name { font-weight: 600; color: #3B82F6; }
+    .lead-phone { font-family: 'Orbitron', monospace; color: #94A3B8; font-size: 13px; }
+    .lead-debt { font-family: 'Orbitron', monospace; font-weight: 600; font-size: 15px; }
 
-    .lead-phone {
-      font-family: 'Orbitron', monospace;
-      color: #94A3B8;
-      font-size: 13px;
-    }
-
-    .lead-debt {
-      font-family: 'Orbitron', monospace;
-      font-weight: 600;
-      font-size: 15px;
-    }
-
-    .debt-low {
-      color: #22C55E;
-      text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
-    }
-
-    .debt-medium {
-      color: #F59E0B;
-      text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
-    }
-
-    .debt-high {
-      color: #EF4444;
-      text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
-    }
-
-    .lead-score {
-      position: relative;
-      width: 60px;
-      height: 60px;
-    }
-
-    .score-circle {
-      transform: rotate(-90deg);
-    }
-
-    .score-bg {
-      fill: none;
-      stroke: rgba(59, 130, 246, 0.1);
-      stroke-width: 6;
-    }
-
-    .score-progress {
-      fill: none;
-      stroke-width: 6;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .score-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-family: 'Orbitron', monospace;
-      font-weight: 700;
-      font-size: 14px;
-      color: white;
-    }
+    .debt-low { color: #22C55E; text-shadow: 0 0 10px rgba(34, 197, 94, 0.3); }
+    .debt-medium { color: #F59E0B; text-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+    .debt-high { color: #EF4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
 
     .status-badge {
       display: inline-block;
@@ -303,38 +208,22 @@
       border: 1px solid;
     }
 
-    .status-new {
-      background: rgba(59, 130, 246, 0.2);
-      border-color: #3B82F6;
-      color: #3B82F6;
-    }
+    .status-new { background: rgba(59, 130, 246, 0.2); border-color: #3B82F6; color: #3B82F6; }
+    .status-contacted { background: rgba(245, 158, 11, 0.2); border-color: #F59E0B; color: #F59E0B; }
+    .status-qualified { background: rgba(6, 182, 212, 0.2); border-color: #06B6D4; color: #06B6D4; }
+    .status-enrolled { background: rgba(34, 197, 94, 0.2); border-color: #22C55E; color: #22C55E; }
 
-    .status-contacted {
-      background: rgba(245, 158, 11, 0.2);
-      border-color: #F59E0B;
-      color: #F59E0B;
-    }
-
-    .status-qualified {
-      background: rgba(6, 182, 212, 0.2);
-      border-color: #06B6D4;
-      color: #06B6D4;
-    }
-
-    .status-enrolled {
-      background: rgba(34, 197, 94, 0.2);
-      border-color: #22C55E;
-      color: #22C55E;
-    }
-
+    /* Bulk Actions */
     .bulk-actions {
-      display: flex;
+      display: none;
       gap: 12px;
       padding: 16px 20px;
       background: rgba(10, 15, 26, 0.6);
       border-top: 1px solid rgba(59, 130, 246, 0.2);
       align-items: center;
     }
+
+    .bulk-actions.visible { display: flex; }
 
     .bulk-checkbox {
       width: 20px;
@@ -343,6 +232,7 @@
       accent-color: #3B82F6;
     }
 
+    /* Pagination */
     .pagination {
       display: flex;
       justify-content: space-between;
@@ -352,15 +242,9 @@
       border-top: 1px solid rgba(59, 130, 246, 0.2);
     }
 
-    .pagination-info {
-      color: #94A3B8;
-      font-size: 14px;
-    }
+    .pagination-info { color: #94A3B8; font-size: 14px; }
 
-    .pagination-controls {
-      display: flex;
-      gap: 8px;
-    }
+    .pagination-controls { display: flex; gap: 8px; }
 
     .page-btn {
       padding: 8px 16px;
@@ -378,33 +262,22 @@
       border-color: #3B82F6;
     }
 
-    .page-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
+    .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .page-btn.active { background: linear-gradient(135deg, #3B82F6, #06B6D4); border-color: #3B82F6; }
 
-    .page-btn.active {
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
-      border-color: #3B82F6;
-    }
-
-    /* Modal styles */
+    /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(8px);
       z-index: 1000;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
-      animation: fadeIn 0.3s ease-out;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    .modal-overlay.open { display: flex; }
 
     .modal-content {
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(10, 15, 26, 0.98));
@@ -415,19 +288,6 @@
       width: 90%;
       max-height: 90vh;
       overflow-y: auto;
-      animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     .modal-header {
@@ -439,12 +299,7 @@
       border-bottom: 2px solid rgba(59, 130, 246, 0.2);
     }
 
-    .modal-header h3 {
-      margin: 0;
-      color: white;
-      font-size: 24px;
-      font-weight: 700;
-    }
+    .modal-header h3 { margin: 0; color: white; font-size: 24px; font-weight: 700; }
 
     .modal-close {
       width: 40px;
@@ -455,14 +310,9 @@
       border-radius: 10px;
       cursor: pointer;
       font-size: 24px;
-      transition: all 0.3s;
     }
 
-    .modal-close:hover {
-      background: #EF4444;
-      color: white;
-      transform: rotate(90deg);
-    }
+    .modal-close:hover { background: #EF4444; color: white; }
 
     .form-grid {
       display: grid;
@@ -471,15 +321,8 @@
       margin-bottom: 24px;
     }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .form-group.full-width {
-      grid-column: 1 / -1;
-    }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group.full-width { grid-column: 1 / -1; }
 
     .form-label {
       color: #94A3B8;
@@ -505,81 +348,6 @@
       box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
     }
 
-    .debt-items {
-      margin-top: 16px;
-    }
-
-    .debt-item {
-      padding: 16px;
-      background: rgba(10, 15, 26, 0.4);
-      border: 1px solid rgba(59, 130, 246, 0.2);
-      border-radius: 12px;
-      margin-bottom: 12px;
-    }
-
-    .debt-item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .remove-debt-btn {
-      padding: 6px 12px;
-      background: rgba(239, 68, 68, 0.2);
-      border: 1px solid #EF4444;
-      border-radius: 6px;
-      color: #EF4444;
-      cursor: pointer;
-      font-size: 12px;
-      transition: all 0.3s;
-    }
-
-    .remove-debt-btn:hover {
-      background: #EF4444;
-      color: white;
-    }
-
-    .add-debt-btn {
-      width: 100%;
-      padding: 12px;
-      background: rgba(59, 130, 246, 0.2);
-      border: 2px dashed rgba(59, 130, 246, 0.5);
-      border-radius: 10px;
-      color: #3B82F6;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-
-    .add-debt-btn:hover {
-      background: rgba(59, 130, 246, 0.3);
-      border-color: #3B82F6;
-    }
-
-    .calculated-value {
-      padding: 16px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2));
-      border: 2px solid rgba(59, 130, 246, 0.3);
-      border-radius: 12px;
-      text-align: center;
-    }
-
-    .calculated-label {
-      color: #94A3B8;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 4px;
-    }
-
-    .calculated-amount {
-      color: white;
-      font-size: 28px;
-      font-weight: 700;
-      font-family: 'Orbitron', monospace;
-    }
-
     .modal-actions {
       display: flex;
       gap: 12px;
@@ -598,24 +366,13 @@
       cursor: pointer;
       font-weight: 600;
       font-size: 15px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
     }
 
-    .modal-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-    }
+    .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3); }
+    .modal-btn.primary { background: linear-gradient(135deg, #3B82F6, #06B6D4); border-color: #3B82F6; }
 
-    .modal-btn.primary {
-      background: linear-gradient(135deg, #3B82F6, #06B6D4);
-      border-color: #3B82F6;
-    }
-
-    .modal-btn.primary:hover {
-      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-    }
-
-    /* Lead Detail Slide-out Panel */
+    /* Detail Panel */
     .detail-panel {
       position: fixed;
       top: 0;
@@ -624,7 +381,6 @@
       height: 100vh;
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(10, 15, 26, 0.98));
       backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       border-left: 2px solid rgba(59, 130, 246, 0.3);
       box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
       z-index: 1000;
@@ -633,9 +389,7 @@
       overflow-y: auto;
     }
 
-    .detail-panel.open {
-      transform: translateX(0);
-    }
+    .detail-panel.open { transform: translateX(0); }
 
     .detail-panel-overlay {
       position: fixed;
@@ -648,10 +402,7 @@
       transition: opacity 0.3s;
     }
 
-    .detail-panel-overlay.open {
-      opacity: 1;
-      pointer-events: all;
-    }
+    .detail-panel-overlay.open { opacity: 1; pointer-events: all; }
 
     .detail-panel-header {
       padding: 24px;
@@ -690,12 +441,9 @@
     .detail-panel-close:hover {
       background: rgba(239, 68, 68, 0.4);
       transform: scale(1.1);
-      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
     }
 
-    .detail-panel-content {
-      padding: 24px;
-    }
+    .detail-panel-content { padding: 24px; }
 
     .detail-section {
       margin-bottom: 32px;
@@ -710,9 +458,6 @@
       font-weight: 700;
       color: #3B82F6;
       margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .detail-field {
@@ -722,22 +467,10 @@
       border-bottom: 1px solid rgba(59, 130, 246, 0.1);
     }
 
-    .detail-field:last-child {
-      border-bottom: none;
-    }
+    .detail-field:last-child { border-bottom: none; }
 
-    .detail-field-label {
-      color: #94a3b8;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .detail-field-value {
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
-      text-align: right;
-    }
+    .detail-field-label { color: #94a3b8; font-size: 14px; font-weight: 500; }
+    .detail-field-value { color: white; font-size: 14px; font-weight: 600; text-align: right; }
 
     .detail-actions {
       display: grid;
@@ -755,10 +488,6 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
     }
 
     .detail-action-btn:hover {
@@ -766,118 +495,95 @@
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
     }
-
-    @media (max-width: 768px) {
-      .detail-panel {
-        width: 100%;
-      }
-    }
   </style>
 
-  <div class="leads-container">
-    <!-- Header -->
-    <div class="leads-header">
-      <h2>CRM Leads</h2>
-      <div class="header-actions">
-        <button class="action-btn" onclick="importCSV()">
-          <span>📥 Import CSV</span>
-        </button>
-        <button class="action-btn" onclick="exportCSV()">
-          <span>📤 Export CSV</span>
-        </button>
-        <button class="action-btn primary" onclick="openAddLeadModal()">
-          <span>➕ Add New Lead</span>
-        </button>
-      </div>
+  <!-- Header -->
+  <div class="leads-header">
+    <h2>CRM Leads</h2>
+    <div class="header-actions">
+      <button class="action-btn" onclick="importCSV()">📥 Import CSV</button>
+      <button class="action-btn" onclick="exportCSV()">📤 Export CSV</button>
+      <button class="action-btn primary" onclick="openAddLeadModal()">➕ Add Lead</button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-bar">
+    <div class="search-box">
+      <input type="text" class="search-input" id="searchInput" placeholder="Search leads by name, phone, email..." />
+      <span class="search-icon">🔍</span>
+    </div>
+    <select class="filter-select" id="statusFilter">
+      <option value="">All Statuses</option>
+      <option value="new">New</option>
+      <option value="contacted">Contacted</option>
+      <option value="qualified">Qualified</option>
+      <option value="enrolled">Enrolled</option>
+    </select>
+    <select class="filter-select" id="sourceFilter">
+      <option value="">All Sources</option>
+      <option value="web">Web</option>
+      <option value="referral">Referral</option>
+      <option value="social">Social Media</option>
+      <option value="cold-call">Cold Call</option>
+    </select>
+    <select class="filter-select" id="priorityFilter">
+      <option value="">All Priorities</option>
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <div class="leads-table-container">
+    <table class="leads-table">
+      <thead>
+        <tr>
+          <th style="width: 40px;"><input type="checkbox" class="bulk-checkbox" id="selectAll" /></th>
+          <th class="sortable" data-sort="name">Name</th>
+          <th class="sortable" data-sort="phone">Phone</th>
+          <th class="sortable" data-sort="email">Email</th>
+          <th class="sortable" data-sort="totalDebt">Total Debt</th>
+          <th class="sortable" data-sort="monthlyIncome">Monthly Income</th>
+          <th class="sortable" data-sort="dtiRatio">DTI Ratio</th>
+          <th class="sortable" data-sort="status">Status</th>
+          <th class="sortable" data-sort="source">Source</th>
+          <th class="sortable" data-sort="priority">Priority</th>
+          <th class="sortable" data-sort="lastContact">Last Contact</th>
+        </tr>
+      </thead>
+      <tbody id="leadsTableBody">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+
+    <!-- Bulk Actions -->
+    <div class="bulk-actions" id="bulkActions">
+      <span style="color: white; font-weight: 600;"><span id="selectedCount">0</span> selected</span>
+      <button class="action-btn" onclick="bulkAssign()">👤 Assign</button>
+      <button class="action-btn" onclick="bulkChangeStatus()">📝 Change Status</button>
+      <button class="action-btn" onclick="bulkExport()">📤 Export</button>
+      <button class="action-btn" style="border-color: #EF4444; color: #EF4444;" onclick="bulkDelete()">🗑️ Delete</button>
     </div>
 
-    <!-- Filters -->
-    <div class="filters-bar">
-      <div class="search-box">
-        <input type="text" class="search-input" id="searchInput" placeholder="Search leads by name, phone, email..." />
-        <span class="search-icon">🔍</span>
+    <!-- Pagination -->
+    <div class="pagination">
+      <div class="pagination-info">
+        Showing <span id="showingStart">1</span>-<span id="showingEnd">25</span> of <span id="totalLeads">0</span> leads
       </div>
-      <select class="filter-select" id="statusFilter">
-        <option value="">All Statuses</option>
-        <option value="new">New</option>
-        <option value="contacted">Contacted</option>
-        <option value="qualified">Qualified</option>
-        <option value="enrolled">Enrolled</option>
-      </select>
-      <select class="filter-select" id="sourceFilter">
-        <option value="">All Sources</option>
-        <option value="web">Web</option>
-        <option value="referral">Referral</option>
-        <option value="social">Social Media</option>
-        <option value="cold-call">Cold Call</option>
-      </select>
-      <select class="filter-select" id="agentFilter">
-        <option value="">All Agents</option>
-        <option value="John Doe">John Doe</option>
-        <option value="Jane Smith">Jane Smith</option>
-        <option value="Mike Johnson">Mike Johnson</option>
-      </select>
-    </div>
-
-    <!-- Table -->
-    <div class="leads-table-container">
-      <table class="leads-table">
-        <thead>
-          <tr>
-            <th style="width: 40px;"><input type="checkbox" class="bulk-checkbox" id="selectAll" /></th>
-            <th class="sortable" data-sort="name">Name</th>
-            <th class="sortable" data-sort="phone">Phone</th>
-            <th class="sortable" data-sort="email">Email</th>
-            <th class="sortable" data-sort="totalDebt">Total Debt</th>
-            <th class="sortable" data-sort="monthlyIncome">Monthly Income</th>
-            <th class="sortable" data-sort="dtiRatio">DTI Ratio</th>
-            <th class="sortable" data-sort="source">Source</th>
-            <th class="sortable" data-sort="status">Status</th>
-            <th>Agent</th>
-            <th class="sortable" data-sort="lastContact">Last Contact</th>
-            <th class="sortable" data-sort="score">Score</th>
-          </tr>
-        </thead>
-        <tbody id="leadsTableBody">
-          <!-- Dynamic rows -->
-        </tbody>
-      </table>
-
-      <!-- Bulk Actions -->
-      <div class="bulk-actions" id="bulkActions" style="display: none;">
-        <span style="color: white; font-weight: 600;"><span id="selectedCount">0</span> selected</span>
-        <button class="action-btn" onclick="bulkAssign()">
-          <span>👤 Assign</span>
-        </button>
-        <button class="action-btn" onclick="bulkTag()">
-          <span>🏷️ Tag</span>
-        </button>
-        <button class="action-btn" onclick="bulkExport()">
-          <span>📤 Export</span>
-        </button>
-        <button class="action-btn" style="border-color: #EF4444; color: #EF4444;" onclick="bulkDelete()">
-          <span>🗑️ Delete</span>
-        </button>
-      </div>
-
-      <!-- Pagination -->
-      <div class="pagination">
-        <div class="pagination-info">
-          Showing <span id="showingStart">1</span>-<span id="showingEnd">25</span> of <span id="totalLeads">0</span> leads
-        </div>
-        <div class="pagination-controls">
-          <button class="page-btn" id="prevPage" onclick="previousPage()">← Previous</button>
-          <button class="page-btn active" id="page1" onclick="goToPage(1)">1</button>
-          <button class="page-btn" id="page2" onclick="goToPage(2)">2</button>
-          <button class="page-btn" id="page3" onclick="goToPage(3)">3</button>
-          <button class="page-btn" id="nextPage" onclick="nextPage()">Next →</button>
-        </div>
+      <div class="pagination-controls">
+        <button class="page-btn" id="prevPage" onclick="previousPage()">← Previous</button>
+        <button class="page-btn active" id="page1" onclick="goToPage(1)">1</button>
+        <button class="page-btn" id="page2" onclick="goToPage(2)">2</button>
+        <button class="page-btn" id="page3" onclick="goToPage(3)">3</button>
+        <button class="page-btn" id="nextPage" onclick="nextPage()">Next →</button>
       </div>
     </div>
   </div>
 
-  <!-- Add Lead Modal (hidden by default) -->
-  <div id="addLeadModal" class="modal-overlay" style="display: none;">
+  <!-- Add Lead Modal -->
+  <div id="addLeadModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
         <h3>Add New Lead</h3>
@@ -885,7 +591,6 @@
       </div>
 
       <form id="addLeadForm" onsubmit="submitLead(event)">
-        <!-- Personal Info -->
         <h4 style="color: #3B82F6; margin-bottom: 16px;">Personal Information</h4>
         <div class="form-grid">
           <div class="form-group">
@@ -901,81 +606,45 @@
             <input type="email" class="form-input" name="email" />
           </div>
           <div class="form-group">
-            <label class="form-label">SSN Last 4</label>
-            <input type="text" class="form-input" name="ssnLast4" maxlength="4" pattern="[0-9]{4}" />
-          </div>
-          <div class="form-group full-width">
-            <label class="form-label">Address</label>
-            <input type="text" class="form-input" name="address" />
+            <label class="form-label">Status</label>
+            <select class="form-input" name="status">
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="qualified">Qualified</option>
+              <option value="enrolled">Enrolled</option>
+            </select>
           </div>
         </div>
 
-        <!-- Financial Info -->
         <h4 style="color: #3B82F6; margin: 24px 0 16px;">Financial Information</h4>
         <div class="form-grid">
           <div class="form-group">
+            <label class="form-label">Total Debt</label>
+            <input type="number" class="form-input" name="totalDebt" />
+          </div>
+          <div class="form-group">
             <label class="form-label">Monthly Income</label>
-            <input type="number" class="form-input" name="monthlyIncome" id="monthlyIncome" oninput="calculateDTI()" />
+            <input type="number" class="form-input" name="monthlyIncome" />
           </div>
           <div class="form-group">
-            <label class="form-label">Employment Status</label>
-            <select class="form-input" name="employmentStatus">
-              <option value="employed">Employed</option>
-              <option value="self-employed">Self-Employed</option>
-              <option value="unemployed">Unemployed</option>
-              <option value="retired">Retired</option>
-            </select>
-          </div>
-          <div class="form-group full-width">
-            <label class="form-label">Employer</label>
-            <input type="text" class="form-input" name="employer" />
-          </div>
-        </div>
-
-        <!-- Debt Details -->
-        <h4 style="color: #3B82F6; margin: 24px 0 16px;">Debt Details</h4>
-        <div class="debt-items" id="debtItems">
-          <!-- Dynamic debt items -->
-        </div>
-        <button type="button" class="add-debt-btn" onclick="addDebtItem()">➕ Add Creditor</button>
-
-        <!-- Calculated Values -->
-        <div class="form-grid" style="margin-top: 24px;">
-          <div class="calculated-value">
-            <div class="calculated-label">Total Debt</div>
-            <div class="calculated-amount" id="totalDebtDisplay">$0</div>
-          </div>
-          <div class="calculated-value">
-            <div class="calculated-label">DTI Ratio</div>
-            <div class="calculated-amount" id="dtiRatioDisplay">0%</div>
-          </div>
-        </div>
-
-        <!-- Lead Metadata -->
-        <h4 style="color: #3B82F6; margin: 24px 0 16px;">Lead Information</h4>
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Lead Source</label>
+            <label class="form-label">Source</label>
             <select class="form-input" name="source">
               <option value="web">Web</option>
               <option value="referral">Referral</option>
               <option value="social">Social Media</option>
               <option value="cold-call">Cold Call</option>
-              <option value="event">Event</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Assigned Agent</label>
-            <select class="form-input" name="assignedAgent">
-              <option value="">Unassigned</option>
-              <option value="John Doe">John Doe</option>
-              <option value="Jane Smith">Jane Smith</option>
-              <option value="Mike Johnson">Mike Johnson</option>
+            <label class="form-label">Priority</label>
+            <select class="form-input" name="priority">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
             </select>
           </div>
         </div>
 
-        <!-- Actions -->
         <div class="modal-actions">
           <button type="button" class="modal-btn" onclick="closeAddLeadModal()">Cancel</button>
           <button type="submit" class="modal-btn primary">💾 Save Lead</button>
@@ -984,90 +653,179 @@
     </div>
   </div>
 
+  <!-- Detail Panel -->
+  <div id="detailPanelOverlay" class="detail-panel-overlay" onclick="closeDetailPanel()"></div>
+  <div id="detailPanel" class="detail-panel">
+    <div class="detail-panel-header">
+      <h2 class="detail-panel-title" id="detailLeadName">Lead Details</h2>
+      <button class="detail-panel-close" onclick="closeDetailPanel()">×</button>
+    </div>
+    <div class="detail-panel-content">
+      <div class="detail-section">
+        <div class="detail-section-title">Basic Information</div>
+        <div class="detail-field">
+          <span class="detail-field-label">Lead ID</span>
+          <span class="detail-field-value" id="detailLeadId">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Phone</span>
+          <span class="detail-field-value" id="detailPhone">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Email</span>
+          <span class="detail-field-value" id="detailEmail">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Status</span>
+          <span class="detail-field-value" id="detailStatus">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Source</span>
+          <span class="detail-field-value" id="detailSource">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Priority</span>
+          <span class="detail-field-value" id="detailPriority">-</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Financial Information</div>
+        <div class="detail-field">
+          <span class="detail-field-label">Total Debt</span>
+          <span class="detail-field-value" id="detailTotalDebt">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Monthly Income</span>
+          <span class="detail-field-value" id="detailMonthlyIncome">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">DTI Ratio</span>
+          <span class="detail-field-value" id="detailDtiRatio">-</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Timeline</div>
+        <div class="detail-field">
+          <span class="detail-field-label">Last Contact</span>
+          <span class="detail-field-value" id="detailLastContact">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Created</span>
+          <span class="detail-field-value" id="detailCreatedAt">-</span>
+        </div>
+      </div>
+
+      <div class="detail-actions">
+        <button class="detail-action-btn" onclick="callLead()">📞 Call Lead</button>
+        <button class="detail-action-btn" onclick="showToast('Email coming soon', 'info')">📧 Email</button>
+        <button class="detail-action-btn" onclick="editLead()">✏️ Edit</button>
+        <button class="detail-action-btn" onclick="deleteLead()">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Sample lead data
+    // =====================
+    // GLOBAL STATE
+    // =====================
     let leads = [];
+    let filteredLeads = [];
     let currentPage = 1;
     const leadsPerPage = 25;
     let currentSort = { field: null, direction: 'asc' };
     let selectedLeads = new Set();
-    let debtItemCounter = 0;
+    let currentLeadId = null;
 
-    // Initialize
+    // =====================
+    // INITIALIZATION
+    // =====================
     document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 CRM Leads initializing...');
+      
       loadLeads();
       setupFilters();
       setupSort();
       renderLeads();
-      lucide.createIcons();
+      
+      // Select All handler
+      document.getElementById('selectAll').addEventListener('change', handleSelectAll);
     });
 
-    // Load leads from DebtDB
+    // =====================
+    // LOAD LEADS
+    // =====================
     function loadLeads() {
-      leads = DebtDB.leads;
+      if (!window.DebtDB) {
+        console.error('❌ DebtDB not loaded');
+        showToast('Database not available', 'error');
+        return;
+      }
+
+      leads = window.DebtDB.getLeads();
+      console.log(`✅ Loaded ${leads.length} leads`);
+      
       if (leads.length === 0) {
-        // Generate sample leads if empty
-        leads = generateSampleLeads(50);
-        DebtDB.saveLeads(leads);
+        // Generate sample data for demo
+        leads = generateSampleLeads(100);
+        window.DebtDB.saveLeads(leads);
       }
     }
 
-    // Save leads to DebtDB
-    function saveLeads() {
-      DebtDB.saveLeads(leads);
-    }
-
-    // Generate sample leads
     function generateSampleLeads(count) {
       const names = ['John Smith', 'Sarah Johnson', 'Michael Brown', 'Emily Davis', 'David Wilson', 'Jennifer Martinez', 'Robert Taylor', 'Lisa Anderson', 'William Thomas', 'Mary Jackson'];
-      const sources = ['web', 'referral', 'social', 'cold-call', 'event'];
+      const sources = ['web', 'referral', 'social', 'cold-call'];
       const statuses = ['new', 'contacted', 'qualified', 'enrolled'];
-      const agents = ['John Doe', 'Jane Smith', 'Mike Johnson'];
+      const priorities = ['low', 'medium', 'high'];
 
       const sampleLeads = [];
       for (let i = 0; i < count; i++) {
         const totalDebt = Math.floor(Math.random() * 50000) + 5000;
         const monthlyIncome = Math.floor(Math.random() * 5000) + 2000;
-        const monthlyPayment = Math.floor(totalDebt * 0.02);
-        const dtiRatio = Math.round((monthlyPayment / monthlyIncome) * 100);
-        const score = Math.min(100, Math.max(0, 100 - (dtiRatio * 0.5) + (monthlyIncome / 100)));
+        const dtiRatio = Math.round((totalDebt * 0.02 / monthlyIncome) * 100);
 
         sampleLeads.push({
-          id: `LEAD_${Date.now()}_${i}`,
-          name: names[Math.floor(Math.random() * names.length)],
+          id: `LEAD${String(i + 1).padStart(4, '0')}`,
+          name: names[Math.floor(Math.random() * names.length)] + ' ' + (i + 1),
           phone: `(555) ${String(Math.floor(Math.random() * 900) + 100)}-${String(Math.floor(Math.random() * 9000) + 1000)}`,
-          email: `lead${i}@example.com`,
+          email: `lead${i + 1}@example.com`,
           totalDebt: totalDebt,
           monthlyIncome: monthlyIncome,
           dtiRatio: dtiRatio,
-          source: sources[Math.floor(Math.random() * sources.length)],
           status: statuses[Math.floor(Math.random() * statuses.length)],
-          assignedAgent: agents[Math.floor(Math.random() * agents.length)],
-          lastContact: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-          score: Math.round(score),
+          source: sources[Math.floor(Math.random() * sources.length)],
+          priority: priorities[Math.floor(Math.random() * priorities.length)],
+          lastContact: Math.random() > 0.5 ? new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString() : null,
           createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString()
         });
       }
       return sampleLeads;
     }
 
-    // Render leads table
+    // =====================
+    // RENDER LEADS
+    // =====================
     function renderLeads() {
-      const filtered = filterLeads();
-      const sorted = sortLeads(filtered);
-      const paginated = paginateLeads(sorted);
-
+      applyFilters();
+      applySort();
+      const paginated = paginateLeads();
+      
       const tbody = document.getElementById('leadsTableBody');
+      
+      if (paginated.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; color: #64748B; padding: 40px;">No leads found</td></tr>';
+        updatePagination();
+        return;
+      }
+
       tbody.innerHTML = paginated.map(lead => {
         const debtClass = lead.totalDebt < 15000 ? 'debt-low' : lead.totalDebt < 30000 ? 'debt-medium' : 'debt-high';
-        const scoreColor = lead.score >= 70 ? '#22C55E' : lead.score >= 40 ? '#F59E0B' : '#EF4444';
-        const circumference = 2 * Math.PI * 24;
-        const offset = circumference - (lead.score / 100) * circumference;
-
+        
         return `
-          <tr onclick="viewLead('${lead.id}')">
+          <tr onclick="viewLeadDetail('${lead.id}')">
             <td onclick="event.stopPropagation()">
-              <input type="checkbox" class="bulk-checkbox lead-checkbox" data-id="${lead.id}" onchange="toggleSelect(event, '${lead.id}')" ${selectedLeads.has(lead.id) ? 'checked' : ''} />
+              <input type="checkbox" class="bulk-checkbox lead-checkbox" data-id="${lead.id}" onchange="toggleSelect('${lead.id}')" ${selectedLeads.has(lead.id) ? 'checked' : ''} />
             </td>
             <td class="lead-name">${lead.name}</td>
             <td class="lead-phone">${lead.phone}</td>
@@ -1075,38 +833,27 @@
             <td class="lead-debt ${debtClass}">$${lead.totalDebt.toLocaleString()}</td>
             <td class="lead-debt">$${lead.monthlyIncome.toLocaleString()}</td>
             <td class="lead-debt">${lead.dtiRatio}%</td>
-            <td>${capitalizeFirst(lead.source)}</td>
             <td><span class="status-badge status-${lead.status}">${lead.status}</span></td>
-            <td>${lead.assignedAgent}</td>
-            <td>${new Date(lead.lastContact).toLocaleDateString()}</td>
-            <td>
-              <div class="lead-score">
-                <svg class="score-circle" width="60" height="60">
-                  <circle class="score-bg" cx="30" cy="30" r="24" />
-                  <circle class="score-progress" cx="30" cy="30" r="24" 
-                    stroke="${scoreColor}"
-                    stroke-dasharray="${circumference}"
-                    stroke-dashoffset="${offset}"
-                    style="filter: drop-shadow(0 0 4px ${scoreColor});" />
-                </svg>
-                <div class="score-text">${lead.score}</div>
-              </div>
-            </td>
+            <td>${capitalizeFirst(lead.source)}</td>
+            <td>${capitalizeFirst(lead.priority)}</td>
+            <td>${lead.lastContact ? new Date(lead.lastContact).toLocaleDateString() : 'Never'}</td>
           </tr>
         `;
       }).join('');
 
-      updatePagination(filtered.length);
+      updatePagination();
     }
 
-    // Filter leads
-    function filterLeads() {
+    // =====================
+    // FILTERS & SORT
+    // =====================
+    function applyFilters() {
       const search = document.getElementById('searchInput').value.toLowerCase();
       const statusFilter = document.getElementById('statusFilter').value;
       const sourceFilter = document.getElementById('sourceFilter').value;
-      const agentFilter = document.getElementById('agentFilter').value;
+      const priorityFilter = document.getElementById('priorityFilter').value;
 
-      return leads.filter(lead => {
+      filteredLeads = leads.filter(lead => {
         const matchesSearch = !search || 
           lead.name.toLowerCase().includes(search) ||
           lead.phone.includes(search) ||
@@ -1114,17 +861,16 @@
         
         const matchesStatus = !statusFilter || lead.status === statusFilter;
         const matchesSource = !sourceFilter || lead.source === sourceFilter;
-        const matchesAgent = !agentFilter || lead.assignedAgent === agentFilter;
+        const matchesPriority = !priorityFilter || lead.priority === priorityFilter;
 
-        return matchesSearch && matchesStatus && matchesSource && matchesAgent;
+        return matchesSearch && matchesStatus && matchesSource && matchesPriority;
       });
     }
 
-    // Sort leads
-    function sortLeads(leadsArray) {
-      if (!currentSort.field) return leadsArray;
+    function applySort() {
+      if (!currentSort.field) return;
 
-      return [...leadsArray].sort((a, b) => {
+      filteredLeads.sort((a, b) => {
         let aVal = a[currentSort.field];
         let bVal = b[currentSort.field];
 
@@ -1139,19 +885,18 @@
       });
     }
 
-    // Paginate leads
-    function paginateLeads(leadsArray) {
+    function paginateLeads() {
       const start = (currentPage - 1) * leadsPerPage;
       const end = start + leadsPerPage;
-      return leadsArray.slice(start, end);
+      return filteredLeads.slice(start, end);
     }
 
-    // Update pagination UI
-    function updatePagination(totalFiltered) {
+    function updatePagination() {
+      const totalFiltered = filteredLeads.length;
       const start = (currentPage - 1) * leadsPerPage + 1;
       const end = Math.min(currentPage * leadsPerPage, totalFiltered);
       
-      document.getElementById('showingStart').textContent = start;
+      document.getElementById('showingStart').textContent = totalFiltered > 0 ? start : 0;
       document.getElementById('showingEnd').textContent = end;
       document.getElementById('totalLeads').textContent = totalFiltered;
 
@@ -1172,9 +917,8 @@
       }
     }
 
-    // Setup filters
     function setupFilters() {
-      const inputs = ['searchInput', 'statusFilter', 'sourceFilter', 'agentFilter'];
+      const inputs = ['searchInput', 'statusFilter', 'sourceFilter', 'priorityFilter'];
       inputs.forEach(id => {
         document.getElementById(id).addEventListener('input', () => {
           currentPage = 1;
@@ -1183,7 +927,6 @@
       });
     }
 
-    // Setup sorting
     function setupSort() {
       document.querySelectorAll('.sortable').forEach(th => {
         th.addEventListener('click', () => {
@@ -1207,9 +950,10 @@
       });
     }
 
-    // Toggle select
-    function toggleSelect(event, leadId) {
-      event.stopPropagation();
+    // =====================
+    // SELECTION
+    // =====================
+    function toggleSelect(leadId) {
       if (selectedLeads.has(leadId)) {
         selectedLeads.delete(leadId);
       } else {
@@ -1218,8 +962,7 @@
       updateBulkActions();
     }
 
-    // Select all
-    document.getElementById('selectAll')?.addEventListener('change', (e) => {
+    function handleSelectAll(e) {
       const checkboxes = document.querySelectorAll('.lead-checkbox');
       checkboxes.forEach(cb => {
         const leadId = cb.dataset.id;
@@ -1232,178 +975,154 @@
         }
       });
       updateBulkActions();
-    });
-
-    // Update bulk actions
-    function updateBulkActions() {
-      const bulkActions = document.getElementById('bulkActions');
-      const count = selectedLeads.size;
-      document.getElementById('selectedCount').textContent = count;
-      bulkActions.style.display = count > 0 ? 'flex' : 'none';
     }
 
-    // Pagination functions
+    function updateBulkActions() {
+      const count = selectedLeads.size;
+      document.getElementById('selectedCount').textContent = count;
+      
+      if (count > 0) {
+        document.getElementById('bulkActions').classList.add('visible');
+      } else {
+        document.getElementById('bulkActions').classList.remove('visible');
+      }
+    }
+
+    // =====================
+    // PAGINATION
+    // =====================
     function previousPage() {
       if (currentPage > 1) {
         currentPage--;
         renderLeads();
+        window.scrollTo(0, 0);
       }
     }
 
     function nextPage() {
-      const totalPages = Math.ceil(filterLeads().length / leadsPerPage);
+      const totalPages = Math.ceil(filteredLeads.length / leadsPerPage);
       if (currentPage < totalPages) {
         currentPage++;
         renderLeads();
+        window.scrollTo(0, 0);
       }
     }
 
     function goToPage(page) {
       currentPage = page;
       renderLeads();
+      window.scrollTo(0, 0);
     }
 
-    // View lead details
-    function viewLead(leadId) {
+    // =====================
+    // LEAD DETAIL PANEL
+    // =====================
+    function viewLeadDetail(leadId) {
       const lead = leads.find(l => l.id === leadId);
+      if (!lead) return;
+
+      currentLeadId = leadId;
+
+      // Populate panel
+      document.getElementById('detailLeadName').textContent = lead.name;
+      document.getElementById('detailLeadId').textContent = lead.id;
+      document.getElementById('detailPhone').textContent = lead.phone;
+      document.getElementById('detailEmail').textContent = lead.email || 'N/A';
+      document.getElementById('detailStatus').textContent = capitalizeFirst(lead.status);
+      document.getElementById('detailSource').textContent = capitalizeFirst(lead.source);
+      document.getElementById('detailPriority').textContent = capitalizeFirst(lead.priority);
+      document.getElementById('detailTotalDebt').textContent = `$${lead.totalDebt.toLocaleString()}`;
+      document.getElementById('detailMonthlyIncome').textContent = `$${lead.monthlyIncome.toLocaleString()}`;
+      document.getElementById('detailDtiRatio').textContent = `${lead.dtiRatio}%`;
+      document.getElementById('detailLastContact').textContent = lead.lastContact ? new Date(lead.lastContact).toLocaleString() : 'Never';
+      document.getElementById('detailCreatedAt').textContent = new Date(lead.createdAt).toLocaleString();
+
+      // Show panel
+      document.getElementById('detailPanelOverlay').classList.add('open');
+      document.getElementById('detailPanel').classList.add('open');
+    }
+
+    function closeDetailPanel() {
+      document.getElementById('detailPanelOverlay').classList.remove('open');
+      document.getElementById('detailPanel').classList.remove('open');
+      currentLeadId = null;
+    }
+
+    function callLead() {
+      const lead = leads.find(l => l.id === currentLeadId);
       if (lead) {
-        // TODO: Will be replaced with slide-out panel in next fix
-        openLeadDetailPanel(lead);
+        // Switch to Power Dialer and populate phone
+        window.location.hash = 'power-dialer';
+        setTimeout(() => {
+          const phoneInput = document.getElementById('phoneInput');
+          if (phoneInput) {
+            phoneInput.value = lead.phone;
+          }
+        }, 500);
+        closeDetailPanel();
       }
     }
 
-    // Add lead modal functions
+    function editLead() {
+      showToast('Edit functionality coming soon', 'info');
+    }
+
+    function deleteLead() {
+      if (confirm(`Delete lead ${currentLeadId}?`)) {
+        leads = leads.filter(l => l.id !== currentLeadId);
+        window.DebtDB.saveLeads(leads);
+        renderLeads();
+        closeDetailPanel();
+        showToast('Lead deleted', 'success');
+      }
+    }
+
+    // =====================
+    // ADD LEAD MODAL
+    // =====================
     function openAddLeadModal() {
-      document.getElementById('addLeadModal').style.display = 'flex';
-      debtItemCounter = 0;
-      document.getElementById('debtItems').innerHTML = '';
-      addDebtItem(); // Add first debt item by default
+      document.getElementById('addLeadModal').classList.add('open');
     }
 
     function closeAddLeadModal() {
-      document.getElementById('addLeadModal').style.display = 'none';
+      document.getElementById('addLeadModal').classList.remove('open');
       document.getElementById('addLeadForm').reset();
     }
 
-    // Add debt item
-    function addDebtItem() {
-      const container = document.getElementById('debtItems');
-      const id = ++debtItemCounter;
-      
-      const item = document.createElement('div');
-      item.className = 'debt-item';
-      item.id = `debt-item-${id}`;
-      item.innerHTML = `
-        <div class="debt-item-header">
-          <strong style="color: white;">Creditor ${id}</strong>
-          <button type="button" class="remove-debt-btn" onclick="removeDebtItem(${id})">Remove</button>
-        </div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Creditor Name</label>
-            <input type="text" class="form-input debt-input" name="debtCreditor${id}" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Debt Type</label>
-            <select class="form-input debt-input" name="debtType${id}">
-              <option value="credit-card">Credit Card</option>
-              <option value="personal-loan">Personal Loan</option>
-              <option value="medical">Medical</option>
-              <option value="auto">Auto Loan</option>
-              <option value="student">Student Loan</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Balance</label>
-            <input type="number" class="form-input debt-input debt-balance" name="debtBalance${id}" oninput="calculateTotals()" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Interest Rate (%)</label>
-            <input type="number" class="form-input debt-input" name="debtRate${id}" step="0.01" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Monthly Payment</label>
-            <input type="number" class="form-input debt-input debt-payment" name="debtPayment${id}" oninput="calculateDTI()" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Status</label>
-            <select class="form-input debt-input" name="debtStatus${id}">
-              <option value="current">Current</option>
-              <option value="30-days">30 Days Late</option>
-              <option value="60-days">60 Days Late</option>
-              <option value="90-days">90+ Days Late</option>
-              <option value="collections">In Collections</option>
-            </select>
-          </div>
-        </div>
-      `;
-      container.appendChild(item);
-    }
-
-    // Remove debt item
-    function removeDebtItem(id) {
-      const item = document.getElementById(`debt-item-${id}`);
-      if (item) {
-        item.remove();
-        calculateTotals();
-      }
-    }
-
-    // Calculate totals
-    function calculateTotals() {
-      const balances = document.querySelectorAll('.debt-balance');
-      let totalDebt = 0;
-      balances.forEach(input => {
-        totalDebt += parseFloat(input.value) || 0;
-      });
-      document.getElementById('totalDebtDisplay').textContent = `$${totalDebt.toLocaleString()}`;
-      calculateDTI();
-    }
-
-    // Calculate DTI ratio
-    function calculateDTI() {
-      const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
-      const payments = document.querySelectorAll('.debt-payment');
-      let totalPayment = 0;
-      payments.forEach(input => {
-        totalPayment += parseFloat(input.value) || 0;
-      });
-
-      const dtiRatio = monthlyIncome > 0 ? Math.round((totalPayment / monthlyIncome) * 100) : 0;
-      document.getElementById('dtiRatioDisplay').textContent = `${dtiRatio}%`;
-    }
-
-    // Submit lead form
     function submitLead(event) {
       event.preventDefault();
       
       const formData = new FormData(event.target);
+      const totalDebt = parseFloat(formData.get('totalDebt')) || 0;
+      const monthlyIncome = parseFloat(formData.get('monthlyIncome')) || 1;
+      const dtiRatio = Math.round((totalDebt * 0.02 / monthlyIncome) * 100);
+
       const newLead = {
-        id: `LEAD_${Date.now()}`,
+        id: `LEAD${String(leads.length + 1).padStart(4, '0')}`,
         name: formData.get('name'),
         phone: formData.get('phone'),
-        email: formData.get('email'),
-        totalDebt: parseFloat(document.getElementById('totalDebtDisplay').textContent.replace(/[$,]/g, '')),
-        monthlyIncome: parseFloat(formData.get('monthlyIncome')) || 0,
-        dtiRatio: parseInt(document.getElementById('dtiRatioDisplay').textContent.replace('%', '')),
+        email: formData.get('email') || '',
+        totalDebt: totalDebt,
+        monthlyIncome: monthlyIncome,
+        dtiRatio: dtiRatio,
+        status: formData.get('status'),
         source: formData.get('source'),
-        status: 'new',
-        assignedAgent: formData.get('assignedAgent') || 'Unassigned',
-        lastContact: new Date().toISOString(),
-        score: 50, // Default score
+        priority: formData.get('priority'),
+        lastContact: null,
         createdAt: new Date().toISOString()
       };
 
       leads.unshift(newLead);
-      saveLeads();
+      window.DebtDB.saveLeads(leads);
       renderLeads();
       closeAddLeadModal();
       
-      Toast.success(`Lead "${newLead.name}" added successfully!`);
+      showToast(`Lead "${newLead.name}" added successfully!`, 'success');
     }
 
-    // Bulk actions
+    // =====================
+    // BULK ACTIONS
+    // =====================
     function bulkAssign() {
       const agent = prompt('Assign to agent:');
       if (agent) {
@@ -1411,35 +1130,50 @@
           const lead = leads.find(l => l.id === id);
           if (lead) lead.assignedAgent = agent;
         });
-        saveLeads();
+        window.DebtDB.saveLeads(leads);
         renderLeads();
         selectedLeads.clear();
         updateBulkActions();
+        showToast(`Assigned ${selectedLeads.size} leads to ${agent}`, 'success');
       }
     }
 
-    function bulkTag() {
-      Toast.info('Bulk tagging feature coming soon!');
+    function bulkChangeStatus() {
+      const status = prompt('Change status to (new/contacted/qualified/enrolled):');
+      if (status && ['new', 'contacted', 'qualified', 'enrolled'].includes(status)) {
+        selectedLeads.forEach(id => {
+          const lead = leads.find(l => l.id === id);
+          if (lead) lead.status = status;
+        });
+        window.DebtDB.saveLeads(leads);
+        renderLeads();
+        selectedLeads.clear();
+        updateBulkActions();
+        showToast(`Updated ${selectedLeads.size} leads to ${status}`, 'success');
+      }
     }
 
     function bulkExport() {
       const selected = leads.filter(l => selectedLeads.has(l.id));
       const csv = convertToCSV(selected);
       downloadCSV(csv, 'selected-leads.csv');
-      Toast.success(`Exported ${selected.length} leads`);
+      showToast(`Exported ${selected.length} leads`, 'success');
     }
 
     function bulkDelete() {
       if (confirm(`Delete ${selectedLeads.size} leads? This cannot be undone.`)) {
         leads = leads.filter(l => !selectedLeads.has(l.id));
-        saveLeads();
+        window.DebtDB.saveLeads(leads);
         renderLeads();
         selectedLeads.clear();
         updateBulkActions();
+        showToast('Leads deleted', 'success');
       }
     }
 
-    // Import/Export CSV
+    // =====================
+    // IMPORT/EXPORT CSV
+    // =====================
     function importCSV() {
       const input = document.createElement('input');
       input.type = 'file';
@@ -1454,52 +1188,40 @@
               const parsed = parseCSV(csv);
               
               if (parsed.length === 0) {
-                Toast.warning('No valid leads found in CSV file');
+                showToast('No valid leads found in CSV file', 'warning');
                 return;
               }
 
-              // Add leads to database
               let successCount = 0;
-              let errorCount = 0;
-
               parsed.forEach(row => {
                 try {
                   const newLead = {
-                    id: 'LEAD' + String(leads.length + successCount + 1).padStart(4, '0'),
+                    id: `LEAD${String(leads.length + successCount + 1).padStart(4, '0')}`,
                     name: row.name || 'Unknown',
                     phone: row.phone || '',
                     email: row.email || '',
                     totalDebt: parseFloat(row.totalDebt) || 0,
                     monthlyIncome: parseFloat(row.monthlyIncome) || 0,
                     dtiRatio: parseFloat(row.dtiRatio) || 0,
-                    source: row.source || 'CSV Import',
                     status: row.status || 'new',
-                    assignedAgent: row.assignedAgent || 'Unassigned',
-                    score: parseInt(row.score) || 50,
-                    lastContact: new Date().toISOString(),
-                    createdAt: new Date().toISOString(),
-                    debts: []
+                    source: row.source || 'CSV Import',
+                    priority: row.priority || 'medium',
+                    lastContact: null,
+                    createdAt: new Date().toISOString()
                   };
 
                   leads.unshift(newLead);
                   successCount++;
                 } catch (err) {
-                  errorCount++;
                   console.error('Error adding lead:', err);
                 }
               });
 
-              saveLeads();
+              window.DebtDB.saveLeads(leads);
               renderLeads();
-
-              if (successCount > 0) {
-                Toast.success(`Successfully imported ${successCount} lead${successCount > 1 ? 's' : ''}!`);
-              }
-              if (errorCount > 0) {
-                Toast.warning(`${errorCount} lead${errorCount > 1 ? 's' : ''} could not be imported`);
-              }
+              showToast(`Successfully imported ${successCount} leads!`, 'success');
             } catch (error) {
-              Toast.error('Failed to parse CSV file. Please check the format.');
+              showToast('Failed to parse CSV file', 'error');
               console.error('CSV import error:', error);
             }
           };
@@ -1524,7 +1246,6 @@
           row[header] = values[index] || '';
         });
 
-        // Only add rows with at least a name or phone
         if (row.name || row.phone) {
           data.push(row);
         }
@@ -1534,16 +1255,16 @@
     }
 
     function exportCSV() {
-      const csv = convertToCSV(leads);
+      const csv = convertToCSV(filteredLeads);
       downloadCSV(csv, 'all-leads.csv');
-      Toast.success(`Exported ${leads.length} leads`);
+      showToast(`Exported ${filteredLeads.length} leads`, 'success');
     }
 
     function convertToCSV(data) {
-      const headers = ['Name', 'Phone', 'Email', 'Total Debt', 'Monthly Income', 'DTI Ratio', 'Source', 'Status', 'Agent', 'Score'];
+      const headers = ['Name', 'Phone', 'Email', 'Total Debt', 'Monthly Income', 'DTI Ratio', 'Status', 'Source', 'Priority'];
       const rows = data.map(l => [
         l.name, l.phone, l.email, l.totalDebt, l.monthlyIncome, l.dtiRatio,
-        l.source, l.status, l.assignedAgent, l.score
+        l.status, l.source, l.priority
       ]);
       return [headers, ...rows].map(row => row.join(',')).join('\n');
     }
@@ -1558,172 +1279,20 @@
       URL.revokeObjectURL(url);
     }
 
-    // Helper function
+    // =====================
+    // HELPERS
+    // =====================
     function capitalizeFirst(str) {
+      if (!str) return '';
       return str.charAt(0).toUpperCase() + str.slice(1).replace('-', ' ');
     }
 
-    // Lead Detail Panel
-    function openLeadDetailPanel(lead) {
-      const overlay = document.getElementById('leadDetailOverlay');
-      const panel = document.getElementById('leadDetailPanel');
-      
-      // Populate panel with lead data
-      document.getElementById('detailLeadName').textContent = lead.name;
-      document.getElementById('detailLeadId').textContent = lead.id;
-      document.getElementById('detailPhone').textContent = lead.phone || 'N/A';
-      document.getElementById('detailEmail').textContent = lead.email || 'N/A';
-      document.getElementById('detailTotalDebt').textContent = `$${lead.totalDebt.toLocaleString()}`;
-      document.getElementById('detailMonthlyIncome').textContent = `$${lead.monthlyIncome.toLocaleString()}`;
-      document.getElementById('detailDtiRatio').textContent = `${lead.dtiRatio}%`;
-      document.getElementById('detailSource').textContent = capitalizeFirst(lead.source);
-      document.getElementById('detailStatus').textContent = capitalizeFirst(lead.status);
-      document.getElementById('detailAssignedAgent').textContent = lead.assignedAgent;
-      document.getElementById('detailScore').textContent = lead.score;
-      document.getElementById('detailLastContact').textContent = new Date(lead.lastContact).toLocaleString();
-      document.getElementById('detailCreatedAt').textContent = new Date(lead.createdAt).toLocaleString();
-
-      // Show debts if available
-      const debtsContainer = document.getElementById('detailDebts');
-      if (lead.debts && lead.debts.length > 0) {
-        debtsContainer.innerHTML = lead.debts.map(debt => `
-          <div class="detail-field">
-            <span class="detail-field-label">${debt.creditor} (${debt.type})</span>
-            <span class="detail-field-value">$${debt.amount.toLocaleString()}</span>
-          </div>
-        `).join('');
+    function showToast(message, type = 'info') {
+      if (typeof Toast !== 'undefined') {
+        Toast[type](message);
       } else {
-        debtsContainer.innerHTML = '<div class="detail-field"><span class="detail-field-label">No debts recorded</span></div>';
+        console.log(`[${type.toUpperCase()}] ${message}`);
       }
-
-      // Show panel
-      overlay.classList.add('open');
-      panel.classList.add('open');
     }
-
-    function closeLeadDetailPanel() {
-      const overlay = document.getElementById('leadDetailOverlay');
-      const panel = document.getElementById('leadDetailPanel');
-      overlay.classList.remove('open');
-      panel.classList.remove('open');
-    }
-
-    // Close panel on overlay click
-    document.getElementById('leadDetailOverlay')?.addEventListener('click', closeLeadDetailPanel);
   </script>
-
-  <!-- Lead Detail Slide-out Panel -->
-  <div id="leadDetailOverlay" class="detail-panel-overlay"></div>
-  <div id="leadDetailPanel" class="detail-panel">
-    <div class="detail-panel-header">
-      <h2 class="detail-panel-title" id="detailLeadName">Lead Details</h2>
-      <button class="detail-panel-close" onclick="closeLeadDetailPanel()">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-    </div>
-    <div class="detail-panel-content">
-      <!-- Basic Info Section -->
-      <div class="detail-section">
-        <div class="detail-section-title">
-          <i data-lucide="user" class="w-5 h-5"></i>
-          Basic Information
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Lead ID</span>
-          <span class="detail-field-value" id="detailLeadId">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Phone</span>
-          <span class="detail-field-value" id="detailPhone">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Email</span>
-          <span class="detail-field-value" id="detailEmail">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Source</span>
-          <span class="detail-field-value" id="detailSource">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Status</span>
-          <span class="detail-field-value" id="detailStatus">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Assigned Agent</span>
-          <span class="detail-field-value" id="detailAssignedAgent">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Lead Score</span>
-          <span class="detail-field-value" id="detailScore">-</span>
-        </div>
-      </div>
-
-      <!-- Financial Info Section -->
-      <div class="detail-section">
-        <div class="detail-section-title">
-          <i data-lucide="dollar-sign" class="w-5 h-5"></i>
-          Financial Information
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Total Debt</span>
-          <span class="detail-field-value" id="detailTotalDebt">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Monthly Income</span>
-          <span class="detail-field-value" id="detailMonthlyIncome">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">DTI Ratio</span>
-          <span class="detail-field-value" id="detailDtiRatio">-</span>
-        </div>
-      </div>
-
-      <!-- Debts Section -->
-      <div class="detail-section">
-        <div class="detail-section-title">
-          <i data-lucide="credit-card" class="w-5 h-5"></i>
-          Debt Breakdown
-        </div>
-        <div id="detailDebts">
-          <!-- Dynamically populated -->
-        </div>
-      </div>
-
-      <!-- Timeline Section -->
-      <div class="detail-section">
-        <div class="detail-section-title">
-          <i data-lucide="clock" class="w-5 h-5"></i>
-          Timeline
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Last Contact</span>
-          <span class="detail-field-value" id="detailLastContact">-</span>
-        </div>
-        <div class="detail-field">
-          <span class="detail-field-label">Created</span>
-          <span class="detail-field-value" id="detailCreatedAt">-</span>
-        </div>
-      </div>
-
-      <!-- Actions -->
-      <div class="detail-actions">
-        <button class="detail-action-btn" onclick="window.location.hash='power-dialer'">
-          <i data-lucide="phone" class="w-4 h-4"></i>
-          Call Lead
-        </button>
-        <button class="detail-action-btn" onclick="Toast.info('Email composer coming soon')">
-          <i data-lucide="mail" class="w-4 h-4"></i>
-          Send Email
-        </button>
-        <button class="detail-action-btn" onclick="Toast.info('Edit functionality coming soon')">
-          <i data-lucide="edit" class="w-4 h-4"></i>
-          Edit Lead
-        </button>
-        <button class="detail-action-btn" onclick="Toast.info('Notes feature coming soon')">
-          <i data-lucide="file-text" class="w-4 h-4"></i>
-          Add Note
-        </button>
-      </div>
-    </div>
-  </div>
 </div>
