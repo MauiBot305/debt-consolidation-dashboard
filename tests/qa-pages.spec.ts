@@ -63,19 +63,31 @@ test('dashboard pages load cleanly twice with no console errors or dead buttons'
       await loadPage(pageName);
       await new Promise((resolve) => setTimeout(resolve, waitMs));
 
-      const buttons = document.querySelectorAll('#mainContent [onclick]');
+      const buttons = document.querySelectorAll('#pageContent [onclick]');
       buttons.forEach((btn) => {
         const onclick = btn.getAttribute('onclick');
         if (!onclick) return;
-        const match = onclick.match(/^(\w+)/);
+        // Skip compound statements starting with event.* (e.g. "event.stopPropagation(); doThing()")
+        const cleaned = onclick.replace(/^\s*event\.\w+\([^)]*\)\s*;?\s*/, '');
+        // Match standalone function calls like "doThing()" but also "Obj.method()"
+        const match = cleaned.match(/^(\w+(?:\.\w+)*)\s*\(/);
         if (!match) return;
-        const funcName = match[1];
-        if (typeof (window as any)[funcName] !== 'function') {
+        const chain = match[1].split('.');
+        let target: unknown = window;
+        for (const part of chain) {
+          if (target && typeof target === 'object' && part in (target as Record<string, unknown>)) {
+            target = (target as Record<string, unknown>)[part];
+          } else {
+            target = undefined;
+            break;
+          }
+        }
+        if (typeof target !== 'function') {
           deadButtons.push({
             page: pageName,
             button: (btn.textContent || '').trim().slice(0, 40),
             onclick,
-            func: funcName,
+            func: match[1],
           });
         }
       });
