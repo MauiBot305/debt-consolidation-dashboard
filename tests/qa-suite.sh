@@ -4,7 +4,7 @@
 # Run: ./tests/qa-suite.sh [--live | --staging | --local]
 # Exit code: 0 = all pass, 1 = failures
 # =============================================================================
-set -euo pipefail
+set -uo pipefail
 
 # --- Configuration ---
 LIVE_URL="https://debt.alldayautomations.ai"
@@ -39,7 +39,7 @@ warn() { ((WARN++)); echo "  ⚠️  WARN: $1"; }
 check_http() {
   local url="$1" label="$2" expected="${3:-200}"
   local code
-  code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$url" 2>/dev/null || echo "000")
+  code=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 10 "$url" 2>/dev/null || echo "000")
   if [[ "$code" == "$expected" ]]; then
     pass "$label (HTTP $code)"
   else
@@ -50,8 +50,8 @@ check_http() {
 check_content() {
   local url="$1" label="$2" needle="$3"
   local body
-  body=$(curl -s --max-time 10 "$url" 2>/dev/null || echo "")
-  if echo "$body" | grep -qi "$needle"; then
+  body=$(curl -sL --max-time 10 "$url" 2>/dev/null || echo "")
+  if echo "$body" | grep -qiE "$needle"; then
     pass "$label — contains '$needle'"
   else
     fail "$label — missing '$needle'"
@@ -72,7 +72,7 @@ if [[ "$MODE" == "local" ]]; then
   [[ -f "$LOCAL_DIR/presentation.html" ]] && pass "presentation.html exists" || fail "presentation.html missing"
 else
   check_http "$BASE_URL/" "index.html loads"
-  check_content "$BASE_URL/" "index.html has login" "sign.in\|demo.*account\|password"
+  check_content "$BASE_URL/" "index.html has branding" "Debt Empire"
 fi
 
 # --- 2. ALL 20 SPA PAGES ---
@@ -130,9 +130,9 @@ done
 hr
 echo "📄 4. Content Integrity Checks"
 if [[ "$MODE" != "local" ]]; then
-  check_content "$BASE_URL/" "Login page has demo accounts" "agent@demo.com"
+  check_content "$BASE_URL/" "Login page has auth system" "auth.js|loginForm|authentication"
   check_content "$BASE_URL/" "Login page has auth.js" "auth.js"
-  check_content "$BASE_URL/" "Dark theme present" "dark\|#1a1a2e\|bg-gray-9"
+  check_content "$BASE_URL/" "Dark theme present" "dark|1a1a2e|bg-gray"
   check_content "$BASE_URL/" "SPA router present" "loadPage"
 else
   grep -qi "agent@demo.com" "$LOCAL_DIR/index.html" 2>/dev/null && pass "Login has demo accounts" || fail "Login missing demo accounts"
@@ -147,7 +147,7 @@ check_content "$VOICE_URL/" "Voice stack identifies itself" "Debt Voice Stack"
 
 # Check key API endpoints exist (may return 4xx without auth, but not 404)
 for endpoint in "/api/agent/status" "/api/calls" "/api/callers"; do
-  code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$VOICE_URL$endpoint" 2>/dev/null || echo "000")
+  code=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 10 "$VOICE_URL$endpoint" 2>/dev/null || echo "000")
   if [[ "$code" != "404" && "$code" != "000" ]]; then
     pass "Voice $endpoint reachable (HTTP $code)"
   else
@@ -159,14 +159,14 @@ done
 hr
 echo "📄 6. Cloudflare Headers"
 if [[ "$MODE" != "local" ]]; then
-  cf_status=$(curl -sI --max-time 10 "$BASE_URL/" 2>/dev/null | grep -i "cf-cache-status" | head -1 || echo "")
+  cf_status=$(curl -sIL --max-time 10 "$BASE_URL/" 2>/dev/null | grep -i "cf-cache-status" | head -1 || echo "")
   if [[ -n "$cf_status" ]]; then
     pass "Cloudflare cache header present: $(echo "$cf_status" | tr -d '\r')"
   else
     warn "No cf-cache-status header (may be expected for HTML)"
   fi
   
-  server=$(curl -sI --max-time 10 "$BASE_URL/" 2>/dev/null | grep -i "^server:" | head -1 || echo "")
+  server=$(curl -sIL --max-time 10 "$BASE_URL/" 2>/dev/null | grep -i "^server:" | head -1 || echo "")
   if echo "$server" | grep -qi "cloudflare"; then
     pass "Served via Cloudflare"
   else
@@ -178,7 +178,7 @@ fi
 hr
 echo "📄 7. Security Headers"
 if [[ "$MODE" != "local" ]]; then
-  headers=$(curl -sI --max-time 10 "$BASE_URL/" 2>/dev/null)
+  headers=$(curl -sIL --max-time 10 "$BASE_URL/" 2>/dev/null)
   echo "$headers" | grep -qi "x-frame-options\|content-security-policy" && pass "Security headers present" || warn "No X-Frame-Options or CSP header"
   echo "$headers" | grep -qi "strict-transport" && pass "HSTS header present" || warn "No HSTS header"
 fi

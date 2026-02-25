@@ -12,39 +12,40 @@
 
 **Heading:** 👥 Manager Dashboard
 
-### Buttons
+### Buttons (7)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
-| 1 | 📥 Export Team Report | Toast: "Team report exported successfully" | ✅ |
-| 2 | 🎯       Assign Leads (Auto) | Toast: "No unassigned leads found" | ✅ |
-| 3 | 📋       Review Cases | Navigate:   | ✅ |
-| 4 | 🛡️       Run Compliance Check | Nav issue: no-main | ❌ |
-| 5 | 🤖 AI Auto-Dial | Nav issue: no-main | ❌ |
-| 6 | 📞 Start Call | Nav issue: no-main | ❌ |
-| 7 | Cancel | Nav issue: no-main | ❌ |
+| 1 | 📥 Export Team Report | No visible change | ⚠️ |
+| 2 | 🎯 Assign Leads (Auto) | No visible change | ⚠️ |
+| 3 | 📋 Review Cases | Navigate:   | ✅ |
+| 4 | 🛡️ Run Compliance Check | Could not click | ❌ |
+| 5 | 🤖 AI Auto-Dial | Could not click | ❌ |
+| 6 | 📞 Start Call | Could not click | ❌ |
+| 7 | Cancel | Could not click | ❌ |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
-- Table 1: [Agent, Calls Today, Deals This Week, Revenue, Conversion %] — 0 data rows
+### Tables (1)
+- Table 1: [Agent, Calls Today, Deals This Week, Revenue, Conversion %] — 0 rows
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
-- ⚠️ Button "🛡️
-      Run Compliance Check" — Nav issue: no-main
-- ⚠️ Button "🤖 AI Auto-Dial" — Nav issue: no-main
-- ⚠️ Button "📞 Start Call" — Nav issue: no-main
-- ⚠️ Button "Cancel" — Nav issue: no-main
+- ⚠️ Button "📥 Export Team Report" — no visible result on click
+- ⚠️ Button "🎯 Assign Leads (Auto)" — no visible result on click
+- ⚠️ Button "🛡️ Run Compliance Check" — Could not click
+- ⚠️ Button "🤖 AI Auto-Dial" — Could not click
+- ⚠️ Button "📞 Start Call" — Could not click
+- ⚠️ Button "Cancel" — Could not click
 
 ---
 
@@ -52,71 +53,107 @@
 
 **Heading:** 👥 Manager Dashboard
 
-### Buttons
+### Buttons (7)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
-| 1 | 📥 Export Team Report | Toast: "Team report exported successfully" | ✅ |
-| 2 | 🎯       Assign Leads (Auto) | Toast: "No unassigned leads found" | ✅ |
-| 3 | 📋       Review Cases | Navigate:   | ✅ |
-| 4 | 🛡️       Run Compliance Check | Nav issue: no-main | ❌ |
-| 5 | 🤖 AI Auto-Dial | Nav issue: no-main | ❌ |
-| 6 | 📞 Start Call | Nav issue: no-main | ❌ |
-| 7 | Cancel | Nav issue: no-main | ❌ |
+| 1 | 📥 Export Team Report | No visible change | ⚠️ |
+| 2 | 🎯 Assign Leads (Auto) | No visible change | ⚠️ |
+| 3 | 📋 Review Cases | Navigate:   | ✅ |
+| 4 | 🛡️ Run Compliance Check | Could not click | ❌ |
+| 5 | 🤖 AI Auto-Dial | Could not click | ❌ |
+| 6 | 📞 Start Call | Could not click | ❌ |
+| 7 | Cancel | Could not click | ❌ |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
-- Table 1: [Agent, Calls Today, Deals This Week, Revenue, Conversion %] — 0 data rows
+### Tables (1)
+- Table 1: [Agent, Calls Today, Deals This Week, Revenue, Conversion %] — 0 rows
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
-- ⚠️ Button "🛡️
-      Run Compliance Check" — Nav issue: no-main
-- ⚠️ Button "🤖 AI Auto-Dial" — Nav issue: no-main
-- ⚠️ Button "📞 Start Call" — Nav issue: no-main
-- ⚠️ Button "Cancel" — Nav issue: no-main
+- ⚠️ Button "📥 Export Team Report" — no visible result on click
+- ⚠️ Button "🎯 Assign Leads (Auto)" — no visible result on click
+- ⚠️ Button "🛡️ Run Compliance Check" — Could not click
+- ⚠️ Button "🤖 AI Auto-Dial" — Could not click
+- ⚠️ Button "📞 Start Call" — Could not click
+- ⚠️ Button "Cancel" — Could not click
 
 ---
 
 ## Manager Dashboard — Pass 3/3
 
-**SKIPPED**
+**Heading:** 👥 Manager Dashboard
+
+### Buttons (7)
+| # | Button Text | Click Result | Working? |
+|---|------------|--------------|----------|
+| 1 | 📥 Export Team Report | No visible change | ⚠️ |
+| 2 | 🎯 Assign Leads (Auto) | No visible change | ⚠️ |
+| 3 | 📋 Review Cases | Navigate:   | ✅ |
+| 4 | 🛡️ Run Compliance Check | Could not click | ❌ |
+| 5 | 🤖 AI Auto-Dial | Could not click | ❌ |
+| 6 | 📞 Start Call | Could not click | ❌ |
+| 7 | Cancel | Could not click | ❌ |
+
+### Inputs (0)
+| # | Placeholder/ID | Type | Accepts Input? |
+|---|---------------|------|-----------|
+| - | None | - | - |
+
+### Dropdowns/Selects (0)
+| # | ID | Options | Working? |
+|---|-----|---------|----------|
+| - | None | - | - |
+
+### Tables (1)
+- Table 1: [Agent, Calls Today, Deals This Week, Revenue, Conversion %] — 0 rows
+
+### Checkboxes/Toggles (0)
+- None
+
+### Issues Found
+- ⚠️ Button "📥 Export Team Report" — no visible result on click
+- ⚠️ Button "🎯 Assign Leads (Auto)" — no visible result on click
+- ⚠️ Button "🛡️ Run Compliance Check" — Could not click
+- ⚠️ Button "🤖 AI Auto-Dial" — Could not click
+- ⚠️ Button "📞 Start Call" — Could not click
+- ⚠️ Button "Cancel" — Could not click
 
 ---
 
 ## Owner Dashboard — Pass 1/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -126,27 +163,27 @@
 
 ## Owner Dashboard — Pass 2/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -156,33 +193,57 @@
 
 ## Owner Dashboard — Pass 3/3
 
-**SKIPPED**
+**Heading:** ERROR: no main
+
+### Buttons (0)
+| # | Button Text | Click Result | Working? |
+|---|------------|--------------|----------|
+| - | No buttons | - | - |
+
+### Inputs (0)
+| # | Placeholder/ID | Type | Accepts Input? |
+|---|---------------|------|-----------|
+| - | None | - | - |
+
+### Dropdowns/Selects (0)
+| # | ID | Options | Working? |
+|---|-----|---------|----------|
+| - | None | - | - |
+
+### Tables (0)
+- None
+
+### Checkboxes/Toggles (0)
+- None
+
+### Issues Found
+- None ✅
 
 ---
 
 ## AI Agent Management — Pass 1/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -192,27 +253,27 @@
 
 ## AI Agent Management — Pass 2/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -222,33 +283,57 @@
 
 ## AI Agent Management — Pass 3/3
 
-**SKIPPED**
+**Heading:** ERROR: no main
+
+### Buttons (0)
+| # | Button Text | Click Result | Working? |
+|---|------------|--------------|----------|
+| - | No buttons | - | - |
+
+### Inputs (0)
+| # | Placeholder/ID | Type | Accepts Input? |
+|---|---------------|------|-----------|
+| - | None | - | - |
+
+### Dropdowns/Selects (0)
+| # | ID | Options | Working? |
+|---|-----|---------|----------|
+| - | None | - | - |
+
+### Tables (0)
+- None
+
+### Checkboxes/Toggles (0)
+- None
+
+### Issues Found
+- None ✅
 
 ---
 
 ## AI Coach — Pass 1/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -258,27 +343,27 @@
 
 ## AI Coach — Pass 2/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -288,33 +373,57 @@
 
 ## AI Coach — Pass 3/3
 
-**SKIPPED**
+**Heading:** ERROR: no main
+
+### Buttons (0)
+| # | Button Text | Click Result | Working? |
+|---|------------|--------------|----------|
+| - | No buttons | - | - |
+
+### Inputs (0)
+| # | Placeholder/ID | Type | Accepts Input? |
+|---|---------------|------|-----------|
+| - | None | - | - |
+
+### Dropdowns/Selects (0)
+| # | ID | Options | Working? |
+|---|-----|---------|----------|
+| - | None | - | - |
+
+### Tables (0)
+- None
+
+### Checkboxes/Toggles (0)
+- None
+
+### Issues Found
+- None ✅
 
 ---
 
 ## Team Management — Pass 1/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -324,27 +433,27 @@
 
 ## Team Management — Pass 2/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -354,33 +463,57 @@
 
 ## Team Management — Pass 3/3
 
-**SKIPPED**
+**Heading:** ERROR: no main
+
+### Buttons (0)
+| # | Button Text | Click Result | Working? |
+|---|------------|--------------|----------|
+| - | No buttons | - | - |
+
+### Inputs (0)
+| # | Placeholder/ID | Type | Accepts Input? |
+|---|---------------|------|-----------|
+| - | None | - | - |
+
+### Dropdowns/Selects (0)
+| # | ID | Options | Working? |
+|---|-----|---------|----------|
+| - | None | - | - |
+
+### Tables (0)
+- None
+
+### Checkboxes/Toggles (0)
+- None
+
+### Issues Found
+- None ✅
 
 ---
 
 ## Analytics — Pass 1/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -390,27 +523,27 @@
 
 ## Analytics — Pass 2/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -420,33 +553,57 @@
 
 ## Analytics — Pass 3/3
 
-**SKIPPED**
+**Heading:** ERROR: no main
+
+### Buttons (0)
+| # | Button Text | Click Result | Working? |
+|---|------------|--------------|----------|
+| - | No buttons | - | - |
+
+### Inputs (0)
+| # | Placeholder/ID | Type | Accepts Input? |
+|---|---------------|------|-----------|
+| - | None | - | - |
+
+### Dropdowns/Selects (0)
+| # | ID | Options | Working? |
+|---|-----|---------|----------|
+| - | None | - | - |
+
+### Tables (0)
+- None
+
+### Checkboxes/Toggles (0)
+- None
+
+### Issues Found
+- None ✅
 
 ---
 
 ## Compliance — Pass 1/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -456,27 +613,27 @@
 
 ## Compliance — Pass 2/3
 
-**Heading:** N/A
+**Heading:** ERROR: no main
 
-### Buttons
+### Buttons (0)
 | # | Button Text | Click Result | Working? |
 |---|------------|--------------|----------|
 | - | No buttons | - | - |
 
-### Inputs
+### Inputs (0)
 | # | Placeholder/ID | Type | Accepts Input? |
 |---|---------------|------|-----------|
 | - | None | - | - |
 
-### Dropdowns/Selects
+### Dropdowns/Selects (0)
 | # | ID | Options | Working? |
 |---|-----|---------|----------|
 | - | None | - | - |
 
-### Tables
+### Tables (0)
 - None
 
-### Checkboxes/Toggles
+### Checkboxes/Toggles (0)
 - None
 
 ### Issues Found
@@ -486,19 +643,42 @@
 
 ## Compliance — Pass 3/3
 
-**SKIPPED**
+**Heading:** ERROR: no main
+
+### Buttons (0)
+| # | Button Text | Click Result | Working? |
+|---|------------|--------------|----------|
+| - | No buttons | - | - |
+
+### Inputs (0)
+| # | Placeholder/ID | Type | Accepts Input? |
+|---|---------------|------|-----------|
+| - | None | - | - |
+
+### Dropdowns/Selects (0)
+| # | ID | Options | Working? |
+|---|-----|---------|----------|
+| - | None | - | - |
+
+### Tables (0)
+- None
+
+### Checkboxes/Toggles (0)
+- None
+
+### Issues Found
+- None ✅
 
 ---
 
-## Consistency Summary (Across 3 Passes)
+## Consistency Summary
 
-| Page | P1 Btns | P2 Btns | P3 Btns | P1 Inputs | P2 Inputs | P3 Inputs | Consistent? |
-|------|---------|---------|---------|-----------|-----------|-----------|-------------|
-| Manager Dashboard | 7 | 7 | - | 0 | 0 | - | ⚠️ |
-| Owner Dashboard | 0 | 0 | - | 0 | 0 | - | ⚠️ |
-| AI Agent Management | 0 | 0 | - | 0 | 0 | - | ⚠️ |
-| AI Coach | 0 | 0 | - | 0 | 0 | - | ⚠️ |
-| Team Management | 0 | 0 | - | 0 | 0 | - | ⚠️ |
-| Analytics | 0 | 0 | - | 0 | 0 | - | ⚠️ |
-| Compliance | 0 | 0 | - | 0 | 0 | - | ⚠️ |
-
+| Page | P1 Btns | P2 Btns | P3 Btns | P1 Inp | P2 Inp | P3 Inp | Consistent? |
+|------|---------|---------|---------|--------|--------|--------|-------------|
+| Manager Dashboard | 7 | 7 | 7 | 0 | 0 | 0 | ✅ |
+| Owner Dashboard | 0 | 0 | 0 | 0 | 0 | 0 | ✅ |
+| AI Agent Management | 0 | 0 | 0 | 0 | 0 | 0 | ✅ |
+| AI Coach | 0 | 0 | 0 | 0 | 0 | 0 | ✅ |
+| Team Management | 0 | 0 | 0 | 0 | 0 | 0 | ✅ |
+| Analytics | 0 | 0 | 0 | 0 | 0 | 0 | ✅ |
+| Compliance | 0 | 0 | 0 | 0 | 0 | 0 | ✅ |
