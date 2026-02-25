@@ -558,7 +558,7 @@
     </div>
   </div>
 
-  <script src="https://sdk.twilio.com/js/client/releases/1.14/twilio.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2/dist/twilio.min.js"></script>
   <script>
 (function() {
 'use strict';
@@ -579,7 +579,8 @@
     // =====================
     // INITIALIZATION
     // =====================
-    document.addEventListener('DOMContentLoaded', async () => {
+    // Run immediately — DOMContentLoaded already fired in SPA context
+    (async () => {
       console.log('🚀 Power Dialer initializing...');
       
       // Initialize Twilio
@@ -604,7 +605,7 @@
 
       // Phone input formatter
       document.getElementById('phoneInput').addEventListener('input', formatPhoneInput);
-    });
+    })();
 
     // =====================
     // TWILIO INITIALIZATION

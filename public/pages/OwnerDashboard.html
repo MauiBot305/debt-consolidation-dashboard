@@ -519,7 +519,7 @@
 (function() {
   'use strict';
 
-  document.addEventListener('DOMContentLoaded', function() {
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function() { __initOD(); }); } else { __initOD(); } function __initOD() {
     loadOwnerDashboard();
   });
 

@@ -1016,7 +1016,7 @@
       toast.textContent = message;
       toast.classList.add('active');
       
-      setTimeout(() => {
+      setTimeoutif (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', () => { __init(); }); } else { __init(); } function __init() {
         toast.classList.remove('active');
       }, 3000);
     }

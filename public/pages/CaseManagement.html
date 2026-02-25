@@ -1827,7 +1827,7 @@
     // Quick actions
     function callClient() {
       Toast.info('Opening Power Dialer...');
-      setTimeout(() => {
+      setTimeoutif (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', () => { __init(); }); } else { __init(); } function __init() {
         window.location.hash = 'power-dialer';
       }, 1000);
     }

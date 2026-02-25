@@ -475,7 +475,7 @@
 
   let currentUser = null;
 
-  document.addEventListener('DOMContentLoaded', function() {
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function() { __initAD(); }); } else { __initAD(); } function __initAD() {
     loadAgentDashboard();
   });
 
