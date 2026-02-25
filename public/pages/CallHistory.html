@@ -505,7 +505,11 @@
     showToast('Call history exported!', 'success');
   }
 
+  // Initialize
+  let _callHistoryInitialized = false;
   function initCallHistory() {
+    if (_callHistoryInitialized) return;
+    _callHistoryInitialized = true;
     populateAgentFilter();
     loadAllCalls(); // Fetches real calls, then applies filters
     lucide.createIcons();
@@ -527,6 +531,7 @@
   window.sortTable = sortTable;
   window.applyFilters = applyFilters;
   window.playRecording = playRecording;
+  window.initCallHistory = initCallHistory;
 })();
 </script>
 </body>
