@@ -398,6 +398,158 @@
     .stage-settled { --stage-color: #10B981; }
     .stage-completed { --stage-color: #22C55E; }
 
+    /* Deal Detail Slide-out Panel */
+    .detail-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 600px;
+      height: 100vh;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(10, 15, 26, 0.98));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-left: 2px solid rgba(59, 130, 246, 0.3);
+      box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+    }
+
+    .detail-panel.open {
+      transform: translateX(0);
+    }
+
+    .detail-panel-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .detail-panel-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .detail-panel-header {
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.1));
+      border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(20px);
+    }
+
+    .detail-panel-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .detail-panel-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 2px solid rgba(239, 68, 68, 0.3);
+      color: #EF4444;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .detail-panel-close:hover {
+      background: rgba(239, 68, 68, 0.4);
+      transform: scale(1.1);
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+    }
+
+    .detail-panel-content {
+      padding: 24px;
+    }
+
+    .detail-section {
+      margin-bottom: 32px;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 16px;
+    }
+
+    .detail-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #3B82F6;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .detail-field {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .detail-field:last-child {
+      border-bottom: none;
+    }
+
+    .detail-field-label {
+      color: #94a3b8;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .detail-field-value {
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .detail-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .detail-action-btn {
+      padding: 14px 20px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.1));
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .detail-action-btn:hover {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(6, 182, 212, 0.2));
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+    }
+
     /* Mobile responsive */
     @media (max-width: 1024px) {
       .kanban-board {
@@ -412,6 +564,10 @@
 
       .pipeline-stats {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      .detail-panel {
+        width: 100%;
       }
     }
   </style>
@@ -832,5 +988,145 @@
         // TODO: Implement task scheduling
       }
     }
+
+    // Deal Detail Panel
+    function openDealDetailPanel(deal) {
+      const overlay = document.getElementById('dealDetailOverlay');
+      const panel = document.getElementById('dealDetailPanel');
+      
+      // Populate panel with deal data
+      document.getElementById('detailDealName').textContent = deal.clientName;
+      document.getElementById('detailDealId').textContent = deal.id;
+      document.getElementById('detailPhone').textContent = deal.phone || 'N/A';
+      document.getElementById('detailEmail').textContent = deal.email || 'N/A';
+      document.getElementById('detailAmount').textContent = `$${deal.amount.toLocaleString()}`;
+      document.getElementById('detailStage').textContent = deal.stage;
+      document.getElementById('detailOwner').textContent = deal.owner;
+      document.getElementById('detailProbability').textContent = `${deal.probability}%`;
+      document.getElementById('detailLastActivity').textContent = new Date(deal.lastActivity).toLocaleDateString();
+      document.getElementById('detailCreatedAt').textContent = new Date(deal.createdAt).toLocaleDateString();
+
+      // Show notes if available
+      const notesContainer = document.getElementById('detailNotes');
+      if (deal.notes && deal.notes.length > 0) {
+        notesContainer.innerHTML = deal.notes.map(note => `
+          <div class="detail-field">
+            <span class="detail-field-label">${new Date(note.timestamp).toLocaleString()}</span>
+            <span class="detail-field-value">${note.text}</span>
+          </div>
+        `).join('');
+      } else {
+        notesContainer.innerHTML = '<div class="detail-field"><span class="detail-field-label">No notes yet</span></div>';
+      }
+
+      // Show panel
+      overlay.classList.add('open');
+      panel.classList.add('open');
+    }
+
+    function closeDealDetailPanel() {
+      const overlay = document.getElementById('dealDetailOverlay');
+      const panel = document.getElementById('dealDetailPanel');
+      overlay.classList.remove('open');
+      panel.classList.remove('open');
+    }
+
+    // Close panel on overlay click
+    document.getElementById('dealDetailOverlay')?.addEventListener('click', closeDealDetailPanel);
   </script>
+
+  <!-- Deal Detail Slide-out Panel -->
+  <div id="dealDetailOverlay" class="detail-panel-overlay"></div>
+  <div id="dealDetailPanel" class="detail-panel">
+    <div class="detail-panel-header">
+      <h2 class="detail-panel-title" id="detailDealName">Deal Details</h2>
+      <button class="detail-panel-close" onclick="closeDealDetailPanel()">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="detail-panel-content">
+      <!-- Basic Info Section -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <i data-lucide="briefcase" class="w-5 h-5"></i>
+          Deal Information
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Deal ID</span>
+          <span class="detail-field-value" id="detailDealId">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Phone</span>
+          <span class="detail-field-value" id="detailPhone">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Email</span>
+          <span class="detail-field-value" id="detailEmail">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Deal Value</span>
+          <span class="detail-field-value" id="detailAmount">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Stage</span>
+          <span class="detail-field-value" id="detailStage">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Owner</span>
+          <span class="detail-field-value" id="detailOwner">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Probability</span>
+          <span class="detail-field-value" id="detailProbability">-</span>
+        </div>
+      </div>
+
+      <!-- Timeline Section -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <i data-lucide="clock" class="w-5 h-5"></i>
+          Timeline
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Last Activity</span>
+          <span class="detail-field-value" id="detailLastActivity">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Created</span>
+          <span class="detail-field-value" id="detailCreatedAt">-</span>
+        </div>
+      </div>
+
+      <!-- Notes Section -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <i data-lucide="file-text" class="w-5 h-5"></i>
+          Notes & Activity
+        </div>
+        <div id="detailNotes">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="detail-actions">
+        <button class="detail-action-btn" onclick="window.location.hash='power-dialer'">
+          <i data-lucide="phone" class="w-4 h-4"></i>
+          Call Client
+        </button>
+        <button class="detail-action-btn" onclick="Toast.info('Email composer coming soon')">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          Send Email
+        </button>
+        <button class="detail-action-btn" onclick="Toast.info('Edit functionality coming soon')">
+          <i data-lucide="edit" class="w-4 h-4"></i>
+          Edit Deal
+        </button>
+        <button class="detail-action-btn" onclick="Toast.info('Task scheduler coming soon')">
+          <i data-lucide="calendar" class="w-4 h-4"></i>
+          Add Task
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
