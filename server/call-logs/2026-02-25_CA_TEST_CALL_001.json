@@ -1,0 +1,20 @@
+{
+  "callSid": "CA_TEST_CALL_001",
+  "from": "+15551234567",
+  "to": "+17866487417",
+  "direction": "inbound",
+  "leadName": "Test Caller",
+  "leadInfo": {},
+  "startTime": "2026-02-25T02:53:03.420Z",
+  "transcript": [],
+  "language": "en",
+  "status": "completed",
+  "endTime": "2026-02-25T02:53:08.424Z",
+  "summary": {
+    "turns": 0,
+    "language": "en",
+    "callerInfo": {},
+    "transcript": ""
+  },
+  "durationMs": 5004
+}
