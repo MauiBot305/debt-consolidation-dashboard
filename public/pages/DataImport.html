@@ -167,23 +167,6 @@
 </div>
 
 <script>
-(function() {
-'use strict';
-
-'use strict';
-
-
-
-  // Expose onclick functions to window
-
-
-  // Expose onclick functions to window
-
-  // Expose functions to window for onclick handlers
-  window.goToStep = goToStep;
-  window.resetImport = resetImport;
-  window.useTemplate = useTemplate;
-})();
 </script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -636,6 +619,11 @@
   window.goToStep = goToStep;
   window.resetImport = resetImport;
   window.useTemplate = useTemplate;
+
+// Window exports for onclick handlers
+window.goToStep = goToStep;
+window.resetImport = resetImport;
+window.useTemplate = useTemplate;
 })();
 </script>
 </body>

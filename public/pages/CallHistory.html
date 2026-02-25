@@ -125,26 +125,6 @@
 </div>
 
 <script>
-(function() {
-'use strict';
-
-'use strict';
-
-
-
-  // Expose onclick functions to window
-
-
-  // Expose onclick functions to window
-
-  // Expose functions to window for onclick handlers
-  window.closeDetailPanel = closeDetailPanel;
-  window.exportCalls = exportCalls;
-  window.nextPage = nextPage;
-  window.prevPage = prevPage;
-  window.showCallDetail = showCallDetail;
-  window.sortTable = sortTable;
-})();
 </script>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -545,6 +525,14 @@ ${notes}
   window.prevPage = prevPage;
   window.showCallDetail = showCallDetail;
   window.sortTable = sortTable;
+
+// Window exports for onclick handlers
+window.closeDetailPanel = closeDetailPanel;
+window.exportCalls = exportCalls;
+window.nextPage = nextPage;
+window.prevPage = prevPage;
+window.showCallDetail = showCallDetail;
+window.sortTable = sortTable;
 })();
 </script>
 </body>

@@ -205,22 +205,6 @@
 </div>
 
 <script>
-(function() {
-'use strict';
-
-'use strict';
-
-
-
-  // Expose onclick functions to window
-
-
-  // Expose onclick functions to window
-
-  // Expose functions to window for onclick handlers
-  window.sendChatMessage = sendChatMessage;
-  window.switchTab = switchTab;
-})();
 </script>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -653,6 +637,10 @@
 // ---- Window Exports ----
   window.sendChatMessage = sendChatMessage;
   window.switchTab = switchTab;
+
+// Window exports for onclick handlers
+window.sendChatMessage = sendChatMessage;
+window.switchTab = switchTab;
 })();
 </script>
 </body>

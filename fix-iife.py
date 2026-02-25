@@ -1,90 +1,119 @@
 #!/usr/bin/env python3
-"""Fix IIFE wrapping on all page HTML files.
-Moves the IIFE to wrap the ENTIRE script content, with window exports at the end."""
+"""
+Fix nested IIFE issue in all dashboard HTML files.
+Removes nested IIFEs and creates ONE clean IIFE with window exports at the end.
+"""
 
 import re
 import os
-import glob
+from pathlib import Path
 
-pages_dir = os.path.expanduser("~/Projects/debt-consolidation-dashboard/public/pages")
-
-for filepath in sorted(glob.glob(os.path.join(pages_dir, "*.html"))):
-    page = os.path.basename(filepath)
-    with open(filepath, 'r') as f:
+def fix_iife_in_file(filepath):
+    """Fix IIFE structure in a single HTML file."""
+    print(f"Processing {filepath.name}...")
+    
+    with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
     
     # Find the script block
     script_match = re.search(r'<script>(.*?)</script>', content, re.DOTALL)
     if not script_match:
-        print(f"SKIP: {page} — no script block")
-        continue
+        print(f"  ⚠️  No script block found")
+        return False
     
     script_content = script_match.group(1)
     
-    # Remove existing IIFE wrapper and window exports
-    # Strip existing (function() { ... })(); wrapper
-    cleaned = script_content
+    # Remove the outer IIFE wrapper if it exists
+    # Pattern: (function() { 'use strict'; (function() { ... })(); ... })();
     
-    # Remove the small IIFE block (the broken one that just wraps exports)
-    # Pattern: (function() {\n  window.X = X;\n  ...  })();
-    cleaned = re.sub(r'\s*\(function\(\)\s*\{[^}]*window\.[^}]*\}\)\(\);\s*', '\n', cleaned)
+    # Step 1: Remove opening nested IIFEs
+    # Remove: (function() {\n'use strict';\n(function() {
+    script_content = re.sub(
+        r"^\s*\(function\(\)\s*\{\s*['\"]use strict['\"];\s*\(function\(\)\s*\{",
+        "",
+        script_content,
+        flags=re.MULTILINE
+    )
     
-    # Also remove standalone window.X = X lines that might be outside the IIFE
-    window_exports = re.findall(r'window\.(\w+)\s*=\s*(\w+);', cleaned)
-    for wname, wval in window_exports:
-        cleaned = re.sub(rf'\s*window\.{re.escape(wname)}\s*=\s*{re.escape(wval)};\s*', '\n', cleaned)
+    # Also try without 'use strict'
+    script_content = re.sub(
+        r"^\s*\(function\(\)\s*\{\s*\(function\(\)\s*\{",
+        "",
+        script_content,
+        flags=re.MULTILINE
+    )
     
-    # Collect all onclick function names from the HTML portion
-    html_portion = content[:script_match.start()]
-    onclick_fns = set(re.findall(r'onclick="(\w+)\(', html_portion))
+    # Step 2: Find all window exports (they might be scattered)
+    window_exports = []
+    for match in re.finditer(r'window\.(\w+)\s*=\s*\1;', script_content):
+        window_exports.append(match.group(0))
     
-    # Also check for onclick in dynamically generated HTML (template literals in JS)
-    onclick_in_js = set(re.findall(r'onclick=(?:\\"|")(\w+)\(', cleaned))
-    onclick_fns.update(onclick_in_js)
-    # Also from backtick templates: onclick="${...}" or onclick="funcName(..."
-    onclick_in_templates = set(re.findall(r"onclick=[\"'](\w+)\(", cleaned))
-    onclick_fns.update(onclick_in_templates)
+    # Remove duplicate window exports from middle of file
+    # Keep only the last occurrence
+    lines = script_content.split('\n')
+    cleaned_lines = []
+    window_export_section_started = False
     
-    # Find all function definitions in the script
-    func_defs = set(re.findall(r'function\s+(\w+)\s*\(', cleaned))
-    # Also arrow functions assigned to const/let: const X = (...) =>
-    arrow_fns = set(re.findall(r'(?:const|let|var)\s+(\w+)\s*=\s*(?:\([^)]*\)|[a-zA-Z_]\w*)\s*=>', cleaned))
-    all_fns = func_defs | arrow_fns
+    for i, line in enumerate(lines):
+        # Skip closing })(); that are followed by window exports
+        if line.strip() == '})();' and i + 1 < len(lines):
+            next_line = lines[i + 1].strip()
+            if next_line.startswith('window.'):
+                continue
+        
+        # Skip duplicate window exports in the middle
+        if line.strip().startswith('window.') and '=' in line:
+            # Check if this is part of the final export section
+            if not window_export_section_started:
+                continue
+        
+        # Detect start of final export section (usually has a comment)
+        if '// ---- Window Exports ----' in line or '// Expose functions' in line:
+            window_export_section_started = True
+        
+        cleaned_lines.append(line)
     
-    # Build window exports for onclick functions that exist as definitions
-    exports = []
-    for fn in sorted(onclick_fns):
-        if fn in all_fns:
-            exports.append(f"  window.{fn} = {fn};")
-        elif fn == 'showToast':
-            # showToast might be defined as a utility - export it
-            exports.append(f"  window.{fn} = {fn};")
+    script_content = '\n'.join(cleaned_lines)
     
-    # Also re-add any window exports for functions called from other dynamically generated code
-    # Check for event listeners that reference functions
-    event_fns = set(re.findall(r"addEventListener\(['\"]click['\"],\s*(\w+)", cleaned))
-    for fn in sorted(event_fns):
-        if fn in all_fns and f"  window.{fn} = {fn};" not in exports:
-            exports.append(f"  window.{fn} = {fn};")
+    # Step 3: Remove trailing })(); closures
+    script_content = re.sub(r'\s*\}\)\(\);\s*$', '', script_content, flags=re.MULTILINE)
     
-    exports_block = "\n".join(exports)
+    # Step 4: Build clean IIFE structure
+    clean_script = "(function() {\n'use strict';\n\n"
+    clean_script += script_content.strip()
+    clean_script += "\n\n})();"
     
-    # Build the new script content
-    new_script = f"""
-(function() {{
-  'use strict';
-{cleaned}
-  // Expose onclick functions to window
-{exports_block}
-}})();
-"""
+    # Step 5: Replace in original content
+    new_content = content[:script_match.start()] + f"<script>\n{clean_script}\n</script>" + content[script_match.end():]
     
-    # Replace in the original content
-    new_content = content[:script_match.start()] + f"<script>{new_script}</script>" + content[script_match.end():]
-    
-    with open(filepath, 'w') as f:
+    # Write back
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(new_content)
     
-    print(f"FIXED: {page} — {len(onclick_fns)} onclick fns, {len(exports)} exports, {len(all_fns)} function defs")
+    print(f"  ✅ Fixed {filepath.name}")
+    return True
 
-print("\nDone! All pages re-wrapped.")
+def main():
+    pages_dir = Path.home() / "Projects/debt-consolidation-dashboard/public/pages"
+    
+    if not pages_dir.exists():
+        print(f"❌ Directory not found: {pages_dir}")
+        return
+    
+    html_files = sorted(pages_dir.glob("*.html"))
+    
+    if not html_files:
+        print(f"❌ No HTML files found in {pages_dir}")
+        return
+    
+    print(f"Found {len(html_files)} HTML files to process\n")
+    
+    success_count = 0
+    for filepath in html_files:
+        if fix_iife_in_file(filepath):
+            success_count += 1
+    
+    print(f"\n✅ Successfully processed {success_count}/{len(html_files)} files")
+
+if __name__ == "__main__":
+    main()

@@ -159,25 +159,6 @@
 </div>
 
 <script>
-(function() {
-'use strict';
-
-'use strict';
-
-
-
-  // Expose onclick functions to window
-
-
-  // Expose onclick functions to window
-
-  // Expose functions to window for onclick handlers
-  window.addAgent = addAgent;
-  window.closeAddAgentModal = closeAddAgentModal;
-  window.editAgent = editAgent;
-  window.openAddAgentModal = openAddAgentModal;
-  window.removeAgent = removeAgent;
-})();
 </script>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -566,6 +547,13 @@
   window.editAgent = editAgent;
   window.openAddAgentModal = openAddAgentModal;
   window.removeAgent = removeAgent;
+
+// Window exports for onclick handlers
+window.addAgent = addAgent;
+window.closeAddAgentModal = closeAddAgentModal;
+window.editAgent = editAgent;
+window.openAddAgentModal = openAddAgentModal;
+window.removeAgent = removeAgent;
 })();
 </script>
 </body>
