@@ -436,11 +436,19 @@
     document.getElementById('newMessage').value = '';
   }
 
+  function initAutomation() {
+    renderTemplates();
+    renderAutomations();
+    renderExecutionLog();
+    lucide.createIcons();
+  }
+
   // Initialize
-  renderTemplates();
-  renderAutomations();
-  renderExecutionLog();
-  lucide.createIcons();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAutomation);
+  } else {
+    initAutomation();
+  }
 
 // Window exports for onclick handlers
   window.closeCreateModal = closeCreateModal;
