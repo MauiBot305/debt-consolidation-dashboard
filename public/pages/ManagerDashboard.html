@@ -1,0 +1,479 @@
+<!-- Manager Dashboard - Management Command Center -->
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center justify-between mb-8 fade-in-up stagger-1">
+    <div>
+      <h1 class="text-3xl font-bold text-white mb-2 font-orbitron">Management Command Center</h1>
+      <p class="text-gray-400">Real-time team oversight and performance metrics</p>
+    </div>
+    <div class="flex gap-3">
+      <button class="btn btn-primary flex items-center gap-2">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        Export Report
+      </button>
+      <button class="btn btn-primary flex items-center gap-2">
+        <i data-lucide="users-plus" class="w-4 h-4"></i>
+        Assign Leads
+      </button>
+    </div>
+  </div>
+
+  <!-- Team KPIs -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 fade-in-up stagger-2">
+    <div class="kpi-card">
+      <div class="flex items-center justify-between mb-3">
+        <div class="p-2 bg-blue-500/20 rounded-lg">
+          <i data-lucide="phone" class="w-5 h-5 text-blue-400"></i>
+        </div>
+        <span class="text-xs text-gray-400">Today</span>
+      </div>
+      <div class="font-orbitron text-3xl font-bold text-white mb-1" id="teamCalls">342</div>
+      <div class="text-sm text-gray-400 mb-3">Total Calls</div>
+      <div class="flex items-center gap-2">
+        <i data-lucide="trending-up" class="w-3 h-3 text-green-400"></i>
+        <span class="text-xs text-green-400">+18% vs yesterday</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="flex items-center justify-between mb-3">
+        <div class="p-2 bg-cyan-500/20 rounded-lg">
+          <i data-lucide="user-check" class="w-5 h-5 text-cyan-400"></i>
+        </div>
+        <span class="text-xs text-gray-400">Today</span>
+      </div>
+      <div class="font-orbitron text-3xl font-bold text-white mb-1" id="teamEnrollments">23</div>
+      <div class="text-sm text-gray-400 mb-3">Enrollments</div>
+      <div class="flex items-center gap-2">
+        <i data-lucide="trending-up" class="w-3 h-3 text-green-400"></i>
+        <span class="text-xs text-green-400">+12% vs target</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="flex items-center justify-between mb-3">
+        <div class="p-2 bg-emerald-500/20 rounded-lg">
+          <i data-lucide="dollar-sign" class="w-5 h-5 text-emerald-400"></i>
+        </div>
+        <span class="text-xs text-gray-400">Today</span>
+      </div>
+      <div class="font-orbitron text-3xl font-bold text-white mb-1" id="teamRevenue">$487K</div>
+      <div class="text-sm text-gray-400 mb-3">Team Revenue</div>
+      <div class="flex items-center gap-2">
+        <i data-lucide="trending-up" class="w-3 h-3 text-green-400"></i>
+        <span class="text-xs text-green-400">+24% vs yesterday</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="flex items-center justify-between mb-3">
+        <div class="p-2 bg-yellow-500/20 rounded-lg">
+          <i data-lucide="percent" class="w-5 h-5 text-yellow-400"></i>
+        </div>
+        <span class="text-xs text-gray-400">7-Day Avg</span>
+      </div>
+      <div class="font-orbitron text-3xl font-bold text-white mb-1" id="teamConversion">37.2%</div>
+      <div class="text-sm text-gray-400 mb-3">Conversion Rate</div>
+      <div class="flex items-center gap-2">
+        <i data-lucide="trending-up" class="w-3 h-3 text-green-400"></i>
+        <span class="text-xs text-green-400">+3.1% vs last week</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="flex items-center justify-between mb-3">
+        <div class="p-2 bg-green-500/20 rounded-lg">
+          <i data-lucide="shield-check" class="w-5 h-5 text-green-400"></i>
+        </div>
+        <span class="text-xs text-gray-400">This Month</span>
+      </div>
+      <div class="font-orbitron text-3xl font-bold text-white mb-1" id="complianceScore">96.8%</div>
+      <div class="text-sm text-gray-400 mb-3">Compliance Score</div>
+      <div class="flex items-center gap-2">
+        <i data-lucide="shield" class="w-3 h-3 text-green-400"></i>
+        <span class="text-xs text-green-400">All clear</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left Column: Team Overview & Real-time Monitor -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Team Overview -->
+      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-3">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-blue-500/20 rounded-lg">
+              <i data-lucide="users" class="w-5 h-5 text-blue-400"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-white">Team Overview</h2>
+              <p class="text-sm text-gray-400">10 agents active</p>
+            </div>
+          </div>
+          <button class="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-2">
+            View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="space-y-4" id="teamOverviewGrid">
+          <!-- Agent cards will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Real-time Call Monitor -->
+      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-4">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="p-2 bg-red-500/20 rounded-lg">
+            <i data-lucide="phone-call" class="w-5 h-5 text-red-400"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-white">Live Call Monitor</h2>
+            <p class="text-sm text-gray-400">
+              <span class="status-dot bg-red-500 mr-2"></span>
+              <span id="liveCallCount">4</span> agents on calls now
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-3" id="liveCallMonitor">
+          <!-- Live call cards will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Agent Performance Comparison -->
+      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-5">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="p-2 bg-cyan-500/20 rounded-lg">
+            <i data-lucide="bar-chart-3" class="w-5 h-5 text-cyan-400"></i>
+          </div>
+          <h2 class="text-xl font-bold text-white">Agent Performance Comparison</h2>
+        </div>
+
+        <div class="space-y-4" id="performanceComparison">
+          <!-- Performance bars will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Priorities & Quality -->
+    <div class="space-y-6">
+      <!-- Pipeline Health -->
+      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-3">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="p-2 bg-yellow-500/20 rounded-lg">
+            <i data-lucide="git-branch" class="w-5 h-5 text-yellow-400"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-white">Pipeline Health</h2>
+            <p class="text-sm text-gray-400">Stage distribution</p>
+          </div>
+        </div>
+
+        <div class="space-y-3" id="pipelineHealth">
+          <!-- Pipeline stages will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Today's Priorities -->
+      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-4">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="p-2 bg-orange-500/20 rounded-lg">
+            <i data-lucide="alert-circle" class="w-5 h-5 text-orange-400"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-white">Today's Priorities</h2>
+            <p class="text-sm text-gray-400">Requires attention</p>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-semibold text-red-400">Overdue Follow-ups</span>
+              <span class="font-orbitron font-bold text-red-400">12</span>
+            </div>
+            <p class="text-xs text-gray-400">Urgent callbacks required</p>
+          </div>
+
+          <div class="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-semibold text-yellow-400">Pending Settlements</span>
+              <span class="font-orbitron font-bold text-yellow-400">8</span>
+            </div>
+            <p class="text-xs text-gray-400">Awaiting approval</p>
+          </div>
+
+          <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-semibold text-blue-400">Unsigned Documents</span>
+              <span class="font-orbitron font-bold text-blue-400">5</span>
+            </div>
+            <p class="text-xs text-gray-400">Enrollment docs pending</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quality Assurance -->
+      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-5">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="p-2 bg-purple-500/20 rounded-lg">
+            <i data-lucide="headphones" class="w-5 h-5 text-purple-400"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-white">Quality Assurance</h2>
+            <p class="text-sm text-gray-400">Call quality scores</p>
+          </div>
+        </div>
+
+        <div class="space-y-3" id="qualityScores">
+          <!-- Quality items will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Escalation Queue -->
+      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-6">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="p-2 bg-red-500/20 rounded-lg">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-white">Escalations</h2>
+            <p class="text-sm text-gray-400">Requires intervention</p>
+          </div>
+        </div>
+
+        <div class="space-y-3" id="escalationQueue">
+          <!-- Escalations will be inserted here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions Bar -->
+  <div class="glass-card rounded-2xl p-4 fade-in-up stagger-6">
+    <div class="flex items-center justify-between">
+      <span class="text-sm font-semibold text-gray-400">Quick Actions:</span>
+      <div class="flex gap-3">
+        <button class="btn btn-primary text-sm py-2 px-4 flex items-center gap-2">
+          <i data-lucide="user-plus" class="w-4 h-4"></i>
+          Reassign Lead
+        </button>
+        <button class="btn btn-primary text-sm py-2 px-4 flex items-center gap-2">
+          <i data-lucide="skip-forward" class="w-4 h-4"></i>
+          Override Stage
+        </button>
+        <button class="btn btn-primary text-sm py-2 px-4 flex items-center gap-2">
+          <i data-lucide="check-circle" class="w-4 h-4"></i>
+          Approve Settlement
+        </button>
+        <button class="btn btn-primary text-sm py-2 px-4 flex items-center gap-2">
+          <i data-lucide="gift" class="w-4 h-4"></i>
+          Add Bonus
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function initManagerDashboard() {
+  renderTeamOverview();
+  renderLiveCallMonitor();
+  renderPerformanceComparison();
+  renderPipelineHealth();
+  renderQualityScores();
+  renderEscalationQueue();
+  
+  // Auto-refresh live data every 10 seconds
+  setInterval(() => {
+    renderLiveCallMonitor();
+  }, 10000);
+}
+
+function renderTeamOverview() {
+  const agents = DB.agents.slice(0, 10); // Top 10 agents
+  const container = document.getElementById('teamOverviewGrid');
+  
+  container.innerHTML = agents.map(agent => `
+    <div class="flex items-center justify-between p-4 bg-[#0a0f1a] border border-gray-800 rounded-xl hover:border-blue-500/30 transition-all group">
+      <div class="flex items-center gap-3">
+        <div class="avatar-ring">
+          <img src="${agent.avatar}" alt="${agent.name}" class="w-10 h-10 rounded-full">
+        </div>
+        <div>
+          <p class="font-semibold text-white">${agent.name}</p>
+          <div class="flex items-center gap-2 text-xs text-gray-400">
+            <span class="status-dot bg-green-400"></span>
+            <span>Active</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-6 text-center">
+        <div>
+          <div class="font-orbitron font-bold text-white">${agent.stats.callsToday}</div>
+          <div class="text-xs text-gray-400">Calls</div>
+        </div>
+        <div>
+          <div class="font-orbitron font-bold text-cyan-400">${agent.stats.enrollments}</div>
+          <div class="text-xs text-gray-400">Enrolled</div>
+        </div>
+        <div>
+          <div class="font-orbitron font-bold text-green-400">${DBHelpers.formatCurrency(agent.stats.revenue)}</div>
+          <div class="text-xs text-gray-400">Revenue</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  
+  lucide.createIcons();
+}
+
+function renderLiveCallMonitor() {
+  const container = document.getElementById('liveCallMonitor');
+  
+  // Simulate live calls (in production, this would be real-time data)
+  const liveCalls = [
+    { agent: 'John Smith', lead: 'Sarah Mitchell', duration: '08:32', status: 'qualifying' },
+    { agent: 'Maria Garcia', lead: 'Michael Chen', duration: '05:18', status: 'enrolling' },
+    { agent: 'Agent 3', lead: 'Jessica Rodriguez', duration: '12:45', status: 'follow_up' },
+    { agent: 'Agent 5', lead: 'David Thompson', duration: '03:22', status: 'new_contact' }
+  ];
+  
+  const statusColors = {
+    qualifying: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+    enrolling: 'text-green-400 bg-green-500/10 border-green-500/20',
+    follow_up: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
+    new_contact: 'text-blue-400 bg-blue-500/10 border-blue-500/20'
+  };
+  
+  container.innerHTML = liveCalls.map(call => `
+    <div class="flex items-center justify-between p-4 bg-[#0a0f1a] border border-red-500/30 rounded-lg">
+      <div class="flex items-center gap-3">
+        <div class="relative">
+          <div class="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
+            <i data-lucide="phone" class="w-5 h-5 text-red-400"></i>
+          </div>
+          <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-[#0a0f1a] badge-pulse"></span>
+        </div>
+        <div>
+          <p class="font-semibold text-white">${call.agent}</p>
+          <p class="text-sm text-gray-400">→ ${call.lead}</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="font-orbitron font-bold text-red-400 mb-1">${call.duration}</div>
+        <span class="text-xs px-2 py-1 rounded-full border ${statusColors[call.status]}">
+          ${call.status.replace('_', ' ')}
+        </span>
+      </div>
+    </div>
+  `).join('');
+  
+  document.getElementById('liveCallCount').textContent = liveCalls.length;
+  lucide.createIcons();
+}
+
+function renderPerformanceComparison() {
+  const agents = DB.agents.slice(0, 8);
+  const container = document.getElementById('performanceComparison');
+  
+  // Sort by enrollments
+  const sortedAgents = [...agents].sort((a, b) => b.stats.enrollments - a.stats.enrollments);
+  const maxEnrollments = sortedAgents[0].stats.enrollments;
+  
+  container.innerHTML = sortedAgents.map(agent => {
+    const percentage = (agent.stats.enrollments / maxEnrollments) * 100;
+    return `
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm text-white">${agent.name}</span>
+          <span class="font-orbitron font-bold text-cyan-400">${agent.stats.enrollments}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${percentage}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderPipelineHealth() {
+  const container = document.getElementById('pipelineHealth');
+  
+  // Calculate stage counts
+  const stageCounts = {};
+  DB.pipelineStages.forEach(stage => {
+    stageCounts[stage] = DB.leads.filter(l => l.stage === stage).length;
+  });
+  
+  const stageColors = {
+    'New Lead': 'text-gray-400 bg-gray-500/10 border-gray-500/20',
+    'Contacted': 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+    'Qualified': 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+    'Enrolled': 'text-green-400 bg-green-500/10 border-green-500/20',
+    'In Program': 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
+    'Negotiating': 'text-orange-400 bg-orange-500/10 border-orange-500/20',
+    'Settled': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+    'Completed': 'text-teal-400 bg-teal-500/10 border-teal-500/20'
+  };
+  
+  container.innerHTML = Object.entries(stageCounts).map(([stage, count]) => `
+    <div class="flex items-center justify-between p-3 border rounded-lg ${stageColors[stage]}">
+      <span class="text-sm font-medium">${stage}</span>
+      <span class="font-orbitron font-bold text-lg">${count}</span>
+    </div>
+  `).join('');
+}
+
+function renderQualityScores() {
+  const container = document.getElementById('qualityScores');
+  
+  const recentScores = [
+    { agent: 'John Smith', call: 'L003 - Jessica R.', score: 94, time: '2 hrs ago' },
+    { agent: 'Maria Garcia', call: 'L002 - Michael C.', score: 98, time: '4 hrs ago' },
+    { agent: 'Agent 3', call: 'L015 - Robert W.', score: 72, time: '6 hrs ago', flagged: true }
+  ];
+  
+  container.innerHTML = recentScores.map(item => `
+    <div class="p-3 bg-[#0a0f1a] border ${item.flagged ? 'border-red-500/30' : 'border-gray-800'} rounded-lg">
+      <div class="flex items-center justify-between mb-2">
+        <div>
+          <p class="text-sm font-semibold text-white">${item.agent}</p>
+          <p class="text-xs text-gray-400">${item.call}</p>
+        </div>
+        <div class="text-right">
+          <div class="font-orbitron font-bold ${item.score >= 90 ? 'text-green-400' : item.score >= 80 ? 'text-yellow-400' : 'text-red-400'}">
+            ${item.score}
+          </div>
+          ${item.flagged ? '<span class="text-xs text-red-400">⚠ Flagged</span>' : ''}
+        </div>
+      </div>
+      <div class="text-xs text-gray-500">${item.time}</div>
+    </div>
+  `).join('');
+}
+
+function renderEscalationQueue() {
+  const container = document.getElementById('escalationQueue');
+  
+  const escalations = [
+    { lead: 'Sarah Mitchell', issue: 'Payment dispute - requesting refund', priority: 'high', time: '30 min ago' },
+    { lead: 'David Thompson', issue: 'Creditor threatening lawsuit', priority: 'critical', time: '1 hr ago' }
+  ];
+  
+  container.innerHTML = escalations.map(item => `
+    <div class="p-3 ${item.priority === 'critical' ? 'bg-red-500/20 border border-red-500/30' : 'bg-orange-500/10 border border-orange-500/20'} rounded-lg">
+      <div class="flex items-center justify-between mb-2">
+        <p class="text-sm font-semibold text-white">${item.lead}</p>
+        <span class="text-xs px-2 py-1 rounded-full ${item.priority === 'critical' ? 'bg-red-500 text-white' : 'bg-orange-500 text-white'}">
+          ${item.priority}
+        </span>
+      </div>
+      <p class="text-xs text-gray-300 mb-2">${item.issue}</p>
+      <p class="text-xs text-gray-500">${item.time}</p>
+    </div>
+  `).join('');
+}
+</script>
