@@ -356,26 +356,32 @@
 
 <script>
 function initAnalytics() {
-  // Load KPI data
-  loadKPIs();
-  loadPerformanceTrends();
-  loadAgentScorecard();
-  loadConversionFunnel();
-  loadRevenueChannels();
-  loadGeographicBreakdown();
-  loadForecast();
-  loadActivityFeed();
-  
-  // Reinitialize icons
-  lucide.createIcons();
+  try {
+    // Load KPI data
+    loadKPIs();
+    loadPerformanceTrends();
+    loadAgentScorecard();
+    loadConversionFunnel();
+    loadRevenueChannels();
+    loadGeographicBreakdown();
+    loadForecast();
+    loadActivityFeed();
+    
+    // Reinitialize icons
+    lucide.createIcons();
+  } catch (error) {
+    console.error('Failed to load Analytics:', error);
+    Toast.error('Failed to load analytics data. Please refresh the page.');
+  }
 }
 
 function loadKPIs() {
-  // Calculate KPIs from DB
-  const totalRevenue = DB.revenue.thisMonth;
-  const totalEnrolled = DB.cases.length;
-  const activeCases = DB.cases.filter(c => ['In Program', 'Negotiating'].includes(c.stage)).length;
-  const settledCases = DB.cases.filter(c => ['Settled', 'Completed'].includes(c.stage)).length;
+  try {
+    // Calculate KPIs from DB
+    const totalRevenue = DB.revenue.thisMonth;
+    const totalEnrolled = DB.cases.length;
+    const activeCases = DB.cases.filter(c => ['In Program', 'Negotiating'].includes(c.stage)).length;
+    const settledCases = DB.cases.filter(c => ['Settled', 'Completed'].includes(c.stage)).length;
   const settlementRate = totalEnrolled > 0 ? ((settledCases / totalEnrolled) * 100).toFixed(1) : 0;
   const avgSettlement = 42.3; // Mock
   const satisfaction = 94.7; // Mock
@@ -410,9 +416,13 @@ function loadKPIs() {
   drawSparkline('sparkline-utilization', [82, 84, 85, 86, 86.5, 87.2]);
   drawSparkline('sparkline-calls', [320, 340, 360, 380, 410, 450]);
   drawSparkline('sparkline-conversion', [31, 32, 33, 33.5, 34, 34.5]);
-  drawSparkline('sparkline-churn', [5.2, 4.8, 4.5, 4.2, 4.0, 3.8]);
-  drawSparkline('sparkline-ltv', [7200, 7500, 7800, 8000, 8200, 8450]);
-  drawSparkline('sparkline-time', [285, 275, 268, 260, 252, 247]);
+    drawSparkline('sparkline-churn', [5.2, 4.8, 4.5, 4.2, 4.0, 3.8]);
+    drawSparkline('sparkline-ltv', [7200, 7500, 7800, 8000, 8200, 8450]);
+    drawSparkline('sparkline-time', [285, 275, 268, 260, 252, 247]);
+  } catch (error) {
+    console.error('Failed to load KPIs:', error);
+    Toast.error('Failed to load KPI data');
+  }
 }
 
 function drawSparkline(canvasId, data) {
