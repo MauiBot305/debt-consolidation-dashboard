@@ -1,7 +1,7 @@
 // v2026-02-25
 // Authentication Module for Debt Consolidation Empire Dashboard
 
-const Auth = {
+window.Auth = window.Auth || {
   // Demo users
   users: [
     {

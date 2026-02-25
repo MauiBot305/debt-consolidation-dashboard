@@ -2,7 +2,7 @@
  * Voice Stack API Client
  * Fetches real call data from the deployed voice stack, with graceful fallback to DebtDB.
  */
-const VoiceAPI = {
+window.VoiceAPI = window.VoiceAPI || {
   BASE_URL: 'https://debt-voice-stack.fly.dev',
   _cache: { calls: null, callsTimestamp: 0 },
   CACHE_TTL: 30000, // 30 seconds

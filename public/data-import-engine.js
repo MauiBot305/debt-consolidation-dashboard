@@ -4,6 +4,7 @@
  * Handles CSV, XLSX, XLS, JSON, XML, VCF, TSV with ZERO data loss
  */
 
+if (!window.DataImportEngine) {
 class DataImportEngine {
   constructor() {
     this.importId = null;
@@ -796,3 +797,4 @@ class DataImportEngine {
 
 // Export for use in DataImport page
 window.DataImportEngine = DataImportEngine;
+} // end guard
