@@ -21,8 +21,10 @@ class TwilioClient {
       onError: null
     };
     
-    // API endpoint (change to your Worker URL after deployment)
-    this.apiBase = window.location.origin;
+    // API endpoint - use Cloudflare Worker
+    this.apiBase = typeof TWILIO_CONFIG !== 'undefined' && TWILIO_CONFIG.workerUrl 
+      ? TWILIO_CONFIG.workerUrl 
+      : window.location.origin;
   }
 
   /**

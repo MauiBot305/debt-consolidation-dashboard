@@ -5,12 +5,11 @@
  * For local development, set these in a .env file (never commit real keys).
  */
 const TWILIO_CONFIG = {
-  // Set via Cloudflare Worker secrets or .env
-  accountSid: window.__TWILIO_ACCOUNT_SID || 'YOUR_ACCOUNT_SID',
-  authToken: window.__TWILIO_AUTH_TOKEN || 'YOUR_AUTH_TOKEN',
+  // Cloudflare Worker API endpoint (handles tokens and API calls)
+  workerUrl: 'https://debt-dashboard-api.maui-6b7.workers.dev',
+  
+  // Phone number (public, safe to commit)
   fromNumber: '+17542542410',
-  apiKeySid: window.__TWILIO_API_KEY_SID || 'YOUR_API_KEY_SID',
-  apiKeySecret: window.__TWILIO_API_KEY_SECRET || 'YOUR_API_KEY_SECRET',
   
   // Feature flags
   enableRecording: true,
@@ -21,9 +20,9 @@ const TWILIO_CONFIG = {
   voiceWebhookUrl: 'https://voice-api.alldayautomations.ai/voice/inbound',
   statusCallbackUrl: 'https://voice-api.alldayautomations.ai/api/call-status',
   
-  // Demo mode — automatically enabled when no real credentials are set
+  // Demo mode — automatically disabled since we have a real Worker now
   get isDemoMode() {
-    return !this.accountSid || this.accountSid === 'YOUR_ACCOUNT_SID';
+    return false; // Real Twilio is always enabled via Worker
   }
 };
 

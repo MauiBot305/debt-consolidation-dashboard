@@ -1,0 +1,10 @@
+name = "debt-dashboard-api"
+main = "twilio-api.js"
+compatibility_date = "2024-02-24"
+
+# Secrets (set via: wrangler secret put <KEY> --name debt-dashboard-api)
+# - TWILIO_ACCOUNT_SID
+# - TWILIO_AUTH_TOKEN
+# - TWILIO_API_KEY_SID
+# - TWILIO_API_KEY_SECRET
+# - TWILIO_FROM_NUMBER
