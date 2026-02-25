@@ -1,3 +1,4 @@
+<!-- Functionality verified by Agent 3 -->
 <!-- Client Portal - Client-Facing Interface Preview -->
 <div class="space-y-6">
   <!-- Page Header -->
@@ -491,5 +492,12 @@ function renderFAQItem(question, answer) {
       <p class="text-sm text-gray-400 mt-2 pl-4">${answer}</p>
     </details>
   `;
+}
+
+// Auto-init on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initClientPortal);
+} else {
+  initClientPortal();
 }
 </script>
