@@ -1,5 +1,11 @@
 <div id="powerDialer" class="page-container">
+  <!-- Twilio Voice JS SDK 2.x -->
+  <script src="https://sdk.twilio.com/js/client/v1.14/twilio.min.js"></script>
+  
+  <!-- Twilio Scripts (load in order) -->
   <script src="../twilio.js"></script>
+  <script src="../twilio-client.js"></script>
+  <script src="../twilio-manager.js"></script>
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
@@ -867,6 +873,22 @@
             <span style="font-size: 24px;">⏺️</span>
             <span>Record</span>
           </button>
+          <button class="control-btn" id="smsBtn" disabled>
+            <span style="font-size: 24px;">💬</span>
+            <span>Send SMS</span>
+          </button>
+          <button class="control-btn" id="emailBtn" disabled>
+            <span style="font-size: 24px;">📧</span>
+            <span>Send Email</span>
+          </button>
+          <button class="control-btn" id="addPartyBtn" disabled>
+            <span style="font-size: 24px;">👥</span>
+            <span>Add Party</span>
+          </button>
+          <button class="control-btn" id="transferBtn" disabled>
+            <span style="font-size: 24px;">📞</span>
+            <span>Transfer</span>
+          </button>
         </div>
       </div>
 
@@ -876,6 +898,11 @@
         <div class="lead-info-panel" id="leadInfoContent">
           <!-- Dynamic lead info -->
         </div>
+      </div>
+
+      <!-- Caller History Panel -->
+      <div class="dialer-card" id="callerHistoryPanel" style="display: none;">
+        <!-- Dynamic caller history loaded here -->
       </div>
 
       <!-- Disposition Form -->
@@ -932,11 +959,12 @@
   </div>
 
   <script>
-    // Initialize Twilio Simulator
-    const twilio = new TwilioSimulator();
+    // Initialize Twilio Manager (auto-fallback)
+    const twilio = new TwilioManager();
     let currentMode = 'manual';
     let currentLead = null;
     let selectedDisposition = null;
+    let callerHistory = null;
 
     // Scripts database
     const scripts = [
@@ -967,7 +995,10 @@
     ];
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Initialize Twilio (real or simulator)
+      await twilio.initialize();
+      
       loadScripts();
       loadCallHistory();
       loadCallbacks();
@@ -975,7 +1006,9 @@
       setupEventListeners();
       createAudioBars();
       animateCounters();
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     });
 
     // Animate counter numbers
@@ -1036,6 +1069,44 @@
         document.getElementById('recordBtn').classList.toggle('active', isRecording);
       });
 
+      // SMS button
+      document.getElementById('smsBtn').addEventListener('click', () => {
+        if (!currentLead || !currentLead.phone) {
+          Toast.warning('No phone number available');
+          return;
+        }
+        const message = prompt('Enter SMS message:');
+        if (message) {
+          sendSMS(currentLead.phone, message);
+        }
+      });
+
+      // Email button
+      document.getElementById('emailBtn').addEventListener('click', () => {
+        if (!currentLead || !currentLead.email) {
+          Toast.warning('No email address available');
+          return;
+        }
+        // Open email composer (implement this)
+        Toast.info('Email composer coming soon');
+      });
+
+      // Add Party button (3-way calling)
+      document.getElementById('addPartyBtn').addEventListener('click', () => {
+        const phoneNumber = prompt('Enter third party phone number:');
+        if (phoneNumber) {
+          addThirdParty(phoneNumber);
+        }
+      });
+
+      // Transfer button
+      document.getElementById('transferBtn').addEventListener('click', () => {
+        const phoneNumber = prompt('Transfer to phone number:');
+        if (phoneNumber) {
+          transferCall(phoneNumber);
+        }
+      });
+
       // Disposition buttons
       document.querySelectorAll('.disposition-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -1064,16 +1135,139 @@
     }
 
     // Handle dial
-    function handleDial() {
+    async function handleDial() {
       const phoneNumber = document.getElementById('phoneInput').value.trim();
       if (!phoneNumber) return;
+
+      // Fetch caller memory from API
+      await fetchCallerMemory(phoneNumber);
 
       // Get lead data if available
       if (window.DebtDB && window.DebtDB.leads) {
         currentLead = window.DebtDB.leads.find(l => l.phone === phoneNumber);
       }
 
+      // If no lead found in DebtDB but found in API, use API data
+      if (!currentLead && callerHistory && callerHistory.found) {
+        currentLead = callerHistory.lead;
+      }
+
+      // If still no lead, create new one
+      if (!currentLead) {
+        currentLead = await createNewLead(phoneNumber);
+      }
+
       twilio.dial(phoneNumber, currentLead);
+    }
+
+    /**
+     * Fetch caller memory from API
+     */
+    async function fetchCallerMemory(phoneNumber) {
+      try {
+        const cleanPhone = phoneNumber.replace(/\D/g, '');
+        const response = await fetch(`/api/dashboard/leads/by-phone/${cleanPhone}`);
+        
+        if (!response.ok) {
+          console.warn('Failed to fetch caller memory');
+          callerHistory = null;
+          return;
+        }
+
+        callerHistory = await response.json();
+        
+        if (callerHistory.found) {
+          console.log('📞 Caller found in CRM:', callerHistory.lead.name);
+          console.log('📊 Previous calls:', callerHistory.history.totalCalls);
+          
+          // Show history panel
+          showCallerHistory(callerHistory);
+        } else {
+          console.log('📞 New caller - no history');
+          callerHistory = null;
+        }
+      } catch (error) {
+        console.error('Error fetching caller memory:', error);
+        callerHistory = null;
+      }
+    }
+
+    /**
+     * Create new lead for unknown caller
+     */
+    async function createNewLead(phoneNumber) {
+      const newLead = {
+        id: `L${Date.now()}`,
+        name: 'Unknown Caller',
+        phone: phoneNumber,
+        email: null,
+        stage: 'New Lead',
+        totalDebt: 0,
+        monthlyIncome: 0,
+        dtiRatio: 0,
+        status: 'new',
+        createdAt: new Date().toISOString()
+      };
+
+      // In production, save to backend
+      console.log('Creating new lead:', newLead);
+      
+      return newLead;
+    }
+
+    /**
+     * Show caller history panel
+     */
+    function showCallerHistory(history) {
+      const panel = document.getElementById('callerHistoryPanel');
+      if (!panel) return;
+
+      const { lead, history: callHistory } = history;
+      const { totalCalls, lastCall, recentCalls, sentimentTrend, outcomes } = callHistory;
+
+      let html = `
+        <h4 style="color: #3B82F6; margin-bottom: 12px;">📊 Previous Interactions (${totalCalls} calls)</h4>
+      `;
+
+      if (lastCall) {
+        const lastDate = new Date(lastCall.startTime).toLocaleString();
+        html += `
+          <div style="background: rgba(59, 130, 246, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid #3B82F6;">
+            <div style="font-weight: 600; color: white; margin-bottom: 4px;">Last Call: ${lastDate}</div>
+            <div style="color: #94A3B8; font-size: 13px;">Disposition: ${lastCall.disposition || 'None'}</div>
+            ${lastCall.notes ? `<div style="color: #94A3B8; font-size: 13px; margin-top: 4px;">Notes: ${lastCall.notes}</div>` : ''}
+          </div>
+        `;
+      }
+
+      if (recentCalls && recentCalls.length > 0) {
+        html += `<h5 style="color: #64748B; margin: 16px 0 8px 0; font-size: 13px;">Recent Calls:</h5>`;
+        recentCalls.forEach(call => {
+          const date = new Date(call.startTime).toLocaleDateString();
+          html += `
+            <div style="padding: 8px; background: rgba(10, 15, 26, 0.6); border-radius: 6px; margin-bottom: 6px; font-size: 12px;">
+              <span style="color: white;">${date}</span> - 
+              <span style="color: #3B82F6;">${call.disposition || 'Unknown'}</span> - 
+              <span style="color: #64748B;">${Math.floor(call.duration / 60)}m ${call.duration % 60}s</span>
+            </div>
+          `;
+        });
+      }
+
+      if (outcomes && Object.keys(outcomes).length > 0) {
+        html += `<h5 style="color: #64748B; margin: 16px 0 8px 0; font-size: 13px;">Outcomes:</h5>`;
+        Object.entries(outcomes).forEach(([disposition, count]) => {
+          html += `
+            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px;">
+              <span style="color: #94A3B8;">${disposition}</span>
+              <span style="color: #3B82F6; font-weight: 600;">${count}</span>
+            </div>
+          `;
+        });
+      }
+
+      panel.innerHTML = html;
+      panel.style.display = 'block';
     }
 
     // Handle hangup
@@ -1092,8 +1286,13 @@
       const muteBtn = document.getElementById('muteBtn');
       const holdBtn = document.getElementById('holdBtn');
       const recordBtn = document.getElementById('recordBtn');
+      const smsBtn = document.getElementById('smsBtn');
+      const emailBtn = document.getElementById('emailBtn');
+      const addPartyBtn = document.getElementById('addPartyBtn');
+      const transferBtn = document.getElementById('transferBtn');
       const leadPanel = document.getElementById('leadInfoPanel');
       const dispPanel = document.getElementById('dispositionPanel');
+      const historyPanel = document.getElementById('callerHistoryPanel');
 
       // Remove all status classes
       statusEl.classList.remove('connected', 'dialing', 'disconnected');
@@ -1105,11 +1304,16 @@
           visualizerEl.style.display = 'none';
           leadPanel.style.display = 'none';
           dispPanel.style.display = 'none';
+          historyPanel.style.display = 'none';
           dialBtn.disabled = false;
           hangupBtn.disabled = true;
           muteBtn.disabled = true;
           holdBtn.disabled = true;
           recordBtn.disabled = true;
+          smsBtn.disabled = true;
+          emailBtn.disabled = true;
+          addPartyBtn.disabled = true;
+          transferBtn.disabled = true;
           timerDisplay.classList.remove('calling');
           break;
 
@@ -1133,6 +1337,10 @@
           muteBtn.disabled = false;
           holdBtn.disabled = false;
           recordBtn.disabled = false;
+          smsBtn.disabled = false;
+          emailBtn.disabled = false;
+          addPartyBtn.disabled = false;
+          transferBtn.disabled = false;
           timerDisplay.classList.remove('calling');
           break;
 
@@ -1214,6 +1422,98 @@
     function handleCallEnd(call) {
       loadCallHistory();
       updateStats();
+      
+      // Log call to API
+      if (call && call.id) {
+        logCallToAPI(call);
+      }
+    }
+
+    /**
+     * Log call to API
+     */
+    async function logCallToAPI(call) {
+      try {
+        const callData = {
+          callSid: call.id,
+          direction: call.direction || 'outbound',
+          from: call.phoneNumber || '',
+          to: call.phoneNumber || '',
+          leadId: currentLead?.id || null,
+          agentId: 'AGT001', // TODO: Get from logged-in user
+          startTime: new Date(call.startTime).toISOString(),
+          endTime: new Date(call.endTime).toISOString(),
+          duration: call.duration || 0,
+          talkTime: call.duration || 0,
+          disposition: call.disposition || null,
+          notes: call.notes || '',
+          followUp: call.followUp || null,
+          previousCallCount: callerHistory?.history?.totalCalls || 0
+        };
+
+        const response = await fetch('/api/dashboard/calls/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(callData)
+        });
+
+        if (response.ok) {
+          console.log('✅ Call logged to API');
+        }
+      } catch (error) {
+        console.error('Failed to log call:', error);
+      }
+    }
+
+    /**
+     * Send SMS
+     */
+    async function sendSMS(to, body) {
+      try {
+        const result = await twilio.sendSMS(to, body);
+        if (result) {
+          Toast.success('SMS sent successfully!');
+        } else {
+          Toast.error('Failed to send SMS');
+        }
+      } catch (error) {
+        console.error('SMS error:', error);
+        Toast.error('Failed to send SMS');
+      }
+    }
+
+    /**
+     * Add third party to call (3-way)
+     */
+    async function addThirdParty(phoneNumber) {
+      try {
+        const result = await twilio.addThirdParty(phoneNumber);
+        if (result) {
+          Toast.success(`Added ${phoneNumber} to conference`);
+        } else {
+          Toast.warning('3-way calling not available in simulator mode');
+        }
+      } catch (error) {
+        console.error('Add party error:', error);
+        Toast.error('Failed to add third party');
+      }
+    }
+
+    /**
+     * Transfer call
+     */
+    async function transferCall(phoneNumber) {
+      try {
+        const result = await twilio.transferCall(phoneNumber);
+        if (result) {
+          Toast.success(`Call transferred to ${phoneNumber}`);
+        } else {
+          Toast.warning('Transfer not available in simulator mode');
+        }
+      } catch (error) {
+        console.error('Transfer error:', error);
+        Toast.error('Failed to transfer call');
+      }
     }
 
     // Save disposition
