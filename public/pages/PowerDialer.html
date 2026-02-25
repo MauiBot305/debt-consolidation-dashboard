@@ -1228,9 +1228,8 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            phone: `+1${phoneNumber}`,
-            lead_name: leadName,
-            context: 'Outbound from Power Dialer'
+            to: `+1${phoneNumber}`,
+            purpose: 'Outbound from Power Dialer'
           })
         });
 

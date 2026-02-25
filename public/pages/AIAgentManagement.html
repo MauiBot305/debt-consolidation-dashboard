@@ -768,7 +768,7 @@
     const name = ($('autoDialName') || {}).value;
     const context = ($('autoDialContext') || {}).value;
     if (!phone) { alert('Enter a phone number'); return; }
-    const r = await apiPost('/api/calls/outbound-ai', { phone, lead_name: name, context });
+    const r = await apiPost('/api/calls/outbound-ai', { to: phone, purpose: context || 'AI outbound call' });
     if (r) {
       alert('AI is calling ' + (name || phone) + '!');
       if ($('autoDialPhone')) $('autoDialPhone').value = '';
@@ -847,7 +847,7 @@
       if (q.status === 'done') continue;
       q.status = 'calling';
       renderCampaignQueue();
-      await apiPost('/api/calls/outbound-ai', { phone: q.phone, lead_name: q.name, context: q.context });
+      await apiPost('/api/calls/outbound-ai', { to: q.phone, purpose: q.context || 'Campaign call' });
       // Wait for call to finish (poll active calls, simple 30s wait)
       await new Promise(r => setTimeout(r, 30000));
       q.status = 'done';
