@@ -559,20 +559,7 @@
   <script src="voice-api.js?v=202602250100"></script>
   <script src="demo-seed.js?v=202602250940"></script>
   <script src="data-import-engine.js?v=202602250940"></script>
-  <script>
-    // SPA Fix: Force all DOMContentLoaded listeners to be one-time
-    // Prevents old page listeners from firing on subsequent navigations
-    (function() {
-      const orig = document.addEventListener.bind(document);
-      document.addEventListener = function(type, fn, opts) {
-        if (type === 'DOMContentLoaded') {
-          if (typeof opts === 'object') opts.once = true;
-          else opts = { once: true };
-        }
-        return orig(type, fn, opts);
-      };
-    })();
-  </script>
+  <!-- DOMContentLoaded patch removed — was causing App.init() to never fire -->
   <script src="auth.js?v=202602250940"></script>
   <script src="page-enhancements.js?v=202602250940"></script>
   <script>
