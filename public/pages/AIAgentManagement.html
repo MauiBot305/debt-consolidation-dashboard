@@ -1,0 +1,919 @@
+<!-- AI Agent Management - Command Center -->
+<!-- Role: manager, owner only -->
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  .ai-agent-page {
+    font-family: 'Inter', sans-serif;
+    color: #f1f5f9;
+    padding: 1.5rem;
+    min-height: 100vh;
+  }
+
+  .ai-agent-page .font-orbitron { font-family: 'Orbitron', sans-serif; }
+
+  .ai-agent-page .glass-card-ai {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ai-agent-page .glass-card-ai:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 12px 48px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+  }
+
+  .ai-agent-page .stat-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #3B82F6, #06B6D4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .ai-agent-page .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .ai-agent-page .pulse-idle {
+    animation: pulseIdle 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseIdle {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  .ai-agent-page .call-timer {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    color: #06B6D4;
+  }
+
+  .ai-agent-page .btn-action {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid rgba(148,163,184,0.2);
+    border-radius: 0.5rem;
+    background: rgba(30,41,59,0.6);
+    color: #f1f5f9;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+  .ai-agent-page .btn-action:hover {
+    background: rgba(59,130,246,0.2);
+    border-color: #3B82F6;
+  }
+
+  .ai-agent-page .btn-primary-ai {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, #3B82F6, #06B6D4);
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .ai-agent-page .btn-primary-ai:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(59,130,246,0.4);
+  }
+
+  .ai-agent-page .btn-danger-ai {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .ai-agent-page table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .ai-agent-page th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    border-bottom: 1px solid rgba(148,163,184,0.1);
+  }
+  .ai-agent-page td {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid rgba(148,163,184,0.05);
+    color: #94a3b8;
+  }
+  .ai-agent-page tr:hover td {
+    background: rgba(59,130,246,0.05);
+  }
+  .ai-agent-page tr { cursor: pointer; }
+
+  .ai-agent-page input, .ai-agent-page textarea, .ai-agent-page select {
+    background: rgba(15,23,42,0.6);
+    border: 1px solid rgba(148,163,184,0.2);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    color: #f1f5f9;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  .ai-agent-page input:focus, .ai-agent-page textarea:focus {
+    outline: none;
+    border-color: #3B82F6;
+  }
+
+  .ai-agent-page .sentiment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .ai-agent-page .sentiment-positive { background: rgba(34,197,94,0.15); color: #22C55E; }
+  .ai-agent-page .sentiment-neutral { background: rgba(245,158,11,0.15); color: #F59E0B; }
+  .ai-agent-page .sentiment-negative { background: rgba(239,68,68,0.15); color: #EF4444; }
+
+  .ai-agent-page .capacity-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(148,163,184,0.1);
+    overflow: hidden;
+  }
+  .ai-agent-page .capacity-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #22C55E, #3B82F6);
+    transition: width 0.5s;
+  }
+
+  .ai-agent-page .expandable-row { display: none; }
+  .ai-agent-page .expandable-row.open { display: table-row; }
+
+  .ai-agent-page .queue-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid rgba(148,163,184,0.05);
+  }
+</style>
+
+<div class="ai-agent-page" id="aiAgentPage">
+  <!-- Access Denied (hidden by default) -->
+  <div id="aiAccessDenied" style="display:none; text-align:center; padding:4rem 2rem;">
+    <div style="font-size:4rem;">🔒</div>
+    <h2 style="font-family:'Orbitron',sans-serif; margin:1rem 0; color:#EF4444;">Access Denied</h2>
+    <p style="color:#94a3b8;">This page is restricted to Manager and Owner roles.</p>
+  </div>
+
+  <!-- Main Content -->
+  <div id="aiAgentContent">
+    <!-- 1. Header -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <h1 class="font-orbitron" style="font-size:1.5rem; font-weight:700; background:linear-gradient(135deg,#3B82F6,#06B6D4); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+          🤖 AI Agent Command Center
+        </h1>
+        <span id="aiStatusBadge" style="display:inline-flex; align-items:center; gap:0.3rem; padding:0.3rem 0.75rem; border-radius:9999px; background:rgba(34,197,94,0.15); color:#22C55E; font-size:0.8rem; font-weight:600;">
+          🟢 Online
+        </span>
+      </div>
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <div>
+          <span style="color:#94a3b8; font-size:0.8rem;">Active Calls</span>
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <span id="activeCallCount" class="font-orbitron" style="font-size:1.1rem; color:#06B6D4;">0</span>
+            <span style="color:#64748b; font-size:0.8rem;">/50</span>
+          </div>
+          <div class="capacity-bar" style="width:120px; margin-top:0.25rem;">
+            <div id="capacityFill" class="capacity-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Stats Row -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:1rem; margin-bottom:2rem;">
+      <div class="glass-card-ai" style="padding:1.25rem; text-align:center;">
+        <div style="color:#64748b; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Calls Today</div>
+        <div id="statCallsToday" class="stat-number">0</div>
+      </div>
+      <div class="glass-card-ai" style="padding:1.25rem; text-align:center;">
+        <div style="color:#64748b; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Avg Handle Time</div>
+        <div id="statAvgTime" class="stat-number">0:00</div>
+      </div>
+      <div class="glass-card-ai" style="padding:1.25rem; text-align:center;">
+        <div style="color:#64748b; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Qualification Rate</div>
+        <div id="statQualRate" class="stat-number">0%</div>
+      </div>
+      <div class="glass-card-ai" style="padding:1.25rem; text-align:center;">
+        <div style="color:#64748b; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Appointments Set</div>
+        <div id="statAppts" class="stat-number">0</div>
+      </div>
+      <div class="glass-card-ai" style="padding:1.25rem; text-align:center;">
+        <div style="color:#64748b; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Revenue Generated</div>
+        <div id="statRevenue" class="stat-number">$0</div>
+      </div>
+      <div class="glass-card-ai" style="padding:1.25rem; text-align:center;">
+        <div style="color:#64748b; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Compliance Score</div>
+        <div id="statCompliance" class="stat-number">100%</div>
+      </div>
+    </div>
+
+    <!-- 3. Active Calls Monitor -->
+    <div class="glass-card-ai" style="padding:1.5rem; margin-bottom:2rem;">
+      <div class="section-title"><i data-lucide="radio" style="width:18px;height:18px;"></i> Active Calls Monitor</div>
+      <div id="activeCallsContainer">
+        <div class="pulse-idle" style="text-align:center; padding:2rem; color:#64748b;">
+          <div style="font-size:2rem; margin-bottom:0.5rem;">📡</div>
+          AI Agent is idle — waiting for calls
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Auto-Dial Section -->
+    <div class="glass-card-ai" style="padding:1.5rem; margin-bottom:2rem;">
+      <div class="section-title"><i data-lucide="phone-outgoing" style="width:18px;height:18px;"></i> AI Auto-Dial</div>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-end; margin-bottom:1rem;">
+        <div style="flex:1; min-width:200px;">
+          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Phone Number</label>
+          <input type="tel" id="autoDialPhone" placeholder="+1 (555) 000-0000" />
+        </div>
+        <div style="flex:1; min-width:200px;">
+          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Lead Name</label>
+          <input type="text" id="autoDialName" placeholder="John Doe" />
+        </div>
+        <div style="flex:1; min-width:200px;">
+          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Context</label>
+          <input type="text" id="autoDialContext" placeholder="Debt consolidation inquiry" />
+        </div>
+        <button class="btn-primary-ai" onclick="window.aiAutoDialCall()">🤖 AI Call</button>
+        <button class="btn-action" onclick="window.aiImportCRM()">📋 Import from CRM</button>
+      </div>
+
+      <!-- CRM Leads List (hidden by default) -->
+      <div id="crmLeadsList" style="display:none; margin-bottom:1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+          <span style="font-size:0.85rem; color:#94a3b8;">Select leads for campaign:</span>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn-action" onclick="window.aiSelectAllLeads()">Select All</button>
+            <button class="btn-primary-ai" onclick="window.aiStartCampaign()">🚀 Start Campaign</button>
+          </div>
+        </div>
+        <div id="crmLeadsBody" style="max-height:200px; overflow-y:auto;"></div>
+      </div>
+
+      <!-- Campaign Queue -->
+      <div id="campaignQueue" style="display:none;">
+        <div style="font-size:0.85rem; color:#94a3b8; margin-bottom:0.5rem;">📋 Campaign Queue</div>
+        <div id="campaignQueueBody"></div>
+      </div>
+    </div>
+
+    <!-- 5. Caller Memory Database -->
+    <div class="glass-card-ai" style="padding:1.5rem; margin-bottom:2rem;">
+      <div class="section-title"><i data-lucide="brain" style="width:18px;height:18px;"></i> Caller Memory Database</div>
+      <div style="display:flex; gap:0.75rem; margin-bottom:1rem; flex-wrap:wrap;">
+        <input type="text" id="callerSearch" placeholder="Search by name or phone..." style="max-width:300px;" oninput="window.aiFilterCallers()" />
+        <input type="number" id="callerDebtMin" placeholder="Min Debt" style="max-width:120px;" oninput="window.aiFilterCallers()" />
+        <input type="number" id="callerDebtMax" placeholder="Max Debt" style="max-width:120px;" oninput="window.aiFilterCallers()" />
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th><th>Phone</th><th># Calls</th><th>Last Call</th><th>Total Debt</th><th>Sentiment</th><th>Lead Score</th>
+            </tr>
+          </thead>
+          <tbody id="callersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 6. Recent Calls Log -->
+    <div class="glass-card-ai" style="padding:1.5rem; margin-bottom:2rem;">
+      <div class="section-title"><i data-lucide="history" style="width:18px;height:18px;"></i> Recent Calls Log</div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>Caller</th><th>Duration</th><th>Disposition</th><th>Sentiment</th><th>Recording</th><th>Data Points</th>
+            </tr>
+          </thead>
+          <tbody id="callsLogBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 7. AI Configuration Panel -->
+    <div class="glass-card-ai" style="padding:1.5rem; margin-bottom:2rem;">
+      <div class="section-title"><i data-lucide="sliders" style="width:18px;height:18px;"></i> AI Configuration</div>
+      <div id="aiConfigForm" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem;">
+        <div>
+          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">AI Agent Name</label>
+          <input type="text" id="cfgName" />
+        </div>
+        <div>
+          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Max Concurrent Calls</label>
+          <input type="number" id="cfgMaxCalls" min="1" max="100" />
+        </div>
+        <div>
+          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Working Hours Start</label>
+          <input type="time" id="cfgHoursStart" />
+        </div>
+        <div>
+          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Working Hours End</label>
+          <input type="time" id="cfgHoursEnd" />
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Greeting Message</label>
+          <textarea id="cfgGreeting" rows="3"></textarea>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Escalation Triggers (comma-separated)</label>
+          <input type="text" id="cfgEscalation" placeholder="lawsuit, attorney, suicide, complaint" />
+        </div>
+      </div>
+      <div style="margin-top:1rem; display:flex; gap:0.75rem;">
+        <button class="btn-primary-ai" onclick="window.aiSaveConfig()">💾 Save Configuration</button>
+        <span id="cfgSaveStatus" style="color:#22C55E; font-size:0.8rem; align-self:center;"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const API_BASE = 'https://debt-voice-stack.fly.dev';
+  const DEFAULT_MONITOR_PHONE = '+13059659624';
+
+  // --- Role Gate ---
+  const user = window.DebtDB?.getCurrentUser?.();
+  const denied = document.getElementById('aiAccessDenied');
+  const content = document.getElementById('aiAgentContent');
+  if (!user || !['manager', 'owner'].includes(user.role)) {
+    if (denied) denied.style.display = 'block';
+    if (content) content.style.display = 'none';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    return;
+  }
+
+  // --- State ---
+  let activeCalls = [];
+  let callTimers = {};
+  let callerData = [];
+  let callsLog = [];
+  let campaignQueue = [];
+  let campaignRunning = false;
+
+  // --- Helpers ---
+  function $(id) { return document.getElementById(id); }
+
+  function fmt(s) { return s || '—'; }
+
+  function fmtDuration(seconds) {
+    if (!seconds && seconds !== 0) return '—';
+    const m = Math.floor(seconds / 60);
+    const s2 = Math.floor(seconds % 60);
+    return `${m}:${String(s2).padStart(2, '0')}`;
+  }
+
+  function fmtMoney(n) {
+    if (!n && n !== 0) return '$0';
+    return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  function fmtDate(d) {
+    if (!d) return '—';
+    const dt = new Date(d);
+    return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  }
+
+  function sentimentBadge(s) {
+    const val = (s || '').toLowerCase();
+    if (val === 'positive' || val === 'good') return '<span class="sentiment-badge sentiment-positive">🟢 Positive</span>';
+    if (val === 'negative' || val === 'bad' || val === 'angry') return '<span class="sentiment-badge sentiment-negative">🔴 Negative</span>';
+    return '<span class="sentiment-badge sentiment-neutral">🟡 Neutral</span>';
+  }
+
+  async function apiGet(path) {
+    try {
+      const r = await fetch(API_BASE + path);
+      if (!r.ok) return null;
+      return await r.json();
+    } catch(e) { console.error('API GET error:', path, e); return null; }
+  }
+
+  async function apiPost(path, body) {
+    try {
+      const r = await fetch(API_BASE + path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      return await r.json();
+    } catch(e) { console.error('API POST error:', path, e); return null; }
+  }
+
+  async function apiPut(path, body) {
+    try {
+      const r = await fetch(API_BASE + path, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      return await r.json();
+    } catch(e) { console.error('API PUT error:', path, e); return null; }
+  }
+
+  // --- 1. Agent Status ---
+  async function fetchAgentStatus() {
+    const data = await apiGet('/api/agent/status');
+    const badge = $('aiStatusBadge');
+    if (badge && data) {
+      const online = data.status === 'online' || data.online;
+      badge.innerHTML = online ? '🟢 Online' : '🔴 Offline';
+      badge.style.background = online ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)';
+      badge.style.color = online ? '#22C55E' : '#EF4444';
+    }
+  }
+
+  // --- 2. Stats ---
+  async function fetchStats() {
+    const calls = await apiGet('/api/calls');
+    if (!calls) return;
+    const arr = Array.isArray(calls) ? calls : (calls.calls || []);
+    const today = new Date().toDateString();
+    const todayCalls = arr.filter(c => new Date(c.created_at || c.date || c.start_time).toDateString() === today);
+
+    const el = (id, v) => { const e = $(id); if (e) e.textContent = v; };
+    el('statCallsToday', todayCalls.length);
+
+    const durations = todayCalls.map(c => c.duration || 0).filter(d => d > 0);
+    const avg = durations.length ? durations.reduce((a, b) => a + b, 0) / durations.length : 0;
+    el('statAvgTime', fmtDuration(avg));
+
+    const qualified = todayCalls.filter(c => c.disposition === 'qualified' || c.qualified).length;
+    el('statQualRate', todayCalls.length ? Math.round(qualified / todayCalls.length * 100) + '%' : '0%');
+
+    const appts = todayCalls.filter(c => c.appointment_set || c.disposition === 'appointment').length;
+    el('statAppts', appts);
+
+    const rev = todayCalls.reduce((sum, c) => sum + (c.revenue || c.deal_value || 0), 0);
+    el('statRevenue', fmtMoney(rev));
+
+    const compliant = todayCalls.filter(c => c.compliant !== false).length;
+    el('statCompliance', todayCalls.length ? Math.round(compliant / todayCalls.length * 100) + '%' : '100%');
+  }
+
+  // --- 3. Active Calls ---
+  async function fetchActiveCalls() {
+    const data = await apiGet('/api/calls/active');
+    const arr = data ? (Array.isArray(data) ? data : (data.calls || [])) : [];
+    activeCalls = arr;
+
+    const container = $('activeCallsContainer');
+    if (!container) return;
+
+    const countEl = $('activeCallCount');
+    if (countEl) countEl.textContent = arr.length;
+    const capEl = $('capacityFill');
+    if (capEl) capEl.style.width = Math.min(arr.length / 50 * 100, 100) + '%';
+
+    if (arr.length === 0) {
+      container.innerHTML = `<div class="pulse-idle" style="text-align:center; padding:2rem; color:#64748b;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">📡</div>
+        AI Agent is idle — waiting for calls
+      </div>`;
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      return;
+    }
+
+    container.innerHTML = arr.map(call => {
+      const sid = call.sid || call.call_sid || call.id || '';
+      const name = call.caller_name || call.lead_name || 'Unknown';
+      const phone = call.from || call.phone || call.caller_phone || '';
+      const topic = call.current_topic || call.topic || 'General inquiry';
+      const dataPoints = call.data_points_captured || call.data_points || 0;
+      const sentiment = call.sentiment || 'neutral';
+      const startTime = call.start_time || call.created_at || Date.now();
+
+      // Store start time for timer
+      if (!callTimers[sid]) callTimers[sid] = new Date(startTime).getTime() || Date.now();
+
+      return `<div class="glass-card-ai" style="padding:1rem; margin-bottom:0.75rem; border-left:3px solid #22C55E;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            <div style="font-weight:600; color:#f1f5f9;">${name}</div>
+            <div style="font-size:0.8rem; color:#64748b;">${phone}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="call-timer" data-sid="${sid}">0:00</div>
+            ${sentimentBadge(sentiment)}
+          </div>
+        </div>
+        <div style="margin:0.5rem 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+          <span style="font-size:0.8rem; color:#94a3b8;">📋 ${topic}</span>
+          <span style="font-size:0.8rem; color:#06B6D4; font-family:'Orbitron',sans-serif;">${dataPoints}/65 captured</span>
+        </div>
+        <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+          <button class="btn-action" onclick="window.aiListenCall('${sid}')">🎧 Listen</button>
+          <button class="btn-action" onclick="window.aiWhisperCall('${sid}')">💬 Whisper</button>
+          <button class="btn-action" onclick="window.aiBargeCall('${sid}')">📞 Barge</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  // Timer tick for active calls
+  function tickTimers() {
+    const now = Date.now();
+    document.querySelectorAll('.call-timer[data-sid]').forEach(el => {
+      const sid = el.getAttribute('data-sid');
+      const start = callTimers[sid];
+      if (start) {
+        const elapsed = Math.floor((now - start) / 1000);
+        el.textContent = fmtDuration(elapsed);
+      }
+    });
+  }
+
+  // --- Active call actions ---
+  window.aiListenCall = function(sid) {
+    const phone = prompt('Enter your phone number to listen:', DEFAULT_MONITOR_PHONE);
+    if (!phone) return;
+    apiPost(`/api/calls/${sid}/listen`, { monitor_phone: phone }).then(r => {
+      alert(r ? 'Listening connected! Your phone will ring.' : 'Failed to connect.');
+    });
+  };
+
+  window.aiWhisperCall = function(sid) {
+    const phone = prompt('Enter your phone number:', DEFAULT_MONITOR_PHONE);
+    if (!phone) return;
+    const message = prompt('Enter whisper message for the AI agent:');
+    if (!message) return;
+    apiPost(`/api/calls/${sid}/whisper`, { monitor_phone: phone, message }).then(r => {
+      alert(r ? 'Whisper sent!' : 'Failed to send whisper.');
+    });
+  };
+
+  window.aiBargeCall = function(sid) {
+    const phone = prompt('Enter your phone number to barge in:', DEFAULT_MONITOR_PHONE);
+    if (!phone) return;
+    if (!confirm('This will connect you directly to the call. Continue?')) return;
+    apiPost(`/api/calls/${sid}/barge`, { monitor_phone: phone }).then(r => {
+      alert(r ? 'Barge connected! Your phone will ring.' : 'Failed to barge.');
+    });
+  };
+
+  // --- 4. Auto-Dial ---
+  window.aiAutoDialCall = async function() {
+    const phone = ($('autoDialPhone') || {}).value;
+    const name = ($('autoDialName') || {}).value;
+    const context = ($('autoDialContext') || {}).value;
+    if (!phone) { alert('Enter a phone number'); return; }
+    const r = await apiPost('/api/calls/outbound-ai', { phone, lead_name: name, context });
+    if (r) {
+      alert('AI is calling ' + (name || phone) + '!');
+      if ($('autoDialPhone')) $('autoDialPhone').value = '';
+      if ($('autoDialName')) $('autoDialName').value = '';
+      if ($('autoDialContext')) $('autoDialContext').value = '';
+      fetchActiveCalls();
+    } else {
+      alert('Failed to initiate call.');
+    }
+  };
+
+  window.aiImportCRM = function() {
+    const list = $('crmLeadsList');
+    if (!list) return;
+    const leads = window.DebtDB?.getLeads?.() || [];
+    if (leads.length === 0) {
+      alert('No leads found in CRM.');
+      return;
+    }
+    list.style.display = 'block';
+    const body = $('crmLeadsBody');
+    if (body) {
+      body.innerHTML = leads.map((l, i) => `
+        <div style="display:flex; align-items:center; gap:0.75rem; padding:0.4rem 0; border-bottom:1px solid rgba(148,163,184,0.05);">
+          <input type="checkbox" data-lead-idx="${i}" class="crm-lead-check" />
+          <span style="color:#f1f5f9; font-size:0.85rem;">${l.name || l.lead_name || 'Unknown'}</span>
+          <span style="color:#64748b; font-size:0.8rem;">${l.phone || ''}</span>
+          <span style="color:#06B6D4; font-size:0.8rem; margin-left:auto;">${fmtMoney(l.total_debt || l.debt || 0)}</span>
+        </div>
+      `).join('');
+    }
+  };
+
+  window.aiSelectAllLeads = function() {
+    document.querySelectorAll('.crm-lead-check').forEach(cb => cb.checked = true);
+  };
+
+  window.aiStartCampaign = function() {
+    const leads = window.DebtDB?.getLeads?.() || [];
+    const selected = [];
+    document.querySelectorAll('.crm-lead-check:checked').forEach(cb => {
+      const idx = parseInt(cb.getAttribute('data-lead-idx'));
+      if (leads[idx]) selected.push(leads[idx]);
+    });
+    if (selected.length === 0) { alert('Select at least one lead.'); return; }
+    campaignQueue = selected.map(l => ({
+      phone: l.phone,
+      name: l.name || l.lead_name || 'Unknown',
+      context: `Debt: ${fmtMoney(l.total_debt || l.debt || 0)}`,
+      status: 'queued'
+    }));
+    renderCampaignQueue();
+    if (!campaignRunning) runCampaign();
+  };
+
+  function renderCampaignQueue() {
+    const qEl = $('campaignQueue');
+    const body = $('campaignQueueBody');
+    if (!qEl || !body) return;
+    if (campaignQueue.length === 0) { qEl.style.display = 'none'; return; }
+    qEl.style.display = 'block';
+    body.innerHTML = campaignQueue.map((q, i) => `
+      <div class="queue-item">
+        <span style="color:#f1f5f9; font-size:0.85rem;">${i + 1}. ${q.name} — ${q.phone}</span>
+        <span style="font-size:0.75rem; color:${q.status === 'calling' ? '#22C55E' : q.status === 'done' ? '#64748b' : '#F59E0B'};">
+          ${q.status === 'calling' ? '📞 Calling...' : q.status === 'done' ? '✅ Done' : '⏳ Queued'}
+        </span>
+      </div>
+    `).join('');
+  }
+
+  async function runCampaign() {
+    campaignRunning = true;
+    for (let i = 0; i < campaignQueue.length; i++) {
+      const q = campaignQueue[i];
+      if (q.status === 'done') continue;
+      q.status = 'calling';
+      renderCampaignQueue();
+      await apiPost('/api/calls/outbound-ai', { phone: q.phone, lead_name: q.name, context: q.context });
+      // Wait for call to finish (poll active calls, simple 30s wait)
+      await new Promise(r => setTimeout(r, 30000));
+      q.status = 'done';
+      renderCampaignQueue();
+    }
+    campaignRunning = false;
+  }
+
+  // --- 5. Caller Memory ---
+  async function fetchCallers() {
+    const data = await apiGet('/api/callers');
+    callerData = data ? (Array.isArray(data) ? data : (data.callers || [])) : [];
+    renderCallers(callerData);
+  }
+
+  function renderCallers(list) {
+    const body = $('callersTableBody');
+    if (!body) return;
+    if (list.length === 0) {
+      body.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#64748b; padding:2rem;">No callers found</td></tr>';
+      return;
+    }
+    body.innerHTML = list.map((c, i) => {
+      const phone = c.phone || c.phone_number || '';
+      const name = c.name || c.caller_name || phone;
+      const numCalls = c.call_count || c.num_calls || 0;
+      const lastCall = fmtDate(c.last_call || c.last_call_date);
+      const debt = fmtMoney(c.total_debt || c.debt || 0);
+      const sentiment = c.sentiment || c.overall_sentiment || 'neutral';
+      const score = c.lead_score || c.score || 0;
+      return `<tr onclick="window.aiExpandCaller('${phone}', this)" data-caller-idx="${i}">
+        <td style="color:#f1f5f9; font-weight:500;">${fmt(name)}</td>
+        <td>${phone}</td>
+        <td style="text-align:center;">${numCalls}</td>
+        <td>${lastCall}</td>
+        <td style="color:#06B6D4; font-family:'Orbitron',sans-serif;">${debt}</td>
+        <td>${sentimentBadge(sentiment)}</td>
+        <td><span style="font-family:'Orbitron',sans-serif; color:${score >= 70 ? '#22C55E' : score >= 40 ? '#F59E0B' : '#EF4444'};">${score}</span></td>
+      </tr>
+      <tr class="expandable-row" id="caller-detail-${i}">
+        <td colspan="7" style="padding:1rem; background:rgba(15,23,42,0.6);">
+          <div style="color:#64748b;">Loading...</div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  window.aiExpandCaller = async function(phone, rowEl) {
+    const idx = rowEl?.getAttribute('data-caller-idx');
+    const detailRow = $('caller-detail-' + idx);
+    if (!detailRow) return;
+    if (detailRow.classList.contains('open')) {
+      detailRow.classList.remove('open');
+      return;
+    }
+    detailRow.classList.add('open');
+    const data = await apiGet(`/api/callers/${encodeURIComponent(phone)}`);
+    if (!data) {
+      detailRow.querySelector('td').innerHTML = '<div style="color:#EF4444;">Failed to load caller details.</div>';
+      return;
+    }
+    const history = data.call_history || data.calls || [];
+    const dataPoints = data.data_points || data.collected_data || {};
+    detailRow.querySelector('td').innerHTML = `
+      <div style="margin-bottom:0.75rem;">
+        <strong style="color:#f1f5f9;">Conversation History (${history.length} calls)</strong>
+      </div>
+      ${history.map(h => `
+        <div style="margin-bottom:0.5rem; padding:0.5rem; background:rgba(30,41,59,0.5); border-radius:0.5rem;">
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#94a3b8; font-size:0.8rem;">${fmtDate(h.date || h.created_at)}</span>
+            <span style="font-size:0.8rem;">${sentimentBadge(h.sentiment)}</span>
+          </div>
+          <div style="color:#f1f5f9; font-size:0.85rem; margin-top:0.25rem;">${h.summary || h.notes || 'No summary'}</div>
+        </div>
+      `).join('')}
+      <div style="margin-top:1rem;">
+        <strong style="color:#f1f5f9;">Data Points Collected</strong>
+        <div style="margin-top:0.5rem; display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:0.5rem;">
+          ${Object.entries(dataPoints).map(([k, v]) => `
+            <div style="font-size:0.8rem;"><span style="color:#64748b;">${k}:</span> <span style="color:#06B6D4;">${v}</span></div>
+          `).join('')}
+        </div>
+      </div>`;
+  };
+
+  window.aiFilterCallers = function() {
+    const q = ($('callerSearch') || {}).value?.toLowerCase() || '';
+    const minDebt = parseFloat(($('callerDebtMin') || {}).value) || 0;
+    const maxDebt = parseFloat(($('callerDebtMax') || {}).value) || Infinity;
+    const filtered = callerData.filter(c => {
+      const name = (c.name || c.caller_name || '').toLowerCase();
+      const phone = (c.phone || c.phone_number || '').toLowerCase();
+      const debt = c.total_debt || c.debt || 0;
+      return (name.includes(q) || phone.includes(q)) && debt >= minDebt && debt <= maxDebt;
+    });
+    renderCallers(filtered);
+  };
+
+  // --- 6. Calls Log ---
+  async function fetchCallsLog() {
+    const data = await apiGet('/api/calls');
+    callsLog = data ? (Array.isArray(data) ? data : (data.calls || [])) : [];
+    renderCallsLog(callsLog);
+  }
+
+  function renderCallsLog(list) {
+    const body = $('callsLogBody');
+    if (!body) return;
+    if (list.length === 0) {
+      body.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#64748b; padding:2rem;">No calls recorded yet</td></tr>';
+      return;
+    }
+    body.innerHTML = list.slice(0, 50).map((c, i) => {
+      const date = fmtDate(c.created_at || c.date || c.start_time);
+      const caller = c.caller_name || c.from || c.phone || 'Unknown';
+      const dur = fmtDuration(c.duration);
+      const disp = c.disposition || c.status || '—';
+      const sentiment = c.sentiment || 'neutral';
+      const recording = c.recording_url || c.recording || '';
+      const dataPoints = c.data_points || c.collected_data || {};
+      const transcript = c.transcript || '';
+      return `<tr onclick="window.aiExpandCallLog(${i}, this)" data-call-idx="${i}">
+        <td>${date}</td>
+        <td style="color:#f1f5f9; font-weight:500;">${caller}</td>
+        <td class="font-orbitron" style="font-family:'Orbitron',sans-serif; color:#06B6D4;">${dur}</td>
+        <td><span style="padding:0.2rem 0.5rem; border-radius:9999px; font-size:0.75rem; background:rgba(59,130,246,0.15); color:#3B82F6;">${disp}</span></td>
+        <td>${sentimentBadge(sentiment)}</td>
+        <td>${recording ? '<button class="btn-action" onclick="event.stopPropagation(); new Audio(\'' + recording + '\').play()">▶️ Play</button>' : '—'}</td>
+        <td style="color:#64748b; font-size:0.8rem;">${Object.keys(dataPoints).length || 0} points</td>
+      </tr>
+      <tr class="expandable-row" id="call-detail-${i}">
+        <td colspan="7" style="padding:1rem; background:rgba(15,23,42,0.6);"></td>
+      </tr>`;
+    }).join('');
+  }
+
+  window.aiExpandCallLog = function(idx, rowEl) {
+    const detailRow = $('call-detail-' + idx);
+    if (!detailRow) return;
+    if (detailRow.classList.contains('open')) {
+      detailRow.classList.remove('open');
+      return;
+    }
+    detailRow.classList.add('open');
+    const c = callsLog[idx];
+    if (!c) return;
+    const dataPoints = c.data_points || c.collected_data || {};
+    const transcript = c.transcript || 'No transcript available.';
+
+    // Group data points by category
+    const categories = {};
+    Object.entries(dataPoints).forEach(([k, v]) => {
+      const cat = k.split('_')[0] || 'General';
+      if (!categories[cat]) categories[cat] = [];
+      categories[cat].push({ key: k, value: v });
+    });
+
+    detailRow.querySelector('td').innerHTML = `
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+        <div>
+          <strong style="color:#f1f5f9;">Transcript</strong>
+          <div style="margin-top:0.5rem; padding:0.75rem; background:rgba(30,41,59,0.5); border-radius:0.5rem; max-height:300px; overflow-y:auto; font-size:0.8rem; color:#94a3b8; white-space:pre-wrap;">${transcript}</div>
+        </div>
+        <div>
+          <strong style="color:#f1f5f9;">65 Data Points</strong>
+          <div style="margin-top:0.5rem; max-height:300px; overflow-y:auto;">
+            ${Object.entries(categories).map(([cat, items]) => `
+              <div style="margin-bottom:0.75rem;">
+                <div style="font-size:0.75rem; text-transform:uppercase; color:#3B82F6; font-weight:600; margin-bottom:0.25rem;">${cat}</div>
+                ${items.map(({key, value}) => `
+                  <div style="font-size:0.8rem; padding:0.15rem 0;"><span style="color:#64748b;">${key.replace(/_/g, ' ')}:</span> <span style="color:#06B6D4;">${value}</span></div>
+                `).join('')}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>`;
+  };
+
+  // --- 7. Config ---
+  async function fetchConfig() {
+    const data = await apiGet('/api/agent/config');
+    if (!data) return;
+    const el = (id) => $(id);
+    if (el('cfgName')) el('cfgName').value = data.name || data.agent_name || '';
+    if (el('cfgMaxCalls')) el('cfgMaxCalls').value = data.max_concurrent_calls || data.max_calls || 50;
+    if (el('cfgHoursStart')) el('cfgHoursStart').value = data.working_hours_start || data.hours_start || '09:00';
+    if (el('cfgHoursEnd')) el('cfgHoursEnd').value = data.working_hours_end || data.hours_end || '21:00';
+    if (el('cfgGreeting')) el('cfgGreeting').value = data.greeting_message || data.greeting || '';
+    if (el('cfgEscalation')) el('cfgEscalation').value = (data.escalation_triggers || []).join(', ');
+  }
+
+  window.aiSaveConfig = async function() {
+    const config = {
+      name: ($('cfgName') || {}).value || '',
+      max_concurrent_calls: parseInt(($('cfgMaxCalls') || {}).value) || 50,
+      working_hours_start: ($('cfgHoursStart') || {}).value || '09:00',
+      working_hours_end: ($('cfgHoursEnd') || {}).value || '21:00',
+      greeting_message: ($('cfgGreeting') || {}).value || '',
+      escalation_triggers: (($('cfgEscalation') || {}).value || '').split(',').map(s => s.trim()).filter(Boolean)
+    };
+    const r = await apiPut('/api/agent/config', config);
+    const status = $('cfgSaveStatus');
+    if (status) {
+      status.textContent = r ? '✅ Saved!' : '❌ Failed to save';
+      setTimeout(() => { if (status) status.textContent = ''; }, 3000);
+    }
+  };
+
+  // --- Init ---
+  async function init() {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    fetchAgentStatus();
+    fetchStats();
+    fetchActiveCalls();
+    fetchCallers();
+    fetchCallsLog();
+    fetchConfig();
+  }
+
+  // Poll active calls every 5s
+  setInterval(fetchActiveCalls, 5000);
+  // Timer tick every 1s
+  setInterval(tickTimers, 1000);
+  // Refresh stats every 30s
+  setInterval(fetchStats, 30000);
+
+  init();
+})();
+</script>
