@@ -1005,11 +1005,18 @@
       },
 
       // Load page content
+      _loadTimer: null,
       async loadPage(pageName) {
         const pageContent = document.getElementById('pageContent');
         if (!pageContent) {
           console.error('[Debt Empire] pageContent element not found!');
           return;
+        }
+        
+        // Cancel any pending page load timer to prevent stale init on replaced content
+        if (this._loadTimer) {
+          clearTimeout(this._loadTimer);
+          this._loadTimer = null;
         }
         
         // Show loading skeleton
@@ -1025,7 +1032,7 @@
           console.log(`[Debt Empire] Page fetch status: ${response.status} for ${pageName}`);
           if (response.ok) {
             const html = await response.text();
-            setTimeout(() => {
+            this._loadTimer = setTimeout(() => {
               pageContent.innerHTML = html;
               
               // CRITICAL FIX: Execute scripts that were in the loaded HTML
