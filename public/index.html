@@ -11,6 +11,9 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   
+  <!-- SheetJS - Excel Parser -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -527,6 +530,7 @@
 
   <!-- Scripts -->
   <script src="database.js"></script>
+  <script src="data-import-engine.js"></script>
   <script src="auth.js"></script>
   <script src="page-enhancements.js"></script>
   <script>
@@ -838,6 +842,7 @@
           { id: 'automation', icon: 'zap', label: 'Automation', page: 'Automation', roles: ['manager', 'owner'] },
           { id: 'team', icon: 'users-2', label: 'Team', page: 'TeamManagement', roles: ['manager', 'owner'] },
           { id: 'portal', icon: 'globe', label: 'Client Portal', page: 'ClientPortal', roles: ['agent', 'manager', 'owner'] },
+          { id: 'data-import', icon: 'database', label: 'Data Import', page: 'DataImport', roles: ['manager', 'owner'] },
           { id: 'settings', icon: 'settings', label: 'Settings', page: 'Settings', roles: ['agent', 'manager', 'owner'] }
         ];
 
