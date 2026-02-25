@@ -1111,9 +1111,8 @@
 
   <script>
 (function() {
-  'use strict';
-
-  (function() {
+'use strict';
+(function() {
     // State
     let cases = [];
     let selectedCase = null;
@@ -1866,8 +1865,16 @@
 
   // Expose functions to window for onclick handlers
 })();
+window.addCreditorRow = addCreditorRow;
+window.closeAddCaseModal = closeAddCaseModal;
+window.closeAddNoteModal = closeAddNoteModal;
+window.emailClient = emailClient;
+window.openAddDocumentModal = openAddDocumentModal;
+window.openAddPaymentModal = openAddPaymentModal;
+window.selectCase = selectCase;
+window.switchTab = switchTab;
 
-  // Expose onclick functions to window
+// ---- Window Exports ----
   window.addCreditor = addCreditor;
   window.addCreditorRow = addCreditorRow;
   window.callClient = callClient;
@@ -1885,6 +1892,7 @@
   window.selectFilter = selectFilter;
   window.switchTab = switchTab;
   window.updateCaseStatus = updateCaseStatus;
+  window.initCaseManagement = initCaseManagement;
 })();
 </script>
 </div>

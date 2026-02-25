@@ -307,7 +307,9 @@
 </div>
 
 <script>
-  // Toast Function
+(function() {
+'use strict';
+// Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');
     const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-blue-500' };
@@ -545,6 +547,14 @@
   // Initialize
   renderClientSelector();
   lucide.createIcons();
+
+// ---- Window Exports ----
+  window.acceptOffer = acceptOffer;
+  window.rejectOffer = rejectOffer;
+  window.selectClient = selectClient;
+  window.sendMessage = sendMessage;
+  window.uploadDocument = uploadDocument;
+})();
 </script>
 </body>
 </html>

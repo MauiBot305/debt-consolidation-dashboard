@@ -728,9 +728,8 @@
 
   <script>
 (function() {
-  'use strict';
-
-  (function() {
+'use strict';
+(function() {
     // =====================
     // GLOBAL STATE
     // =====================
@@ -1301,8 +1300,16 @@
 
   // Expose functions to window for onclick handlers
 })();
+window.bulkChangeStatus = bulkChangeStatus;
+window.bulkExport = bulkExport;
+window.closeAddLeadModal = closeAddLeadModal;
+window.deleteLead = deleteLead;
+window.exportCSV = exportCSV;
+window.importCSV = importCSV;
+window.openAddLeadModal = openAddLeadModal;
+window.showToast = showToast;
 
-  // Expose onclick functions to window
+// ---- Window Exports ----
   window.bulkAssign = bulkAssign;
   window.bulkChangeStatus = bulkChangeStatus;
   window.bulkDelete = bulkDelete;

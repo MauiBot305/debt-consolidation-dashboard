@@ -341,7 +341,9 @@
 </div>
 
 <script>
-  // Toast Function
+(function() {
+'use strict';
+// Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');
     const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-blue-500' };
@@ -624,6 +626,12 @@
   // Initialize
   renderImportHistory();
   lucide.createIcons();
+
+// ---- Window Exports ----
+  window.goToStep = goToStep;
+  window.resetImport = resetImport;
+  window.useTemplate = useTemplate;
+})();
 </script>
 </body>
 </html>

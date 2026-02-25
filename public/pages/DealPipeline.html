@@ -779,9 +779,8 @@
 
   <script>
 (function() {
-  'use strict';
-
-  (function() {
+'use strict';
+(function() {
     // Pipeline stages
     const PIPELINE_STAGES = [
       'New Lead',
@@ -1264,8 +1263,12 @@
 
   // Expose functions to window for onclick handlers
 })();
+window.callDealClient = callDealClient;
+window.closeDealDetailPanel = closeDealDetailPanel;
+window.openAddDealModal = openAddDealModal;
+window.removeDealCreditorRow = removeDealCreditorRow;
 
-  // Expose onclick functions to window
+// ---- Window Exports ----
   window.addDealCreditorRow = addDealCreditorRow;
   window.callDealClient = callDealClient;
   window.closeAddDealModal = closeAddDealModal;
@@ -1274,6 +1277,7 @@
   window.openAddDealModal = openAddDealModal;
   window.openDealDetailPanel = openDealDetailPanel;
   window.removeDealCreditorRow = removeDealCreditorRow;
+  window.initDealPipeline = initDealPipeline;
 })();
 </script>
 </div>

@@ -260,7 +260,9 @@
 </div>
 
 <script>
-  // Toast Function
+(function() {
+'use strict';
+// Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');
     const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-blue-500' };
@@ -530,6 +532,15 @@ ${notes}
   populateAgentFilter();
   applyFilters();
   lucide.createIcons();
+
+// ---- Window Exports ----
+  window.closeDetailPanel = closeDetailPanel;
+  window.exportCalls = exportCalls;
+  window.nextPage = nextPage;
+  window.prevPage = prevPage;
+  window.showCallDetail = showCallDetail;
+  window.sortTable = sortTable;
+})();
 </script>
 </body>
 </html>

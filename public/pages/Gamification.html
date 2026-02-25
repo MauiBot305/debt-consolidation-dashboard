@@ -213,7 +213,9 @@
 </div>
 
 <script>
-  // Toast Function
+(function() {
+'use strict';
+// Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');
     const colors = {
@@ -443,6 +445,12 @@
   renderChallenges();
   renderRewards();
   lucide.createIcons();
+
+// ---- Window Exports ----
+  window.closeAgentProfile = closeAgentProfile;
+  window.redeemReward = redeemReward;
+  window.viewAgentProfile = viewAgentProfile;
+})();
 </script>
 </body>
 </html>

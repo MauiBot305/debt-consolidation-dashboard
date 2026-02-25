@@ -1,97 +1,99 @@
 #!/usr/bin/env python3
 """
-Fix all page HTML files by wrapping scripts in IIFEs and exposing onclick functions
+Nuclear option: For each page HTML file, extract the script block,
+remove ALL existing IIFE wrappers, then wrap the ENTIRE thing in one clean IIFE.
+Also find ALL onclick function references and ensure they're on window.
 """
+import re, os, glob
 
-import os
-import re
-from pathlib import Path
+pages_dir = os.path.expanduser("~/Projects/debt-consolidation-dashboard/public/pages")
 
-# Define the onclick functions for each page that need to be exposed
-ONCLICK_FUNCTIONS = {
-    'AICoach.html': ['switchTab', 'sendChatMessage'],
-    'Analytics.html': ['setDateRange', 'exportDashboard', 'sortLeaderboard'],
-    'Automation.html': ['openCreateModal', 'closeCreateModal', 'createAutomation', 'useTemplate', 'toggleAutomation', 'testAutomation', 'deleteAutomation'],
-    'CRMLeads.html': ['importCSV', 'exportCSV', 'openAddLeadModal', 'bulkAssign', 'bulkChangeStatus', 'bulkExport', 'bulkDelete', 'previousPage', 'nextPage', 'goToPage', 'closeAddLeadModal', 'addLead', 'showLeadDetail', 'closeDetailPanel'],
-    'CallHistory.html': ['exportCalls', 'sortTable', 'prevPage', 'nextPage', 'closeDetailPanel', 'showCallDetail'],
-    'CaseManagement.html': ['openAddCaseModal', 'selectFilter', 'closeAddCaseModal', 'removeCreditorRow', 'addCreditorRow', 'addCase', 'showCaseDetail', 'closeCaseDetailPanel'],
-    'ClientPortal.html': ['uploadDocument', 'sendMessage', 'selectClient', 'acceptOffer', 'rejectOffer'],
-    'Compliance.html': ['generateReport', 'addTCPAConsent', 'addDNC', 'importDNC', 'closeLicenseModal', 'saveLicense', 'openLicenseModal', 'toggleChecklistItem', 'removeDNC'],
-    'DataImport.html': ['useTemplate', 'goToStep', 'resetImport', 'uploadFile', 'validateData', 'importData'],
-    'DealPipeline.html': ['openAddDealModal', 'closeAddDealModal', 'removeDealCreditorRow', 'addDealCreditorRow', 'closeDealDetailPanel', 'openDealDetailPanel', 'callDealClient'],
-    'Financial.html': ['resetDateFilter', 'openAddPaymentModal', 'exportCommissionReport', 'saveFeeSchedule', 'closeAddPaymentModal', 'addPayment', 'filterPayments'],
-    'Gamification.html': ['closeAgentProfile', 'viewAgentProfile', 'redeemReward'],
-    'Marketing.html': ['openCampaignModal', 'filterCampaigns', 'closeCampaignModal', 'createCampaign', 'toggleCampaignStatus'],
-    'PowerDialer.html': ['dialDigit', 'makeCall', 'hangupCall', 'toggleMute', 'toggleHold', 'toggleRecord', 'transferCall', 'loadNextLead', 'skipLead', 'saveDisposition'],
-    'Settings.html': ['switchTab', 'saveProfile', 'saveCompany', 'saveNotifications', 'saveIntegrations', 'saveSecurity', 'saveData', 'saveBilling', 'saveCompliance'],
-    'TeamManagement.html': ['openAddAgentModal', 'closeAddAgentModal', 'addAgent', 'editAgent', 'removeAgent'],
-}
-
-def fix_page(filepath):
-    """Fix a single page HTML file"""
-    print(f"Processing {filepath.name}...")
-    
-    # Read the file
+for filepath in sorted(glob.glob(os.path.join(pages_dir, "*.html"))):
+    page = os.path.basename(filepath)
     with open(filepath, 'r') as f:
         content = f.read()
     
-    # Check if already wrapped
-    if '(function() {' in content or '(function(){' in content:
-        print(f"  ✓ Already wrapped")
-        return
+    # Split into HTML and script parts
+    # Find the LAST <script>...</script> block (the main one)
+    parts = re.split(r'(<script>)(.*?)(</script>)', content, flags=re.DOTALL)
+    if len(parts) < 5:
+        print(f"SKIP: {page} — no script block found")
+        continue
     
-    # Find the script tag
-    script_match = re.search(r'  <script>\n', content)
-    if not script_match:
-        print(f"  ⚠ No <script> tag found")
-        return
+    # Reconstruct: parts[0]=html before, parts[1]=<script>, parts[2]=script content, parts[3]=</script>, parts[4]=after
+    # Find the main (last) script block
+    script_idx = None
+    for i in range(len(parts)-1, -1, -1):
+        if parts[i] == '<script>':
+            script_idx = i
+            break
     
-    # Find the closing script tag
-    closing_match = re.search(r'\n  </script>\n</body>', content)
-    if not closing_match:
-        print(f"  ⚠ No </script> tag found")
-        return
+    if script_idx is None:
+        print(f"SKIP: {page}")
+        continue
     
-    # Extract script content
-    script_start = script_match.end()
-    script_end = closing_match.start()
-    script_content = content[script_start:script_end]
+    html_before = ''.join(parts[:script_idx])
+    script_raw = parts[script_idx + 1]
+    html_after = ''.join(parts[script_idx + 3:])
     
-    # Get onclick functions for this page
-    onclick_funcs = ONCLICK_FUNCTIONS.get(filepath.name, [])
+    # Strip ALL existing IIFE wrappers and window exports
+    script = script_raw
     
-    # Create exposed functions code
-    expose_code = '\n    // Expose functions to window for onclick handlers\n'
-    for func in onclick_funcs:
-        expose_code += f'    window.{func} = {func};\n'
+    # Remove any (function() { 'use strict'; at the top
+    script = re.sub(r'^\s*\(function\(\)\s*\{\s*(?:\'use strict\';\s*)?', '', script)
     
-    # Wrap script in IIFE
-    wrapped_script = f'    (function() {{\n{script_content}{expose_code}    }})();\n'
+    # Remove any })(); at the end (but be careful not to remove ones inside the code)
+    # Find the last })(); and remove it
+    last_iife_close = script.rfind('})();')
+    if last_iife_close != -1:
+        # Check if there's meaningful code after it
+        after = script[last_iife_close + 5:].strip()
+        if not after or after == '':
+            script = script[:last_iife_close]
     
-    # Replace the script content
-    new_content = content[:script_start] + wrapped_script + content[script_end:]
+    # Remove all window.X = X; lines
+    script = re.sub(r'\n\s*window\.\w+\s*=\s*\w+;\s*', '\n', script)
+    # Remove "// Expose onclick functions to window" comments
+    script = re.sub(r'\n\s*//\s*Expose onclick.*\n', '\n', script)
     
-    # Write back
+    # Find ALL onclick function names in the ENTIRE file (HTML + JS template literals)
+    full_content = html_before + script
+    onclick_fns = set(re.findall(r'onclick=["\'](\w+)\(', full_content))
+    # Also from template literals with escaped quotes
+    onclick_fns.update(re.findall(r'onclick=\\["\'](\w+)\(', full_content))
+    
+    # Find ALL function definitions
+    func_defs = set(re.findall(r'\bfunction\s+(\w+)\s*\(', script))
+    
+    # Build exports
+    exports = []
+    for fn in sorted(onclick_fns):
+        if fn in func_defs:
+            exports.append(f"  window.{fn} = {fn};")
+    
+    # Also export any init functions
+    for fn in func_defs:
+        if fn.startswith('init') and f"  window.{fn} = {fn};" not in exports:
+            exports.append(f"  window.{fn} = {fn};")
+    
+    exports_str = "\n".join(exports) if exports else "  // No exports needed"
+    
+    # Build clean IIFE-wrapped script
+    new_script = f"""
+(function() {{
+'use strict';
+{script.strip()}
+
+// ---- Window Exports ----
+{exports_str}
+}})();
+"""
+    
+    new_content = html_before + "<script>" + new_script + "</script>" + html_after
+    
     with open(filepath, 'w') as f:
         f.write(new_content)
     
-    print(f"  ✓ Done ({len(onclick_funcs)} functions exposed)")
+    print(f"FIXED: {page} — {len(func_defs)} functions, {len(onclick_fns)} onclick refs, {len(exports)} exports")
 
-def main():
-    pages_dir = Path.home() / 'Projects' / 'debt-consolidation-dashboard' / 'public' / 'pages'
-    
-    # Pages already fixed
-    already_fixed = {'AgentDashboard.html', 'ManagerDashboard.html', 'OwnerDashboard.html'}
-    
-    # Process all HTML files
-    for html_file in sorted(pages_dir.glob('*.html')):
-        if html_file.name not in already_fixed:
-            try:
-                fix_page(html_file)
-            except Exception as e:
-                print(f"  ✗ Error: {e}")
-    
-    print("\n✓ All pages processed!")
-
-if __name__ == '__main__':
-    main()
+print("\nDone!")

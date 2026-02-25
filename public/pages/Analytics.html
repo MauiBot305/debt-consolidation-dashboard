@@ -553,9 +553,8 @@
 
   <script>
 (function() {
-  'use strict';
-
-    (function() {
+'use strict';
+(function() {
     let currentRange = 'week';
     let leaderboardData = [];
     let sortColumn = 'revenue';
@@ -911,9 +910,9 @@
     }
     // Expose functions to window for onclick handlers
 })();
+window.setDateRange = setDateRange;
 
-  
-  // Expose onclick functions to window
+// ---- Window Exports ----
   window.exportDashboard = exportDashboard;
   window.setDateRange = setDateRange;
   window.sortLeaderboard = sortLeaderboard;

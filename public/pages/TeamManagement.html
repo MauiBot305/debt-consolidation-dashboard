@@ -327,7 +327,9 @@
 </div>
 
 <script>
-  // Toast Function
+(function() {
+'use strict';
+// Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');
     const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-blue-500' };
@@ -552,6 +554,14 @@
   renderSchedule();
   renderSkills();
   lucide.createIcons();
+
+// ---- Window Exports ----
+  window.addAgent = addAgent;
+  window.closeAddAgentModal = closeAddAgentModal;
+  window.editAgent = editAgent;
+  window.openAddAgentModal = openAddAgentModal;
+  window.removeAgent = removeAgent;
+})();
 </script>
 </body>
 </html>

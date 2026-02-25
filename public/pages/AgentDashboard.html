@@ -471,9 +471,8 @@
 
   <script>
 (function() {
-  'use strict';
-
-    (function() {
+'use strict';
+(function() {
     let currentUser = null;
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -716,8 +715,11 @@
 
     // Expose functions to window for onclick handlers
 })();
-  
-  // Expose onclick functions to window
+window.dismissTask = dismissTask;
+window.goToLeads = goToLeads;
+window.toggleTask = toggleTask;
+
+// ---- Window Exports ----
   window.completeTask = completeTask;
   window.dismissTask = dismissTask;
   window.goToDialer = goToDialer;

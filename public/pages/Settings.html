@@ -738,7 +738,9 @@
 </div>
 
 <script>
-  // Toast Function
+(function() {
+'use strict';
+// Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');
     const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-blue-500' };
@@ -840,6 +842,17 @@
   // Initialize
   loadSettings();
   lucide.createIcons();
+
+// ---- Window Exports ----
+  window.changePassword = changePassword;
+  window.clearData = clearData;
+  window.createBackup = createBackup;
+  window.exportData = exportData;
+  window.saveCompany = saveCompany;
+  window.saveNotifications = saveNotifications;
+  window.saveProfile = saveProfile;
+  window.switchTab = switchTab;
+})();
 </script>
 </body>
 </html>

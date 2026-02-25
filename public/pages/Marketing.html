@@ -365,7 +365,9 @@
 </div>
 
 <script>
-  // Toast Function
+(function() {
+'use strict';
+// Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');
     const colors = {
@@ -570,6 +572,14 @@
   renderCampaignTable();
   renderLeadSourceROI();
   lucide.createIcons();
+
+// ---- Window Exports ----
+  window.closeCampaignModal = closeCampaignModal;
+  window.createCampaign = createCampaign;
+  window.filterCampaigns = filterCampaigns;
+  window.openCampaignModal = openCampaignModal;
+  window.toggleCampaignStatus = toggleCampaignStatus;
+})();
 </script>
 </body>
 </html>

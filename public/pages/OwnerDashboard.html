@@ -517,9 +517,8 @@
 
   <script>
 (function() {
-  'use strict';
-
-    (function() {
+'use strict';
+(function() {
     document.addEventListener('DOMContentLoaded', function() {
       loadOwnerDashboard();
     });
@@ -741,8 +740,9 @@
 
     // Expose functions to window for onclick handlers
 })();
-  
-  // Expose onclick functions to window
+window.goToAnalytics = goToAnalytics;
+
+// ---- Window Exports ----
   window.exportFullReport = exportFullReport;
   window.goToAnalytics = goToAnalytics;
   window.goToSettings = goToSettings;

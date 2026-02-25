@@ -927,9 +927,8 @@
 
   <script>
 (function() {
-  'use strict';
-
-    (function() {
+'use strict';
+(function() {
     // State abbreviations
     const US_STATES = [
       'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
@@ -1386,9 +1385,12 @@
     });
     // Expose functions to window for onclick handlers
 })();
+window.addTCPAConsent = addTCPAConsent;
+window.generateReport = generateReport;
+window.openLicenseModal = openLicenseModal;
+window.saveLicense = saveLicense;
 
-  
-  // Expose onclick functions to window
+// ---- Window Exports ----
   window.addDNC = addDNC;
   window.addTCPAConsent = addTCPAConsent;
   window.closeLicenseModal = closeLicenseModal;
@@ -1398,6 +1400,7 @@
   window.removeDNC = removeDNC;
   window.saveLicense = saveLicense;
   window.toggleChecklistItem = toggleChecklistItem;
+  window.initializeCompliance = initializeCompliance;
 })();
 </script>
 </body>

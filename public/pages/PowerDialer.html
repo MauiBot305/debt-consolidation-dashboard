@@ -560,9 +560,8 @@
 
   <script>
 (function() {
-  'use strict';
-
-  (function() {
+'use strict';
+(function() {
     // =====================
     // GLOBAL STATE
     // =====================
@@ -1181,8 +1180,15 @@
 
   // Expose functions to window for onclick handlers
 })();
+window.backspace = backspace;
+window.dialDigit = dialDigit;
+window.makeCall = makeCall;
+window.saveDisposition = saveDisposition;
+window.selectDisposition = selectDisposition;
+window.toggleHold = toggleHold;
+window.toggleRecord = toggleRecord;
 
-  // Expose onclick functions to window
+// ---- Window Exports ----
   window.addConference = addConference;
   window.backspace = backspace;
   window.closeSMSModal = closeSMSModal;
@@ -1198,6 +1204,7 @@
   window.toggleMute = toggleMute;
   window.toggleRecord = toggleRecord;
   window.transferCall = transferCall;
+  window.initializeTwilio = initializeTwilio;
 })();
 </script>
 </div>
