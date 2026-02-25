@@ -101,6 +101,10 @@
   // ====================================
   
   function handleEmptyStates() {
+    // Skip empty state injection - page scripts handle their own empty states
+    // This was causing race conditions with async page init in SPA mode
+    return;
+    
     // Look for empty tables, lists, grids
     const tables = document.querySelectorAll('table tbody');
     tables.forEach(tbody => {
