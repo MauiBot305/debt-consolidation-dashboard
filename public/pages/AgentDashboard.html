@@ -470,6 +470,7 @@
   </div>
 
   <script>
+    (function() {
     let currentUser = null;
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -709,6 +710,15 @@
     function goToPipeline() {
       window.location.href = '/pages/DealPipeline.html';
     }
+
+    // Expose functions to window for onclick handlers
+    window.goToDialer = goToDialer;
+    window.goToLeads = goToLeads;
+    window.goToPipeline = goToPipeline;
+    window.toggleTask = toggleTask;
+    window.completeTask = completeTask;
+    window.dismissTask = dismissTask;
+    })();
   </script>
 </body>
 </html>

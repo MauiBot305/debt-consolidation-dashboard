@@ -559,6 +559,7 @@
   </div>
 
   <script>
+  (function() {
     // =====================
     // GLOBAL STATE
     // =====================
@@ -1174,5 +1175,18 @@
         console.log(`[${type.toUpperCase()}] ${message}`);
       }
     }
-  </script>
+
+  // Expose functions to window for onclick handlers
+  window.dialDigit = dialDigit;
+  window.makeCall = makeCall;
+  window.hangupCall = hangupCall;
+  window.toggleMute = toggleMute;
+  window.toggleHold = toggleHold;
+  window.toggleRecord = toggleRecord;
+  window.transferCall = transferCall;
+  window.loadNextLead = loadNextLead;
+  window.skipLead = skipLead;
+  window.saveDisposition = saveDisposition;
+  })();
+</script>
 </div>

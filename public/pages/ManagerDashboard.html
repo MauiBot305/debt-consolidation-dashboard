@@ -422,6 +422,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
+    (function() {
     let agentData = [];
     let sortColumn = 'revenue';
     let sortDirection = 'desc';
@@ -695,6 +696,14 @@
         toast.classList.remove('active');
       }, 3000);
     }
+
+    // Expose functions to window for onclick handlers
+    window.exportTeamReport = exportTeamReport;
+    window.assignLeads = assignLeads;
+    window.reviewCases = reviewCases;
+    window.runComplianceCheck = runComplianceCheck;
+    window.sortTable = sortTable;
+    })();
   </script>
 </body>
 </html>

@@ -167,6 +167,179 @@
 </div>
 
 <script>
+  (function() {
+
+
+  // Expose functions to window for onclick handlers
+  window.useTemplate = useTemplate;
+  window.goToStep = goToStep;
+  window.resetImport = resetImport;
+  window.uploadFile = uploadFile;
+  window.validateData = validateData;
+  window.importData = importData;
+  })();
+</script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-slate-950">
+<div class="data-import-page p-6 max-w-6xl mx-auto">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-white mb-1">📥 Data Import</h1>
+    <p class="text-gray-400">Import leads and cases from CSV files</p>
+  </div>
+
+  <!-- Step Wizard -->
+  <div class="flex items-center justify-center mb-8">
+    <div class="flex items-center">
+      <div id="step1Indicator" class="flex items-center">
+        <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">1</div>
+        <div class="ml-2 text-white font-semibold">Upload</div>
+      </div>
+      <div class="w-16 h-1 bg-slate-700 mx-4"></div>
+      <div id="step2Indicator" class="flex items-center opacity-50">
+        <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold">2</div>
+        <div class="ml-2 text-gray-400 font-semibold">Map Fields</div>
+      </div>
+      <div class="w-16 h-1 bg-slate-700 mx-4"></div>
+      <div id="step3Indicator" class="flex items-center opacity-50">
+        <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold">3</div>
+        <div class="ml-2 text-gray-400 font-semibold">Preview</div>
+      </div>
+      <div class="w-16 h-1 bg-slate-700 mx-4"></div>
+      <div id="step4Indicator" class="flex items-center opacity-50">
+        <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold">4</div>
+        <div class="ml-2 text-gray-400 font-semibold">Import</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: Upload -->
+  <div id="step1" class="step-content">
+    <!-- Templates -->
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6 mb-8">
+      <h2 class="text-xl font-semibold text-white mb-4">Quick Templates</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <button onclick="useTemplate('salesforce')" class="p-4 bg-slate-800/50 border border-slate-700 rounded-xl hover:border-blue-500/50 transition-all text-left">
+          <div class="text-white font-semibold mb-1">Salesforce Export</div>
+          <div class="text-sm text-gray-400">Standard Salesforce lead format</div>
+        </button>
+        <button onclick="useTemplate('hubspot')" class="p-4 bg-slate-800/50 border border-slate-700 rounded-xl hover:border-blue-500/50 transition-all text-left">
+          <div class="text-white font-semibold mb-1">HubSpot CRM</div>
+          <div class="text-sm text-gray-400">HubSpot contact export</div>
+        </button>
+        <button onclick="useTemplate('stratusbk')" class="p-4 bg-slate-800/50 border border-slate-700 rounded-xl hover:border-blue-500/50 transition-all text-left">
+          <div class="text-white font-semibold mb-1">StratusBK</div>
+          <div class="text-sm text-gray-400">Bankruptcy software export</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Upload Area -->
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
+      <div id="dropZone" class="border-2 border-dashed border-slate-600 rounded-xl p-12 text-center hover:border-blue-500 transition-all cursor-pointer">
+        <i data-lucide="upload-cloud" class="w-16 h-16 text-gray-500 mx-auto mb-4"></i>
+        <div class="text-white font-semibold mb-2">Drag & drop your CSV file here</div>
+        <div class="text-gray-400 text-sm mb-4">or click to browse</div>
+        <input type="file" id="fileInput" accept=".csv" class="hidden" onchange="handleFileSelect(event)">
+        <button onclick="document.getElementById('fileInput').click()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+          Select File
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Map Fields -->
+  <div id="step2" class="step-content" style="display: none;">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
+      <h2 class="text-xl font-semibold text-white mb-6">Map CSV Fields to System Fields</h2>
+      
+      <div id="fieldMappingContainer" class="space-y-3">
+        <!-- Populated by JS -->
+      </div>
+      
+      <div class="flex gap-3 mt-6">
+        <button onclick="goToStep(1)" class="px-6 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600">Back</button>
+        <button onclick="goToStep(3)" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Preview -->
+  <div id="step3" class="step-content" style="display: none;">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
+      <h2 class="text-xl font-semibold text-white mb-6">Preview Import Data</h2>
+      
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-slate-700">
+              <th class="text-left p-2 text-gray-400 font-medium">Name</th>
+              <th class="text-left p-2 text-gray-400 font-medium">Email</th>
+              <th class="text-left p-2 text-gray-400 font-medium">Phone</th>
+              <th class="text-left p-2 text-gray-400 font-medium">Debt Amount</th>
+              <th class="text-left p-2 text-gray-400 font-medium">Source</th>
+            </tr>
+          </thead>
+          <tbody id="previewTableBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="text-gray-400 text-sm mb-6">
+        Showing first 5 rows. <span id="totalRowsPreview" class="text-white font-semibold">0</span> total rows will be imported.
+      </div>
+      
+      <div class="flex gap-3">
+        <button onclick="goToStep(2)" class="px-6 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600">Back</button>
+        <button onclick="goToStep(4)" class="px-6 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600">Import Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: Import Complete -->
+  <div id="step4" class="step-content" style="display: none;">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6 text-center">
+      <div class="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-6">
+        <i data-lucide="check-circle" class="w-12 h-12 text-emerald-400"></i>
+      </div>
+      
+      <h2 class="text-2xl font-semibold text-white mb-2">Import Complete!</h2>
+      <p class="text-gray-400 mb-6"><span id="importedCount" class="text-white font-semibold">0</span> records successfully imported</p>
+      
+      <button onclick="resetImport()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+        Import Another File
+      </button>
+    </div>
+  </div>
+
+  <!-- Import History -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mt-8">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-xl font-semibold text-white">Import History</h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-slate-700/50">
+            <th class="text-left p-4 text-gray-400 font-medium">Date</th>
+            <th class="text-left p-4 text-gray-400 font-medium">File Name</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Records</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Type</th>
+            <th class="text-left p-4 text-gray-400 font-medium">Status</th>
+          </tr>
+        </thead>
+        <tbody id="importHistoryBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
   // Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');

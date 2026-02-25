@@ -1110,6 +1110,7 @@
   </div>
 
   <script>
+  (function() {
     // State
     let cases = [];
     let selectedCase = null;
@@ -1859,5 +1860,16 @@
     } else {
       initCaseManagement();
     }
-  </script>
+
+  // Expose functions to window for onclick handlers
+  window.openAddCaseModal = openAddCaseModal;
+  window.selectFilter = selectFilter;
+  window.closeAddCaseModal = closeAddCaseModal;
+  window.removeCreditorRow = removeCreditorRow;
+  window.addCreditorRow = addCreditorRow;
+  window.addCase = addCase;
+  window.showCaseDetail = showCaseDetail;
+  window.closeCaseDetailPanel = closeCaseDetailPanel;
+  })();
+</script>
 </div>

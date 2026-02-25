@@ -149,6 +149,160 @@
 </div>
 
 <script>
+  (function() {
+
+
+  // Expose functions to window for onclick handlers
+  window.uploadDocument = uploadDocument;
+  window.sendMessage = sendMessage;
+  window.selectClient = selectClient;
+  window.acceptOffer = acceptOffer;
+  window.rejectOffer = rejectOffer;
+  })();
+</script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950">
+<div class="client-portal-page p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-white mb-1">👤 Client Portal</h1>
+    <p class="text-gray-400">View client-facing dashboard and information</p>
+  </div>
+
+  <!-- Client Selector -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="clientSelector">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- Client Dashboard (shown after selection) -->
+  <div id="clientDashboard" style="display: none;">
+    <!-- Debt Overview -->
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-white mb-6">Debt Overview</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/30 rounded-xl p-6">
+          <div class="text-gray-400 text-sm mb-2">Total Debt</div>
+          <div class="text-3xl font-bold text-white font-mono" style="font-family: 'Orbitron', monospace;" id="totalDebt">$0</div>
+        </div>
+        
+        <div class="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/30 rounded-xl p-6">
+          <div class="text-gray-400 text-sm mb-2">Remaining Balance</div>
+          <div class="text-3xl font-bold text-white font-mono" style="font-family: 'Orbitron', monospace;" id="remainingBalance">$0</div>
+        </div>
+        
+        <div class="bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 border border-emerald-500/30 rounded-xl p-6">
+          <div class="text-gray-400 text-sm mb-2">Amount Saved</div>
+          <div class="text-3xl font-bold text-white font-mono" style="font-family: 'Orbitron', monospace;" id="amountSaved">$0</div>
+        </div>
+      </div>
+      
+      <div class="mb-4">
+        <div class="flex justify-between text-sm mb-2">
+          <span class="text-gray-400">Program Progress</span>
+          <span class="text-blue-400 font-mono" style="font-family: 'Orbitron', monospace;" id="progressPercent">0%</span>
+        </div>
+        <div class="h-4 bg-slate-700 rounded-full overflow-hidden">
+          <div id="progressBar" class="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4">
+        <div class="text-sm">
+          <span class="text-gray-400">Monthly Payment:</span>
+          <span class="text-white font-semibold ml-2" id="monthlyPayment">$0</span>
+        </div>
+        <div class="text-sm">
+          <span class="text-gray-400">Next Payment:</span>
+          <span class="text-white font-semibold ml-2" id="nextPayment">--</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment History -->
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+          <i data-lucide="receipt" class="w-5 h-5 text-emerald-400"></i>
+          Payment History
+        </h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-slate-700/50">
+              <th class="text-left p-4 text-gray-400 font-medium">Date</th>
+              <th class="text-left p-4 text-gray-400 font-medium">Amount</th>
+              <th class="text-left p-4 text-gray-400 font-medium">Method</th>
+              <th class="text-left p-4 text-gray-400 font-medium">Status</th>
+            </tr>
+          </thead>
+          <tbody id="paymentHistoryBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+      <div class="p-6 border-b border-slate-700/50 flex items-center justify-between">
+        <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+          <i data-lucide="file-text" class="w-5 h-5 text-blue-400"></i>
+          Documents
+        </h2>
+        <button onclick="uploadDocument()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm flex items-center gap-2">
+          <i data-lucide="upload" class="w-4 h-4"></i>
+          Upload
+        </button>
+      </div>
+      <div class="p-6">
+        <div id="documentsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Message Center -->
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+          <i data-lucide="message-square" class="w-5 h-5 text-purple-400"></i>
+          Message Center
+        </h2>
+      </div>
+      <div class="p-6">
+        <div id="messagesList" class="space-y-3 mb-4 max-h-64 overflow-y-auto">
+          <!-- Populated by JS -->
+        </div>
+        <div class="flex gap-2">
+          <input type="text" id="newMessage" placeholder="Type a message..." class="flex-1 px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500" onkeypress="if(event.key==='Enter') sendMessage()">
+          <button onclick="sendMessage()" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg">
+            <i data-lucide="send" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settlement Offers -->
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+          <i data-lucide="handshake" class="w-5 h-5 text-yellow-400"></i>
+          Settlement Offers
+        </h2>
+      </div>
+      <div class="p-6">
+        <div id="settlementsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
   // Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');

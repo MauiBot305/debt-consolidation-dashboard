@@ -778,6 +778,7 @@
   </div>
 
   <script>
+  (function() {
     // Pipeline stages
     const PIPELINE_STAGES = [
       'New Lead',
@@ -1257,5 +1258,16 @@
     if (document.readyState !== 'loading') {
       initDealPipeline();
     }
-  </script>
+
+  // Expose functions to window for onclick handlers
+  window.openAddDealModal = openAddDealModal;
+  window.closeAddDealModal = closeAddDealModal;
+  window.removeDealCreditorRow = removeDealCreditorRow;
+  window.addDealCreditorRow = addDealCreditorRow;
+  window.closeDealDetailPanel = closeDealDetailPanel;
+  window.openDealDetailPanel = openDealDetailPanel;
+  window.callDealClient = callDealClient;
+  window.addDeal = addDeal;
+  })();
+</script>
 </div>

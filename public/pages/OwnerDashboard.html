@@ -516,6 +516,7 @@
   </div>
 
   <script>
+    (function() {
     document.addEventListener('DOMContentLoaded', function() {
       loadOwnerDashboard();
     });
@@ -734,6 +735,12 @@
     function goToSettings() {
       window.location.href = '/pages/Settings.html';
     }
+
+    // Expose functions to window for onclick handlers
+    window.goToAnalytics = goToAnalytics;
+    window.exportFullReport = exportFullReport;
+    window.goToSettings = goToSettings;
+    })();
   </script>
 </body>
 </html>

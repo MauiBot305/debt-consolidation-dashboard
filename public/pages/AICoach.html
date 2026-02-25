@@ -205,6 +205,213 @@
 </div>
 
 <script>
+  (function() {
+
+
+  // Expose functions to window for onclick handlers
+  window.switchTab = switchTab;
+  window.sendChatMessage = sendChatMessage;
+  })();
+</script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950">
+<div class="ai-coach-page p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-white mb-1">🧠 AI Sales Coach</h1>
+    <p class="text-gray-400">Analyze calls, practice scenarios, and improve your close rate</p>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="flex gap-2 mb-6 border-b border-slate-700">
+    <button onclick="switchTab('chat')" id="tabChat" class="px-6 py-3 text-white font-semibold border-b-2 border-blue-500">Chat</button>
+    <button onclick="switchTab('callAnalysis')" id="tabCallAnalysis" class="px-6 py-3 text-gray-400 hover:text-white">Call Analysis</button>
+    <button onclick="switchTab('scripts')" id="tabScripts" class="px-6 py-3 text-gray-400 hover:text-white">Scripts</button>
+    <button onclick="switchTab('objections')" id="tabObjections" class="px-6 py-3 text-gray-400 hover:text-white">Objections</button>
+    <button onclick="switchTab('training')" id="tabTraining" class="px-6 py-3 text-gray-400 hover:text-white">Training</button>
+  </div>
+
+  <!-- Chat Tab -->
+  <div id="chatTab" class="tab-content">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+          <i data-lucide="message-circle" class="w-5 h-5 text-blue-400"></i>
+          AI Coach Chat
+        </h2>
+      </div>
+      <div class="p-6">
+        <div id="chatMessages" class="h-96 overflow-y-auto mb-4 space-y-3 bg-slate-900/50 rounded-xl p-4">
+          <div class="text-gray-500 text-center text-sm">Ask me anything about sales, objection handling, or scripts!</div>
+        </div>
+        <div class="flex gap-2">
+          <input type="text" id="chatInput" placeholder="Ask a question..." class="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-blue-500" onkeypress="if(event.key==='Enter') sendChatMessage()">
+          <button onclick="sendChatMessage()" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl hover:shadow-lg transition-all">
+            <i data-lucide="send" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call Analysis Tab -->
+  <div id="callAnalysisTab" class="tab-content" style="display: none;">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+        <div class="p-6 border-b border-slate-700/50">
+          <h2 class="text-xl font-semibold text-white">Select Call</h2>
+        </div>
+        <div class="p-6">
+          <select id="callSelector" onchange="analyzeCall()" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-blue-500">
+            <option value="">Choose a recent call...</option>
+          </select>
+        </div>
+      </div>
+      
+      <div id="callScoring" class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden" style="display: none;">
+        <div class="p-6 border-b border-slate-700/50">
+          <h2 class="text-xl font-semibold text-white">Performance Analysis</h2>
+        </div>
+        <div class="p-6 space-y-4">
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-400 text-sm">Energy</span>
+              <span id="scoreEnergy" class="text-blue-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">0/10</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div id="barEnergy" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-400 text-sm">Objection Handling</span>
+              <span id="scoreObjection" class="text-blue-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">0/10</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div id="barObjection" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-400 text-sm">Closing</span>
+              <span id="scoreClosing" class="text-blue-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">0/10</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div id="barClosing" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-400 text-sm">Rapport</span>
+              <span id="scoreRapport" class="text-blue-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">0/10</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div id="barRapport" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-400 text-sm">Compliance</span>
+              <span id="scoreCompliance" class="text-blue-400 font-mono font-bold" style="font-family: 'Orbitron', monospace;">0/10</span>
+            </div>
+            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div id="barCompliance" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="callTranscript" class="mt-6 bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden" style="display: none;">
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white">Call Transcript</h2>
+      </div>
+      <div class="p-6">
+        <div id="transcriptContent" class="space-y-2 max-h-96 overflow-y-auto">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts Tab -->
+  <div id="scriptsTab" class="tab-content" style="display: none;">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white">Script Generator</h2>
+      </div>
+      <div class="p-6">
+        <div class="mb-4">
+          <label class="block text-gray-400 text-sm mb-2">Select Scenario</label>
+          <select id="scenarioSelector" onchange="loadScript()" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-blue-500">
+            <option value="">Choose a scenario...</option>
+            <option value="cold_call">Cold Call</option>
+            <option value="follow_up">Follow Up</option>
+            <option value="objection">Handling Objections</option>
+            <option value="closing">Closing the Deal</option>
+            <option value="referral">Asking for Referrals</option>
+          </select>
+        </div>
+        
+        <div id="scriptContent" class="bg-slate-900/50 rounded-xl p-6 min-h-64">
+          <div class="text-gray-500 text-center">Select a scenario to view the script</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Objections Tab -->
+  <div id="objectionsTab" class="tab-content" style="display: none;">
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+      <div class="p-6 border-b border-slate-700/50">
+        <h2 class="text-xl font-semibold text-white">Objection Handler</h2>
+      </div>
+      <div class="p-6">
+        <div class="mb-6">
+          <input type="text" id="objectionSearch" placeholder="Search objections..." class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-blue-500" oninput="filterObjections()">
+        </div>
+        
+        <div id="objectionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Training Tab -->
+  <div id="trainingTab" class="tab-content" style="display: none;">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+        <div class="p-6 border-b border-slate-700/50">
+          <h2 class="text-xl font-semibold text-white">Training Modules</h2>
+        </div>
+        <div class="p-6">
+          <div id="trainingModules" class="space-y-3">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+        <div class="p-6 border-b border-slate-700/50">
+          <h2 class="text-xl font-semibold text-white">Performance Tips</h2>
+        </div>
+        <div class="p-6">
+          <div id="performanceTips" class="space-y-3">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
   // Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');

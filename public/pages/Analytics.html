@@ -552,6 +552,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
+    (function() {
     let currentRange = 'week';
     let leaderboardData = [];
     let sortColumn = 'revenue';
@@ -905,6 +906,12 @@
         toast.classList.remove('active');
       }, 3000);
     }
+    // Expose functions to window for onclick handlers
+    window.setDateRange = setDateRange;
+    window.exportDashboard = exportDashboard;
+    window.sortLeaderboard = sortLeaderboard;
+    })();
+
   </script>
 </body>
 </html>

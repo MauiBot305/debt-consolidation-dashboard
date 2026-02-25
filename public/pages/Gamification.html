@@ -103,6 +103,112 @@
 </div>
 
 <script>
+  (function() {
+
+
+  // Expose functions to window for onclick handlers
+  window.closeAgentProfile = closeAgentProfile;
+  window.viewAgentProfile = viewAgentProfile;
+  window.redeemReward = redeemReward;
+  })();
+</script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+      50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.8); }
+    }
+    .medal { animation: pulse-glow 2s infinite; }
+  </style>
+</head>
+<body class="bg-slate-950">
+<div class="gamification-page p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-white mb-1">🎮 Gamification Hub</h1>
+    <p class="text-gray-400">Compete, earn, and dominate the leaderboard</p>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-2xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="trophy" class="w-6 h-6 text-yellow-400"></i>
+        Leaderboard
+      </h2>
+    </div>
+    <div class="p-6">
+      <div id="leaderboard" class="space-y-3">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Achievements -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-2xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="award" class="w-6 h-6 text-purple-400"></i>
+        Achievements
+      </h2>
+    </div>
+    <div class="p-6">
+      <div id="achievementsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Challenges -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-2xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="zap" class="w-6 h-6 text-orange-400"></i>
+        Active Challenges
+      </h2>
+    </div>
+    <div class="p-6">
+      <div id="challengesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Rewards Catalog -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-2xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="gift" class="w-6 h-6 text-emerald-400"></i>
+        Rewards Catalog
+      </h2>
+    </div>
+    <div class="p-6">
+      <div id="rewardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent Profile (selected agent) -->
+  <div id="agentProfile" class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden" style="display: none;">
+    <div class="p-6 border-b border-slate-700/50 flex items-center justify-between">
+      <h2 class="text-2xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="user" class="w-6 h-6 text-blue-400"></i>
+        Agent Profile
+      </h2>
+      <button onclick="closeAgentProfile()" class="text-gray-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="p-6">
+      <div id="agentProfileContent">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
   // Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');

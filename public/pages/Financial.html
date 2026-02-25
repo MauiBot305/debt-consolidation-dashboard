@@ -737,6 +737,7 @@
   </div>
 
   <script>
+  (function() {
     // State
     let payments = [];
     let cases = [];
@@ -1070,5 +1071,15 @@
     if (document.readyState !== 'loading') {
       initFinancial();
     }
-  </script>
+
+  // Expose functions to window for onclick handlers
+  window.resetDateFilter = resetDateFilter;
+  window.openAddPaymentModal = openAddPaymentModal;
+  window.exportCommissionReport = exportCommissionReport;
+  window.saveFeeSchedule = saveFeeSchedule;
+  window.closeAddPaymentModal = closeAddPaymentModal;
+  window.addPayment = addPayment;
+  window.filterPayments = filterPayments;
+  })();
+</script>
 </div>

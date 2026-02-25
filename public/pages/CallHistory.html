@@ -125,6 +125,137 @@
 </div>
 
 <script>
+  (function() {
+
+
+  // Expose functions to window for onclick handlers
+  window.exportCalls = exportCalls;
+  window.sortTable = sortTable;
+  window.prevPage = prevPage;
+  window.nextPage = nextPage;
+  window.closeDetailPanel = closeDetailPanel;
+  window.showCallDetail = showCallDetail;
+  })();
+</script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950">
+<div class="call-history-page p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-white mb-1">📞 Call History</h1>
+      <p class="text-gray-400">View and analyze all call records</p>
+    </div>
+    <button onclick="exportCalls()" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2">
+      <i data-lucide="download" class="w-5 h-5"></i>
+      Export CSV
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Search</label>
+        <input type="text" id="searchInput" placeholder="Name or phone..." oninput="applyFilters()" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Agent</label>
+        <select id="filterAgent" onchange="applyFilters()" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+          <option value="">All Agents</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Disposition</label>
+        <select id="filterDisposition" onchange="applyFilters()" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+          <option value="">All</option>
+          <option value="Answer">Answer</option>
+          <option value="No Answer">No Answer</option>
+          <option value="Voicemail">Voicemail</option>
+          <option value="Busy">Busy</option>
+          <option value="Appointment Set">Appointment Set</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-gray-400 text-sm mb-2">Date Range</label>
+        <select id="filterDate" onchange="applyFilters()" class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500">
+          <option value="all">All Time</option>
+          <option value="today">Today</option>
+          <option value="week">This Week</option>
+          <option value="month">This Month</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call Table -->
+  <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden mb-8">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-slate-700/50">
+            <th onclick="sortTable('createdAt')" class="text-left p-4 text-gray-400 font-medium cursor-pointer hover:text-white">
+              Date <i data-lucide="chevron-down" class="w-4 h-4 inline"></i>
+            </th>
+            <th onclick="sortTable('leadName')" class="text-left p-4 text-gray-400 font-medium cursor-pointer hover:text-white">
+              Caller <i data-lucide="chevron-down" class="w-4 h-4 inline"></i>
+            </th>
+            <th onclick="sortTable('agent')" class="text-left p-4 text-gray-400 font-medium cursor-pointer hover:text-white">
+              Agent <i data-lucide="chevron-down" class="w-4 h-4 inline"></i>
+            </th>
+            <th onclick="sortTable('duration')" class="text-left p-4 text-gray-400 font-medium cursor-pointer hover:text-white">
+              Duration <i data-lucide="chevron-down" class="w-4 h-4 inline"></i>
+            </th>
+            <th onclick="sortTable('disposition')" class="text-left p-4 text-gray-400 font-medium cursor-pointer hover:text-white">
+              Disposition <i data-lucide="chevron-down" class="w-4 h-4 inline"></i>
+            </th>
+            <th class="text-left p-4 text-gray-400 font-medium">Recording</th>
+          </tr>
+        </thead>
+        <tbody id="callTableBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="p-4 border-t border-slate-700/50 flex items-center justify-between">
+      <div class="text-gray-400 text-sm" id="paginationInfo">Showing 0-0 of 0</div>
+      <div class="flex gap-2">
+        <button onclick="prevPage()" id="prevBtn" class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+        </button>
+        <button onclick="nextPage()" id="nextBtn" class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call Detail Panel (shown on row click) -->
+  <div id="callDetailPanel" class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden" style="display: none;">
+    <div class="p-6 border-b border-slate-700/50 flex items-center justify-between">
+      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+        <i data-lucide="info" class="w-5 h-5 text-blue-400"></i>
+        Call Details
+      </h2>
+      <button onclick="closeDetailPanel()" class="text-gray-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="p-6">
+      <div id="callDetailContent">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
   // Toast Function
   function showToast(msg, type='info') {
     const toast = document.createElement('div');

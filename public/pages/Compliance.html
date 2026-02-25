@@ -926,6 +926,7 @@
   </div>
 
   <script>
+    (function() {
     // State abbreviations
     const US_STATES = [
       'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
@@ -1380,6 +1381,18 @@
         closeLicenseModal();
       }
     });
+    // Expose functions to window for onclick handlers
+    window.generateReport = generateReport;
+    window.addTCPAConsent = addTCPAConsent;
+    window.addDNC = addDNC;
+    window.importDNC = importDNC;
+    window.closeLicenseModal = closeLicenseModal;
+    window.saveLicense = saveLicense;
+    window.openLicenseModal = openLicenseModal;
+    window.toggleChecklistItem = toggleChecklistItem;
+    window.removeDNC = removeDNC;
+    })();
+
   </script>
 </body>
 </html>

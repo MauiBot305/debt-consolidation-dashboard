@@ -727,6 +727,7 @@
   </div>
 
   <script>
+  (function() {
     // =====================
     // GLOBAL STATE
     // =====================
@@ -1294,5 +1295,22 @@
         console.log(`[${type.toUpperCase()}] ${message}`);
       }
     }
-  </script>
+
+  // Expose functions to window for onclick handlers
+  window.importCSV = importCSV;
+  window.exportCSV = exportCSV;
+  window.openAddLeadModal = openAddLeadModal;
+  window.bulkAssign = bulkAssign;
+  window.bulkChangeStatus = bulkChangeStatus;
+  window.bulkExport = bulkExport;
+  window.bulkDelete = bulkDelete;
+  window.previousPage = previousPage;
+  window.nextPage = nextPage;
+  window.goToPage = goToPage;
+  window.closeAddLeadModal = closeAddLeadModal;
+  window.addLead = addLead;
+  window.showLeadDetail = showLeadDetail;
+  window.closeDetailPanel = closeDetailPanel;
+  })();
+</script>
 </div>
