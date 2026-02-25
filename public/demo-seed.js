@@ -1,378 +1,507 @@
-// Demo Seed Data Loader
-// Loads additional demo data on first run
-// Functionality verified by Agent 4 (Kimi 5 equivalent)
+// Demo Data Seeder for Debt Consolidation Empire Dashboard
+// Loads demo calls, leads, activities, analytics, and gamification data into DebtDB
 
-(function() {
-  'use strict';
-
-  const SEED_KEY = 'debtdb_demo_seeded';
-
-  // Check if already seeded
-  if (localStorage.getItem(SEED_KEY)) {
-    console.log('✅ Demo data already seeded');
-    return;
-  }
-
-  console.log('🌱 Seeding demo data...');
-
-  // Add 10 call records with realistic data
-  const demoCalls = [
-    {
-      type: 'call',
-      agentId: 'AGT001',
-      leadId: 'L001',
-      description: 'Qualification call - Client interested in program',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      result: 'qualified',
-      duration: 840, // 14 minutes
-      recording: 'call-audio.mp3',
-      transcript: 'Agent: Thank you for calling Debt Consolidation Empire... Client: I have about $45,000 in credit card debt...',
-      disposition: 'Hot Lead - Ready to enroll'
-    },
-    {
-      type: 'call',
-      agentId: 'AGT002',
-      leadId: 'L002',
-      description: 'Follow-up call - Document collection',
-      timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-      result: 'completed',
-      duration: 420,
-      recording: 'call-audio.mp3',
-      transcript: 'Agent: Hi Michael, following up on the documents... Client: Yes, I sent them via email...',
-      disposition: 'Documents received'
-    },
-    {
-      type: 'call',
-      agentId: 'AGT001',
-      leadId: 'L004',
-      description: 'Initial contact - Left voicemail',
-      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-      result: 'voicemail',
-      duration: 35,
-      recording: null,
-      transcript: null,
-      disposition: 'Voicemail - callback scheduled'
-    },
-    {
-      type: 'call',
-      agentId: 'AGT003',
-      leadId: 'L010',
-      description: 'Enrollment call completed',
-      timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-      result: 'enrolled',
-      duration: 1820, // 30 minutes
-      recording: 'call-audio.mp3',
-      transcript: 'Agent: Congratulations on taking this step... Client: Thank you, I feel relieved...',
-      disposition: 'Enrolled - $32,000 debt'
-    },
-    {
-      type: 'call',
-      agentId: 'AGT002',
-      leadId: 'L015',
-      description: 'Cold call - Not interested',
-      timestamp: new Date(Date.now() - 7 * 60 * 60 * 1000).toISOString(),
-      result: 'not_interested',
-      duration: 95,
-      recording: null,
-      transcript: null,
-      disposition: 'Not interested - DNC'
-    },
-    {
-      type: 'call',
-      agentId: 'AGT004',
-      leadId: 'L020',
-      description: 'Negotiation update call',
-      timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-      result: 'completed',
-      duration: 540,
-      recording: 'call-audio.mp3',
-      transcript: 'Agent: We got a 40% settlement offer from Chase... Client: That\'s great news!',
-      disposition: 'Client approved settlement'
-    },
-    {
-      type: 'call',
-      agentId: 'AGT001',
-      leadId: 'L025',
-      description: 'Qualification call - High debt-to-income ratio',
-      timestamp: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString(),
-      result: 'qualified',
-      duration: 720,
-      recording: 'call-audio.mp3',
-      transcript: 'Agent: Let me review your debt situation... Client: I have 8 credit cards all maxed out...',
-      disposition: 'Qualified - needs immediate help'
-    },
-    {
-      type: 'call',
-      agentId: 'AGT005',
-      leadId: 'L030',
-      description: 'Welcome call - Program orientation',
-      timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-      result: 'completed',
-      duration: 980,
-      recording: 'call-audio.mp3',
-      transcript: 'Agent: Welcome to the program! Let me explain how it works...',
-      disposition: 'Orientation completed'
-    },
-    {
-      type: 'call',
-      agentId: 'AGT003',
-      leadId: 'L035',
-      description: 'Re-contact attempt',
-      timestamp: new Date(Date.now() - 15 * 60 * 60 * 1000).toISOString(),
-      result: 'no_answer',
-      duration: 0,
-      recording: null,
-      transcript: null,
-      disposition: 'No answer - try again tomorrow'
-    },
-    {
-      type: 'call',
-      agentId: 'AGT002',
-      leadId: 'L040',
-      description: 'Payment plan setup call',
-      timestamp: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString(),
-      result: 'completed',
-      duration: 660,
-      recording: 'call-audio.mp3',
-      transcript: 'Agent: Your monthly payment will be $450... Client: That works with my budget...',
-      disposition: 'Payment plan confirmed'
-    }
-  ];
-
-  // Add calls to database
-  demoCalls.forEach(call => {
-    DebtDB.addCall(call);
-  });
-
-  // Add 20 more diverse leads
-  const moreLeads = Array.from({ length: 20 }, (_, i) => ({
-    name: ['John Doe', 'Jane Smith', 'Robert Johnson', 'Maria Lopez', 'David Kim',
-           'Sarah Wilson', 'Michael Brown', 'Lisa Anderson', 'James Taylor', 'Jennifer White',
-           'William Martinez', 'Elizabeth Garcia', 'Richard Lee', 'Barbara Moore', 'Joseph Clark',
-           'Susan Rodriguez', 'Thomas Walker', 'Linda Harris', 'Charles Young', 'Nancy King'][i],
-    email: `demo.lead${i + 51}@email.com`,
-    phone: `(555) ${String(Math.floor(Math.random() * 900 + 100))}-${String(Math.floor(Math.random() * 9000 + 1000))}`,
-    stage: ['New Lead', 'Contacted', 'Qualified', 'Enrolled', 'In Program'][Math.floor(Math.random() * 5)],
-    totalDebt: Math.floor(Math.random() * 100000 + 20000),
-    monthlyIncome: Math.floor(Math.random() * 7000 + 3000),
-    debtToIncomeRatio: Math.floor(Math.random() * 150 + 30),
-    creditors: ['Chase', 'Capital One', 'Discover', 'Wells Fargo', 'Amex', 'Citibank', 'BofA', 'Synchrony', 'Medical', 'Student Loans']
-      .sort(() => Math.random() - 0.5)
-      .slice(0, Math.floor(Math.random() * 4 + 2)),
-    assignedAgent: `AGT${String(Math.floor(Math.random() * 10 + 1)).padStart(3, '0')}`,
-    createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-    lastContact: Math.random() > 0.3 ? new Date(Date.now() - Math.random() * 5 * 24 * 60 * 60 * 1000).toISOString() : null,
-    priority: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)],
-    source: ['Web Form', 'Phone Inquiry', 'Referral', 'Social Media', 'Direct Mail'][Math.floor(Math.random() * 5)],
-    notes: ['Initial contact made', 'Left voicemail', 'Interested in program', 'Requested more info', 'Will call back'][Math.floor(Math.random() * 5)]
-  }));
-
-  moreLeads.forEach(lead => {
-    DebtDB.addLead(lead);
-  });
-
-  // Add 20 deals in various stages
-  const demoDeals = Array.from({ length: 20 }, (_, i) => ({
-    clientName: `Deal Client ${i + 1}`,
-    leadId: `L${String(Math.floor(Math.random() * 50 + 1)).padStart(3, '0')}`,
-    caseId: `CASE${String(Math.floor(Math.random() * 20 + 1)).padStart(3, '0')}`,
-    creditor: ['Chase', 'Capital One', 'Discover', 'Wells Fargo', 'Amex', 'Citibank'][Math.floor(Math.random() * 6)],
-    originalBalance: Math.floor(Math.random() * 30000 + 5000),
-    settlementAmount: 0,
-    settlementPercent: 0,
-    status: ['Pending', 'Negotiating', 'Offer Received', 'Approved', 'Settled', 'Paid'][Math.floor(Math.random() * 6)],
-    assignedAgent: `AGT${String(Math.floor(Math.random() * 10 + 1)).padStart(3, '0')}`,
-    assignedNegotiator: `NEG${String(Math.floor(Math.random() * 5 + 1)).padStart(3, '0')}`,
-    createdAt: new Date(Date.now() - Math.random() * 180 * 24 * 60 * 60 * 1000).toISOString(),
-    lastUpdate: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString()
-  }));
-
-  // Calculate settlement amounts for deals
-  demoDeals.forEach(deal => {
-    if (['Offer Received', 'Approved', 'Settled', 'Paid'].includes(deal.status)) {
-      deal.settlementPercent = Math.floor(Math.random() * 30 + 35); // 35-65% settlement
-      deal.settlementAmount = Math.floor(deal.originalBalance * deal.settlementPercent / 100);
-    }
-    DebtDB.addDeal(deal);
-  });
-
-  // Add 5 notifications
-  const notifications = [
-    {
-      type: 'alert',
-      title: 'Urgent: Task Overdue',
-      message: 'Task "Follow-up call with Sarah Mitchell" is overdue',
-      priority: 'high',
-      read: false
-    },
-    {
-      type: 'success',
-      title: 'New Enrollment',
-      message: 'Agent John Smith enrolled a new client - $67,000 debt',
-      priority: 'medium',
-      read: false
-    },
-    {
-      type: 'info',
-      title: 'Settlement Offer Received',
-      message: 'Chase offered 45% settlement for case CASE002',
-      priority: 'medium',
-      read: false
-    },
-    {
-      type: 'warning',
-      title: 'Compliance Review Due',
-      message: 'Monthly compliance review due in 3 days',
-      priority: 'medium',
-      read: false
-    },
-    {
-      type: 'info',
-      title: 'New Lead Assigned',
-      message: '5 new leads assigned to your queue',
-      priority: 'low',
-      read: true
-    }
-  ];
-
-  notifications.forEach(notif => {
-    DebtDB.addNotification(notif);
-  });
-
-  // Add 10 more tasks (some overdue for alerts)
-  const moreTasks = [
-    {
-      agentId: 'AGT001',
-      leadId: 'L001',
-      title: 'Send follow-up email with program details',
-      dueDate: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago (overdue!)
-      priority: 'high',
-      status: 'pending'
-    },
-    {
-      agentId: 'AGT002',
-      leadId: 'L010',
-      title: 'Review and approve settlement offer',
-      dueDate: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
-      priority: 'high',
-      status: 'pending'
-    },
-    {
-      agentId: 'AGT001',
-      leadId: 'L015',
-      title: 'Callback attempt #3',
-      dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      priority: 'medium',
-      status: 'pending'
-    },
-    {
-      agentId: 'AGT003',
-      leadId: 'L020',
-      title: 'Schedule negotiation call with creditor',
-      dueDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day overdue!
-      priority: 'high',
-      status: 'pending'
-    },
-    {
-      agentId: 'AGT002',
-      leadId: 'L025',
-      title: 'Complete compliance checklist',
-      dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-      priority: 'medium',
-      status: 'pending'
-    },
-    {
-      agentId: 'AGT001',
-      leadId: 'L030',
-      title: 'Welcome orientation call',
-      dueDate: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(),
-      priority: 'medium',
-      status: 'pending'
-    },
-    {
-      agentId: 'AGT004',
-      leadId: 'L035',
-      title: 'Update case notes with client feedback',
-      dueDate: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
-      priority: 'low',
-      status: 'pending'
-    },
-    {
-      agentId: 'AGT005',
-      leadId: 'L040',
-      title: 'Prepare monthly performance report',
-      dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-      priority: 'medium',
-      status: 'pending'
-    },
-    {
-      agentId: 'AGT003',
-      leadId: 'L045',
-      title: 'Verify client payment received',
-      dueDate: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours overdue!
-      priority: 'high',
-      status: 'pending'
-    },
-    {
-      agentId: 'AGT002',
-      leadId: 'L050',
-      title: 'Send enrollment welcome package',
-      dueDate: new Date(Date.now() + 18 * 60 * 60 * 1000).toISOString(),
-      priority: 'medium',
-      status: 'pending'
-    }
-  ];
-
-  moreTasks.forEach(task => {
-    DebtDB.addTask(task);
-  });
-
-  // Update revenue with more detailed analytics
-  const enhancedRevenue = {
-    today: 120500,
-    yesterday: 98000,
-    thisWeek: 487000,
-    lastWeek: 423000,
-    thisMonth: 1845000,
-    lastMonth: 1620000,
-    thisYear: 8920000,
-    target: {
-      daily: 100000,
-      weekly: 500000,
-      monthly: 2000000,
-      yearly: 12000000
-    },
-    byAgent: {
-      'AGT001': { total: 890000, commission: 267000, enrollments: 42, avgDealSize: 21190 },
-      'AGT002': { total: 1120000, commission: 336000, enrollments: 56, avgDealSize: 20000 },
-      'AGT003': { total: 765000, commission: 229500, enrollments: 38, avgDealSize: 20132 },
-      'AGT004': { total: 620000, commission: 186000, enrollments: 29, avgDealSize: 21379 },
-      'AGT005': { total: 540000, commission: 162000, enrollments: 25, avgDealSize: 21600 },
-      'AGT006': { total: 480000, commission: 144000, enrollments: 22, avgDealSize: 21818 },
-      'AGT007': { total: 420000, commission: 126000, enrollments: 19, avgDealSize: 22105 },
-      'AGT008': { total: 380000, commission: 114000, enrollments: 17, avgDealSize: 22353 },
-      'AGT009': { total: 340000, commission: 102000, enrollments: 15, avgDealSize: 22667 },
-      'AGT010': { total: 310000, commission: 93000, enrollments: 14, avgDealSize: 22143 }
-    },
-    trends: {
-      weekOverWeek: 15.1, // % growth
-      monthOverMonth: 13.9,
-      yearOverYear: 28.3
-    }
+/**
+ * Seeds ALL demo data into the application's localStorage database
+ * Can be called from Settings page or auto-seeded on first load
+ */
+function seedAllDemoData() {
+  console.log('[DemoSeeder] Starting comprehensive demo data seeding...');
+  
+  const results = {
+    calls: { added: 0, skipped: false },
+    leads: { added: 0, updated: 0 },
+    activities: { added: 0 },
+    notifications: { added: 0 },
+    campaigns: { added: 0 },
+    compliance: { added: false },
+    gamification: { added: false }
   };
 
-  DebtDB.updateRevenue(enhancedRevenue);
+  // ============================================
+  // 1. SEED DEMO CALLS
+  // ============================================
+  
+  if (typeof DEMO_CALLS !== 'undefined' && DEMO_CALLS.length > 0) {
+    const existingCalls = localStorage.getItem('debtDB_calls');
+    if (!existingCalls) {
+      const callsWithMetadata = DEMO_CALLS.map(call => ({
+        ...call,
+        _demo: true,
+        _seededAt: new Date().toISOString()
+      }));
+      
+      localStorage.setItem('debtDB_calls', JSON.stringify(callsWithMetadata));
+      results.calls.added = callsWithMetadata.length;
+      console.log(`[DemoSeeder] Added ${callsWithMetadata.length} demo calls`);
+    } else {
+      results.calls.skipped = true;
+      console.log('[DemoSeeder] Calls already exist, skipping...');
+    }
+  } else {
+    console.warn('[DemoSeeder] DEMO_CALLS not found. Make sure demo-calls.js is loaded first.');
+  }
 
-  // Mark as seeded
-  localStorage.setItem(SEED_KEY, 'true');
-  localStorage.setItem('debtdb_demo_seed_date', new Date().toISOString());
+  // ============================================
+  // 2. SEED/UPDATE LEADS FROM CALLS
+  // ============================================
+  
+  const existingLeads = JSON.parse(localStorage.getItem('debtDB_leads') || '[]');
+  const existingLeadIds = new Set(existingLeads.map(l => l.id));
+  
+  // Extract leads from demo calls
+  const demoLeadsFromCalls = [];
+  
+  if (typeof DEMO_CALLS !== 'undefined') {
+    DEMO_CALLS.forEach(call => {
+      if (call.leadId && !existingLeadIds.has(call.leadId)) {
+        demoLeadsFromCalls.push({
+          id: call.leadId,
+          name: call.callerName || 'Unknown',
+          email: `${call.callerName?.toLowerCase().replace(/\s+/g, '.')}@email.com` || 'unknown@email.com',
+          phone: call.callerNumber,
+          stage: getStageFromDisposition(call.disposition),
+          totalDebt: call.totalDebt || 0,
+          monthlyIncome: estimateMonthlyIncome(call.totalDebt),
+          debtToIncomeRatio: calculateDTI(call.totalDebt),
+          creditors: generateCreditors(call.debtTypes),
+          assignedAgent: call.agentId,
+          createdAt: call.startTime,
+          lastContact: call.endTime,
+          priority: getPriorityFromDebt(call.totalDebt),
+          source: call.direction === 'inbound' ? 'Inbound Call' : 'Outbound Call',
+          _demo: true,
+          _seededAt: new Date().toISOString()
+        });
+        existingLeadIds.add(call.leadId);
+      }
+    });
+  }
+  
+  // Merge with existing leads
+  const allLeads = [...existingLeads, ...demoLeadsFromCalls];
+  localStorage.setItem('debtDB_leads', JSON.stringify(allLeads));
+  results.leads.added = demoLeadsFromCalls.length;
+  console.log(`[DemoSeeder] Added ${demoLeadsFromCalls.length} demo leads`);
 
-  console.log('✅ Demo data seeded successfully!');
-  console.log(`   - ${demoCalls.length} call records added`);
-  console.log(`   - ${moreLeads.length} additional leads added`);
-  console.log(`   - ${demoDeals.length} deals added`);
-  console.log(`   - ${notifications.length} notifications added`);
-  console.log(`   - ${moreTasks.length} tasks added`);
-  console.log('   - Enhanced revenue analytics loaded');
+  // ============================================
+  // 3. SEED ACTIVITIES FROM CALLS
+  // ============================================
+  
+  const existingActivities = JSON.parse(localStorage.getItem('debtDB_activities') || '[]');
+  const demoActivitiesFromCalls = [];
+  
+  if (typeof DEMO_CALLS !== 'undefined') {
+    DEMO_CALLS.forEach((call, index) => {
+      demoActivitiesFromCalls.push({
+        id: `ACT_DEMO_${String(index + 1).padStart(3, '0')}`,
+        type: 'call',
+        agentId: call.agentId,
+        leadId: call.leadId,
+        description: `${call.direction === 'inbound' ? 'Inbound' : 'Outbound'} call - ${call.disposition}`,
+        timestamp: call.endTime,
+        result: call.disposition.toLowerCase().replace(/\s+/g, '_'),
+        callId: call.id,
+        duration: call.duration,
+        sentiment: call.sentiment,
+        _demo: true
+      });
+    });
+  }
+  
+  const allActivities = [...existingActivities, ...demoActivitiesFromCalls];
+  localStorage.setItem('debtDB_activities', JSON.stringify(allActivities));
+  results.activities.added = demoActivitiesFromCalls.length;
+  console.log(`[DemoSeeder] Added ${demoActivitiesFromCalls.length} demo activities from calls`);
 
+  // ============================================
+  // 4. SEED ANALYTICS ACTIVITIES (50 entries)
+  // ============================================
+  
+  if (typeof DEMO_ACTIVITIES !== 'undefined' && DEMO_ACTIVITIES.length > 0) {
+    const activitiesWithMetadata = DEMO_ACTIVITIES.map(activity => ({
+      ...activity,
+      _demo: true,
+      _seededAt: new Date().toISOString()
+    }));
+    
+    const currentActivities = JSON.parse(localStorage.getItem('debtDB_activities') || '[]');
+    const existingIds = new Set(currentActivities.map(a => a.id));
+    const newActivities = activitiesWithMetadata.filter(a => !existingIds.has(a.id));
+    
+    if (newActivities.length > 0) {
+      localStorage.setItem('debtDB_activities', JSON.stringify([...currentActivities, ...newActivities]));
+      results.activities.added += newActivities.length;
+      console.log(`[DemoSeeder] Added ${newActivities.length} demo activities from analytics`);
+    }
+  } else {
+    console.warn('[DemoSeeder] DEMO_ACTIVITIES not found. Make sure demo-analytics.js is loaded first.');
+  }
+
+  // ============================================
+  // 5. SEED NOTIFICATIONS
+  // ============================================
+  
+  const existingNotifications = JSON.parse(localStorage.getItem('debtDB_notifications') || '[]');
+  
+  // Legacy demo notifications
+  const legacyNotifications = [
+    {
+      id: 'NOTIF_DEMO_001',
+      type: 'call',
+      title: 'New Voicemail',
+      message: 'You have a new voicemail from Jennifer Martinez regarding debt inquiry.',
+      timestamp: '2026-02-23T11:01:15',
+      read: false,
+      link: '/calls/call_006',
+      _demo: true
+    },
+    {
+      id: 'NOTIF_DEMO_002',
+      type: 'lead',
+      title: 'Hot Lead Alert',
+      message: 'James Rodriguez enrolled with $85,000 in credit card debt.',
+      timestamp: '2026-02-24T09:28:45',
+      read: false,
+      link: '/leads/L001',
+      _demo: true
+    },
+    {
+      id: 'NOTIF_DEMO_003',
+      type: 'escalation',
+      title: 'Client Complaint',
+      message: 'Andrew Stevens reported creditor harassment. Legal team notified.',
+      timestamp: '2026-02-18T10:05:15',
+      read: true,
+      link: '/cases/L032',
+      _demo: true
+    },
+    {
+      id: 'NOTIF_DEMO_004',
+      type: 'reminder',
+      title: 'Scheduled Callback',
+      message: 'Callback scheduled with Robert Chen and spouse at 6:30 PM today.',
+      timestamp: '2026-02-22T12:08:30',
+      read: false,
+      link: '/calls/call_003',
+      _demo: true
+    },
+    {
+      id: 'NOTIF_DEMO_005',
+      type: 'lead',
+      title: 'Referral Received',
+      message: 'Michelle Thompson called from Jessica Rodriguez referral.',
+      timestamp: '2026-02-17T14:14:30',
+      read: true,
+      link: '/leads/L090',
+      _demo: true
+    }
+  ];
+  
+  let allNotifications = [...existingNotifications];
+  
+  // Add legacy notifications if not exists
+  const existingNotifIds = new Set(existingNotifications.map(n => n.id));
+  legacyNotifications.forEach(n => {
+    if (!existingNotifIds.has(n.id)) {
+      allNotifications.push(n);
+      existingNotifIds.add(n.id);
+    }
+  });
+  
+  // Add analytics notifications
+  if (typeof DEMO_NOTIFICATIONS !== 'undefined' && DEMO_NOTIFICATIONS.length > 0) {
+    const notificationsWithMetadata = DEMO_NOTIFICATIONS.map(n => ({
+      ...n,
+      link: n.actionUrl,
+      _demo: true,
+      _seededAt: new Date().toISOString()
+    }));
+    
+    notificationsWithMetadata.forEach(n => {
+      if (!existingNotifIds.has(n.id)) {
+        allNotifications.push(n);
+        existingNotifIds.add(n.id);
+      }
+    });
+    
+    results.notifications.added = legacyNotifications.length + notificationsWithMetadata.length;
+    console.log(`[DemoSeeder] Added ${notificationsWithMetadata.length} demo notifications from analytics`);
+  }
+  
+  localStorage.setItem('debtDB_notifications', JSON.stringify(allNotifications));
+
+  // ============================================
+  // 6. SEED MARKETING CAMPAIGNS
+  // ============================================
+  
+  if (typeof DEMO_CAMPAIGNS !== 'undefined' && DEMO_CAMPAIGNS.length > 0) {
+    const existingCampaigns = localStorage.getItem('debtDB_campaigns');
+    if (!existingCampaigns) {
+      const campaignsWithMetadata = DEMO_CAMPAIGNS.map(c => ({
+        ...c,
+        _demo: true,
+        _seededAt: new Date().toISOString()
+      }));
+      
+      localStorage.setItem('debtDB_campaigns', JSON.stringify(campaignsWithMetadata));
+      results.campaigns.added = campaignsWithMetadata.length;
+      console.log(`[DemoSeeder] Added ${campaignsWithMetadata.length} demo campaigns`);
+    } else {
+      console.log('[DemoSeeder] Campaigns already exist, skipping...');
+    }
+  } else {
+    console.warn('[DemoSeeder] DEMO_CAMPAIGNS not found. Make sure demo-analytics.js is loaded first.');
+  }
+
+  // ============================================
+  // 7. SEED COMPLIANCE DATA
+  // ============================================
+  
+  if (typeof DEMO_COMPLIANCE !== 'undefined') {
+    const existingCompliance = localStorage.getItem('debtDB_compliance');
+    if (!existingCompliance) {
+      const complianceWithMetadata = {
+        ...DEMO_COMPLIANCE,
+        _demo: true,
+        _seededAt: new Date().toISOString()
+      };
+      
+      localStorage.setItem('debtDB_compliance', JSON.stringify(complianceWithMetadata));
+      results.compliance.added = true;
+      console.log('[DemoSeeder] Added demo compliance data (15 licenses, 25 DNC, 30 audit log, 40 TCPA)');
+    } else {
+      console.log('[DemoSeeder] Compliance data already exists, skipping...');
+    }
+  } else {
+    console.warn('[DemoSeeder] DEMO_COMPLIANCE not found. Make sure demo-analytics.js is loaded first.');
+  }
+
+  // ============================================
+  // 8. SEED GAMIFICATION DATA
+  // ============================================
+  
+  if (typeof DEMO_GAMIFICATION !== 'undefined') {
+    const existingGamification = localStorage.getItem('debtDB_gamification');
+    if (!existingGamification) {
+      const gamificationWithMetadata = {
+        ...DEMO_GAMIFICATION,
+        _demo: true,
+        _seededAt: new Date().toISOString()
+      };
+      
+      localStorage.setItem('debtDB_gamification', JSON.stringify(gamificationWithMetadata));
+      results.gamification.added = true;
+      console.log('[DemoSeeder] Added demo gamification data (10 agents, 5 challenges, leaderboards)');
+    } else {
+      console.log('[DemoSeeder] Gamification data already exists, skipping...');
+    }
+  } else {
+    console.warn('[DemoSeeder] DEMO_GAMIFICATION not found. Make sure demo-analytics.js is loaded first.');
+  }
+
+  // ============================================
+  // 9. SEED CALL ANALYTICS SUMMARY
+  // ============================================
+  
+  if (typeof DEMO_CALLS !== 'undefined' && DEMO_CALLS.length > 0) {
+    const callAnalytics = {
+      totalCalls: DEMO_CALLS.length,
+      inboundCalls: DEMO_CALLS.filter(c => c.direction === 'inbound').length,
+      outboundCalls: DEMO_CALLS.filter(c => c.direction === 'outbound').length,
+      averageDuration: Math.round(DEMO_CALLS.reduce((acc, c) => acc + c.duration, 0) / DEMO_CALLS.length),
+      dispositionBreakdown: DEMO_CALLS.reduce((acc, call) => {
+        acc[call.disposition] = (acc[call.disposition] || 0) + 1;
+        return acc;
+      }, {}),
+      sentimentBreakdown: DEMO_CALLS.reduce((acc, call) => {
+        acc[call.sentiment] = (acc[call.sentiment] || 0) + 1;
+        return acc;
+      }, {}),
+      _seededAt: new Date().toISOString()
+    };
+    
+    localStorage.setItem('debtDB_callAnalytics', JSON.stringify(callAnalytics));
+    console.log('[DemoSeeder] Added call analytics summary');
+  }
+
+  // ============================================
+  // 10. MARK DB AS SEEDED
+  // ============================================
+  
+  localStorage.setItem('debtDB_demoSeeded', 'true');
+  localStorage.setItem('debtDB_demoSeededAt', new Date().toISOString());
+  
+  console.log('[DemoSeeder] ============================================');
+  console.log('[DemoSeeder] Demo data seeding complete!');
+  console.log('[DemoSeeder] Results:', results);
+  console.log('[DemoSeeder] ============================================');
+  
+  return {
+    success: true,
+    message: 'All demo data seeded successfully',
+    results: results
+  };
+}
+
+/**
+ * Legacy function for backward compatibility
+ * Seeds basic demo data (calls, leads, activities, notifications)
+ */
+function seedDemoData() {
+  console.log('[DemoSeeder] Using legacy seedDemoData() - consider migrating to seedAllDemoData()');
+  return seedAllDemoData();
+}
+
+/**
+ * Clears all demo data from localStorage
+ */
+function clearDemoData() {
+  console.log('[DemoSeeder] Clearing demo data...');
+  
+  const keys = [
+    'debtDB_calls', 
+    'debtDB_leads', 
+    'debtDB_activities', 
+    'debtDB_notifications',
+    'debtDB_campaigns',
+    'debtDB_compliance',
+    'debtDB_gamification',
+    'debtDB_callAnalytics'
+  ];
+  
+  let cleared = 0;
+  
+  keys.forEach(key => {
+    const data = JSON.parse(localStorage.getItem(key) || '[]');
+    
+    if (key === 'debtDB_compliance' || key === 'debtDB_gamification') {
+      // These are objects, not arrays
+      const parsed = JSON.parse(localStorage.getItem(key) || '{}');
+      if (parsed._demo) {
+        localStorage.removeItem(key);
+        cleared++;
+      }
+    } else if (Array.isArray(data)) {
+      const filtered = data.filter(item => !item._demo);
+      cleared += data.length - filtered.length;
+      localStorage.setItem(key, JSON.stringify(filtered));
+    }
+  });
+  
+  localStorage.removeItem('debtDB_demoSeeded');
+  localStorage.removeItem('debtDB_demoSeededAt');
+  
+  console.log(`[DemoSeeder] Cleared ${cleared} demo items`);
+  return { success: true, message: `Cleared demo data from ${keys.length} stores` };
+}
+
+/**
+ * Checks if demo data has been seeded
+ */
+function isDemoDataSeeded() {
+  return localStorage.getItem('debtDB_demoSeeded') === 'true';
+}
+
+/**
+ * Resets all data and re-seeds (for testing)
+ */
+function resetAndSeedDemoData() {
+  console.log('[DemoSeeder] Resetting and re-seeding all demo data...');
+  clearDemoData();
+  return seedAllDemoData();
+}
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+function getStageFromDisposition(disposition) {
+  const mapping = {
+    'Enrolled': 'Enrolled',
+    'Interested': 'Qualified',
+    'Qualified': 'Qualified',
+    'Sent Info': 'Contacted',
+    'Callback Requested': 'Contacted',
+    'Not Interested': 'Contacted',
+    'Hung Up': 'New Lead',
+    'Voicemail': 'New Lead',
+    'Wrong Number': 'New Lead',
+    'Transferred to Manager': 'Qualified'
+  };
+  return mapping[disposition] || 'New Lead';
+}
+
+function estimateMonthlyIncome(totalDebt) {
+  if (!totalDebt) return 4000;
+  return Math.round((totalDebt * 1.25 / 12) / 100) * 100;
+}
+
+function calculateDTI(totalDebt) {
+  if (!totalDebt) return 50;
+  return Math.min(Math.round((totalDebt / 12) / 40), 150);
+}
+
+function generateCreditors(debtTypes) {
+  const creditors = {
+    'Credit Card': ['Chase', 'Capital One', 'Discover', 'Amex', 'Citibank', 'BofA'],
+    'Medical': ['Miami General Hospital', 'Regional Medical Center', 'Sunrise Labs'],
+    'Student Loan': ['Navient', 'Nelnet', 'Great Lakes'],
+    'Personal Loan': ['LendingClub', 'Prosper', 'Marcus'],
+    'Auto': ['Ally Financial', 'Wells Fargo Auto', 'Capital One Auto']
+  };
+  
+  const result = [];
+  (debtTypes || []).forEach(type => {
+    if (creditors[type]) {
+      result.push(...creditors[type].slice(0, Math.floor(Math.random() * 2) + 1));
+    }
+  });
+  
+  return result.length > 0 ? result : ['Various Creditors'];
+}
+
+function getPriorityFromDebt(totalDebt) {
+  if (totalDebt >= 100000) return 'high';
+  if (totalDebt >= 50000) return 'medium';
+  return 'low';
+}
+
+// ============================================
+// AUTO-SEED ON LOAD (if DB is empty)
+// ============================================
+
+(function autoSeedIfEmpty() {
+  // Wait for DOM to be ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkAndSeed);
+  } else {
+    checkAndSeed();
+  }
+  
+  function checkAndSeed() {
+    // Small delay to ensure other scripts load
+    setTimeout(() => {
+      const hasData = localStorage.getItem('debtDB_leads') || localStorage.getItem('debtDB_calls');
+      const alreadySeeded = localStorage.getItem('debtDB_demoSeeded');
+      
+      if (!hasData && !alreadySeeded) {
+        console.log('[DemoSeeder] Database empty - auto-seeding demo data...');
+        seedAllDemoData();
+      } else {
+        console.log('[DemoSeeder] Database already has data or was previously seeded.');
+      }
+    }, 500);
+  }
 })();
+
+// Export for use in other modules
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { 
+    seedDemoData, 
+    seedAllDemoData,
+    clearDemoData, 
+    isDemoDataSeeded,
+    resetAndSeedDemoData
+  };
+}
