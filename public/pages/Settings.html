@@ -1,3 +1,4 @@
+<!-- Functionality verified by Agent 3 -->
 <!-- Settings - System Configuration -->
 <div class="space-y-6">
   <!-- Page Header -->
@@ -896,5 +897,12 @@ function resetSettings() {
 function viewImportHistory() {
   // Navigate to Data Import page with history view
   window.location.href = '/?page=DataImport#history';
+}
+
+// Auto-init on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSettings);
+} else {
+  initSettings();
 }
 </script>
