@@ -51,6 +51,38 @@
       z-index: 1;
     }
 
+    /* Main Content Background Pattern */
+    #pageContent {
+      position: relative;
+    }
+
+    #pageContent::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.03;
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 100px,
+          rgba(59, 130, 246, 0.02) 100px,
+          rgba(59, 130, 246, 0.02) 101px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #pageContent > * {
+      position: relative;
+      z-index: 1;
+    }
+
     /* Glass Morphism Cards */
     .glass-card {
       background: rgba(15, 23, 42, 0.8);
@@ -677,9 +709,10 @@
                   </button>
                   
                   <!-- Search Bar -->
-                  <div class="hidden md:flex items-center gap-2 px-4 py-2 bg-[#0a0f1a] border border-gray-800 rounded-xl w-80 focus-within:border-blue-500 transition-colors">
+                  <div id="searchBar" class="hidden md:flex items-center gap-2 px-4 py-2 bg-[#0a0f1a] border border-gray-800 rounded-xl w-80 focus-within:border-blue-500 transition-colors">
                     <i data-lucide="search" class="w-4 h-4 text-gray-500"></i>
                     <input 
+                      id="searchInput"
                       type="text" 
                       placeholder="Search leads, cases, clients..." 
                       class="bg-transparent border-none outline-none text-white placeholder-gray-500 text-sm flex-1"
@@ -690,15 +723,69 @@
 
                 <div class="flex items-center gap-3">
                   <!-- Quick Actions -->
-                  <button class="p-2 hover:bg-blue-500/10 rounded-lg transition-colors relative">
+                  <button class="p-2 hover:bg-blue-500/10 rounded-lg transition-colors relative" title="Quick Call">
                     <i data-lucide="phone" class="w-5 h-5 text-gray-400"></i>
                   </button>
 
                   <!-- Notifications -->
-                  <button class="p-2 hover:bg-blue-500/10 rounded-lg transition-colors relative">
-                    <i data-lucide="bell" class="w-5 h-5 text-gray-400"></i>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full badge-pulse"></span>
-                  </button>
+                  <div class="relative">
+                    <button id="notificationBtn" class="p-2 hover:bg-blue-500/10 rounded-lg transition-colors relative">
+                      <i data-lucide="bell" class="w-5 h-5 text-gray-400"></i>
+                      <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full badge-pulse"></span>
+                    </button>
+                    
+                    <!-- Notification Dropdown -->
+                    <div id="notificationDropdown" class="hidden absolute right-0 top-full mt-2 w-80 glass-card rounded-xl shadow-lg border border-blue-500/20 overflow-hidden z-50">
+                      <div class="p-4 border-b border-gray-800">
+                        <div class="flex items-center justify-between">
+                          <h3 class="font-semibold text-white">Notifications</h3>
+                          <span class="badge-primary badge text-xs">3 new</span>
+                        </div>
+                      </div>
+                      <div class="max-h-96 overflow-y-auto">
+                        <!-- Sample notifications -->
+                        <div class="p-4 hover:bg-blue-500/5 transition-colors border-b border-gray-800/50 cursor-pointer">
+                          <div class="flex gap-3">
+                            <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                              <i data-lucide="user-check" class="w-5 h-5 text-blue-400"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                              <p class="text-sm text-white mb-1">New lead assigned</p>
+                              <p class="text-xs text-gray-400 truncate">John Doe added to your pipeline</p>
+                              <p class="text-xs text-gray-500 mt-1">2 minutes ago</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-4 hover:bg-blue-500/5 transition-colors border-b border-gray-800/50 cursor-pointer">
+                          <div class="flex gap-3">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                              <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                              <p class="text-sm text-white mb-1">Enrollment completed</p>
+                              <p class="text-xs text-gray-400 truncate">Sarah Smith successfully enrolled</p>
+                              <p class="text-xs text-gray-500 mt-1">15 minutes ago</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-4 hover:bg-blue-500/5 transition-colors cursor-pointer">
+                          <div class="flex gap-3">
+                            <div class="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                              <i data-lucide="message-square" class="w-5 h-5 text-cyan-400"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                              <p class="text-sm text-white mb-1">New message</p>
+                              <p class="text-xs text-gray-400 truncate">Manager commented on your case</p>
+                              <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p-3 border-t border-gray-800 text-center">
+                        <a href="#" class="text-sm text-blue-400 hover:text-blue-300 transition-colors">View all notifications</a>
+                      </div>
+                    </div>
+                  </div>
 
                   <!-- Settings -->
                   <button class="p-2 hover:bg-blue-500/10 rounded-lg transition-colors">
@@ -707,6 +794,15 @@
                 </div>
               </div>
             </header>
+
+            <!-- Breadcrumb Trail -->
+            <div id="breadcrumb" class="px-6 py-3 border-b border-gray-800/50">
+              <div class="flex items-center gap-2 text-sm">
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">Home</a>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-600"></i>
+                <span id="breadcrumbCurrent" class="text-white font-semibold">Dashboard</span>
+              </div>
+            </div>
 
             <!-- Page Content -->
             <div id="pageContent" class="p-6">
@@ -793,6 +889,16 @@
         this.currentPage = pageId;
         window.location.hash = pageId;
         this.loadPage(pageName);
+        
+        // Update breadcrumb
+        const breadcrumbCurrent = document.getElementById('breadcrumbCurrent');
+        if (breadcrumbCurrent) {
+          const navItem = document.querySelector(`.nav-item[onclick*="${pageId}"]`);
+          if (navItem) {
+            const label = navItem.querySelector('.sidebar-text')?.textContent || 'Dashboard';
+            breadcrumbCurrent.textContent = label;
+          }
+        }
         
         // Update active nav item
         document.querySelectorAll('.nav-item').forEach(item => {
@@ -881,6 +987,34 @@
           const mobileBtn = document.getElementById('mobileMenuBtn');
           if (!sidebar?.contains(e.target) && !mobileBtn?.contains(e.target)) {
             sidebar?.classList.remove('mobile-open');
+          }
+        });
+
+        // Keyboard shortcut (Cmd/Ctrl + K) for search
+        document.addEventListener('keydown', (e) => {
+          if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+              searchInput.focus();
+              searchInput.select();
+            }
+          }
+        });
+
+        // Notification dropdown toggle
+        const notificationBtn = document.getElementById('notificationBtn');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        
+        notificationBtn?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          notificationDropdown?.classList.toggle('hidden');
+        });
+
+        // Close notification dropdown on outside click
+        document.addEventListener('click', (e) => {
+          if (!notificationDropdown?.contains(e.target) && !notificationBtn?.contains(e.target)) {
+            notificationDropdown?.classList.add('hidden');
           }
         });
       },
