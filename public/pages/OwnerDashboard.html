@@ -1,607 +1,739 @@
-<!-- Owner Dashboard - Executive GOD VIEW -->
-<div class="space-y-6">
-  <!-- Page Header -->
-  <div class="flex items-center justify-between mb-8 fade-in-up stagger-1">
-    <div>
-      <h1 class="text-3xl font-bold text-white mb-2 font-orbitron bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-        Executive GOD VIEW
-      </h1>
-      <p class="text-gray-400">Company-wide metrics and strategic insights</p>
-    </div>
-    <div class="flex gap-3">
-      <button class="btn text-white px-4 py-2 rounded-lg" style="background: linear-gradient(135deg, #8B5CF6, #A855F7);">
-        <i data-lucide="file-text" class="w-4 h-4 inline mr-2"></i>
-        Generate Report
-      </button>
-      <button class="btn text-white px-4 py-2 rounded-lg" style="background: linear-gradient(135deg, #8B5CF6, #A855F7);">
-        <i data-lucide="settings" class="w-4 h-4 inline mr-2"></i>
-        Configure
-      </button>
-    </div>
-  </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Owner Dashboard - Debt Consolidation Empire</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
-  <!-- Company-wide KPIs -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 fade-in-up stagger-2">
-    <div class="kpi-card" style="border-color: rgba(139, 92, 246, 0.2);">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-          <i data-lucide="dollar-sign" class="w-5 h-5" style="color: #8B5CF6;"></i>
-        </div>
-        <span class="text-xs text-gray-400">MTD / YTD</span>
-      </div>
-      <div class="font-orbitron text-2xl font-bold text-white mb-1">$2.4M / $18.7M</div>
-      <div class="text-sm text-gray-400 mb-3">Total Revenue</div>
-      <div class="flex items-center gap-2">
-        <i data-lucide="trending-up" class="w-3 h-3 text-green-400"></i>
-        <span class="text-xs text-green-400">+32% vs last month</span>
-      </div>
-    </div>
-
-    <div class="kpi-card" style="border-color: rgba(139, 92, 246, 0.2);">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-          <i data-lucide="briefcase" class="w-5 h-5" style="color: #A855F7;"></i>
-        </div>
-        <span class="text-xs text-gray-400">Active</span>
-      </div>
-      <div class="font-orbitron text-2xl font-bold text-white mb-1">$124.3M</div>
-      <div class="text-sm text-gray-400 mb-3">Enrolled Debt</div>
-      <div class="flex items-center gap-2">
-        <i data-lucide="users" class="w-3 h-3 text-cyan-400"></i>
-        <span class="text-xs text-cyan-400">3,847 active clients</span>
-      </div>
-    </div>
-
-    <div class="kpi-card" style="border-color: rgba(139, 92, 246, 0.2);">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-          <i data-lucide="percent" class="w-5 h-5" style="color: #C084FC;"></i>
-        </div>
-        <span class="text-xs text-gray-400">This Quarter</span>
-      </div>
-      <div class="font-orbitron text-2xl font-bold text-white mb-1">68.4%</div>
-      <div class="text-sm text-gray-400 mb-3">Settlement Rate</div>
-      <div class="flex items-center gap-2">
-        <i data-lucide="trending-up" class="w-3 h-3 text-green-400"></i>
-        <span class="text-xs text-green-400">+5.2% vs Q4</span>
-      </div>
-    </div>
-
-    <div class="kpi-card" style="border-color: rgba(139, 92, 246, 0.2);">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-          <i data-lucide="trending-up" class="w-5 h-5" style="color: #D8B4FE;"></i>
-        </div>
-        <span class="text-xs text-gray-400">MoM Growth</span>
-      </div>
-      <div class="font-orbitron text-2xl font-bold text-white mb-1">+42.7%</div>
-      <div class="text-sm text-gray-400 mb-3">Growth Rate</div>
-      <div class="flex items-center gap-2">
-        <i data-lucide="rocket" class="w-3 h-3" style="color: #8B5CF6;"></i>
-        <span class="text-xs" style="color: #8B5CF6;">Accelerating</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Additional KPIs -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-in-up stagger-3">
-    <div class="kpi-card" style="border-color: rgba(139, 92, 246, 0.2);">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 rounded-lg" style="background: rgba(34, 197, 94, 0.2);">
-          <i data-lucide="coins" class="w-5 h-5 text-green-400"></i>
-        </div>
-        <span class="text-xs text-gray-400">This Month</span>
-      </div>
-      <div class="font-orbitron text-2xl font-bold text-green-400 mb-1">$847K</div>
-      <div class="text-sm text-gray-400 mb-3">Net Profit</div>
-      <div class="text-xs text-gray-500">35.3% margin</div>
-    </div>
-
-    <div class="kpi-card" style="border-color: rgba(139, 92, 246, 0.2);">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 rounded-lg" style="background: rgba(59, 130, 246, 0.2);">
-          <i data-lucide="users" class="w-5 h-5 text-blue-400"></i>
-        </div>
-        <span class="text-xs text-gray-400">Total</span>
-      </div>
-      <div class="font-orbitron text-2xl font-bold text-blue-400 mb-1">3,847</div>
-      <div class="text-sm text-gray-400 mb-3">Active Clients</div>
-      <div class="text-xs text-gray-500">+287 this month</div>
-    </div>
-
-    <div class="kpi-card" style="border-color: rgba(139, 92, 246, 0.2);">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-          <i data-lucide="activity" class="w-5 h-5" style="color: #8B5CF6;"></i>
-        </div>
-        <span class="text-xs text-gray-400">Composite</span>
-      </div>
-      <div class="font-orbitron text-2xl font-bold mb-1" style="color: #8B5CF6;">92/100</div>
-      <div class="text-sm text-gray-400 mb-3">Business Health</div>
-      <div class="text-xs text-green-400">⬆ Excellent</div>
-    </div>
-  </div>
-
-  <!-- Main Content Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Left Column: Revenue & P&L -->
-    <div class="lg:col-span-2 space-y-6">
-      <!-- Revenue Trend Chart -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-4">
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center gap-3">
-            <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-              <i data-lucide="trending-up" class="w-5 h-5" style="color: #8B5CF6;"></i>
-            </div>
-            <div>
-              <h2 class="text-xl font-bold text-white">Revenue Trend</h2>
-              <p class="text-sm text-gray-400">Last 12 months</p>
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <button class="text-sm px-3 py-1 rounded-lg border" style="border-color: rgba(139, 92, 246, 0.3); color: #8B5CF6;">MTD</button>
-            <button class="text-sm px-3 py-1 bg-gray-800 text-gray-400 rounded-lg">YTD</button>
-          </div>
-        </div>
-
-        <div id="revenueChart" class="space-y-2">
-          <!-- Chart bars will be inserted here -->
-        </div>
-      </div>
-
-      <!-- P&L Summary -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-5">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-            <i data-lucide="receipt" class="w-5 h-5" style="color: #A855F7;"></i>
-          </div>
-          <div>
-            <h2 class="text-xl font-bold text-white">P&L Summary</h2>
-            <p class="text-sm text-gray-400">This month</p>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div class="flex items-center justify-between p-4 bg-[#0a0f1a] rounded-lg border border-green-500/20">
-            <div class="flex items-center gap-3">
-              <i data-lucide="arrow-down-circle" class="w-5 h-5 text-green-400"></i>
-              <span class="text-white">Total Revenue</span>
-            </div>
-            <span class="font-orbitron font-bold text-green-400">$2,400,000</span>
-          </div>
-
-          <div class="flex items-center justify-between p-4 bg-[#0a0f1a] rounded-lg border border-red-500/20">
-            <div class="flex items-center gap-3">
-              <i data-lucide="arrow-up-circle" class="w-5 h-5 text-red-400"></i>
-              <span class="text-white">Operating Expenses</span>
-            </div>
-            <span class="font-orbitron font-bold text-red-400">$1,284,000</span>
-          </div>
-
-          <div class="section-divider"></div>
-
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between text-gray-400">
-              <span>→ Payroll & Benefits</span>
-              <span class="font-orbitron">$680,000</span>
-            </div>
-            <div class="flex justify-between text-gray-400">
-              <span>→ Marketing & Advertising</span>
-              <span class="font-orbitron">$360,000</span>
-            </div>
-            <div class="flex justify-between text-gray-400">
-              <span>→ Technology & Infrastructure</span>
-              <span class="font-orbitron">$144,000</span>
-            </div>
-            <div class="flex justify-between text-gray-400">
-              <span>→ Office & Operations</span>
-              <span class="font-orbitron">$100,000</span>
-            </div>
-          </div>
-
-          <div class="section-divider"></div>
-
-          <div class="flex items-center justify-between p-4 rounded-lg" style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.3);">
-            <div class="flex items-center gap-3">
-              <i data-lucide="coins" class="w-5 h-5" style="color: #8B5CF6;"></i>
-              <span class="text-white font-bold">Net Profit</span>
-            </div>
-            <span class="font-orbitron font-bold text-xl" style="color: #8B5CF6;">$847,000</span>
-          </div>
-
-          <div class="text-center text-sm text-gray-400">
-            Profit Margin: <span class="font-orbitron font-bold text-green-400">35.3%</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Department Performance -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-6">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-            <i data-lucide="building-2" class="w-5 h-5" style="color: #C084FC;"></i>
-          </div>
-          <h2 class="text-xl font-bold text-white">Department Performance</h2>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div class="p-4 bg-[#0a0f1a] rounded-lg border border-gray-800">
-            <div class="text-sm text-gray-400 mb-2">Sales</div>
-            <div class="font-orbitron font-bold text-2xl text-green-400 mb-2">A+</div>
-            <div class="text-xs text-gray-500">127% of target</div>
-          </div>
-
-          <div class="p-4 bg-[#0a0f1a] rounded-lg border border-gray-800">
-            <div class="text-sm text-gray-400 mb-2">Retention</div>
-            <div class="font-orbitron font-bold text-2xl text-green-400 mb-2">A</div>
-            <div class="text-xs text-gray-500">94.2% retention</div>
-          </div>
-
-          <div class="p-4 bg-[#0a0f1a] rounded-lg border border-gray-800">
-            <div class="text-sm text-gray-400 mb-2">Compliance</div>
-            <div class="font-orbitron font-bold text-2xl text-cyan-400 mb-2">A</div>
-            <div class="text-xs text-gray-500">96.8% score</div>
-          </div>
-
-          <div class="p-4 bg-[#0a0f1a] rounded-lg border border-gray-800">
-            <div class="text-sm text-gray-400 mb-2">Operations</div>
-            <div class="font-orbitron font-bold text-2xl text-blue-400 mb-2">B+</div>
-            <div class="text-xs text-gray-500">88% efficiency</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Marketing ROI -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-6">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-            <i data-lucide="megaphone" class="w-5 h-5" style="color: #D8B4FE;"></i>
-          </div>
-          <h2 class="text-xl font-bold text-white">Marketing ROI by Channel</h2>
-        </div>
-
-        <div class="space-y-4" id="marketingROI">
-          <!-- Marketing channels will be inserted here -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Column: Strategic Insights -->
-    <div class="space-y-6">
-      <!-- Employee Costs -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-4">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-            <i data-lucide="users-2" class="w-5 h-5" style="color: #8B5CF6;"></i>
-          </div>
-          <div>
-            <h2 class="text-xl font-bold text-white">Employee Costs</h2>
-            <p class="text-sm text-gray-400">Workforce analytics</p>
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <div class="p-3 bg-[#0a0f1a] border border-gray-800 rounded-lg">
-            <div class="text-sm text-gray-400 mb-1">Headcount</div>
-            <div class="font-orbitron font-bold text-2xl text-white">47</div>
-            <div class="text-xs text-gray-500">34 agents, 8 managers, 5 support</div>
-          </div>
-
-          <div class="p-3 bg-[#0a0f1a] border border-gray-800 rounded-lg">
-            <div class="text-sm text-gray-400 mb-1">Avg Salary</div>
-            <div class="font-orbitron font-bold text-xl text-white">$62,400</div>
-            <div class="text-xs text-gray-500">Base + commission</div>
-          </div>
-
-          <div class="p-3 bg-[#0a0f1a] border border-gray-800 rounded-lg">
-            <div class="text-sm text-gray-400 mb-1">Cost per Enrollment</div>
-            <div class="font-orbitron font-bold text-xl text-cyan-400">$2,847</div>
-            <div class="text-xs text-gray-500">↓ 8% vs last month</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Compliance Status -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-5">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 rounded-lg" style="background: rgba(34, 197, 94, 0.2);">
-            <i data-lucide="shield-check" class="w-5 h-5 text-green-400"></i>
-          </div>
-          <div>
-            <h2 class="text-xl font-bold text-white">Compliance Status</h2>
-            <p class="text-sm text-gray-400">All systems green</p>
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-gray-400">FDCPA Compliance</span>
-            <span class="text-green-400 font-bold">✓ Pass</span>
-          </div>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-gray-400">TCPA Compliance</span>
-            <span class="text-green-400 font-bold">✓ Pass</span>
-          </div>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-gray-400">State Licensing</span>
-            <span class="text-green-400 font-bold">✓ Current</span>
-          </div>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-gray-400">Audit Trail</span>
-            <span class="text-green-400 font-bold">✓ Complete</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Growth Projections -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-6">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-            <i data-lucide="rocket" class="w-5 h-5" style="color: #8B5CF6;"></i>
-          </div>
-          <div>
-            <h2 class="text-xl font-bold text-white">Growth Projections</h2>
-            <p class="text-sm text-gray-400">Next 12 months</p>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div class="p-3 bg-[#0a0f1a] border border-gray-800 rounded-lg">
-            <div class="text-sm text-gray-400 mb-1">3-Month Target</div>
-            <div class="font-orbitron font-bold text-lg" style="color: #8B5CF6;">$8.2M</div>
-          </div>
-
-          <div class="p-3 bg-[#0a0f1a] border border-gray-800 rounded-lg">
-            <div class="text-sm text-gray-400 mb-1">6-Month Target</div>
-            <div class="font-orbitron font-bold text-lg" style="color: #A855F7;">$17.8M</div>
-          </div>
-
-          <div class="p-3 bg-[#0a0f1a] border border-gray-800 rounded-lg">
-            <div class="text-sm text-gray-400 mb-1">12-Month Target</div>
-            <div class="font-orbitron font-bold text-lg" style="color: #C084FC;">$38.5M</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Strategic Alerts -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-6">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 bg-yellow-500/20 rounded-lg">
-            <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-400"></i>
-          </div>
-          <div>
-            <h2 class="text-xl font-bold text-white">Strategic Alerts</h2>
-            <p class="text-sm text-gray-400">Requires attention</p>
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <div class="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-            <div class="flex items-center gap-2 mb-1">
-              <i data-lucide="trending-up" class="w-4 h-4 text-green-400"></i>
-              <span class="text-sm font-semibold text-green-400">Opportunity</span>
-            </div>
-            <p class="text-xs text-gray-300">Marketing ROI exceeding targets - consider scaling Google Ads</p>
-          </div>
-
-          <div class="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-            <div class="flex items-center gap-2 mb-1">
-              <i data-lucide="alert-circle" class="w-4 h-4 text-yellow-400"></i>
-              <span class="text-sm font-semibold text-yellow-400">Review Needed</span>
-            </div>
-            <p class="text-xs text-gray-300">Operations efficiency below target - schedule review</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- God View Activity Feed -->
-  <div class="glass-card rounded-2xl p-6 fade-in-up stagger-6">
-    <div class="flex items-center gap-3 mb-6">
-      <div class="p-2 rounded-lg" style="background: rgba(139, 92, 246, 0.2);">
-        <i data-lucide="eye" class="w-5 h-5" style="color: #8B5CF6;"></i>
-      </div>
-      <div>
-        <h2 class="text-xl font-bold text-white">GOD VIEW - Real-Time Activity</h2>
-        <p class="text-sm text-gray-400">
-          <span class="status-dot mr-2" style="background: #8B5CF6;"></span>
-          Live feed of ALL system activity
-        </p>
-      </div>
-    </div>
-
-    <div class="space-y-2 max-h-96 overflow-y-auto" id="godViewFeed">
-      <!-- Activity feed will be inserted here -->
-    </div>
-  </div>
-</div>
-
-<!-- Functionality verified by Agent 4 (Kimi 2 equivalent) -->
-<script>
-function initOwnerDashboard() {
-  renderOwnerMetrics();
-  renderRevenueChart();
-  renderMarketingROI();
-  renderTopAgents();
-  initGodViewFeed();
-}
-
-function renderOwnerMetrics() {
-  // Calculate company-wide metrics from DebtDB
-  const revenue = DebtDB.getRevenue();
-  const agents = DebtDB.getAgents();
-  const cases = DebtDB.getCases();
-  const leads = DebtDB.getLeads();
-  
-  // Total revenue
-  const totalRevenue = revenue.thisMonth || 0;
-  const lastMonthRevenue = revenue.lastMonth || 0;
-  const revenueGrowth = lastMonthRevenue > 0 
-    ? (((totalRevenue - lastMonthRevenue) / lastMonthRevenue) * 100).toFixed(1)
-    : 0;
-  
-  // Active clients
-  const activeClients = cases.filter(c => ['In Program', 'Negotiating'].includes(c.stage)).length;
-  
-  // Total agents
-  const activeAgents = agents.length;
-  
-  // Average deal size
-  const totalDebt = cases.reduce((sum, c) => sum + (c.totalDebt || 0), 0);
-  const avgDealSize = cases.length > 0 ? Math.floor(totalDebt / cases.length) : 0;
-  
-  // Profit margin (simulate at 30%)
-  const profitMargin = (totalRevenue * 0.30).toFixed(0);
-  
-  // Update DOM elements (requires corresponding ID elements in HTML)
-  // This is simplified - in production would target specific elements
-  console.log('Owner Metrics:', {
-    totalRevenue, revenueGrowth, activeClients, activeAgents, avgDealSize, profitMargin
-  });
-}
-
-function renderTopAgents() {
-  // Get agents sorted by revenue
-  const agents = DebtDB.getAgents();
-  const revenue = DebtDB.getRevenue();
-  
-  const rankedAgents = agents
-    .map(agent => ({
-      ...agent,
-      totalRevenue: revenue.byAgent?.[agent.id]?.total || 0,
-      commission: revenue.byAgent?.[agent.id]?.commission || 0
-    }))
-    .sort((a, b) => b.totalRevenue - a.totalRevenue)
-    .slice(0, 10);
-  
-  // In production, this would update a specific container
-  console.log('Top 10 Agents:', rankedAgents);
-}
-
-function renderRevenueChart() {
-  const container = document.getElementById('revenueChart');
-  
-  const monthlyData = [
-    { month: 'Jan', revenue: 1200000 },
-    { month: 'Feb', revenue: 1350000 },
-    { month: 'Mar', revenue: 1580000 },
-    { month: 'Apr', revenue: 1420000 },
-    { month: 'May', revenue: 1680000 },
-    { month: 'Jun', revenue: 1850000 },
-    { month: 'Jul', revenue: 1920000 },
-    { month: 'Aug', revenue: 2100000 },
-    { month: 'Sep', revenue: 2280000 },
-    { month: 'Oct', revenue: 2150000 },
-    { month: 'Nov', revenue: 2340000 },
-    { month: 'Dec', revenue: 2400000 }
-  ];
-  
-  const maxRevenue = Math.max(...monthlyData.map(d => d.revenue));
-  
-  container.innerHTML = monthlyData.map(data => {
-    const percentage = (data.revenue / maxRevenue) * 100;
-    return `
-      <div class="flex items-center gap-4">
-        <div class="w-12 text-xs text-gray-400 font-semibold">${data.month}</div>
-        <div class="flex-1 progress-bar h-8">
-          <div class="progress-fill h-full flex items-center justify-end pr-3" 
-               style="width: ${percentage}%; background: linear-gradient(90deg, #8B5CF6, #A855F7);">
-            <span class="font-orbitron text-xs text-white font-bold">
-              ${(data.revenue / 1000000).toFixed(1)}M
-            </span>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderMarketingROI() {
-  const container = document.getElementById('marketingROI');
-  
-  const channels = [
-    { name: 'Google Ads', spent: 120000, revenue: 840000, roi: 7.0, trend: 'up' },
-    { name: 'Facebook Ads', spent: 85000, revenue: 510000, roi: 6.0, trend: 'up' },
-    { name: 'SEO / Content', spent: 45000, revenue: 360000, roi: 8.0, trend: 'up' },
-    { name: 'Email Marketing', spent: 15000, revenue: 180000, roi: 12.0, trend: 'up' },
-    { name: 'Referrals', spent: 25000, revenue: 280000, roi: 11.2, trend: 'stable' }
-  ];
-  
-  container.innerHTML = channels.map(channel => `
-    <div class="p-4 bg-[#0a0f1a] border border-gray-800 rounded-lg hover:border-purple-500/30 transition-all">
-      <div class="flex items-center justify-between mb-3">
-        <div class="flex items-center gap-3">
-          <i data-lucide="megaphone" class="w-5 h-5 text-purple-400"></i>
-          <span class="text-white font-semibold">${channel.name}</span>
-        </div>
-        <div class="text-right">
-          <div class="font-orbitron font-bold text-lg" style="color: #8B5CF6;">${channel.roi}x</div>
-          <div class="text-xs text-gray-400">ROI</div>
-        </div>
-      </div>
-      <div class="grid grid-cols-2 gap-3 text-sm">
-        <div>
-          <div class="text-gray-400 text-xs mb-1">Spent</div>
-          <div class="font-orbitron text-red-400">${DBHelpers.formatCurrency(channel.spent)}</div>
-        </div>
-        <div>
-          <div class="text-gray-400 text-xs mb-1">Revenue</div>
-          <div class="font-orbitron text-green-400">${DBHelpers.formatCurrency(channel.revenue)}</div>
-        </div>
-      </div>
-    </div>
-  `).join('');
-  
-  lucide.createIcons();
-}
-
-function initGodViewFeed() {
-  const container = document.getElementById('godViewFeed');
-  
-  const activityTypes = [
-    { icon: 'phone', color: '#3B82F6', label: 'Call Started' },
-    { icon: 'user-check', color: '#22C55E', label: 'Lead Enrolled' },
-    { icon: 'file-text', color: '#F59E0B', label: 'Document Signed' },
-    { icon: 'dollar-sign', color: '#06B6D4', label: 'Payment Received' },
-    { icon: 'mail', color: '#8B5CF6', label: 'Email Sent' },
-    { icon: 'message-circle', color: '#EC4899', label: 'SMS Sent' },
-    { icon: 'clock', color: '#64748B', label: 'Task Completed' }
-  ];
-  
-  // Simulate real-time activity feed
-  function addActivity() {
-    const activity = activityTypes[Math.floor(Math.random() * activityTypes.length)];
-    const agents = DB.agents.map(a => a.name);
-    const agent = agents[Math.floor(Math.random() * agents.length)];
-    
-    const activityEl = document.createElement('div');
-    activityEl.className = 'flex items-center gap-3 p-3 bg-[#0a0f1a] border border-gray-800 rounded-lg fade-in-up';
-    activityEl.innerHTML = `
-      <div class="p-2 rounded-lg" style="background: ${activity.color}20;">
-        <i data-lucide="${activity.icon}" class="w-4 h-4" style="color: ${activity.color};"></i>
-      </div>
-      <div class="flex-1">
-        <p class="text-sm text-white">${activity.label}</p>
-        <p class="text-xs text-gray-400">${agent} • Just now</p>
-      </div>
-    `;
-    
-    container.insertBefore(activityEl, container.firstChild);
-    lucide.createIcons();
-    
-    // Remove old activities (keep last 20)
-    while (container.children.length > 20) {
-      container.removeChild(container.lastChild);
+    :root {
+      --bg-primary: #0a0f1a;
+      --bg-card: rgba(15, 23, 42, 0.8);
+      --bg-glass: rgba(30, 41, 59, 0.6);
+      --primary: #3B82F6;
+      --primary-glow: rgba(59, 130, 246, 0.3);
+      --accent: #06B6D4;
+      --accent-glow: rgba(6, 182, 212, 0.3);
+      --success: #22C55E;
+      --success-glow: rgba(34, 197, 94, 0.3);
+      --warning: #F59E0B;
+      --warning-glow: rgba(245, 158, 11, 0.3);
+      --danger: #EF4444;
+      --danger-glow: rgba(239, 68, 68, 0.3);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-subtle: rgba(148, 163, 184, 0.1);
+      --border-hover: rgba(148, 163, 184, 0.2);
     }
-  }
-  
-  // Add initial activities
-  for (let i = 0; i < 10; i++) {
-    setTimeout(() => addActivity(), i * 500);
-  }
-  
-  // Continue adding activities
-  setInterval(addActivity, 3000);
-}
-</script>
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .empire-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #FFD700, #FFA500, #FF6B6B);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+    }
+
+    .subtitle {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.2em;
+    }
+
+    .glass-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      padding: 2rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
+    }
+
+    /* Massive Revenue Display */
+    .revenue-hero {
+      text-align: center;
+      padding: 3rem 2rem;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(6, 182, 212, 0.1));
+      border: 2px solid var(--success);
+      border-radius: 1.5rem;
+    }
+
+    .revenue-label {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    .revenue-amount {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--success), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .revenue-growth {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    /* God View Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .metric-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(59, 130, 246, 0.2);
+    }
+
+    .metric-label {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-subtext {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* Financial Overview */
+    .financial-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .financial-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .financial-row:last-child {
+      border-bottom: none;
+    }
+
+    .financial-label {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .financial-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    /* Top Performers */
+    .performers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .performer-card {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+      border: 2px solid transparent;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .performer-card.rank-1 {
+      border-color: #FFD700;
+    }
+
+    .performer-card.rank-2 {
+      border-color: #C0C0C0;
+    }
+
+    .performer-card.rank-3 {
+      border-color: #CD7F32;
+    }
+
+    .performer-rank {
+      font-size: 3rem;
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      opacity: 0.3;
+    }
+
+    .performer-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .performer-revenue {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--success);
+      margin-bottom: 0.5rem;
+    }
+
+    .performer-commission {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    /* Growth Chart */
+    .growth-chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 200px;
+      gap: 0.5rem;
+      padding: 1rem 0;
+    }
+
+    .growth-bar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .bar {
+      width: 100%;
+      background: linear-gradient(to top, var(--success), var(--accent));
+      border-radius: 0.5rem 0.5rem 0 0;
+      position: relative;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .bar:hover {
+      box-shadow: 0 0 30px var(--success-glow);
+      filter: brightness(1.3);
+    }
+
+    .bar-value {
+      position: absolute;
+      top: -1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--success);
+      white-space: nowrap;
+    }
+
+    .bar-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Department Health */
+    .departments-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .department-card {
+      padding: 1.5rem;
+      background: rgba(148, 163, 184, 0.03);
+      border-radius: 1rem;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .department-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .department-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .department-status {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .department-status.warning {
+      background: var(--warning);
+    }
+
+    .department-status.critical {
+      background: var(--danger);
+    }
+
+    .department-metrics {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* Quick Actions */
+    .action-bar {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 1.25rem 2rem;
+      border: none;
+      border-radius: 1rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 8px 30px var(--primary-glow);
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--success), var(--accent));
+      color: white;
+    }
+
+    .btn-success:hover {
+      box-shadow: 0 8px 30px var(--success-glow);
+      transform: translateY(-2px);
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="empire-title">🏆 DEBT CONSOLIDATION EMPIRE</div>
+    <div class="subtitle">OWNER COMMAND CENTER</div>
+  </div>
+
+  <!-- Revenue Hero -->
+  <div class="revenue-hero">
+    <div class="revenue-label">TOTAL REVENUE</div>
+    <div class="revenue-amount" id="totalRevenue">$0</div>
+    <div class="revenue-growth">
+      <span>↑</span>
+      <span id="revenueGrowth">+0%</span>
+      <span style="color: var(--text-muted); font-size: 1rem;">vs last month</span>
+    </div>
+  </div>
+
+  <!-- God View Metrics -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-label">TOTAL CLIENTS</div>
+      <div class="metric-value" id="totalClients">0</div>
+      <div class="metric-subtext">Active accounts</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">ACTIVE CASES</div>
+      <div class="metric-value" id="activeCases">0</div>
+      <div class="metric-subtext">In progress</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">SETTLEMENT RATE</div>
+      <div class="metric-value" id="settlementRate">0%</div>
+      <div class="metric-subtext">Success ratio</div>
+    </div>
+  </div>
+
+  <!-- Financial Overview -->
+  <div class="financial-grid">
+    <div class="glass-card">
+      <div class="card-title">💰 Financial Overview</div>
+      <div class="financial-row">
+        <div class="financial-label">Monthly Recurring Revenue (MRR)</div>
+        <div class="financial-value" id="mrr">$0</div>
+      </div>
+      <div class="financial-row">
+        <div class="financial-label">Average Savings %</div>
+        <div class="financial-value" id="avgSavings">0%</div>
+      </div>
+      <div class="financial-row">
+        <div class="financial-label">Revenue vs Costs</div>
+        <div class="financial-value" id="revenueCosts">$0</div>
+      </div>
+      <div class="financial-row">
+        <div class="financial-label">Profit Margin</div>
+        <div class="financial-value" id="profitMargin">0%</div>
+      </div>
+      <div class="financial-row">
+        <div class="financial-label">Outstanding Receivables</div>
+        <div class="financial-value" id="receivables">$0</div>
+      </div>
+    </div>
+
+    <!-- Top Performers -->
+    <div class="glass-card">
+      <div class="card-title">🏅 Top Agent Rankings</div>
+      <div class="performers-grid" id="topPerformers"></div>
+    </div>
+  </div>
+
+  <!-- Growth Chart -->
+  <div class="glass-card">
+    <div class="card-title">📈 Monthly Revenue Growth (Last 6 Months)</div>
+    <div class="growth-chart" id="growthChart"></div>
+  </div>
+
+  <!-- Department Health -->
+  <div class="glass-card" style="margin-top: 2rem;">
+    <div class="card-title">🏢 Department Health</div>
+    <div class="departments-grid">
+      <div class="department-card">
+        <div class="department-header">
+          <div class="department-name">Sales</div>
+          <div class="department-status" id="salesStatus"></div>
+        </div>
+        <div class="department-metrics" id="salesMetrics">
+          Loading...
+        </div>
+      </div>
+      <div class="department-card">
+        <div class="department-header">
+          <div class="department-name">Operations</div>
+          <div class="department-status" id="opsStatus"></div>
+        </div>
+        <div class="department-metrics" id="opsMetrics">
+          Loading...
+        </div>
+      </div>
+      <div class="department-card">
+        <div class="department-header">
+          <div class="department-name">Compliance</div>
+          <div class="department-status" id="complianceStatus"></div>
+        </div>
+        <div class="department-metrics" id="complianceMetrics">
+          Loading...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="action-bar">
+    <button class="btn btn-primary" onclick="goToAnalytics()">📊 View All Analytics</button>
+    <button class="btn btn-success" onclick="exportFullReport()">📥 Export Full Report</button>
+    <button class="btn btn-primary" onclick="goToSettings()">⚙️ System Settings</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      loadOwnerDashboard();
+    });
+
+    function loadOwnerDashboard() {
+      const ownerStats = window.DebtDB.getOwnerStats();
+      const deals = window.DebtDB.getDeals();
+      const cases = window.DebtDB.getCases();
+      const checklist = window.DebtDB.getComplianceChecklist();
+      
+      // Total Revenue
+      document.getElementById('totalRevenue').textContent = '$' + ownerStats.totalRevenue.toLocaleString();
+      
+      // Mock growth (in real app, compare to previous period)
+      const growth = 15.7;
+      document.getElementById('revenueGrowth').textContent = '+' + growth.toFixed(1) + '%';
+      
+      // God View Metrics
+      document.getElementById('totalClients').textContent = ownerStats.totalLeads.toLocaleString();
+      document.getElementById('activeCases').textContent = ownerStats.totalCases.toLocaleString();
+      
+      // Settlement Rate (mock calculation)
+      const settledCases = cases.filter(c => c.status === 'Settled' || c.status === 'Closed').length;
+      const settlementRate = cases.length > 0 ? (settledCases / cases.length * 100).toFixed(1) : 0;
+      document.getElementById('settlementRate').textContent = settlementRate + '%';
+      
+      // Financial Overview
+      const mrr = ownerStats.totalRevenue / 12;
+      document.getElementById('mrr').textContent = '$' + Math.round(mrr).toLocaleString();
+      
+      // Average Savings (mock)
+      document.getElementById('avgSavings').textContent = '47%';
+      
+      // Revenue vs Costs (mock)
+      const costs = ownerStats.totalRevenue * 0.35;
+      const netRevenue = ownerStats.totalRevenue - costs;
+      document.getElementById('revenueCosts').textContent = '$' + Math.round(netRevenue).toLocaleString();
+      
+      // Profit Margin
+      const profitMargin = ((netRevenue / ownerStats.totalRevenue) * 100).toFixed(1);
+      document.getElementById('profitMargin').textContent = profitMargin + '%';
+      
+      // Outstanding Receivables (mock)
+      const receivables = ownerStats.totalRevenue * 0.15;
+      document.getElementById('receivables').textContent = '$' + Math.round(receivables).toLocaleString();
+      
+      // Top Performers
+      renderTopPerformers();
+      
+      // Growth Chart
+      renderGrowthChart();
+      
+      // Department Health
+      updateDepartmentHealth();
+    }
+
+    function renderTopPerformers() {
+      const managerStats = window.DebtDB.getManagerStats();
+      
+      // Sort by revenue and take top 3
+      const topAgents = managerStats
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 3);
+      
+      const container = document.getElementById('topPerformers');
+      
+      container.innerHTML = topAgents.map((agent, index) => {
+        const rank = index + 1;
+        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉';
+        const commission = agent.revenue * 0.1; // 10% commission
+        
+        return `
+          <div class="performer-card rank-${rank}">
+            <div class="performer-rank">${medal}</div>
+            <div class="performer-name">#${rank} ${agent.agentName}</div>
+            <div class="performer-revenue">$${agent.revenue.toLocaleString()}</div>
+            <div class="performer-commission">Commission: $${commission.toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderGrowthChart() {
+      const chart = document.getElementById('growthChart');
+      const deals = window.DebtDB.getDeals();
+      
+      // Group by month (last 6 months)
+      const months = [];
+      for (let i = 5; i >= 0; i--) {
+        const date = new Date();
+        date.setMonth(date.getMonth() - i);
+        months.push({
+          month: date.toLocaleDateString('en-US', { month: 'short' }),
+          revenue: 0
+        });
+      }
+      
+      // Sum revenue per month
+      deals.forEach(deal => {
+        const dealDate = new Date(deal.createdAt);
+        const monthIndex = 5 - Math.floor((new Date() - dealDate) / (30 * 24 * 60 * 60 * 1000));
+        if (monthIndex >= 0 && monthIndex < 6) {
+          months[monthIndex].revenue += deal.amount || 0;
+        }
+      });
+      
+      const maxRevenue = Math.max(...months.map(m => m.revenue), 1);
+      
+      chart.innerHTML = months.map(m => {
+        const height = (m.revenue / maxRevenue) * 100;
+        return `
+          <div class="growth-bar">
+            <div class="bar" style="height: ${height}%">
+              <div class="bar-value">$${(m.revenue / 1000).toFixed(0)}K</div>
+            </div>
+            <div class="bar-label">${m.month}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateDepartmentHealth() {
+      const agents = window.DebtDB.getAgents();
+      const cases = window.DebtDB.getCases();
+      const checklist = window.DebtDB.getComplianceChecklist();
+      
+      // Sales Health
+      const salesStatus = document.getElementById('salesStatus');
+      const salesMetrics = document.getElementById('salesMetrics');
+      
+      if (agents.length >= 5) {
+        salesStatus.className = 'department-status';
+        salesMetrics.innerHTML = `${agents.length} active agents<br>Pipeline healthy`;
+      } else {
+        salesStatus.className = 'department-status warning';
+        salesMetrics.innerHTML = `${agents.length} active agents<br>Consider hiring`;
+      }
+      
+      // Operations Health
+      const opsStatus = document.getElementById('opsStatus');
+      const opsMetrics = document.getElementById('opsMetrics');
+      
+      const activeCases = cases.filter(c => c.status === 'Active' || c.status === 'In Progress').length;
+      
+      if (activeCases < 100) {
+        opsStatus.className = 'department-status';
+        opsMetrics.innerHTML = `${activeCases} active cases<br>Workload normal`;
+      } else {
+        opsStatus.className = 'department-status warning';
+        opsMetrics.innerHTML = `${activeCases} active cases<br>High volume`;
+      }
+      
+      // Compliance Health
+      const complianceStatus = document.getElementById('complianceStatus');
+      const complianceMetrics = document.getElementById('complianceMetrics');
+      
+      const completed = checklist.filter(item => item.completed).length;
+      const total = checklist.length;
+      const complianceScore = total > 0 ? Math.round((completed / total) * 100) : 0;
+      
+      if (complianceScore >= 80) {
+        complianceStatus.className = 'department-status';
+        complianceMetrics.innerHTML = `${complianceScore}% compliance score<br>Excellent standing`;
+      } else if (complianceScore >= 60) {
+        complianceStatus.className = 'department-status warning';
+        complianceMetrics.innerHTML = `${complianceScore}% compliance score<br>Needs attention`;
+      } else {
+        complianceStatus.className = 'department-status critical';
+        complianceMetrics.innerHTML = `${complianceScore}% compliance score<br>CRITICAL - Action Required`;
+      }
+    }
+
+    function goToAnalytics() {
+      window.location.href = '/pages/Analytics.html';
+    }
+
+    function exportFullReport() {
+      const ownerStats = window.DebtDB.getOwnerStats();
+      const managerStats = window.DebtDB.getManagerStats();
+      const checklist = window.DebtDB.getComplianceChecklist();
+      
+      const report = {
+        generatedAt: new Date().toISOString(),
+        reportType: 'Owner Full Report',
+        overview: {
+          totalRevenue: ownerStats.totalRevenue,
+          totalClients: ownerStats.totalLeads,
+          totalCases: ownerStats.totalCases,
+          totalDeals: ownerStats.totalDeals,
+          totalAgents: ownerStats.totalAgents,
+          avgDealSize: ownerStats.avgDealSize,
+          activeCampaigns: ownerStats.activeCampaigns
+        },
+        compliance: {
+          score: checklist.filter(i => i.completed).length / checklist.length * 100,
+          checklist: checklist
+        },
+        topPerformers: managerStats.sort((a, b) => b.revenue - a.revenue).slice(0, 5),
+        departmentHealth: {
+          sales: 'Healthy',
+          operations: 'Normal',
+          compliance: 'Excellent'
+        }
+      };
+      
+      const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `owner-full-report-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      
+      alert('Full owner report exported successfully');
+    }
+
+    function goToSettings() {
+      window.location.href = '/pages/Settings.html';
+    }
+  </script>
+</body>
+</html>

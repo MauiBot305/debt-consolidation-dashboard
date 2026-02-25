@@ -1,588 +1,700 @@
-<!-- Manager Dashboard - Management Command Center -->
-<div class="space-y-6">
-  <!-- Page Header -->
-  <div class="flex items-center justify-between mb-8 fade-in-up stagger-1">
-    <div>
-      <h1 class="text-3xl font-bold text-white mb-2 font-orbitron">Management Command Center</h1>
-      <p class="text-gray-400">Real-time team oversight and performance metrics</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Dashboard - Debt Consolidation Empire</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --bg-primary: #0a0f1a;
+      --bg-card: rgba(15, 23, 42, 0.8);
+      --bg-glass: rgba(30, 41, 59, 0.6);
+      --primary: #3B82F6;
+      --primary-glow: rgba(59, 130, 246, 0.3);
+      --accent: #06B6D4;
+      --accent-glow: rgba(6, 182, 212, 0.3);
+      --success: #22C55E;
+      --success-glow: rgba(34, 197, 94, 0.3);
+      --warning: #F59E0B;
+      --warning-glow: rgba(245, 158, 11, 0.3);
+      --danger: #EF4444;
+      --danger-glow: rgba(239, 68, 68, 0.3);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-subtle: rgba(148, 163, 184, 0.1);
+      --border-hover: rgba(148, 163, 184, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .glass-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Team Overview Cards */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .overview-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .overview-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(59, 130, 246, 0.2);
+    }
+
+    .overview-label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .overview-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Quick Actions */
+    .actions-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .action-btn {
+      flex: 1;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px var(--primary-glow);
+    }
+
+    .action-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* Main Content */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Agent Performance Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    th:hover {
+      color: var(--accent);
+    }
+
+    td {
+      padding: 1rem;
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    tr:hover {
+      background: rgba(148, 163, 184, 0.05);
+    }
+
+    .agent-name {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .agent-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 0.875rem;
+    }
+
+    .performance-bar {
+      height: 8px;
+      background: rgba(148, 163, 184, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .performance-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), var(--accent));
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+
+    /* Alert Panel */
+    .alert-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .alert-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(148, 163, 184, 0.03);
+      border-left: 3px solid var(--warning);
+      border-radius: 0.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .alert-item.critical {
+      border-left-color: var(--danger);
+    }
+
+    .alert-item.info {
+      border-left-color: var(--accent);
+    }
+
+    .alert-icon {
+      font-size: 1.5rem;
+    }
+
+    .alert-content {
+      flex: 1;
+    }
+
+    .alert-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .alert-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(148, 163, 184, 0.05);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.3);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 2000;
+    }
+
+    .toast.active {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>👥 Manager Dashboard</h1>
+    <button class="btn btn-success" onclick="exportTeamReport()">📥 Export Team Report</button>
+  </div>
+
+  <!-- Team Overview -->
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="overview-label">Total Agents</div>
+      <div class="overview-value" id="totalAgents">0</div>
     </div>
-    <div class="flex gap-3">
-      <button class="btn btn-primary flex items-center gap-2">
-        <i data-lucide="download" class="w-4 h-4"></i>
-        Export Report
-      </button>
-      <button class="btn btn-primary flex items-center gap-2">
-        <i data-lucide="users-plus" class="w-4 h-4"></i>
-        Assign Leads
-      </button>
+    <div class="overview-card">
+      <div class="overview-label">Active Calls Now</div>
+      <div class="overview-value" id="activeCalls">0</div>
+    </div>
+    <div class="overview-card">
+      <div class="overview-label">Pending Leads</div>
+      <div class="overview-value" id="pendingLeads">0</div>
+    </div>
+    <div class="overview-card">
+      <div class="overview-label">Compliance Score</div>
+      <div class="overview-value" id="complianceScore">0%</div>
     </div>
   </div>
 
-  <!-- Team KPIs -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 fade-in-up stagger-2">
-    <div class="kpi-card">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 bg-blue-500/20 rounded-lg">
-          <i data-lucide="phone" class="w-5 h-5 text-blue-400"></i>
-        </div>
-        <span class="text-xs text-gray-400">Today</span>
-      </div>
-      <div class="font-orbitron text-3xl font-bold text-white mb-1" id="teamCalls">342</div>
-      <div class="text-sm text-gray-400 mb-3">Total Calls</div>
-      <div class="flex items-center gap-2">
-        <i data-lucide="trending-up" class="w-3 h-3 text-green-400"></i>
-        <span class="text-xs text-green-400">+18% vs yesterday</span>
-      </div>
+  <!-- Quick Actions -->
+  <div class="actions-bar">
+    <button class="action-btn" onclick="assignLeads()">
+      <span style="font-size: 1.5rem;">🎯</span>
+      <span class="action-label">Assign Leads (Auto)</span>
+    </button>
+    <button class="action-btn" onclick="reviewCases()">
+      <span style="font-size: 1.5rem;">📋</span>
+      <span class="action-label">Review Cases</span>
+    </button>
+    <button class="action-btn" onclick="runComplianceCheck()">
+      <span style="font-size: 1.5rem;">🛡️</span>
+      <span class="action-label">Run Compliance Check</span>
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-grid">
+    <!-- Agent Performance Table -->
+    <div class="glass-card">
+      <div class="card-title">📊 Agent Performance</div>
+      <table>
+        <thead>
+          <tr>
+            <th onclick="sortTable('name')">Agent</th>
+            <th onclick="sortTable('callsToday')">Calls Today</th>
+            <th onclick="sortTable('dealsWeek')">Deals This Week</th>
+            <th onclick="sortTable('revenue')">Revenue</th>
+            <th onclick="sortTable('conversion')">Conversion %</th>
+          </tr>
+        </thead>
+        <tbody id="agentTableBody"></tbody>
+      </table>
     </div>
 
-    <div class="kpi-card">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 bg-cyan-500/20 rounded-lg">
-          <i data-lucide="user-check" class="w-5 h-5 text-cyan-400"></i>
-        </div>
-        <span class="text-xs text-gray-400">Today</span>
-      </div>
-      <div class="font-orbitron text-3xl font-bold text-white mb-1" id="teamEnrollments">23</div>
-      <div class="text-sm text-gray-400 mb-3">Enrollments</div>
-      <div class="flex items-center gap-2">
-        <i data-lucide="trending-up" class="w-3 h-3 text-green-400"></i>
-        <span class="text-xs text-green-400">+12% vs target</span>
-      </div>
-    </div>
-
-    <div class="kpi-card">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 bg-emerald-500/20 rounded-lg">
-          <i data-lucide="dollar-sign" class="w-5 h-5 text-emerald-400"></i>
-        </div>
-        <span class="text-xs text-gray-400">Today</span>
-      </div>
-      <div class="font-orbitron text-3xl font-bold text-white mb-1" id="teamRevenue">$487K</div>
-      <div class="text-sm text-gray-400 mb-3">Team Revenue</div>
-      <div class="flex items-center gap-2">
-        <i data-lucide="trending-up" class="w-3 h-3 text-green-400"></i>
-        <span class="text-xs text-green-400">+24% vs yesterday</span>
-      </div>
-    </div>
-
-    <div class="kpi-card">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 bg-yellow-500/20 rounded-lg">
-          <i data-lucide="percent" class="w-5 h-5 text-yellow-400"></i>
-        </div>
-        <span class="text-xs text-gray-400">7-Day Avg</span>
-      </div>
-      <div class="font-orbitron text-3xl font-bold text-white mb-1" id="teamConversion">37.2%</div>
-      <div class="text-sm text-gray-400 mb-3">Conversion Rate</div>
-      <div class="flex items-center gap-2">
-        <i data-lucide="trending-up" class="w-3 h-3 text-green-400"></i>
-        <span class="text-xs text-green-400">+3.1% vs last week</span>
-      </div>
-    </div>
-
-    <div class="kpi-card">
-      <div class="flex items-center justify-between mb-3">
-        <div class="p-2 bg-green-500/20 rounded-lg">
-          <i data-lucide="shield-check" class="w-5 h-5 text-green-400"></i>
-        </div>
-        <span class="text-xs text-gray-400">This Month</span>
-      </div>
-      <div class="font-orbitron text-3xl font-bold text-white mb-1" id="complianceScore">96.8%</div>
-      <div class="text-sm text-gray-400 mb-3">Compliance Score</div>
-      <div class="flex items-center gap-2">
-        <i data-lucide="shield" class="w-3 h-3 text-green-400"></i>
-        <span class="text-xs text-green-400">All clear</span>
-      </div>
+    <!-- Alert Panel -->
+    <div class="glass-card">
+      <div class="card-title">⚠️ Alerts</div>
+      <div class="alert-list" id="alertList"></div>
     </div>
   </div>
 
-  <!-- Main Content Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Left Column: Team Overview & Real-time Monitor -->
-    <div class="lg:col-span-2 space-y-6">
-      <!-- Team Overview -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-3">
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center gap-3">
-            <div class="p-2 bg-blue-500/20 rounded-lg">
-              <i data-lucide="users" class="w-5 h-5 text-blue-400"></i>
-            </div>
-            <div>
-              <h2 class="text-xl font-bold text-white">Team Overview</h2>
-              <p class="text-sm text-gray-400">10 agents active</p>
-            </div>
-          </div>
-          <button class="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-2">
-            View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
-          </button>
-        </div>
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
-        <div class="space-y-4" id="teamOverviewGrid">
-          <!-- Agent cards will be inserted here -->
-        </div>
-      </div>
+  <script>
+    let agentData = [];
+    let sortColumn = 'revenue';
+    let sortDirection = 'desc';
 
-      <!-- Real-time Call Monitor -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-4">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 bg-red-500/20 rounded-lg">
-            <i data-lucide="phone-call" class="w-5 h-5 text-red-400"></i>
-          </div>
-          <div>
-            <h2 class="text-xl font-bold text-white">Live Call Monitor</h2>
-            <p class="text-sm text-gray-400">
-              <span class="status-dot bg-red-500 mr-2"></span>
-              <span id="liveCallCount">4</span> agents on calls now
-            </p>
-          </div>
-        </div>
+    document.addEventListener('DOMContentLoaded', function() {
+      loadManagerDashboard();
+    });
 
-        <div class="space-y-3" id="liveCallMonitor">
-          <!-- Live call cards will be inserted here -->
-        </div>
-      </div>
+    function loadManagerDashboard() {
+      updateOverview();
+      loadAgentPerformance();
+      loadAlerts();
+    }
 
-      <!-- Agent Performance Comparison -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-5">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 bg-cyan-500/20 rounded-lg">
-            <i data-lucide="bar-chart-3" class="w-5 h-5 text-cyan-400"></i>
-          </div>
-          <h2 class="text-xl font-bold text-white">Agent Performance Comparison</h2>
-        </div>
+    function updateOverview() {
+      const agents = window.DebtDB.getAgents();
+      const leads = window.DebtDB.getLeads();
+      const calls = window.DebtDB.getCalls();
+      const checklist = window.DebtDB.getComplianceChecklist();
+      
+      // Total Agents
+      document.getElementById('totalAgents').textContent = agents.length;
+      
+      // Active Calls (mock - would need real-time data)
+      const activeCalls = Math.floor(Math.random() * 5) + 1;
+      document.getElementById('activeCalls').textContent = activeCalls;
+      
+      // Pending Leads
+      const pendingLeads = leads.filter(l => l.stage === 'Lead' || l.stage === 'Contacted').length;
+      document.getElementById('pendingLeads').textContent = pendingLeads;
+      
+      // Compliance Score
+      const completed = checklist.filter(item => item.completed).length;
+      const total = checklist.length;
+      const complianceScore = total > 0 ? Math.round((completed / total) * 100) : 0;
+      document.getElementById('complianceScore').textContent = complianceScore + '%';
+    }
 
-        <div class="space-y-4" id="performanceComparison">
-          <!-- Performance bars will be inserted here -->
-        </div>
-      </div>
-    </div>
+    function loadAgentPerformance() {
+      const managerStats = window.DebtDB.getManagerStats();
+      
+      agentData = managerStats.map(agent => {
+        const conversion = agent.callsToday > 0 
+          ? ((agent.dealsThisWeek / agent.callsToday) * 100).toFixed(1) 
+          : 0;
+        
+        return {
+          id: agent.agentId,
+          name: agent.agentName,
+          callsToday: agent.callsToday,
+          dealsWeek: agent.dealsThisWeek,
+          revenue: agent.revenue,
+          conversion: parseFloat(conversion)
+        };
+      });
+      
+      sortTable(sortColumn);
+    }
 
-    <!-- Right Column: Priorities & Quality -->
-    <div class="space-y-6">
-      <!-- Pipeline Health -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-3">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 bg-yellow-500/20 rounded-lg">
-            <i data-lucide="git-branch" class="w-5 h-5 text-yellow-400"></i>
-          </div>
-          <div>
-            <h2 class="text-xl font-bold text-white">Pipeline Health</h2>
-            <p class="text-sm text-gray-400">Stage distribution</p>
-          </div>
-        </div>
+    function sortTable(column) {
+      if (sortColumn === column) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortColumn = column;
+        sortDirection = 'desc';
+      }
+      
+      agentData.sort((a, b) => {
+        let aVal = a[column];
+        let bVal = b[column];
+        
+        if (typeof aVal === 'string') {
+          aVal = aVal.toLowerCase();
+          bVal = bVal.toLowerCase();
+        }
+        
+        if (sortDirection === 'asc') {
+          return aVal > bVal ? 1 : -1;
+        } else {
+          return aVal < bVal ? 1 : -1;
+        }
+      });
+      
+      renderAgentTable();
+    }
 
-        <div class="space-y-3" id="pipelineHealth">
-          <!-- Pipeline stages will be inserted here -->
-        </div>
-      </div>
+    function renderAgentTable() {
+      const tbody = document.getElementById('agentTableBody');
+      
+      tbody.innerHTML = agentData.map(agent => {
+        const initials = agent.name.split(' ').map(n => n[0]).join('');
+        const conversionPercent = Math.min(agent.conversion, 100);
+        
+        return `
+          <tr>
+            <td>
+              <div class="agent-name">
+                <div class="agent-avatar">${initials}</div>
+                <span>${agent.name}</span>
+              </div>
+            </td>
+            <td>${agent.callsToday}</td>
+            <td>${agent.dealsWeek}</td>
+            <td style="font-family: 'Orbitron'; color: var(--success); font-weight: 700;">
+              $${agent.revenue.toLocaleString()}
+            </td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div class="performance-bar" style="flex: 1;">
+                  <div class="performance-fill" style="width: ${conversionPercent}%"></div>
+                </div>
+                <span style="font-family: 'Orbitron'; font-size: 0.75rem; min-width: 40px;">
+                  ${agent.conversion}%
+                </span>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
 
-      <!-- Today's Priorities -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-4">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 bg-orange-500/20 rounded-lg">
-            <i data-lucide="alert-circle" class="w-5 h-5 text-orange-400"></i>
-          </div>
-          <div>
-            <h2 class="text-xl font-bold text-white">Today's Priorities</h2>
-            <p class="text-sm text-gray-400">Requires attention</p>
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-semibold text-red-400">Overdue Follow-ups</span>
-              <span class="font-orbitron font-bold text-red-400">12</span>
-            </div>
-            <p class="text-xs text-gray-400">Urgent callbacks required</p>
-          </div>
-
-          <div class="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-semibold text-yellow-400">Pending Settlements</span>
-              <span class="font-orbitron font-bold text-yellow-400">8</span>
-            </div>
-            <p class="text-xs text-gray-400">Awaiting approval</p>
-          </div>
-
-          <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-semibold text-blue-400">Unsigned Documents</span>
-              <span class="font-orbitron font-bold text-blue-400">5</span>
-            </div>
-            <p class="text-xs text-gray-400">Enrollment docs pending</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quality Assurance -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-5">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 bg-purple-500/20 rounded-lg">
-            <i data-lucide="headphones" class="w-5 h-5 text-purple-400"></i>
-          </div>
-          <div>
-            <h2 class="text-xl font-bold text-white">Quality Assurance</h2>
-            <p class="text-sm text-gray-400">Call quality scores</p>
-          </div>
-        </div>
-
-        <div class="space-y-3" id="qualityScores">
-          <!-- Quality items will be inserted here -->
-        </div>
-      </div>
-
-      <!-- Escalation Queue -->
-      <div class="glass-card rounded-2xl p-6 fade-in-up stagger-6">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="p-2 bg-red-500/20 rounded-lg">
-            <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400"></i>
-          </div>
-          <div>
-            <h2 class="text-xl font-bold text-white">Escalations</h2>
-            <p class="text-sm text-gray-400">Requires intervention</p>
-          </div>
-        </div>
-
-        <div class="space-y-3" id="escalationQueue">
-          <!-- Escalations will be inserted here -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Quick Actions Bar -->
-  <div class="glass-card rounded-2xl p-4 fade-in-up stagger-6">
-    <div class="flex items-center justify-between">
-      <span class="text-sm font-semibold text-gray-400">Quick Actions:</span>
-      <div class="flex gap-3">
-        <button class="btn btn-primary text-sm py-2 px-4 flex items-center gap-2">
-          <i data-lucide="user-plus" class="w-4 h-4"></i>
-          Reassign Lead
-        </button>
-        <button class="btn btn-primary text-sm py-2 px-4 flex items-center gap-2">
-          <i data-lucide="skip-forward" class="w-4 h-4"></i>
-          Override Stage
-        </button>
-        <button class="btn btn-primary text-sm py-2 px-4 flex items-center gap-2">
-          <i data-lucide="check-circle" class="w-4 h-4"></i>
-          Approve Settlement
-        </button>
-        <button class="btn btn-primary text-sm py-2 px-4 flex items-center gap-2">
-          <i data-lucide="gift" class="w-4 h-4"></i>
-          Add Bonus
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Functionality verified by Agent 4 (Kimi 1 equivalent) -->
-<script>
-function initManagerDashboard() {
-  renderTeamMetrics();
-  renderTeamOverview();
-  renderLiveCallMonitor();
-  renderPerformanceComparison();
-  renderPipelineHealth();
-  renderQualityScores();
-  renderEscalationQueue();
-  attachEventListeners();
-  
-  // Auto-refresh live data every 10 seconds
-  setInterval(() => {
-    renderLiveCallMonitor();
-    renderTeamMetrics();
-  }, 10000);
-}
-
-function attachEventListeners() {
-  // Export Report button
-  const exportBtn = document.querySelector('button:has(> i[data-lucide="download"])');
-  if (exportBtn) {
-    exportBtn.onclick = exportTeamReport;
-  }
-  
-  // Assign Leads button
-  const assignBtn = document.querySelector('button:has(> i[data-lucide="users-plus"])');
-  if (assignBtn) {
-    assignBtn.onclick = showAssignLeadsModal;
-  }
-}
-
-function renderTeamMetrics() {
-  // Calculate real team metrics from DebtDB
-  const agents = DebtDB.getAgents();
-  const activities = DebtDB.getActivities();
-  const tasks = DebtDB.getTasks({ status: 'pending' });
-  const cases = DebtDB.getCases();
-  
-  // Total calls today
-  const today = new Date().toISOString().split('T')[0];
-  const todayCalls = activities.filter(a => 
-    a.type === 'call' && a.timestamp?.startsWith(today)
-  );
-  const teamCalls = todayCalls.length;
-  
-  // Total enrollments
-  const enrollments = activities.filter(a => a.type === 'enrollment');
-  const teamEnrollments = enrollments.filter(e => e.timestamp?.startsWith(today)).length;
-  
-  // Team revenue (sum from all agents)
-  const revenue = DebtDB.getRevenue();
-  const teamRevenue = revenue.today || 0;
-  
-  // Average conversion rate
-  const avgConversion = agents.reduce((sum, a) => sum + (a.stats?.conversionRate || 0), 0) / agents.length;
-  
-  // Compliance score (simulate based on completed tasks)
-  const completedTasks = DebtDB.getTasks({ status: 'completed' }).length;
-  const totalTasks = DebtDB.getTasks().length;
-  const complianceScore = totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(1) : 95.0;
-  
-  // Update KPI cards
-  document.getElementById('teamCalls').textContent = teamCalls;
-  document.getElementById('teamEnrollments').textContent = teamEnrollments;
-  document.getElementById('teamRevenue').textContent = `$${(teamRevenue / 1000).toFixed(0)}K`;
-  document.getElementById('teamConversion').textContent = `${avgConversion.toFixed(1)}%`;
-  document.getElementById('complianceScore').textContent = `${complianceScore}%`;
-}
-
-function exportTeamReport() {
-  const agents = DebtDB.getAgents();
-  const revenue = DebtDB.getRevenue();
-  
-  // Create CSV data
-  let csv = 'Agent Name,Email,Role,Calls Today,Enrollments,Revenue,Commission,Conversion Rate\n';
-  
-  agents.forEach(agent => {
-    const agentRevenue = revenue.byAgent?.[agent.id] || { total: 0, commission: 0 };
-    csv += `"${agent.name}","${agent.email}","${agent.role}",${agent.stats?.callsToday || 0},${agent.stats?.enrollments || 0},$${agentRevenue.total || 0},$${agentRevenue.commission || 0},${agent.stats?.conversionRate || 0}%\n`;
-  });
-  
-  // Download CSV
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `team-report-${new Date().toISOString().split('T')[0]}.csv`;
-  a.click();
-  window.URL.revokeObjectURL(url);
-  
-  Toast.show('Team report exported successfully!', 'success');
-}
-
-function showAssignLeadsModal() {
-  // For now, show a toast. In production, this would open a modal
-  const agents = DebtDB.getAgents();
-  const leads = DebtDB.getLeads({ stage: 'New Lead' });
-  
-  if (leads.length === 0) {
-    Toast.show('No unassigned leads available', 'info');
-    return;
-  }
-  
-  // Simple auto-assignment: distribute leads evenly
-  let assignedCount = 0;
-  leads.slice(0, 10).forEach((lead, index) => {
-    const agent = agents[index % agents.length];
-    DebtDB.updateLead(lead.id, { assignedAgent: agent.id });
-    assignedCount++;
-  });
-  
-  Toast.show(`${assignedCount} leads assigned to team`, 'success');
-  setTimeout(() => renderTeamOverview(), 500);
-}
-
-function renderTeamOverview() {
-  const agents = DebtDB.getAgents().slice(0, 10); // Top 10 agents
-  const container = document.getElementById('teamOverviewGrid');
-  
-  container.innerHTML = agents.map(agent => `
-    <div class="flex items-center justify-between p-4 bg-[#0a0f1a] border border-gray-800 rounded-xl hover:border-blue-500/30 transition-all group cursor-pointer"
-         onclick="viewAgentDetail('${agent.id}')">
-      <div class="flex items-center gap-3">
-        <div class="avatar-ring">
-          <img src="${agent.avatar}" alt="${agent.name}" class="w-10 h-10 rounded-full">
-        </div>
-        <div>
-          <p class="font-semibold text-white">${agent.name}</p>
-          <div class="flex items-center gap-2 text-xs text-gray-400">
-            <span class="status-dot bg-green-400"></span>
-            <span>Active</span>
+    function loadAlerts() {
+      const alertList = document.getElementById('alertList');
+      
+      // Generate alerts based on system state
+      const alerts = [];
+      
+      // Check for overdue follow-ups
+      const activities = window.DebtDB.getActivities();
+      const overdue = activities.filter(a => {
+        if (!a.scheduledFor) return false;
+        return new Date(a.scheduledFor) < new Date();
+      }).length;
+      
+      if (overdue > 0) {
+        alerts.push({
+          type: 'critical',
+          icon: '🔴',
+          title: `${overdue} Overdue Follow-ups`,
+          text: 'Multiple callbacks and follow-ups are past due'
+        });
+      }
+      
+      // Check compliance
+      const checklist = window.DebtDB.getComplianceChecklist();
+      const completed = checklist.filter(item => item.completed).length;
+      const complianceScore = (completed / checklist.length) * 100;
+      
+      if (complianceScore < 80) {
+        alerts.push({
+          type: 'warning',
+          icon: '⚠️',
+          title: 'Compliance Score Below Target',
+          text: `Current score: ${complianceScore.toFixed(0)}% (target: 80%)`
+        });
+      }
+      
+      // Check for expiring licenses
+      const licenses = window.DebtDB.getLicenses();
+      const today = new Date();
+      const thirtyDaysFromNow = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+      
+      const expiring = licenses.filter(license => {
+        if (!license.expiryDate) return false;
+        const expiryDate = new Date(license.expiryDate);
+        return expiryDate <= thirtyDaysFromNow && expiryDate >= today;
+      });
+      
+      if (expiring.length > 0) {
+        alerts.push({
+          type: 'warning',
+          icon: '📋',
+          title: `${expiring.length} License(s) Expiring Soon`,
+          text: 'Review and renew state licenses within 30 days'
+        });
+      }
+      
+      // SLA breaches (mock)
+      const slaBreaches = Math.floor(Math.random() * 3);
+      if (slaBreaches > 0) {
+        alerts.push({
+          type: 'info',
+          icon: '⏱️',
+          title: `${slaBreaches} SLA Breaches`,
+          text: 'Response time targets exceeded on recent leads'
+        });
+      }
+      
+      // Success alert if everything is good
+      if (alerts.length === 0) {
+        alerts.push({
+          type: 'info',
+          icon: '✅',
+          title: 'All Systems Operational',
+          text: 'No alerts at this time. Team is performing well!'
+        });
+      }
+      
+      alertList.innerHTML = alerts.map(alert => `
+        <div class="alert-item ${alert.type}">
+          <div class="alert-icon">${alert.icon}</div>
+          <div class="alert-content">
+            <div class="alert-title">${alert.title}</div>
+            <div class="alert-text">${alert.text}</div>
           </div>
         </div>
-      </div>
-      <div class="grid grid-cols-3 gap-6 text-center">
-        <div>
-          <div class="font-orbitron font-bold text-white">${agent.stats?.callsToday || 0}</div>
-          <div class="text-xs text-gray-400">Calls</div>
-        </div>
-        <div>
-          <div class="font-orbitron font-bold text-cyan-400">${agent.stats?.enrollments || 0}</div>
-          <div class="text-xs text-gray-400">Enrolled</div>
-        </div>
-        <div>
-          <div class="font-orbitron font-bold text-green-400">${DBHelpers.formatCurrency(agent.stats?.revenue || 0)}</div>
-          <div class="text-xs text-gray-400">Revenue</div>
-        </div>
-      </div>
-    </div>
-  `).join('');
-  
-  lucide.createIcons();
-}
+      `).join('');
+    }
 
-function viewAgentDetail(agentId) {
-  // Navigate to agent detail view (would be a dedicated page in production)
-  Toast.show(`Viewing details for agent ${agentId}`, 'info');
-  // In production: App.navigateTo('agent-detail', 'AgentDetail', { agentId });
-}
+    function assignLeads() {
+      const leads = window.DebtDB.getLeads().filter(l => !l.agent);
+      const agents = window.DebtDB.getAgents();
+      
+      if (leads.length === 0) {
+        showToast('No unassigned leads found');
+        return;
+      }
+      
+      if (agents.length === 0) {
+        showToast('No agents available');
+        return;
+      }
+      
+      // Round-robin assignment
+      let agentIndex = 0;
+      leads.forEach(lead => {
+        const agent = agents[agentIndex % agents.length];
+        window.DebtDB.updateLead(lead.id, { agent: agent.id });
+        agentIndex++;
+      });
+      
+      showToast(`Assigned ${leads.length} leads to ${agents.length} agents`);
+      loadManagerDashboard();
+    }
 
-function renderLiveCallMonitor() {
-  const container = document.getElementById('liveCallMonitor');
-  
-  // Simulate live calls (in production, this would be real-time data)
-  const liveCalls = [
-    { agent: 'John Smith', lead: 'Sarah Mitchell', duration: '08:32', status: 'qualifying' },
-    { agent: 'Maria Garcia', lead: 'Michael Chen', duration: '05:18', status: 'enrolling' },
-    { agent: 'Agent 3', lead: 'Jessica Rodriguez', duration: '12:45', status: 'follow_up' },
-    { agent: 'Agent 5', lead: 'David Thompson', duration: '03:22', status: 'new_contact' }
-  ];
-  
-  const statusColors = {
-    qualifying: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
-    enrolling: 'text-green-400 bg-green-500/10 border-green-500/20',
-    follow_up: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
-    new_contact: 'text-blue-400 bg-blue-500/10 border-blue-500/20'
-  };
-  
-  container.innerHTML = liveCalls.map(call => `
-    <div class="flex items-center justify-between p-4 bg-[#0a0f1a] border border-red-500/30 rounded-lg">
-      <div class="flex items-center gap-3">
-        <div class="relative">
-          <div class="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
-            <i data-lucide="phone" class="w-5 h-5 text-red-400"></i>
-          </div>
-          <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-[#0a0f1a] badge-pulse"></span>
-        </div>
-        <div>
-          <p class="font-semibold text-white">${call.agent}</p>
-          <p class="text-sm text-gray-400">→ ${call.lead}</p>
-        </div>
-      </div>
-      <div class="text-right">
-        <div class="font-orbitron font-bold text-red-400 mb-1">${call.duration}</div>
-        <span class="text-xs px-2 py-1 rounded-full border ${statusColors[call.status]}">
-          ${call.status.replace('_', ' ')}
-        </span>
-      </div>
-    </div>
-  `).join('');
-  
-  document.getElementById('liveCallCount').textContent = liveCalls.length;
-  lucide.createIcons();
-}
+    function reviewCases() {
+      window.location.href = '/pages/CaseManagement.html';
+    }
 
-function renderPerformanceComparison() {
-  const agents = DebtDB.getAgents().slice(0, 8);
-  const container = document.getElementById('performanceComparison');
-  
-  // Sort by enrollments
-  const sortedAgents = [...agents].sort((a, b) => b.stats.enrollments - a.stats.enrollments);
-  const maxEnrollments = sortedAgents[0].stats.enrollments;
-  
-  container.innerHTML = sortedAgents.map(agent => {
-    const percentage = (agent.stats.enrollments / maxEnrollments) * 100;
-    return `
-      <div>
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-sm text-white">${agent.name}</span>
-          <span class="font-orbitron font-bold text-cyan-400">${agent.stats.enrollments}</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: ${percentage}%"></div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
+    function runComplianceCheck() {
+      window.location.href = '/pages/Compliance.html';
+    }
 
-function renderPipelineHealth() {
-  const container = document.getElementById('pipelineHealth');
-  
-  // Calculate stage counts
-  const stageCounts = {};
-  DB.pipelineStages.forEach(stage => {
-    stageCounts[stage] = DB.leads.filter(l => l.stage === stage).length;
-  });
-  
-  const stageColors = {
-    'New Lead': 'text-gray-400 bg-gray-500/10 border-gray-500/20',
-    'Contacted': 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-    'Qualified': 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
-    'Enrolled': 'text-green-400 bg-green-500/10 border-green-500/20',
-    'In Program': 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
-    'Negotiating': 'text-orange-400 bg-orange-500/10 border-orange-500/20',
-    'Settled': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-    'Completed': 'text-teal-400 bg-teal-500/10 border-teal-500/20'
-  };
-  
-  container.innerHTML = Object.entries(stageCounts).map(([stage, count]) => `
-    <div class="flex items-center justify-between p-3 border rounded-lg ${stageColors[stage]}">
-      <span class="text-sm font-medium">${stage}</span>
-      <span class="font-orbitron font-bold text-lg">${count}</span>
-    </div>
-  `).join('');
-}
+    function exportTeamReport() {
+      const report = {
+        generatedAt: new Date().toISOString(),
+        overview: {
+          totalAgents: window.DebtDB.getAgents().length,
+          pendingLeads: window.DebtDB.getLeads().filter(l => l.stage === 'Lead').length,
+          complianceScore: document.getElementById('complianceScore').textContent
+        },
+        agentPerformance: agentData
+      };
+      
+      const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `team-report-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      
+      showToast('Team report exported successfully');
+    }
 
-function renderQualityScores() {
-  const container = document.getElementById('qualityScores');
-  
-  const recentScores = [
-    { agent: 'John Smith', call: 'L003 - Jessica R.', score: 94, time: '2 hrs ago' },
-    { agent: 'Maria Garcia', call: 'L002 - Michael C.', score: 98, time: '4 hrs ago' },
-    { agent: 'Agent 3', call: 'L015 - Robert W.', score: 72, time: '6 hrs ago', flagged: true }
-  ];
-  
-  container.innerHTML = recentScores.map(item => `
-    <div class="p-3 bg-[#0a0f1a] border ${item.flagged ? 'border-red-500/30' : 'border-gray-800'} rounded-lg">
-      <div class="flex items-center justify-between mb-2">
-        <div>
-          <p class="text-sm font-semibold text-white">${item.agent}</p>
-          <p class="text-xs text-gray-400">${item.call}</p>
-        </div>
-        <div class="text-right">
-          <div class="font-orbitron font-bold ${item.score >= 90 ? 'text-green-400' : item.score >= 80 ? 'text-yellow-400' : 'text-red-400'}">
-            ${item.score}
-          </div>
-          ${item.flagged ? '<span class="text-xs text-red-400">⚠ Flagged</span>' : ''}
-        </div>
-      </div>
-      <div class="text-xs text-gray-500">${item.time}</div>
-    </div>
-  `).join('');
-}
-
-function renderEscalationQueue() {
-  const container = document.getElementById('escalationQueue');
-  
-  const escalations = [
-    { lead: 'Sarah Mitchell', issue: 'Payment dispute - requesting refund', priority: 'high', time: '30 min ago' },
-    { lead: 'David Thompson', issue: 'Creditor threatening lawsuit', priority: 'critical', time: '1 hr ago' }
-  ];
-  
-  container.innerHTML = escalations.map(item => `
-    <div class="p-3 ${item.priority === 'critical' ? 'bg-red-500/20 border border-red-500/30' : 'bg-orange-500/10 border border-orange-500/20'} rounded-lg">
-      <div class="flex items-center justify-between mb-2">
-        <p class="text-sm font-semibold text-white">${item.lead}</p>
-        <span class="text-xs px-2 py-1 rounded-full ${item.priority === 'critical' ? 'bg-red-500 text-white' : 'bg-orange-500 text-white'}">
-          ${item.priority}
-        </span>
-      </div>
-      <p class="text-xs text-gray-300 mb-2">${item.issue}</p>
-      <p class="text-xs text-gray-500">${item.time}</p>
-    </div>
-  `).join('');
-}
-</script>
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('active');
+      
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
