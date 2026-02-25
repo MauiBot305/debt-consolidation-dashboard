@@ -991,12 +991,22 @@
       // Load page content
       async loadPage(pageName) {
         const pageContent = document.getElementById('pageContent');
+        if (!pageContent) {
+          console.error('[Debt Empire] pageContent element not found!');
+          return;
+        }
         
         // Show loading skeleton
         pageContent.innerHTML = '<div class="skeleton h-96 rounded-2xl"></div>';
+        console.log(`[Debt Empire] Loading page: ${pageName}`);
 
         try {
-          const response = await fetch(`pages/${pageName}.html`);
+          // Try without .html first (Cloudflare Pages strips extensions), fallback to .html
+          let response = await fetch(`pages/${pageName}`);
+          if (!response.ok) {
+            response = await fetch(`pages/${pageName}.html`);
+          }
+          console.log(`[Debt Empire] Page fetch status: ${response.status} for ${pageName}`);
           if (response.ok) {
             const html = await response.text();
             setTimeout(() => {
@@ -1418,7 +1428,15 @@
     };
 
     // Initialize app immediately — script is at bottom of page, DOM is ready
-    App.init();
+    try {
+      console.log('[Debt Empire] App.init() starting...');
+      App.init();
+      console.log('[Debt Empire] App.init() completed');
+    } catch(e) {
+      console.error('[Debt Empire] App.init() FAILED:', e);
+      // Force show login if init fails
+      document.getElementById('app').innerHTML = '<div style="color:red;padding:40px;text-align:center"><h2>Load Error</h2><p>'+e.message+'</p><button onclick="location.reload()" style="margin-top:20px;padding:10px 20px;background:#3b82f6;color:white;border:none;border-radius:8px;cursor:pointer">Retry</button></div>';
+    }
   </script>
 </body>
 </html>
