@@ -14,10 +14,31 @@
         "direction": "outbound",
         "turns": 1,
         "durationMs": 11597
+      },
+      {
+        "callSid": "CAaf4e0f074fab6aa9827b3440059b6359",
+        "date": "2026-02-25T02:49:57.268Z",
+        "direction": "outbound",
+        "turns": 2,
+        "durationMs": 10059
       }
     ],
     "name": "Patrick",
     "language": "en",
-    "lastCall": "2026-02-25T02:46:21.995Z"
+    "lastCall": "2026-02-25T02:49:57.268Z"
+  },
+  "+15551234567": {
+    "calls": [
+      {
+        "callSid": "CA_TEST_CALL_001",
+        "date": "2026-02-25T02:53:03.420Z",
+        "direction": "inbound",
+        "turns": 0,
+        "durationMs": 5004
+      }
+    ],
+    "name": "Test Caller",
+    "language": "en",
+    "lastCall": "2026-02-25T02:53:03.420Z"
   }
 }

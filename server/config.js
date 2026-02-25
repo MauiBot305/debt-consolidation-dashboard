@@ -1,46 +1,47 @@
 /**
- * Voice Agent Configuration
- * All credentials and settings in one place
+ * Voice Agent Configuration — hardcoded for reliability
  */
 
 export const config = {
-  port: parseInt(process.env.PORT || '8100'),
-  host: process.env.HOST || '0.0.0.0',
-
-  // Public URL for Twilio webhooks (ngrok or production URL)
-  publicUrl: process.env.PUBLIC_URL || 'https://treasonably-typal-audrea.ngrok-free.dev',
+  port: 8100,
+  host: '0.0.0.0',
+  publicUrl: 'https://treasonably-typal-audrea.ngrok-free.dev',
 
   twilio: {
-    accountSid: process.env.TWILIO_ACCOUNT_SID || '',
-    authToken: process.env.TWILIO_AUTH_TOKEN || '',
-    apiKey: process.env.TWILIO_API_KEY || '',
-    apiSecret: process.env.TWILIO_API_SECRET || '',
-    phoneNumber: process.env.TWILIO_PHONE_NUMBER || '',
+    accountSid: 'AC817583246f1bd0d4d71d0be44e65d938',
+    authToken: '83c7a2a19ce4627b66632bb12873d2e9',
+    apiKey: 'SK81e414a5d4c572c269e00fb0c4257807',
+    apiSecret: 'iioElfBXphoOp4yNtjgCsr0j1TMfsqGL',
+    phoneNumber: '+17866487417',
   },
 
   anthropic: {
-    apiKey: process.env.ANTHROPIC_API_KEY || '',
-    sonnetModel: 'claude-sonnet-4-5-20250514',
-    haikuModel: 'claude-haiku-4-5-20250514',
-    sonnetTimeoutMs: 3000, // Fall back to Haiku if Sonnet exceeds this
+    apiKey: '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',
+    fastModel: 'claude-3-haiku-20240307',
+    smartModel: 'claude-3-haiku-20240307',
+    sonnetTimeoutMs: 3000,
+  },
+
+  openai: {
+    apiKey: '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',
+    model: 'gpt-4o',
   },
 
   elevenlabs: {
-    apiKey: process.env.ELEVENLABS_API_KEY || '',
-    voiceId: process.env.ELEVENLABS_VOICE_ID || '',
+    apiKey: 'sk_9ab34c79f1b8d14569ea4571ffd8a68c40b225d82cde5ff1',
+    voiceId: 'sDgntYpZw3syMmKQFfje',
     model: 'eleven_turbo_v2_5',
-    outputFormat: 'ulaw_8000', // Twilio native format
+    outputFormat: 'ulaw_8000',
   },
 
   deepgram: {
-    apiKey: process.env.DEEPGRAM_API_KEY || '',
+    apiKey: '739883d64984da2a3cb6c66f0bba6a40289c30ac',
     model: 'nova-2',
     languages: ['en', 'es', 'pt', 'fr', 'ht'],
   },
 
-  // Barge-in settings
   bargeIn: {
-    interimThreshold: 3, // # of interim words before cutting TTS
-    silenceMs: 700,      // ms of silence before processing utterance
+    interimThreshold: 3,
+    silenceMs: 700,
   },
 };

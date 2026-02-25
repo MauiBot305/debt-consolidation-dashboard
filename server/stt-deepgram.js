@@ -12,7 +12,7 @@ export class DeepgramSTT extends EventEmitter {
     super();
     this.ws = null;
     this.connected = false;
-    this.language = options.language || 'multi'; // start with multi-language detection
+    this.language = options.language || 'en';
     this.keepAliveInterval = null;
   }
 
@@ -24,31 +24,30 @@ export class DeepgramSTT extends EventEmitter {
       channels: '1',
       punctuate: 'true',
       interim_results: 'true',
-      endpointing: '300',        // 300ms silence = end of utterance
+      endpointing: '300',
       utterance_end_ms: '1000',
       vad_events: 'true',
       smart_format: 'true',
+      language: this.language,
     });
-
-    // Use multi-language detection or specific language
-    if (this.language === 'multi') {
-      params.set('detect_language', 'true');
-    } else {
-      params.set('language', this.language);
-    }
 
     const url = `wss://api.deepgram.com/v1/listen?${params}`;
 
-    this.ws = new WebSocket(url, {
-      headers: { 'Authorization': `Token ${config.deepgram.apiKey}` },
-    });
+    try {
+      this.ws = new WebSocket(url, {
+        headers: { 'Authorization': `Token ${config.deepgram.apiKey}` },
+      });
+    } catch (err) {
+      console.error('[Deepgram] Failed to create WebSocket:', err.message);
+      return;
+    }
 
     this.ws.on('open', () => {
       this.connected = true;
+      console.log('[Deepgram] Connected');
       this.emit('connected');
-      // Keep-alive every 10s
       this.keepAliveInterval = setInterval(() => {
-        if (this.connected) {
+        if (this.connected && this.ws?.readyState === WebSocket.OPEN) {
           this.ws.send(JSON.stringify({ type: 'KeepAlive' }));
         }
       }, 10000);
@@ -63,22 +62,13 @@ export class DeepgramSTT extends EventEmitter {
           const transcript = alt.transcript?.trim();
           if (!transcript) return;
 
-          const isFinal = msg.is_final;
-          const detectedLang = msg.channel?.detected_language || this.language;
-          const confidence = alt.confidence || 0;
-
           this.emit('transcript', {
             text: transcript,
-            isFinal,
-            language: detectedLang,
-            confidence,
+            isFinal: msg.is_final,
+            language: msg.channel?.detected_language || this.language,
+            confidence: alt.confidence || 0,
             speechFinal: msg.speech_final || false,
           });
-
-          // Update language if detected
-          if (detectedLang && detectedLang !== 'multi') {
-            this.language = detectedLang;
-          }
         }
 
         if (msg.type === 'UtteranceEnd') {
@@ -90,13 +80,14 @@ export class DeepgramSTT extends EventEmitter {
     });
 
     this.ws.on('error', (err) => {
-      console.error('[Deepgram] Error:', err.message);
-      this.emit('error', err);
+      console.error('[Deepgram] WebSocket error:', err.message);
+      // Don't re-emit — handle gracefully
     });
 
-    this.ws.on('close', () => {
+    this.ws.on('close', (code, reason) => {
       this.connected = false;
       clearInterval(this.keepAliveInterval);
+      console.log('[Deepgram] Disconnected:', code, reason?.toString());
       this.emit('disconnected');
     });
   }
@@ -109,17 +100,17 @@ export class DeepgramSTT extends EventEmitter {
 
   setLanguage(lang) {
     this.language = lang;
-    // Deepgram doesn't support mid-stream language switch,
-    // but we track it for the LLM to respond in the right language
   }
 
   close() {
+    clearInterval(this.keepAliveInterval);
     if (this.ws) {
-      clearInterval(this.keepAliveInterval);
-      if (this.connected) {
-        this.ws.send(JSON.stringify({ type: 'CloseStream' }));
-      }
-      this.ws.close();
+      try {
+        if (this.connected) {
+          this.ws.send(JSON.stringify({ type: 'CloseStream' }));
+        }
+        this.ws.close();
+      } catch {}
       this.connected = false;
     }
   }

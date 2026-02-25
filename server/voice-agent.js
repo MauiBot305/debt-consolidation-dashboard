@@ -125,10 +125,13 @@ app.register(async function (fastify) {
             // Set outbound context if needed
             if (params.direction === 'outbound' && params.leadName) {
               llm.setOutboundContext(params.leadName);
-              // Generate and speak the opening line
-              const opening = await llm.respond('[Start the outbound call now]');
-              callMemory.addTranscript(callSid, 'maui', opening);
-              await speakToTwilio(session, opening);
+              // Use a canned greeting for instant playback (no LLM wait)
+              const name = params.leadName;
+              const greeting = `Hey, this is Maui. Am I speaking with ${name}?`;
+              // Prime the LLM history with this greeting
+              llm.conversationHistory.push({ role: 'assistant', content: greeting });
+              callMemory.addTranscript(callSid, 'maui', greeting);
+              await speakToTwilio(session, greeting);
             }
 
             // Connect STT
@@ -303,9 +306,19 @@ async function cleanupSession(callSid) {
 // ─── Dashboard API Endpoints ──────────────────────────────────────────────────
 
 // Initiate outbound AI agent call
+// SAFETY: Set ENABLE_LIVE_CALLS=1 to allow real outbound calls
 app.post('/api/call', async (req, reply) => {
   const { to, leadName, leadInfo } = req.body || {};
   if (!to) return reply.code(400).send({ error: 'Missing "to" phone number' });
+
+  if (!process.env.ENABLE_LIVE_CALLS) {
+    console.log(`[Outbound] BLOCKED — would call ${to} (lead: ${leadName}). Set ENABLE_LIVE_CALLS=1 to enable.`);
+    return reply.code(403).send({
+      error: 'Live calls disabled. Set ENABLE_LIVE_CALLS=1 to enable.',
+      wouldCall: to,
+      leadName,
+    });
+  }
 
   try {
     const call = await twilioClient.calls.create({
