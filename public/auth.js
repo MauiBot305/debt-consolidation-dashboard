@@ -216,10 +216,10 @@ window.Auth = window.Auth || {
         }
         // Navigate to dashboard without reload - NEVER call window.location.reload()
         try {
-          if (window.App && typeof window.App.init === 'function') {
-            window.App.init();
-          } else if (typeof App !== 'undefined' && typeof App.init === 'function') {
-            App.init();
+          // App may be const-scoped (not on window) — check both
+          var appRef = (typeof App !== 'undefined') ? App : window.App;
+          if (appRef && typeof appRef.init === 'function') {
+            appRef.init();
           } else {
             // Last resort: show error instead of reload loop
             if (app) {

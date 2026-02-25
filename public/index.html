@@ -524,7 +524,6 @@
         top: 4px;
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js" integrity="sha512-H+rglffZ6BQLA5cWJPBeu5VsX/MxkVLnaJOa1GBIJRWN5IjkOWwE/2GJgeT+8Oy+/VbxjwQPqQUWVoC62JbAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
-  <a href="#pageContent" class="skip-link" style="position:absolute;top:-100%;left:0;background:#3b82f6;color:white;padding:12px 24px;z-index:10000;font-size:16px;text-decoration:none;border-radius:0 0 8px 0;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Skip to main content</a>
     // Global HTML sanitizer
     window.sanitizeHTML = function(html) {
       if (typeof DOMPurify !== 'undefined') return DOMPurify.sanitize(html);
@@ -544,6 +543,7 @@
   </style>
 </head>
 <body>
+  <a href="#pageContent" class="skip-link" style="position:absolute;top:-100%;left:0;background:#3b82f6;color:white;padding:12px 24px;z-index:10000;font-size:16px;text-decoration:none;border-radius:0 0 8px 0;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Skip to main content</a>
   <!-- App Container -->
   <div id="app">
     <!-- Loading state will be replaced by auth check -->
@@ -708,7 +708,7 @@
     };
 
     // App State
-    const App = {
+    const App = window.App = {
       currentPage: 'dashboard',
       sidebarCollapsed: false,
       session: null,
@@ -1512,17 +1512,29 @@
       }
     };
 
-    // Boot timeout - show error after 10 seconds
+    // Boot timeout + init
     (function() {
       var bootDone = false;
       var loadingTimeout = setTimeout(function() {
         if (bootDone) return;
         var app = document.getElementById("app");
         if (app && app.querySelector(".animate-spin")) {
-          app.innerHTML = "<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0f1a;padding:40px"><div style="max-width:500px;text-align:center"><div style="font-size:48px;margin-bottom:16px">⚠️</div><h2 style="color:#ef4444;font-size:24px;margin-bottom:12px">Loading Timeout</h2><p style="color:#94a3b8;margin-bottom:8px">The application took too long to load.</p>" +
-            (window.__cdnStatus && window.__cdnStatus.errors.length > 0 ? "<p style="color:#f87171;margin-bottom:16px">Failed CDN: " + window.__cdnStatus.errors.join(", ") + "</p>" : "") +
-            "<p style="color:#64748b;font-size:14px;margin-bottom:20px">Auth: " + (typeof Auth !== "undefined" ? "✅" : "❌") + " | DB: " + (typeof DebtDB !== "undefined" ? "✅" : "❌") + " | Icons: " + (typeof lucide !== "undefined" && lucide.createIcons !== undefined ? "✅" : "⚠️") + "</p>" +
-            "<button onclick="location.reload()" style="padding:12px 24px;background:#3b82f6;color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px">🔄 Retry</button></div></div>";
+          var cdnErrors = (window.__cdnStatus && window.__cdnStatus.errors.length > 0)
+            ? '<p style="color:#f87171;margin-bottom:16px">Failed CDN: ' + window.__cdnStatus.errors.join(", ") + '</p>'
+            : '';
+          var depStatus = '<p style="color:#64748b;font-size:14px;margin-bottom:20px">' +
+            'Auth: ' + (typeof Auth !== "undefined" ? "\u2705" : "\u274c") +
+            ' | DB: ' + (typeof DebtDB !== "undefined" ? "\u2705" : "\u274c") +
+            ' | Icons: ' + (typeof lucide !== "undefined" && lucide.createIcons !== undefined ? "\u2705" : "\u26a0\ufe0f") +
+            '</p>';
+          app.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0f1a;padding:40px">' +
+            '<div style="max-width:500px;text-align:center">' +
+            '<div style="font-size:48px;margin-bottom:16px">\u26a0\ufe0f</div>' +
+            '<h2 style="color:#ef4444;font-size:24px;margin-bottom:12px">Loading Timeout</h2>' +
+            '<p style="color:#94a3b8;margin-bottom:8px">The application took too long to load.</p>' +
+            cdnErrors + depStatus +
+            '<button onclick="location.reload()" style="padding:12px 24px;background:#3b82f6;color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px">\ud83d\udd04 Retry</button>' +
+            '</div></div>';
         }
       }, 10000);
 
@@ -1531,10 +1543,8 @@
       if (typeof Auth === "undefined") issues.push("Auth not loaded");
       if (typeof DebtDB === "undefined") issues.push("Database not loaded");
       try { localStorage.setItem("__t", "1"); localStorage.removeItem("__t"); } catch(e) { issues.push("localStorage unavailable"); }
-
       if (issues.length > 0) {
         console.error("[BOOT] Missing dependencies:", issues);
-        // Still try to init - Auth might show login
       }
 
       try {
@@ -1547,6 +1557,19 @@
         bootDone = true;
         clearTimeout(loadingTimeout);
         console.error("[Debt Empire] App.init() FAILED:", e);
-        document.getElementById("app").innerHTML = "<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0f1a;padding:40px"><div style="max-width:500px;text-align:center"><div style="font-size:48px;margin-bottom:16px">❌</div><h2 style="color:#ef4444;font-size:24px;margin-bottom:12px">Load Error</h2><p style="color:#94a3b8;margin-bottom:16px">" + e.message + "</p><button onclick="location.reload()" style="padding:12px 24px;background:#3b82f6;color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px">🔄 Retry</button></div></div>";
+        var app = document.getElementById("app");
+        if (app) {
+          app.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0f1a;padding:40px">' +
+            '<div style="max-width:500px;text-align:center">' +
+            '<div style="font-size:48px;margin-bottom:16px">\u274c</div>' +
+            '<h2 style="color:#ef4444;font-size:24px;margin-bottom:12px">Load Error</h2>' +
+            '<p style="color:#94a3b8;margin-bottom:16px">' + e.message + '</p>' +
+            '<button onclick="location.reload()" style="padding:12px 24px;background:#3b82f6;color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px">\ud83d\udd04 Retry</button>' +
+            '</div></div>';
+        }
       }
     })();
+
+  </script>
+</body>
+</html>
