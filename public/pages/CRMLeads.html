@@ -1109,8 +1109,8 @@
     function viewLead(leadId) {
       const lead = leads.find(l => l.id === leadId);
       if (lead) {
-        alert(`View lead: ${lead.name}\n\nThis would open a slide-out panel with full lead details.`);
-        // TODO: Implement slide-out panel
+        // TODO: Will be replaced with slide-out panel in next fix
+        openLeadDetailPanel(lead);
       }
     }
 
@@ -1242,7 +1242,7 @@
       renderLeads();
       closeAddLeadModal();
       
-      alert(`✅ Lead "${newLead.name}" added successfully!`);
+      Toast.success(`Lead "${newLead.name}" added successfully!`);
     }
 
     // Bulk actions
@@ -1261,14 +1261,14 @@
     }
 
     function bulkTag() {
-      alert('Bulk tagging feature coming soon!');
+      Toast.info('Bulk tagging feature coming soon!');
     }
 
     function bulkExport() {
       const selected = leads.filter(l => selectedLeads.has(l.id));
       const csv = convertToCSV(selected);
       downloadCSV(csv, 'selected-leads.csv');
-      alert(`Exported ${selected.length} leads`);
+      Toast.success(`Exported ${selected.length} leads`);
     }
 
     function bulkDelete() {
@@ -1291,7 +1291,7 @@
         if (file) {
           const reader = new FileReader();
           reader.onload = (event) => {
-            alert('CSV import functionality coming soon!');
+            Toast.info('CSV import functionality coming soon!');
             // TODO: Parse CSV and add to leads
           };
           reader.readAsText(file);
@@ -1303,7 +1303,7 @@
     function exportCSV() {
       const csv = convertToCSV(leads);
       downloadCSV(csv, 'all-leads.csv');
-      alert(`Exported ${leads.length} leads`);
+      Toast.success(`Exported ${leads.length} leads`);
     }
 
     function convertToCSV(data) {
