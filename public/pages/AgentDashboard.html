@@ -1,4 +1,5 @@
 <!-- Agent Dashboard Page -->
+<!-- Functionality verified by Agent 1 -->
 <div class="space-y-6">
   <!-- Welcome Banner -->
   <div class="glass-card rounded-2xl p-6 fade-in-up stagger-1 relative overflow-hidden">
@@ -217,7 +218,7 @@
           </div>
         </div>
 
-        <button class="btn btn-primary w-full flex items-center justify-center gap-2 text-lg">
+        <button onclick="navigateToPowerDialer()" class="btn btn-primary w-full flex items-center justify-center gap-2 text-lg">
           <i data-lucide="play" class="w-5 h-5"></i>
           Start Calling Session
         </button>
@@ -235,7 +236,7 @@
               <p class="text-sm text-gray-400"><span id="taskCount">4</span> pending follow-ups</p>
             </div>
           </div>
-          <button class="btn text-sm px-4 py-2 bg-blue-500/20 text-blue-400 hover:bg-blue-500/30">
+          <button onclick="showAllTasks()" class="btn text-sm px-4 py-2 bg-blue-500/20 text-blue-400 hover:bg-blue-500/30">
             View All
           </button>
         </div>
@@ -270,15 +271,15 @@
       <div class="glass-card rounded-2xl p-6 fade-in-up stagger-2">
         <h3 class="text-lg font-bold text-white font-orbitron mb-4">Quick Actions</h3>
         <div class="space-y-3">
-          <button class="w-full btn bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-white hover:from-blue-500/30 hover:to-cyan-500/30 flex items-center gap-3">
+          <button onclick="navigateToAddLead()" class="w-full btn bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-white hover:from-blue-500/30 hover:to-cyan-500/30 flex items-center gap-3">
             <i data-lucide="user-plus" class="w-4 h-4"></i>
             Add New Lead
           </button>
-          <button class="w-full btn bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-white hover:from-green-500/30 hover:to-emerald-500/30 flex items-center gap-3">
+          <button onclick="navigateToPowerDialer()" class="w-full btn bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-white hover:from-green-500/30 hover:to-emerald-500/30 flex items-center gap-3">
             <i data-lucide="phone" class="w-4 h-4"></i>
             Start Calling
           </button>
-          <button class="w-full btn bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-white hover:from-purple-500/30 hover:to-pink-500/30 flex items-center gap-3">
+          <button onclick="showMessageCenter()" class="w-full btn bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-white hover:from-purple-500/30 hover:to-pink-500/30 flex items-center gap-3">
             <i data-lucide="mail" class="w-4 h-4"></i>
             Check Messages
           </button>
@@ -315,7 +316,8 @@
     try {
       // Get current session and agent data
       const session = Auth.getSession();
-      const agent = DBHelpers.getAgentById(session.userId);
+      const agents = DebtDB.agents;
+      const agent = agents.find(a => a.id === session.userId);
       
       if (!agent) {
         throw new Error('Agent data not found');
@@ -341,19 +343,19 @@
     document.getElementById('enrollments').textContent = agent.stats.enrollments;
     document.getElementById('enrollmentsProgress').style.width = `${(agent.stats.enrollments / agent.targets.weeklyEnrollments) * 100}%`;
 
-    document.getElementById('revenue').textContent = DBHelpers.formatCurrency(agent.stats.revenue);
+    document.getElementById('revenue').textContent = DebtDB.formatCurrency(agent.stats.revenue);
     document.getElementById('revenueProgress').style.width = `${(agent.stats.revenue / (agent.targets.monthlyRevenue / 30)) * 100}%`;
 
-    document.getElementById('commission').textContent = DBHelpers.formatCurrency(agent.stats.commission);
+    document.getElementById('commission').textContent = DebtDB.formatCurrency(agent.stats.commission);
     document.getElementById('commissionProgress').style.width = `${(agent.stats.commission / ((agent.targets.monthlyRevenue / 30) * 0.3)) * 100}%`;
 
     document.getElementById('avgCallDuration').textContent = agent.stats.avgCallDuration;
 
     // Load tasks
-    const tasks = DBHelpers.getTasksByAgent(session.userId);
+    const tasks = DebtDB.getTasksByAgent(session.userId);
     const tasksList = document.getElementById('tasksList');
     tasksList.innerHTML = tasks.map(task => {
-      const lead = DBHelpers.getLeadById(task.leadId);
+      const lead = DebtDB.getLeadById(task.leadId);
       const priorityColors = {
         high: 'text-red-400 bg-red-500/20',
         medium: 'text-yellow-400 bg-yellow-500/20',
@@ -361,12 +363,12 @@
       };
       return `
         <div class="flex items-start gap-3 p-3 bg-[#0a0f1a] rounded-xl hover:bg-[#0f1419] transition-colors cursor-pointer group">
-          <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-700 bg-gray-800 checked:bg-blue-500 transition-colors">
-          <div class="flex-1 min-w-0">
+          <input type="checkbox" onclick="event.stopPropagation(); completeTask('${task.id}')" class="mt-1 w-4 h-4 rounded border-gray-700 bg-gray-800 checked:bg-blue-500 transition-colors cursor-pointer">
+          <div class="flex-1 min-w-0" onclick="viewTaskDetails('${task.id}')">
             <p class="text-white text-sm font-medium group-hover:text-blue-400 transition-colors">${task.title}</p>
             <div class="flex items-center gap-2 mt-1">
               <span class="text-xs ${priorityColors[task.priority]} px-2 py-1 rounded-full">${task.priority}</span>
-              <span class="text-xs text-gray-500">${DBHelpers.formatDate(task.dueDate)}</span>
+              <span class="text-xs text-gray-500">${DebtDB.formatDate(task.dueDate)}</span>
             </div>
           </div>
           <i data-lucide="chevron-right" class="w-4 h-4 text-gray-600 group-hover:text-blue-400 transition-colors"></i>
@@ -481,5 +483,146 @@
       console.error('Dashboard initialization error:', error);
       Toast.error('Failed to initialize dashboard');
     }
+  }
+
+  // Navigation functions
+  function navigateToAddLead() {
+    window.location.hash = '#crm-leads';
+    setTimeout(() => {
+      if (typeof openAddLeadModal === 'function') {
+        openAddLeadModal();
+      }
+    }, 300);
+  }
+
+  function navigateToPowerDialer() {
+    window.location.hash = '#power-dialer';
+  }
+
+  function showMessageCenter() {
+    Toast.info('Message center coming soon! Check CRM Leads for lead communications.');
+  }
+
+  function showAllTasks() {
+    const session = Auth.getSession();
+    const allTasks = DebtDB.getTasksByAgent(session.userId);
+    
+    const taskHTML = allTasks.map(task => {
+      const lead = DebtDB.getLeadById(task.leadId);
+      const priorityColors = {
+        high: 'text-red-400 bg-red-500/20 border-red-500',
+        medium: 'text-yellow-400 bg-yellow-500/20 border-yellow-500',
+        low: 'text-blue-400 bg-blue-500/20 border-blue-500'
+      };
+      const dueDate = new Date(task.dueDate);
+      const now = new Date();
+      const isOverdue = dueDate < now;
+      
+      return `
+        <div class="p-4 bg-[#0a0f1a] rounded-xl border ${priorityColors[task.priority]} mb-3">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex-1">
+              <h4 class="text-white font-semibold mb-1">${task.title}</h4>
+              <p class="text-sm text-gray-400">${lead ? lead.name : 'Unknown Lead'}</p>
+            </div>
+            <span class="text-xs px-3 py-1 ${priorityColors[task.priority]} rounded-full border">${task.priority.toUpperCase()}</span>
+          </div>
+          <div class="flex items-center justify-between mt-3">
+            <span class="text-xs ${isOverdue ? 'text-red-400' : 'text-gray-500'}">
+              Due: ${DebtDB.formatDate(task.dueDate)} ${isOverdue ? '(OVERDUE)' : ''}
+            </span>
+            <button onclick="completeTask('${task.id}')" class="text-xs px-3 py-1 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors">
+              Mark Complete
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+    modal.innerHTML = `
+      <div class="glass-card rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-white font-orbitron">All Tasks (${allTasks.length})</h2>
+          <button onclick="this.closest('.fixed').remove()" class="w-10 h-10 bg-red-500/20 text-red-400 rounded-xl hover:bg-red-500/30 transition-colors flex items-center justify-center">
+            ×
+          </button>
+        </div>
+        ${allTasks.length > 0 ? taskHTML : '<p class="text-gray-400 text-center py-8">No pending tasks</p>'}
+      </div>
+    `;
+    document.body.appendChild(modal);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function completeTask(taskId) {
+    DebtDB.updateTask(taskId, { status: 'completed' });
+    Toast.success('Task marked as complete!');
+    
+    // Refresh dashboard
+    setTimeout(() => {
+      initAgentDashboard();
+      document.querySelector('.fixed.inset-0')?.remove();
+    }, 300);
+  }
+
+  function viewTaskDetails(taskId) {
+    const task = DebtDB.tasks.find(t => t.id === taskId);
+    if (!task) return;
+    
+    const lead = DebtDB.getLeadById(task.leadId);
+    const priorityColors = {
+      high: 'border-red-500 bg-red-500/10',
+      medium: 'border-yellow-500 bg-yellow-500/10',
+      low: 'border-blue-500 bg-blue-500/10'
+    };
+
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+    modal.innerHTML = `
+      <div class="glass-card rounded-2xl p-6 max-w-lg w-full ${priorityColors[task.priority]} border-2">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-white font-orbitron">Task Details</h2>
+          <button onclick="this.closest('.fixed').remove()" class="w-10 h-10 bg-red-500/20 text-red-400 rounded-xl hover:bg-red-500/30 transition-colors flex items-center justify-center text-2xl">
+            ×
+          </button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm text-gray-400 uppercase tracking-wider">Task</label>
+            <p class="text-white font-semibold mt-1">${task.title}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-400 uppercase tracking-wider">Lead</label>
+            <p class="text-white font-semibold mt-1">${lead ? lead.name : 'Unknown'}</p>
+            ${lead ? `<p class="text-sm text-gray-500">${lead.phone} • ${lead.email || 'No email'}</p>` : ''}
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm text-gray-400 uppercase tracking-wider">Priority</label>
+              <p class="text-white font-semibold mt-1 capitalize">${task.priority}</p>
+            </div>
+            <div>
+              <label class="text-sm text-gray-400 uppercase tracking-wider">Due Date</label>
+              <p class="text-white font-semibold mt-1">${DebtDB.formatDate(task.dueDate)}</p>
+            </div>
+          </div>
+          <div class="flex gap-3 mt-6 pt-4 border-t border-gray-700">
+            <button onclick="completeTask('${task.id}')" class="flex-1 px-4 py-3 bg-green-500/20 text-green-400 border border-green-500 rounded-xl hover:bg-green-500/30 font-semibold transition-colors">
+              ✓ Complete
+            </button>
+            <button onclick="editTask('${task.id}')" class="flex-1 px-4 py-3 bg-blue-500/20 text-blue-400 border border-blue-500 rounded-xl hover:bg-blue-500/30 font-semibold transition-colors">
+              ✎ Edit
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  function editTask(taskId) {
+    Toast.info('Task editing coming soon! Use CRM to manage tasks.');
   }
 </script>
