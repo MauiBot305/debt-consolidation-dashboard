@@ -535,25 +535,32 @@
 
       // Render navigation items
       renderNavItems() {
+        const role = this.session.role;
+        
         const navItems = [
-          { id: 'dashboard', icon: 'layout-dashboard', label: 'Dashboard', page: 'AgentDashboard' },
-          { id: 'dialer', icon: 'phone', label: 'Power Dialer', page: 'Dialer' },
-          { id: 'leads', icon: 'users', label: 'Leads', page: 'Leads' },
-          { id: 'pipeline', icon: 'git-branch', label: 'Pipeline', page: 'Pipeline' },
-          { id: 'cases', icon: 'briefcase', label: 'Cases', page: 'Cases' },
-          { id: 'compliance', icon: 'shield-check', label: 'Compliance', page: 'Compliance' },
-          { id: 'finance', icon: 'dollar-sign', label: 'Finance', page: 'Finance' },
-          { id: 'marketing', icon: 'megaphone', label: 'Marketing', page: 'Marketing' },
-          { id: 'analytics', icon: 'bar-chart-3', label: 'Analytics', page: 'Analytics' },
-          { id: 'gamification', icon: 'trophy', label: 'Gamification', page: 'Gamification' },
-          { id: 'ai-coach', icon: 'sparkles', label: 'AI Coach', page: 'AICoach' },
-          { id: 'automation', icon: 'zap', label: 'Automation', page: 'Automation' },
-          { id: 'team', icon: 'users-2', label: 'Team', page: 'Team' },
-          { id: 'portal', icon: 'globe', label: 'Client Portal', page: 'Portal' },
-          { id: 'settings', icon: 'settings', label: 'Settings', page: 'Settings' }
+          { id: 'dashboard', icon: 'layout-dashboard', label: 'Dashboard', page: 'AgentDashboard', roles: ['agent', 'manager', 'owner'] },
+          { id: 'manager-dash', icon: 'users-2', label: 'Manager Dashboard', page: 'ManagerDashboard', roles: ['manager', 'owner'] },
+          { id: 'owner-dash', icon: 'crown', label: 'Owner Dashboard', page: 'OwnerDashboard', roles: ['owner'] },
+          { id: 'dialer', icon: 'phone', label: 'Power Dialer', page: 'Dialer', roles: ['agent', 'manager', 'owner'] },
+          { id: 'leads', icon: 'users', label: 'Leads', page: 'Leads', roles: ['agent', 'manager', 'owner'] },
+          { id: 'pipeline', icon: 'git-branch', label: 'Pipeline', page: 'Pipeline', roles: ['agent', 'manager', 'owner'] },
+          { id: 'cases', icon: 'briefcase', label: 'Cases', page: 'Cases', roles: ['agent', 'manager', 'owner'] },
+          { id: 'compliance', icon: 'shield-check', label: 'Compliance', page: 'Compliance', roles: ['manager', 'owner'] },
+          { id: 'finance', icon: 'dollar-sign', label: 'Finance', page: 'Finance', roles: ['manager', 'owner'] },
+          { id: 'marketing', icon: 'megaphone', label: 'Marketing', page: 'Marketing', roles: ['manager', 'owner'] },
+          { id: 'analytics', icon: 'bar-chart-3', label: 'Analytics', page: 'Analytics', roles: ['agent', 'manager', 'owner'] },
+          { id: 'gamification', icon: 'trophy', label: 'Gamification', page: 'Gamification', roles: ['agent', 'manager', 'owner'] },
+          { id: 'ai-coach', icon: 'sparkles', label: 'AI Coach', page: 'AICoach', roles: ['agent', 'manager', 'owner'] },
+          { id: 'automation', icon: 'zap', label: 'Automation', page: 'Automation', roles: ['manager', 'owner'] },
+          { id: 'team', icon: 'users-2', label: 'Team', page: 'Team', roles: ['manager', 'owner'] },
+          { id: 'portal', icon: 'globe', label: 'Client Portal', page: 'ClientPortal', roles: ['agent', 'manager', 'owner'] },
+          { id: 'settings', icon: 'settings', label: 'Settings', page: 'Settings', roles: ['agent', 'manager', 'owner'] }
         ];
 
-        return navItems.map(item => `
+        // Filter by role
+        const visibleItems = navItems.filter(item => item.roles.includes(role));
+
+        return visibleItems.map(item => `
           <div 
             class="nav-item ${this.currentPage === item.id ? 'active' : ''}" 
             onclick="App.navigateTo('${item.id}', '${item.page}')"
