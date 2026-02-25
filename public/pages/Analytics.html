@@ -1014,7 +1014,7 @@
     }
 
     function renderLeaderboard() {
-      const managerStats = (window.DebtDB?.getManagerStats?.() || {});
+      const managerStats = (window.DebtDB?.getManagerStats?.() || []);
       
       leaderboardData = managerStats.map((agent, index) => {
         const conversion = agent.callsToday > 0 

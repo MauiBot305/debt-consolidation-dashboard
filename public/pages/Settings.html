@@ -425,7 +425,7 @@
   }
 
   function saveCompany() {
-    window.DebtDB.updateSettings({
+    window.DebtDB?.updateSettings?.({
       companyName: document.getElementById('companyName').value,
       companyAddress: document.getElementById('companyAddress').value,
       brandColor: document.getElementById('brandColor').value

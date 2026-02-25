@@ -1195,7 +1195,7 @@
       ];
 
       demoCases.forEach(caseData => {
-        window.DebtDB.addCase(caseData);
+        window.DebtDB?.addCase?.(caseData);
       });
     }
 
@@ -1753,7 +1753,7 @@
         documents: []
       };
 
-      const newCase = window.DebtDB.addCase(caseData);
+      const newCase = window.DebtDB?.addCase?.(caseData);
       cases.push(newCase);
       
       closeAddCaseModal();
@@ -1776,7 +1776,7 @@
         notes: formData.get('notes')
       };
 
-      window.DebtDB.addCasePayment(selectedCase.id, paymentData);
+      window.DebtDB?.addCasePayment?.(selectedCase.id, paymentData);
       loadCases();
       selectedCase = cases.find(c => c.id === selectedCase.id);
       
@@ -1793,7 +1793,7 @@
       const formData = new FormData(e.target);
       const noteText = formData.get('note');
 
-      window.DebtDB.addCaseNote(selectedCase.id, noteText);
+      window.DebtDB?.addCaseNote?.(selectedCase.id, noteText);
       loadCases();
       selectedCase = cases.find(c => c.id === selectedCase.id);
       
@@ -1814,7 +1814,7 @@
         filename: formData.get('filename')
       };
 
-      window.DebtDB.addCaseDocument(selectedCase.id, docData);
+      window.DebtDB?.addCaseDocument?.(selectedCase.id, docData);
       loadCases();
       selectedCase = cases.find(c => c.id === selectedCase.id);
       
@@ -1841,7 +1841,7 @@
       const currentIndex = statuses.indexOf(selectedCase.status);
       const nextStatus = statuses[(currentIndex + 1) % statuses.length];
       
-      window.DebtDB.updateCase(selectedCase.id, { status: nextStatus });
+      window.DebtDB?.updateCase?.(selectedCase.id, { status: nextStatus });
       loadCases();
       selectedCase = cases.find(c => c.id === selectedCase.id);
       

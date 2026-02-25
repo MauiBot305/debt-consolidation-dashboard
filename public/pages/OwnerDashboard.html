@@ -708,7 +708,7 @@
   }
 
   function renderTopPerformers() {
-    const managerStats = (window.DebtDB?.getManagerStats?.() || {});
+    const managerStats = (window.DebtDB?.getManagerStats?.() || []);
     
     // Sort by revenue and take top 3
     const topAgents = managerStats
@@ -843,7 +843,7 @@
 
   function exportFullReport() {
     const ownerStats = (window.DebtDB?.getOwnerStats?.() || {});
-    const managerStats = (window.DebtDB?.getManagerStats?.() || {});
+    const managerStats = (window.DebtDB?.getManagerStats?.() || []);
     const checklist = (window.DebtDB?.getComplianceChecklist?.() || []);
     const deals = (window.DebtDB?.getDeals?.() || []);
     

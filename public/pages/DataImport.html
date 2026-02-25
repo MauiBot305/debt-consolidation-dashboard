@@ -396,7 +396,7 @@
       
       // Import as lead
       if (mapped.name || mapped.email || mapped.phone) {
-        window.DebtDB.addLead(mapped);
+        window.DebtDB?.addLead?.(mapped);
         imported++;
       }
     });

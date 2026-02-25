@@ -605,7 +605,7 @@
   }
 
   async function loadAgentPerformance() {
-    const managerStats = (window.DebtDB?.getManagerStats?.() || {});
+    const managerStats = (window.DebtDB?.getManagerStats?.() || []);
     const calls = await fetchCallData();
     
     agentData = managerStats.map(agent => {
@@ -872,7 +872,7 @@
     let agentIndex = 0;
     leads.forEach(lead => {
       const agent = agents[agentIndex % agents.length];
-      window.DebtDB.updateLead(lead.id, { agent: agent.id });
+      window.DebtDB?.updateLead?.(lead.id, { agent: agent.id });
       agentIndex++;
     });
     

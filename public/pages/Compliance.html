@@ -1015,7 +1015,7 @@
       if (!(window.DebtDB?.getComplianceChecklist?.() || []).length) {
         COMPLIANCE_CHECKLIST.forEach(cat => {
           cat.items.forEach(item => {
-            window.DebtDB.updateComplianceItem(item.id, {
+            window.DebtDB?.updateComplianceItem?.(item.id, {
               id: item.id,
               label: item.label,
               category: cat.category,
@@ -1206,7 +1206,7 @@
       const item = checklist.find(c => c.id === id);
       
       if (item) {
-        window.DebtDB.updateComplianceItem(id, { completed: !item.completed });
+        window.DebtDB?.updateComplianceItem?.(id, { completed: !item.completed });
         window.DebtDB.addAuditEntry({ 
           action: 'compliance_updated', 
           data: { item: id, completed: !item.completed }

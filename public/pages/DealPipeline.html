@@ -910,7 +910,7 @@
       ];
 
       demoDeals.forEach(dealData => {
-        window.DebtDB.addDeal(dealData);
+        window.DebtDB?.addDeal?.(dealData);
       });
     }
 
@@ -1151,7 +1151,7 @@
         creditors: creditors
       };
 
-      const newDeal = window.DebtDB.addDeal(dealData);
+      const newDeal = window.DebtDB?.addDeal?.(dealData);
       deals.push(newDeal);
       
       closeAddDealModal();
