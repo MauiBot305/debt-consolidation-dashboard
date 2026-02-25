@@ -326,7 +326,156 @@ function seedAllDemoData() {
   }
 
   // ============================================
-  // 10. MARK DB AS SEEDED
+  // 11. SEED DEMO LEADS (50 realistic leads)
+  // ============================================
+  
+  if (typeof demoLeadsData !== 'undefined' && demoLeadsData.length > 0) {
+    const existingLeads = JSON.parse(localStorage.getItem('debtDB_leads') || '[]');
+    const existingLeadIds = new Set(existingLeads.map(l => l.id));
+    let leadsAdded = 0;
+    
+    demoLeadsData.forEach(lead => {
+      // Convert to legacy format
+      const legacyLead = {
+        id: lead.id.replace('LEAD', 'L'),
+        name: `${lead.firstName} ${lead.lastName}`,
+        email: lead.email,
+        phone: lead.phone,
+        stage: lead.status === 'New' ? 'New Lead' : 
+               lead.status === 'Contacted' ? 'Contacted' :
+               lead.status === 'Qualified' ? 'Qualified' :
+               lead.status === 'Enrolled' ? 'Enrolled' : 'New Lead',
+        totalDebt: lead.totalDebt,
+        monthlyIncome: lead.monthlyIncome,
+        debtToIncomeRatio: Math.round((lead.totalDebt / (lead.monthlyIncome * 12)) * 100),
+        creditors: [...new Set(lead.debtTypes)],
+        assignedAgent: lead.assignedAgent,
+        createdAt: lead.createdAt,
+        lastContact: lead.lastContactedAt,
+        priority: lead.priority === 'hot' ? 'high' : lead.priority === 'warm' ? 'medium' : 'low',
+        source: lead.source,
+        notes: lead.notes?.[0] || '',
+        address: lead.address,
+        creditScore: lead.creditScore,
+        employmentStatus: lead.employmentStatus,
+        _demo: true,
+        _seededAt: new Date().toISOString()
+      };
+      
+      if (!existingLeadIds.has(legacyLead.id)) {
+        existingLeads.push(legacyLead);
+        existingLeadIds.add(legacyLead.id);
+        leadsAdded++;
+      }
+    });
+    
+    localStorage.setItem('debtDB_leads', JSON.stringify(existingLeads));
+    console.log(`[DemoSeeder] Added ${leadsAdded} demo leads from demo-leads.js`);
+    results.leads.added += leadsAdded;
+  } else {
+    console.warn('[DemoSeeder] demoLeadsData not found. Make sure demo-leads.js is loaded first.');
+  }
+
+  // ============================================
+  // 12. SEED DEMO DEALS (20 realistic deals)
+  // ============================================
+  
+  if (typeof demoDealsData !== 'undefined' && demoDealsData.length > 0) {
+    const existingCases = JSON.parse(localStorage.getItem('debtDB_cases') || '[]');
+    const existingCaseIds = new Set(existingCases.map(c => c.id));
+    const existingDeals = JSON.parse(localStorage.getItem('debtDB_deals') || '[]');
+    const existingDealIds = new Set(existingDeals.map(d => d.id));
+    let casesAdded = 0;
+    let dealsAdded = 0;
+    
+    demoDealsData.forEach(deal => {
+      // Add as case
+      const settledAmount = deal.creditors
+        .filter(c => c.status === 'Settled')
+        .reduce((sum, c) => sum + (c.settledAmount || 0), 0);
+      
+      const legacyCase = {
+        id: deal.id.replace('DEAL', 'CASE'),
+        leadId: deal.leadId.replace('LEAD', 'L'),
+        clientName: deal.clientName,
+        stage: deal.stage,
+        totalDebt: deal.totalDebt,
+        settledAmount: settledAmount,
+        programFee: deal.fees,
+        monthlyPayment: deal.monthlyPayment,
+        accountBalance: deal.payments
+          .filter(p => p.status === 'completed')
+          .reduce((sum, p) => sum + p.amount, 0) - settledAmount,
+        enrollmentDate: deal.enrollmentDate,
+        estimatedCompletion: calculateEstimatedCompletion(deal),
+        creditors: deal.creditors.map(c => ({
+          name: c.name,
+          balance: c.currentBalance,
+          status: c.status,
+          ...(c.settledAmount && { settledFor: c.settledAmount })
+        })),
+        assignedAgent: deal.assignedAgent,
+        assignedNegotiator: `NEG${String(Math.floor(Math.random() * 5 + 1)).padStart(3, '0')}`,
+        _demo: true,
+        _seededAt: new Date().toISOString()
+      };
+      
+      if (!existingCaseIds.has(legacyCase.id)) {
+        existingCases.push(legacyCase);
+        existingCaseIds.add(legacyCase.id);
+        casesAdded++;
+      }
+      
+      // Also add as deal record
+      const dealRecord = {
+        id: deal.id,
+        clientName: deal.clientName,
+        leadId: deal.leadId.replace('LEAD', 'L'),
+        caseId: legacyCase.id,
+        totalDebt: deal.totalDebt,
+        enrolledDebt: deal.enrolledDebt,
+        monthlyPayment: deal.monthlyPayment,
+        programLength: deal.programLength,
+        stage: deal.stage,
+        enrollmentDate: deal.enrollmentDate,
+        fees: deal.fees,
+        expectedSettlement: deal.expectedSettlement,
+        creditors: deal.creditors,
+        payments: deal.payments,
+        notes: deal.notes,
+        assignedAgent: deal.assignedAgent,
+        createdAt: deal.enrollmentDate + 'T00:00:00',
+        lastUpdate: new Date().toISOString(),
+        _demo: true
+      };
+      
+      if (!existingDealIds.has(dealRecord.id)) {
+        existingDeals.push(dealRecord);
+        existingDealIds.add(dealRecord.id);
+        dealsAdded++;
+      }
+    });
+    
+    localStorage.setItem('debtDB_cases', JSON.stringify(existingCases));
+    localStorage.setItem('debtDB_deals', JSON.stringify(existingDeals));
+    console.log(`[DemoSeeder] Added ${casesAdded} demo cases and ${dealsAdded} demo deals from demo-deals.js`);
+  } else {
+    console.warn('[DemoSeeder] demoDealsData not found. Make sure demo-deals.js is loaded first.');
+  }
+
+  // Helper function for estimated completion
+  function calculateEstimatedCompletion(deal) {
+    const remainingDebt = deal.creditors
+      .filter(c => c.status !== 'Settled')
+      .reduce((sum, c) => sum + c.currentBalance, 0);
+    const monthsToComplete = Math.ceil(remainingDebt / deal.monthlyPayment);
+    const date = new Date();
+    date.setMonth(date.getMonth() + monthsToComplete);
+    return date.toISOString().split('T')[0];
+  }
+
+  // ============================================
+  // 13. MARK DB AS SEEDED
   // ============================================
   
   localStorage.setItem('debtDB_demoSeeded', 'true');
