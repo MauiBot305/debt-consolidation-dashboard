@@ -7,6 +7,14 @@
 (function() {
   'use strict';
 
+  // Click guard: prevent page content clicks from reaching sidebar nav
+  function installClickGuard() {
+    var pc = document.getElementById('pageContent');
+    if (!pc || pc.__clickGuard) return;
+    pc.__clickGuard = true;
+    pc.addEventListener('click', function(e) { e.stopPropagation(); }, false);
+  }
+
   // ====================================
   // 1. LOADING SKELETON SYSTEM
   // ====================================
@@ -285,6 +293,7 @@
   }
 
   function runEnhancements() {
+    installClickGuard();
     // Wait for page content to be injected
     setTimeout(() => {
       fadeInPage();
