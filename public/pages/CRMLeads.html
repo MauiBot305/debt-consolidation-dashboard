@@ -613,6 +613,164 @@
     .modal-btn.primary:hover {
       box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
     }
+
+    /* Lead Detail Slide-out Panel */
+    .detail-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 600px;
+      height: 100vh;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(10, 15, 26, 0.98));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-left: 2px solid rgba(59, 130, 246, 0.3);
+      box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+    }
+
+    .detail-panel.open {
+      transform: translateX(0);
+    }
+
+    .detail-panel-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .detail-panel-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .detail-panel-header {
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.1));
+      border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(20px);
+    }
+
+    .detail-panel-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .detail-panel-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 2px solid rgba(239, 68, 68, 0.3);
+      color: #EF4444;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .detail-panel-close:hover {
+      background: rgba(239, 68, 68, 0.4);
+      transform: scale(1.1);
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+    }
+
+    .detail-panel-content {
+      padding: 24px;
+    }
+
+    .detail-section {
+      margin-bottom: 32px;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 16px;
+    }
+
+    .detail-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #3B82F6;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .detail-field {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .detail-field:last-child {
+      border-bottom: none;
+    }
+
+    .detail-field-label {
+      color: #94a3b8;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .detail-field-value {
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .detail-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .detail-action-btn {
+      padding: 14px 20px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.1));
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .detail-action-btn:hover {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(6, 182, 212, 0.2));
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .detail-panel {
+        width: 100%;
+      }
+    }
   </style>
 
   <div class="leads-container">
@@ -1404,5 +1562,168 @@
     function capitalizeFirst(str) {
       return str.charAt(0).toUpperCase() + str.slice(1).replace('-', ' ');
     }
+
+    // Lead Detail Panel
+    function openLeadDetailPanel(lead) {
+      const overlay = document.getElementById('leadDetailOverlay');
+      const panel = document.getElementById('leadDetailPanel');
+      
+      // Populate panel with lead data
+      document.getElementById('detailLeadName').textContent = lead.name;
+      document.getElementById('detailLeadId').textContent = lead.id;
+      document.getElementById('detailPhone').textContent = lead.phone || 'N/A';
+      document.getElementById('detailEmail').textContent = lead.email || 'N/A';
+      document.getElementById('detailTotalDebt').textContent = `$${lead.totalDebt.toLocaleString()}`;
+      document.getElementById('detailMonthlyIncome').textContent = `$${lead.monthlyIncome.toLocaleString()}`;
+      document.getElementById('detailDtiRatio').textContent = `${lead.dtiRatio}%`;
+      document.getElementById('detailSource').textContent = capitalizeFirst(lead.source);
+      document.getElementById('detailStatus').textContent = capitalizeFirst(lead.status);
+      document.getElementById('detailAssignedAgent').textContent = lead.assignedAgent;
+      document.getElementById('detailScore').textContent = lead.score;
+      document.getElementById('detailLastContact').textContent = new Date(lead.lastContact).toLocaleString();
+      document.getElementById('detailCreatedAt').textContent = new Date(lead.createdAt).toLocaleString();
+
+      // Show debts if available
+      const debtsContainer = document.getElementById('detailDebts');
+      if (lead.debts && lead.debts.length > 0) {
+        debtsContainer.innerHTML = lead.debts.map(debt => `
+          <div class="detail-field">
+            <span class="detail-field-label">${debt.creditor} (${debt.type})</span>
+            <span class="detail-field-value">$${debt.amount.toLocaleString()}</span>
+          </div>
+        `).join('');
+      } else {
+        debtsContainer.innerHTML = '<div class="detail-field"><span class="detail-field-label">No debts recorded</span></div>';
+      }
+
+      // Show panel
+      overlay.classList.add('open');
+      panel.classList.add('open');
+    }
+
+    function closeLeadDetailPanel() {
+      const overlay = document.getElementById('leadDetailOverlay');
+      const panel = document.getElementById('leadDetailPanel');
+      overlay.classList.remove('open');
+      panel.classList.remove('open');
+    }
+
+    // Close panel on overlay click
+    document.getElementById('leadDetailOverlay')?.addEventListener('click', closeLeadDetailPanel);
   </script>
+
+  <!-- Lead Detail Slide-out Panel -->
+  <div id="leadDetailOverlay" class="detail-panel-overlay"></div>
+  <div id="leadDetailPanel" class="detail-panel">
+    <div class="detail-panel-header">
+      <h2 class="detail-panel-title" id="detailLeadName">Lead Details</h2>
+      <button class="detail-panel-close" onclick="closeLeadDetailPanel()">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="detail-panel-content">
+      <!-- Basic Info Section -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <i data-lucide="user" class="w-5 h-5"></i>
+          Basic Information
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Lead ID</span>
+          <span class="detail-field-value" id="detailLeadId">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Phone</span>
+          <span class="detail-field-value" id="detailPhone">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Email</span>
+          <span class="detail-field-value" id="detailEmail">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Source</span>
+          <span class="detail-field-value" id="detailSource">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Status</span>
+          <span class="detail-field-value" id="detailStatus">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Assigned Agent</span>
+          <span class="detail-field-value" id="detailAssignedAgent">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Lead Score</span>
+          <span class="detail-field-value" id="detailScore">-</span>
+        </div>
+      </div>
+
+      <!-- Financial Info Section -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <i data-lucide="dollar-sign" class="w-5 h-5"></i>
+          Financial Information
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Total Debt</span>
+          <span class="detail-field-value" id="detailTotalDebt">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Monthly Income</span>
+          <span class="detail-field-value" id="detailMonthlyIncome">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">DTI Ratio</span>
+          <span class="detail-field-value" id="detailDtiRatio">-</span>
+        </div>
+      </div>
+
+      <!-- Debts Section -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <i data-lucide="credit-card" class="w-5 h-5"></i>
+          Debt Breakdown
+        </div>
+        <div id="detailDebts">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Timeline Section -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <i data-lucide="clock" class="w-5 h-5"></i>
+          Timeline
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Last Contact</span>
+          <span class="detail-field-value" id="detailLastContact">-</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-field-label">Created</span>
+          <span class="detail-field-value" id="detailCreatedAt">-</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="detail-actions">
+        <button class="detail-action-btn" onclick="window.location.hash='power-dialer'">
+          <i data-lucide="phone" class="w-4 h-4"></i>
+          Call Lead
+        </button>
+        <button class="detail-action-btn" onclick="Toast.info('Email composer coming soon')">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          Send Email
+        </button>
+        <button class="detail-action-btn" onclick="Toast.info('Edit functionality coming soon')">
+          <i data-lucide="edit" class="w-4 h-4"></i>
+          Edit Lead
+        </button>
+        <button class="detail-action-btn" onclick="Toast.info('Notes feature coming soon')">
+          <i data-lucide="file-text" class="w-4 h-4"></i>
+          Add Note
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
