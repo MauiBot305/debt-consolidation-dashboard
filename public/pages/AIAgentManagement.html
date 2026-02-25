@@ -338,35 +338,197 @@
     <!-- 7. AI Configuration Panel -->
     <div class="glass-card-ai" style="padding:1.5rem; margin-bottom:2rem;">
       <div class="section-title"><i data-lucide="sliders" style="width:18px;height:18px;"></i> AI Configuration</div>
-      <div id="aiConfigForm" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem;">
+
+      <!-- Tab Navigation -->
+      <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem; border-bottom:1px solid rgba(139,92,246,0.2); padding-bottom:0.75rem;">
+        <button class="cfg-tab active" onclick="window.switchConfigTab('general')" id="cfgTabGeneral">🎯 General</button>
+        <button class="cfg-tab" onclick="window.switchConfigTab('voice')" id="cfgTabVoice">🎙️ Voice & TTS</button>
+        <button class="cfg-tab" onclick="window.switchConfigTab('llm')" id="cfgTabLLM">🧠 AI Brain</button>
+        <button class="cfg-tab" onclick="window.switchConfigTab('behavior')" id="cfgTabBehavior">⚙️ Behavior</button>
+      </div>
+      <style>
+        .cfg-tab { background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.2); color:#a78bfa; padding:0.5rem 1rem; border-radius:0.5rem; cursor:pointer; font-size:0.8rem; transition:all 0.2s; }
+        .cfg-tab:hover { background:rgba(139,92,246,0.2); }
+        .cfg-tab.active { background:rgba(139,92,246,0.3); border-color:#8B5CF6; color:#fff; }
+        .cfg-panel { display:none; }
+        .cfg-panel.active { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem; }
+        .cfg-label { font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem; }
+        .cfg-sublabel { font-size:0.7rem; color:#475569; display:block; margin-top:0.15rem; }
+        .slider-row { display:flex; align-items:center; gap:0.75rem; }
+        .slider-row input[type=range] { flex:1; accent-color:#8B5CF6; }
+        .slider-val { font-family:'Orbitron',monospace; font-size:0.8rem; color:#a78bfa; min-width:2.5rem; text-align:right; }
+        .voice-card { background:rgba(15,23,42,0.6); border:1px solid rgba(139,92,246,0.15); border-radius:0.75rem; padding:0.75rem; cursor:pointer; transition:all 0.2s; }
+        .voice-card:hover { border-color:#8B5CF6; background:rgba(139,92,246,0.1); }
+        .voice-card.selected { border-color:#8B5CF6; background:rgba(139,92,246,0.2); box-shadow:0 0 12px rgba(139,92,246,0.3); }
+        .voice-preview-btn { background:rgba(139,92,246,0.2); border:1px solid rgba(139,92,246,0.3); color:#a78bfa; padding:0.25rem 0.5rem; border-radius:0.375rem; cursor:pointer; font-size:0.7rem; }
+        .voice-preview-btn:hover { background:rgba(139,92,246,0.4); }
+        .toggle-switch { position:relative; width:44px; height:24px; display:inline-block; }
+        .toggle-switch input { opacity:0; width:0; height:0; }
+        .toggle-slider { position:absolute; cursor:pointer; inset:0; background:rgba(100,116,139,0.4); border-radius:12px; transition:0.3s; }
+        .toggle-slider:before { content:''; position:absolute; height:18px; width:18px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:0.3s; }
+        .toggle-switch input:checked + .toggle-slider { background:#8B5CF6; }
+        .toggle-switch input:checked + .toggle-slider:before { transform:translateX(20px); }
+      </style>
+
+      <!-- General Tab -->
+      <div id="cfgPanelGeneral" class="cfg-panel active">
         <div>
-          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">AI Agent Name</label>
-          <input type="text" id="cfgName" />
+          <label class="cfg-label">AI Agent Name / Personality</label>
+          <input type="text" id="cfgPersonality" placeholder="Professional debt consolidation specialist named Alex" />
         </div>
         <div>
-          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Max Concurrent Calls</label>
+          <label class="cfg-label">Max Concurrent Calls</label>
           <input type="number" id="cfgMaxCalls" min="1" max="100" />
         </div>
         <div>
-          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Working Hours Start</label>
+          <label class="cfg-label">Working Hours Start</label>
           <input type="time" id="cfgHoursStart" />
         </div>
         <div>
-          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Working Hours End</label>
+          <label class="cfg-label">Working Hours End</label>
           <input type="time" id="cfgHoursEnd" />
         </div>
-        <div style="grid-column: 1 / -1;">
-          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Greeting Message</label>
-          <textarea id="cfgGreeting" rows="3"></textarea>
+        <div>
+          <label class="cfg-label">Transfer Number (Escalation)</label>
+          <input type="tel" id="cfgTransferNumber" placeholder="+13059659624" />
+        </div>
+        <div>
+          <label class="cfg-label">Timezone</label>
+          <select id="cfgTimezone">
+            <option value="America/New_York">Eastern (ET)</option>
+            <option value="America/Chicago">Central (CT)</option>
+            <option value="America/Denver">Mountain (MT)</option>
+            <option value="America/Los_Angeles">Pacific (PT)</option>
+          </select>
         </div>
         <div style="grid-column: 1 / -1;">
-          <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:0.25rem;">Escalation Triggers (comma-separated)</label>
-          <input type="text" id="cfgEscalation" placeholder="lawsuit, attorney, suicide, complaint" />
+          <label class="cfg-label">Greeting Message</label>
+          <textarea id="cfgGreeting" rows="3" placeholder="Hi, this is Alex from DebtFree Solutions. How can I help you today?"></textarea>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label class="cfg-label">After-Hours Message</label>
+          <textarea id="cfgAfterHours" rows="2" placeholder="Thanks for calling. Our hours are 8 AM to 9 PM Eastern..."></textarea>
         </div>
       </div>
-      <div style="margin-top:1rem; display:flex; gap:0.75rem;">
+
+      <!-- Voice & TTS Tab -->
+      <div id="cfgPanelVoice" class="cfg-panel">
+        <div style="grid-column: 1 / -1;">
+          <label class="cfg-label">TTS Model</label>
+          <select id="cfgTTSModel" style="width:100%;">
+            <option value="eleven_turbo_v2_5">⚡ Turbo v2.5 (Fastest — recommended for calls)</option>
+            <option value="eleven_flash_v2_5">🚀 Flash v2.5 (Ultra Fast)</option>
+            <option value="eleven_multilingual_v2">🌍 Multilingual v2 (Best Quality)</option>
+            <option value="eleven_monolingual_v1">🇺🇸 English v1 (Legacy)</option>
+          </select>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+            <label class="cfg-label" style="margin:0;">ElevenLabs Voice</label>
+            <button class="voice-preview-btn" onclick="window.refreshVoices()">🔄 Refresh from ElevenLabs</button>
+          </div>
+          <div id="voicesList" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:0.5rem; max-height:300px; overflow-y:auto; padding-right:0.5rem;">
+            <div style="color:#64748b; font-size:0.8rem; padding:1rem;">Loading voices...</div>
+          </div>
+        </div>
+        <div>
+          <label class="cfg-label">Stability</label>
+          <span class="cfg-sublabel">Lower = more expressive, Higher = more consistent</span>
+          <div class="slider-row">
+            <input type="range" id="cfgStability" min="0" max="100" value="50" oninput="document.getElementById('cfgStabilityVal').textContent=(this.value/100).toFixed(2)">
+            <span class="slider-val" id="cfgStabilityVal">0.50</span>
+          </div>
+        </div>
+        <div>
+          <label class="cfg-label">Similarity Boost</label>
+          <span class="cfg-sublabel">Higher = closer to original voice</span>
+          <div class="slider-row">
+            <input type="range" id="cfgSimilarity" min="0" max="100" value="75" oninput="document.getElementById('cfgSimilarityVal').textContent=(this.value/100).toFixed(2)">
+            <span class="slider-val" id="cfgSimilarityVal">0.75</span>
+          </div>
+        </div>
+        <div>
+          <label class="cfg-label">Style Exaggeration</label>
+          <span class="cfg-sublabel">Higher = more dramatic delivery</span>
+          <div class="slider-row">
+            <input type="range" id="cfgStyle" min="0" max="100" value="50" oninput="document.getElementById('cfgStyleVal').textContent=(this.value/100).toFixed(2)">
+            <span class="slider-val" id="cfgStyleVal">0.50</span>
+          </div>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label class="cfg-label">🔊 Test Voice</label>
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <input type="text" id="cfgTestText" value="Hi, this is Alex from DebtFree Solutions. How can I help you today?" style="flex:1;" />
+            <button class="voice-preview-btn" onclick="window.testVoice()" style="padding:0.4rem 1rem;">▶️ Play</button>
+          </div>
+          <audio id="voiceTestAudio" style="display:none;"></audio>
+        </div>
+      </div>
+
+      <!-- AI Brain Tab -->
+      <div id="cfgPanelLLM" class="cfg-panel">
+        <div>
+          <label class="cfg-label">LLM Model</label>
+          <select id="cfgLLMModel">
+            <option value="claude-sonnet-4-5-20250514">Claude Sonnet 4.5 (Recommended)</option>
+            <option value="claude-haiku-3-5-20250514">Claude Haiku 3.5 (Faster/Cheaper)</option>
+            <option value="claude-opus-4-6-20250514">Claude Opus 4.6 (Most Capable)</option>
+          </select>
+        </div>
+        <div>
+          <label class="cfg-label">Temperature</label>
+          <span class="cfg-sublabel">Lower = more focused, Higher = more creative</span>
+          <div class="slider-row">
+            <input type="range" id="cfgLLMTemp" min="0" max="100" value="70" oninput="document.getElementById('cfgLLMTempVal').textContent=(this.value/100).toFixed(2)">
+            <span class="slider-val" id="cfgLLMTempVal">0.70</span>
+          </div>
+        </div>
+        <div>
+          <label class="cfg-label">Max Response Tokens</label>
+          <input type="number" id="cfgLLMMaxTokens" min="50" max="2000" value="300" />
+          <span class="cfg-sublabel">Shorter = faster response, less detailed</span>
+        </div>
+        <div>
+          <label class="cfg-label">Silence Timeout (ms)</label>
+          <input type="number" id="cfgSilenceTimeout" min="100" max="2000" value="300" />
+          <span class="cfg-sublabel">How long to wait for caller to finish speaking</span>
+        </div>
+      </div>
+
+      <!-- Behavior Tab -->
+      <div id="cfgPanelBehavior" class="cfg-panel">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div>
+            <label class="cfg-label" style="margin:0;">Auto-Record Calls</label>
+            <span class="cfg-sublabel">Record all AI calls for QA & compliance</span>
+          </div>
+          <label class="toggle-switch"><input type="checkbox" id="cfgAutoRecord" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div>
+            <label class="cfg-label" style="margin:0;">Caller Memory</label>
+            <span class="cfg-sublabel">Remember caller names, preferences, history</span>
+          </div>
+          <label class="toggle-switch"><input type="checkbox" id="cfgCallerMemory" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div>
+            <label class="cfg-label" style="margin:0;">65-Point Data Extraction</label>
+            <span class="cfg-sublabel">Extract all data points during calls</span>
+          </div>
+          <label class="toggle-switch"><input type="checkbox" id="cfgDataExtraction" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label class="cfg-label">Escalation Triggers (comma-separated)</label>
+          <input type="text" id="cfgEscalation" placeholder="lawsuit, attorney, suicide, complaint, manager" />
+          <span class="cfg-sublabel">Keywords that trigger immediate transfer to a human</span>
+        </div>
+      </div>
+
+      <div style="margin-top:1.25rem; display:flex; gap:0.75rem; align-items:center;">
         <button class="btn-primary-ai" onclick="window.aiSaveConfig()">💾 Save Configuration</button>
-        <span id="cfgSaveStatus" style="color:#22C55E; font-size:0.8rem; align-self:center;"></span>
+        <button class="cfg-tab" onclick="window.aiResetConfig()">↩️ Reset to Defaults</button>
+        <span id="cfgSaveStatus" style="color:#22C55E; font-size:0.8rem;"></span>
       </div>
     </div>
   </div>
@@ -867,33 +1029,163 @@
   };
 
   // --- 7. Config ---
+  let voicesCache = [];
+
+  window.switchConfigTab = function(tab) {
+    ['general','voice','llm','behavior'].forEach(t => {
+      const panel = $('cfgPanel' + t.charAt(0).toUpperCase() + t.slice(1));
+      const btn = $('cfgTab' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (panel) panel.classList.toggle('active', t === tab);
+      if (btn) btn.classList.toggle('active', t === tab);
+    });
+    if (tab === 'voice' && voicesCache.length === 0) window.refreshVoices();
+  };
+
+  window.refreshVoices = async function() {
+    const container = $('voicesList');
+    if (!container) return;
+    container.innerHTML = '<div style="color:#64748b;font-size:0.8rem;padding:1rem;">⏳ Loading voices from ElevenLabs...</div>';
+    const data = await apiGet('/api/voices');
+    if (!data || !data.voices) {
+      container.innerHTML = '<div style="color:#EF4444;font-size:0.8rem;padding:1rem;">❌ Failed to load voices</div>';
+      return;
+    }
+    voicesCache = data.voices;
+    const currentVoiceId = ($('cfgVoiceId') || {}).value || '';
+    container.innerHTML = data.voices.map(v => {
+      const labels = Object.entries(v.labels || {}).map(([k,val]) => val).filter(Boolean).join(', ');
+      const selected = v.voice_id === currentVoiceId ? ' selected' : '';
+      return `<div class="voice-card${selected}" data-voice-id="${v.voice_id}" onclick="window.selectVoice('${v.voice_id}','${v.name.replace(/'/g,"\\'")}')">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.85rem;font-weight:600;color:#e2e8f0;">${v.name}</span>
+          <span style="font-size:0.65rem;color:#64748b;background:rgba(100,116,139,0.2);padding:0.15rem 0.4rem;border-radius:0.25rem;">${v.category}</span>
+        </div>
+        ${labels ? `<div style="font-size:0.7rem;color:#94a3b8;margin-top:0.25rem;">${labels}</div>` : ''}
+        ${v.preview_url ? `<button class="voice-preview-btn" style="margin-top:0.4rem;" onclick="event.stopPropagation();window.playPreview('${v.preview_url}')">▶️ Preview</button>` : ''}
+      </div>`;
+    }).join('');
+  };
+
+  window.selectVoice = function(voiceId, voiceName) {
+    document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('selected'));
+    const card = document.querySelector(`.voice-card[data-voice-id="${voiceId}"]`);
+    if (card) card.classList.add('selected');
+    const hiddenInput = $('cfgVoiceId');
+    if (hiddenInput) hiddenInput.value = voiceId;
+    const nameInput = $('cfgVoiceName');
+    if (nameInput) nameInput.value = voiceName;
+  };
+
+  window.playPreview = function(url) {
+    const audio = $('voiceTestAudio') || new Audio();
+    audio.src = url;
+    audio.play().catch(e => console.warn('Preview play failed:', e));
+  };
+
+  window.testVoice = async function() {
+    const text = ($('cfgTestText') || {}).value || 'Hello, this is a test.';
+    const voiceId = ($('cfgVoiceId') || {}).value || '';
+    if (!voiceId) { alert('Select a voice first'); return; }
+    try {
+      const resp = await fetch(API_BASE + `/voice/tts?text=${encodeURIComponent(text)}`, { headers: { 'Accept': 'audio/mpeg' }});
+      if (resp.ok) {
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = $('voiceTestAudio') || new Audio();
+        audio.src = url;
+        audio.play();
+      }
+    } catch(e) { console.warn('Test voice error:', e); }
+  };
+
   async function fetchConfig() {
     const data = await apiGet('/api/agent/config');
     if (!data) return;
-    const el = (id) => $(id);
-    if (el('cfgName')) el('cfgName').value = data.name || data.agent_name || '';
-    if (el('cfgMaxCalls')) el('cfgMaxCalls').value = data.max_concurrent_calls || data.max_calls || 50;
-    if (el('cfgHoursStart')) el('cfgHoursStart').value = data.working_hours_start || data.hours_start || '09:00';
-    if (el('cfgHoursEnd')) el('cfgHoursEnd').value = data.working_hours_end || data.hours_end || '21:00';
-    if (el('cfgGreeting')) el('cfgGreeting').value = data.greeting_message || data.greeting || '';
-    if (el('cfgEscalation')) el('cfgEscalation').value = (data.escalation_triggers || []).join(', ');
+    // General
+    if ($('cfgPersonality')) $('cfgPersonality').value = data.personality || '';
+    if ($('cfgMaxCalls')) $('cfgMaxCalls').value = data.max_concurrent_calls || 50;
+    if ($('cfgHoursStart')) $('cfgHoursStart').value = (data.working_hours||{}).start || '08:00';
+    if ($('cfgHoursEnd')) $('cfgHoursEnd').value = (data.working_hours||{}).end || '21:00';
+    if ($('cfgTimezone')) $('cfgTimezone').value = (data.working_hours||{}).timezone || 'America/New_York';
+    if ($('cfgGreeting')) $('cfgGreeting').value = data.greeting_message || '';
+    if ($('cfgAfterHours')) $('cfgAfterHours').value = data.after_hours_message || '';
+    if ($('cfgTransferNumber')) $('cfgTransferNumber').value = data.transfer_number || '';
+    // Voice
+    if ($('cfgTTSModel')) $('cfgTTSModel').value = data.tts_model || 'eleven_turbo_v2_5';
+    if ($('cfgStability')) { $('cfgStability').value = (data.tts_stability || 0.5) * 100; $('cfgStabilityVal').textContent = (data.tts_stability || 0.5).toFixed(2); }
+    if ($('cfgSimilarity')) { $('cfgSimilarity').value = (data.tts_similarity || 0.75) * 100; $('cfgSimilarityVal').textContent = (data.tts_similarity || 0.75).toFixed(2); }
+    if ($('cfgStyle')) { $('cfgStyle').value = (data.tts_style || 0.5) * 100; $('cfgStyleVal').textContent = (data.tts_style || 0.5).toFixed(2); }
+    // Store voice ID in hidden input
+    if (!$('cfgVoiceId')) {
+      const h = document.createElement('input'); h.type='hidden'; h.id='cfgVoiceId'; h.value = data.voice_id || ''; document.body.appendChild(h);
+    } else { $('cfgVoiceId').value = data.voice_id || ''; }
+    if (!$('cfgVoiceName')) {
+      const h = document.createElement('input'); h.type='hidden'; h.id='cfgVoiceName'; h.value = data.voice_name || ''; document.body.appendChild(h);
+    } else { $('cfgVoiceName').value = data.voice_name || ''; }
+    // LLM
+    if ($('cfgLLMModel')) $('cfgLLMModel').value = data.llm_model || 'claude-sonnet-4-5-20250514';
+    if ($('cfgLLMTemp')) { $('cfgLLMTemp').value = (data.llm_temperature || 0.7) * 100; $('cfgLLMTempVal').textContent = (data.llm_temperature || 0.7).toFixed(2); }
+    if ($('cfgLLMMaxTokens')) $('cfgLLMMaxTokens').value = data.llm_max_tokens || 300;
+    if ($('cfgSilenceTimeout')) $('cfgSilenceTimeout').value = data.silence_timeout_ms || 300;
+    // Behavior
+    if ($('cfgAutoRecord')) $('cfgAutoRecord').checked = data.auto_record !== false;
+    if ($('cfgCallerMemory')) $('cfgCallerMemory').checked = data.enable_caller_memory !== false;
+    if ($('cfgDataExtraction')) $('cfgDataExtraction').checked = data.data_extraction_enabled !== false;
+    if ($('cfgEscalation')) $('cfgEscalation').value = (data.escalation_triggers || []).join(', ');
   }
 
   window.aiSaveConfig = async function() {
     const config = {
-      name: ($('cfgName') || {}).value || '',
+      personality: ($('cfgPersonality') || {}).value || '',
       max_concurrent_calls: parseInt(($('cfgMaxCalls') || {}).value) || 50,
-      working_hours_start: ($('cfgHoursStart') || {}).value || '09:00',
-      working_hours_end: ($('cfgHoursEnd') || {}).value || '21:00',
+      working_hours: {
+        start: ($('cfgHoursStart') || {}).value || '08:00',
+        end: ($('cfgHoursEnd') || {}).value || '21:00',
+        timezone: ($('cfgTimezone') || {}).value || 'America/New_York'
+      },
       greeting_message: ($('cfgGreeting') || {}).value || '',
-      escalation_triggers: (($('cfgEscalation') || {}).value || '').split(',').map(s => s.trim()).filter(Boolean)
+      after_hours_message: ($('cfgAfterHours') || {}).value || '',
+      transfer_number: ($('cfgTransferNumber') || {}).value || '',
+      voice_id: ($('cfgVoiceId') || {}).value || '',
+      voice_name: ($('cfgVoiceName') || {}).value || '',
+      tts_model: ($('cfgTTSModel') || {}).value || 'eleven_turbo_v2_5',
+      tts_stability: parseFloat(($('cfgStability') || {}).value || 50) / 100,
+      tts_similarity: parseFloat(($('cfgSimilarity') || {}).value || 75) / 100,
+      tts_style: parseFloat(($('cfgStyle') || {}).value || 50) / 100,
+      llm_model: ($('cfgLLMModel') || {}).value || 'claude-sonnet-4-5-20250514',
+      llm_temperature: parseFloat(($('cfgLLMTemp') || {}).value || 70) / 100,
+      llm_max_tokens: parseInt(($('cfgLLMMaxTokens') || {}).value) || 300,
+      silence_timeout_ms: parseInt(($('cfgSilenceTimeout') || {}).value) || 300,
+      auto_record: ($('cfgAutoRecord') || {}).checked !== false,
+      enable_caller_memory: ($('cfgCallerMemory') || {}).checked !== false,
+      data_extraction_enabled: ($('cfgDataExtraction') || {}).checked !== false,
     };
     const r = await apiPut('/api/agent/config', config);
     const status = $('cfgSaveStatus');
     if (status) {
-      status.textContent = r ? '✅ Saved!' : '❌ Failed to save';
+      status.textContent = r ? '✅ Configuration saved & applied!' : '❌ Failed to save';
       setTimeout(() => { if (status) status.textContent = ''; }, 3000);
     }
+  };
+
+  window.aiResetConfig = async function() {
+    if (!confirm('Reset all AI agent settings to defaults?')) return;
+    const defaults = {
+      personality: 'Professional, empathetic debt consolidation specialist named Alex',
+      max_concurrent_calls: 50,
+      working_hours: { start: '08:00', end: '21:00', timezone: 'America/New_York' },
+      greeting_message: 'Hi, this is Alex from DebtFree Solutions. How can I help you today?',
+      after_hours_message: 'Thanks for calling DebtFree Solutions. Our hours are 8 AM to 9 PM Eastern. Please call back during business hours or leave a message.',
+      transfer_number: '+13059659624',
+      voice_id: 'sDgntYpZw3syMmKQFfje', voice_name: 'DeadCenter Schmoose Patrick',
+      tts_model: 'eleven_turbo_v2_5', tts_stability: 0.5, tts_similarity: 0.75, tts_style: 0.5,
+      llm_model: 'claude-sonnet-4-5-20250514', llm_temperature: 0.7, llm_max_tokens: 300,
+      silence_timeout_ms: 300, auto_record: true, enable_caller_memory: true, data_extraction_enabled: true,
+    };
+    await apiPut('/api/agent/config', defaults);
+    await fetchConfig();
+    const status = $('cfgSaveStatus');
+    if (status) { status.textContent = '↩️ Reset to defaults'; setTimeout(() => { if (status) status.textContent = ''; }, 3000); }
   };
 
   // --- Init ---
