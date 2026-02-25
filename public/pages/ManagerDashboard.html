@@ -424,7 +424,9 @@
   <script>
 (function() {
 'use strict';
-(function() {
+
+'use strict';
+
     let agentData = [];
     let sortColumn = 'revenue';
     let sortDirection = 'desc';
@@ -699,12 +701,7 @@
       }, 3000);
     }
 
-    // Expose functions to window for onclick handlers
-})();
-window.exportTeamReport = exportTeamReport;
-window.runComplianceCheck = runComplianceCheck;
-
-// ---- Window Exports ----
+  // Expose functions to window for onclick handlers
   window.assignLeads = assignLeads;
   window.exportTeamReport = exportTeamReport;
   window.reviewCases = reviewCases;

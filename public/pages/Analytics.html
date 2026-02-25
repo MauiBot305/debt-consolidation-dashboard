@@ -554,7 +554,9 @@
   <script>
 (function() {
 'use strict';
-(function() {
+
+'use strict';
+
     let currentRange = 'week';
     let leaderboardData = [];
     let sortColumn = 'revenue';
@@ -908,11 +910,8 @@
         toast.classList.remove('active');
       }, 3000);
     }
-    // Expose functions to window for onclick handlers
-})();
-window.setDateRange = setDateRange;
 
-// ---- Window Exports ----
+  // Expose functions to window for onclick handlers
   window.exportDashboard = exportDashboard;
   window.setDateRange = setDateRange;
   window.sortLeaderboard = sortLeaderboard;

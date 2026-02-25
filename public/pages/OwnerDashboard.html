@@ -518,7 +518,9 @@
   <script>
 (function() {
 'use strict';
-(function() {
+
+'use strict';
+
     document.addEventListener('DOMContentLoaded', function() {
       loadOwnerDashboard();
     });
@@ -738,11 +740,7 @@
       window.location.href = '/pages/Settings.html';
     }
 
-    // Expose functions to window for onclick handlers
-})();
-window.goToAnalytics = goToAnalytics;
-
-// ---- Window Exports ----
+  // Expose functions to window for onclick handlers
   window.exportFullReport = exportFullReport;
   window.goToAnalytics = goToAnalytics;
   window.goToSettings = goToSettings;

@@ -472,7 +472,9 @@
   <script>
 (function() {
 'use strict';
-(function() {
+
+'use strict';
+
     let currentUser = null;
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -713,13 +715,7 @@
       window.location.href = '/pages/DealPipeline.html';
     }
 
-    // Expose functions to window for onclick handlers
-})();
-window.dismissTask = dismissTask;
-window.goToLeads = goToLeads;
-window.toggleTask = toggleTask;
-
-// ---- Window Exports ----
+  // Expose functions to window for onclick handlers
   window.completeTask = completeTask;
   window.dismissTask = dismissTask;
   window.goToDialer = goToDialer;

@@ -928,7 +928,9 @@
   <script>
 (function() {
 'use strict';
-(function() {
+
+'use strict';
+
     // State abbreviations
     const US_STATES = [
       'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
@@ -1383,24 +1385,18 @@
         closeLicenseModal();
       }
     });
-    // Expose functions to window for onclick handlers
-})();
-window.addTCPAConsent = addTCPAConsent;
-window.generateReport = generateReport;
-window.openLicenseModal = openLicenseModal;
-window.saveLicense = saveLicense;
 
-// ---- Window Exports ----
+  // Expose functions to window for onclick handlers
   window.addDNC = addDNC;
   window.addTCPAConsent = addTCPAConsent;
   window.closeLicenseModal = closeLicenseModal;
   window.generateReport = generateReport;
   window.importDNC = importDNC;
+  window.initializeCompliance = initializeCompliance;
   window.openLicenseModal = openLicenseModal;
   window.removeDNC = removeDNC;
   window.saveLicense = saveLicense;
   window.toggleChecklistItem = toggleChecklistItem;
-  window.initializeCompliance = initializeCompliance;
 })();
 </script>
 </body>

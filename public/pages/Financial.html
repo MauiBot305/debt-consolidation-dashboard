@@ -739,7 +739,9 @@
   <script>
 (function() {
 'use strict';
-(function() {
+
+'use strict';
+
     // State
     let payments = [];
     let cases = [];
@@ -1075,17 +1077,12 @@
     }
 
   // Expose functions to window for onclick handlers
-})();
-window.exportCommissionReport = exportCommissionReport;
-window.resetDateFilter = resetDateFilter;
-
-// ---- Window Exports ----
   window.closeAddPaymentModal = closeAddPaymentModal;
   window.exportCommissionReport = exportCommissionReport;
+  window.initFinancial = initFinancial;
   window.openAddPaymentModal = openAddPaymentModal;
   window.resetDateFilter = resetDateFilter;
   window.saveFeeSchedule = saveFeeSchedule;
-  window.initFinancial = initFinancial;
 })();
 </script>
 </div>
