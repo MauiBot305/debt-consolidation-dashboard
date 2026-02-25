@@ -582,9 +582,9 @@
 
   async function updateOverview() {
     const agents = window.DebtDB.getAgents();
-    const leads = window.DebtDB.getLeads();
+    const leads = (window.DebtDB?.getLeads?.() || []);
     const calls = await fetchCallData();
-    const checklist = window.DebtDB.getComplianceChecklist();
+    const checklist = (window.DebtDB?.getComplianceChecklist?.() || []);
     
     // Total Agents
     document.getElementById('totalAgents').textContent = agents.length;
@@ -605,7 +605,7 @@
   }
 
   async function loadAgentPerformance() {
-    const managerStats = window.DebtDB.getManagerStats();
+    const managerStats = (window.DebtDB?.getManagerStats?.() || {});
     const calls = await fetchCallData();
     
     agentData = managerStats.map(agent => {
@@ -784,7 +784,7 @@
     const alerts = [];
     
     // Check for overdue follow-ups
-    const activities = window.DebtDB.getActivities();
+    const activities = (window.DebtDB?.getActivities?.() || []);
     const overdue = activities.filter(a => {
       if (!a.scheduledFor) return false;
       return new Date(a.scheduledFor) < new Date();
@@ -800,7 +800,7 @@
     }
     
     // Check compliance
-    const checklist = window.DebtDB.getComplianceChecklist();
+    const checklist = (window.DebtDB?.getComplianceChecklist?.() || []);
     const completed = checklist.filter(item => item.completed).length;
     const complianceScore = (completed / checklist.length) * 100;
     
@@ -855,7 +855,7 @@
   }
 
   function assignLeads() {
-    const leads = window.DebtDB.getLeads().filter(l => !l.agent);
+    const leads = (window.DebtDB?.getLeads?.() || []).filter(l => !l.agent);
     const agents = window.DebtDB.getAgents();
     
     if (leads.length === 0) {

@@ -658,7 +658,7 @@
 
     function updateKPIs() {
       const stats = window.DebtDB ? window.DebtDB.getDashboardStats() : {};
-      const deals = window.DebtDB ? window.DebtDB.getDeals() : [];
+      const deals = window.DebtDB ? (window.DebtDB?.getDeals?.() || []) : [];
       const localCalls = window.DebtDB ? window.DebtDB.getCalls() : [];
       const totalCalls = voiceStackCalls.length + localCalls.length;
       
@@ -744,7 +744,7 @@
 
     function renderPipelineChart() {
       const chart = document.getElementById('pipelineChart');
-      const deals = window.DebtDB.getDeals();
+      const deals = (window.DebtDB?.getDeals?.() || []);
       
       const stages = [
         { name: 'Lead', key: 'Lead' },
@@ -783,7 +783,7 @@
 
     function renderRevenueChart() {
       const svg = document.getElementById('revenueSvg');
-      const deals = window.DebtDB.getDeals();
+      const deals = (window.DebtDB?.getDeals?.() || []);
       
       // Group by month (last 6 months)
       const months = [];
@@ -1014,7 +1014,7 @@
     }
 
     function renderLeaderboard() {
-      const managerStats = window.DebtDB.getManagerStats();
+      const managerStats = (window.DebtDB?.getManagerStats?.() || {});
       
       leaderboardData = managerStats.map((agent, index) => {
         const conversion = agent.callsToday > 0 

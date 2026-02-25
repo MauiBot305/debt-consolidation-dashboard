@@ -761,8 +761,8 @@
     // Load data
     function loadData() {
       payments = window.DebtDB.getPayments() || [];
-      cases = window.DebtDB.getCases() || [];
-      deals = window.DebtDB.getDeals() || [];
+      cases = (window.DebtDB?.getCases?.() || []) || [];
+      deals = (window.DebtDB?.getDeals?.() || []) || [];
       agents = window.DebtDB.getAgents() || [];
 
       // Seed demo payments if empty

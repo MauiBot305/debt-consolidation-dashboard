@@ -766,7 +766,7 @@
         return;
       }
 
-      leads = window.DebtDB.getLeads();
+      leads = (window.DebtDB?.getLeads?.() || []);
       console.log(`✅ Loaded ${leads.length} leads`);
       
       if (leads.length === 0) {

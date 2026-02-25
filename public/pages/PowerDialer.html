@@ -690,7 +690,7 @@
         return;
       }
 
-      let leads = window.DebtDB.getLeads();
+      let leads = (window.DebtDB?.getLeads?.() || []);
       
       // Filter by search
       if (searchQuery) {

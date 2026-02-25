@@ -808,12 +808,12 @@
 
     // Load deals from DebtDB
     function loadDeals() {
-      deals = window.DebtDB.getDeals() || [];
+      deals = (window.DebtDB?.getDeals?.() || []) || [];
       
       // If no deals, seed some demo data
       if (deals.length === 0) {
         seedDemoDeals();
-        deals = window.DebtDB.getDeals();
+        deals = (window.DebtDB?.getDeals?.() || []);
       }
     }
 

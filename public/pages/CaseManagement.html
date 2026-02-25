@@ -1128,12 +1128,12 @@
 
     // Load cases from DebtDB
     function loadCases() {
-      cases = window.DebtDB.getCases() || [];
+      cases = (window.DebtDB?.getCases?.() || []) || [];
       
       // If no cases, seed some demo data
       if (cases.length === 0) {
         seedDemoCases();
-        cases = window.DebtDB.getCases();
+        cases = (window.DebtDB?.getCases?.() || []);
       }
     }
 

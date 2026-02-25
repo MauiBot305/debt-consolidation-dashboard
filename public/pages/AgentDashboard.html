@@ -517,9 +517,9 @@
   }
 
   async function updateStats() {
-    const leads = window.DebtDB.getLeads();
+    const leads = (window.DebtDB?.getLeads?.() || []);
     const calls = await fetchCallData();
-    const deals = window.DebtDB.getDeals();
+    const deals = (window.DebtDB?.getDeals?.() || []);
     
     const today = new Date().toISOString().split('T')[0];
     const thisMonth = new Date().toISOString().slice(0, 7);
@@ -595,7 +595,7 @@
     
     // Get today's callbacks and follow-ups
     const today = new Date().toISOString().split('T')[0];
-    const activities = window.DebtDB.getActivities().filter(a => 
+    const activities = (window.DebtDB?.getActivities?.() || []).filter(a => 
       a.scheduledFor && a.scheduledFor.startsWith(today)
     );
     

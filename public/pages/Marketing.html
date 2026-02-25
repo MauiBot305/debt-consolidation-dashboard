@@ -210,7 +210,7 @@
 
   function calculateMetrics() {
     const campaigns = window.DebtDB.getCampaigns();
-    const leads = window.DebtDB.getLeads();
+    const leads = (window.DebtDB?.getLeads?.() || []);
     
     const active = campaigns.filter(c => c.status === 'active').length;
     const totalLeadsFromCampaigns = campaigns.reduce((sum, c) => sum + (c.leads || 0), 0);
@@ -265,7 +265,7 @@
   }
 
   function renderLeadSourceROI() {
-    const leads = window.DebtDB.getLeads();
+    const leads = (window.DebtDB?.getLeads?.() || []);
     const campaigns = window.DebtDB.getCampaigns();
     
     // Aggregate by source

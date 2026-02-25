@@ -240,7 +240,7 @@
   function renderPerformanceDashboard() {
     const agents = window.DebtDB.getAgents();
     const calls = window.DebtDB.getCalls();
-    const deals = window.DebtDB.getDeals();
+    const deals = (window.DebtDB?.getDeals?.() || []);
     
     const tbody = document.getElementById('performanceBody');
     

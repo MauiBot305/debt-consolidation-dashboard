@@ -1012,7 +1012,7 @@
 
     function initializeCompliance() {
       // Initialize compliance data if not exists
-      if (!window.DebtDB.getComplianceChecklist().length) {
+      if (!(window.DebtDB?.getComplianceChecklist?.() || []).length) {
         COMPLIANCE_CHECKLIST.forEach(cat => {
           cat.items.forEach(item => {
             window.DebtDB.updateComplianceItem(item.id, {
@@ -1069,7 +1069,7 @@
     function renderChecklist() {
       const container = document.getElementById('checklistContainer');
       if (!container) return;
-      const checklist = window.DebtDB.getComplianceChecklist();
+      const checklist = (window.DebtDB?.getComplianceChecklist?.() || []);
       
       container.innerHTML = COMPLIANCE_CHECKLIST.map(cat => {
         const items = cat.items.map(item => {
@@ -1158,7 +1158,7 @@
     }
 
     function updateComplianceScore() {
-      const checklist = window.DebtDB.getComplianceChecklist();
+      const checklist = (window.DebtDB?.getComplianceChecklist?.() || []);
       const completed = checklist.filter(item => item.completed).length;
       const total = checklist.length;
       const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -1202,7 +1202,7 @@
     }
 
     function toggleChecklistItem(id) {
-      const checklist = window.DebtDB.getComplianceChecklist();
+      const checklist = (window.DebtDB?.getComplianceChecklist?.() || []);
       const item = checklist.find(c => c.id === id);
       
       if (item) {
@@ -1334,7 +1334,7 @@
     }
 
     function generateReport() {
-      const checklist = window.DebtDB.getComplianceChecklist();
+      const checklist = (window.DebtDB?.getComplianceChecklist?.() || []);
       const licenses = window.DebtDB.getLicenses();
       const dncList = window.DebtDB.getDNCList();
       const auditLog = window.DebtDB.getAuditLog();

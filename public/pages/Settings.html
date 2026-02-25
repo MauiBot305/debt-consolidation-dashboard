@@ -400,7 +400,7 @@
   }
 
   function loadSettings() {
-    const settings = window.DebtDB.getSettings();
+    const settings = (window.DebtDB?.getSettings?.() || {});
     const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
     
     // Profile

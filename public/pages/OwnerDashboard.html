@@ -641,9 +641,9 @@
   });
 
   function loadOwnerDashboard() {
-    const ownerStats = window.DebtDB.getOwnerStats();
-    const deals = window.DebtDB.getDeals();
-    const cases = window.DebtDB.getCases();
+    const ownerStats = (window.DebtDB?.getOwnerStats?.() || {});
+    const deals = (window.DebtDB?.getDeals?.() || []);
+    const cases = (window.DebtDB?.getCases?.() || []);
     
     // Total Revenue
     document.getElementById('totalRevenue').textContent = '$' + ownerStats.totalRevenue.toLocaleString();
@@ -708,7 +708,7 @@
   }
 
   function renderTopPerformers() {
-    const managerStats = window.DebtDB.getManagerStats();
+    const managerStats = (window.DebtDB?.getManagerStats?.() || {});
     
     // Sort by revenue and take top 3
     const topAgents = managerStats
@@ -745,7 +745,7 @@
 
   function renderGrowthChart() {
     const chart = document.getElementById('growthChart');
-    const deals = window.DebtDB.getDeals();
+    const deals = (window.DebtDB?.getDeals?.() || []);
     
     // Group by month (last 6 months)
     const months = [];
@@ -784,8 +784,8 @@
 
   function updateDepartmentHealth() {
     const agents = window.DebtDB.getAgents();
-    const cases = window.DebtDB.getCases();
-    const checklist = window.DebtDB.getComplianceChecklist();
+    const cases = (window.DebtDB?.getCases?.() || []);
+    const checklist = (window.DebtDB?.getComplianceChecklist?.() || []);
     
     // Sales Health
     const salesStatus = document.getElementById('salesStatus');
@@ -842,10 +842,10 @@
   }
 
   function exportFullReport() {
-    const ownerStats = window.DebtDB.getOwnerStats();
-    const managerStats = window.DebtDB.getManagerStats();
-    const checklist = window.DebtDB.getComplianceChecklist();
-    const deals = window.DebtDB.getDeals();
+    const ownerStats = (window.DebtDB?.getOwnerStats?.() || {});
+    const managerStats = (window.DebtDB?.getManagerStats?.() || {});
+    const checklist = (window.DebtDB?.getComplianceChecklist?.() || []);
+    const deals = (window.DebtDB?.getDeals?.() || []);
     
     // Calculate additional metrics
     const thisMonth = new Date().toISOString().slice(0, 7);
