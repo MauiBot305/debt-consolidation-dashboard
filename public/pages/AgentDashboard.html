@@ -470,6 +470,9 @@
   </div>
 
   <script>
+(function() {
+  'use strict';
+
     (function() {
     let currentUser = null;
 
@@ -712,13 +715,16 @@
     }
 
     // Expose functions to window for onclick handlers
-    window.goToDialer = goToDialer;
-    window.goToLeads = goToLeads;
-    window.goToPipeline = goToPipeline;
-    window.toggleTask = toggleTask;
-    window.completeTask = completeTask;
-    window.dismissTask = dismissTask;
-    })();
-  </script>
+})();
+  
+  // Expose onclick functions to window
+  window.completeTask = completeTask;
+  window.dismissTask = dismissTask;
+  window.goToDialer = goToDialer;
+  window.goToLeads = goToLeads;
+  window.goToPipeline = goToPipeline;
+  window.toggleTask = toggleTask;
+})();
+</script>
 </body>
 </html>

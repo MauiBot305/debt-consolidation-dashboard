@@ -926,6 +926,9 @@
   </div>
 
   <script>
+(function() {
+  'use strict';
+
     (function() {
     // State abbreviations
     const US_STATES = [
@@ -1382,17 +1385,20 @@
       }
     });
     // Expose functions to window for onclick handlers
-    window.generateReport = generateReport;
-    window.addTCPAConsent = addTCPAConsent;
-    window.addDNC = addDNC;
-    window.importDNC = importDNC;
-    window.closeLicenseModal = closeLicenseModal;
-    window.saveLicense = saveLicense;
-    window.openLicenseModal = openLicenseModal;
-    window.toggleChecklistItem = toggleChecklistItem;
-    window.removeDNC = removeDNC;
-    })();
+})();
 
-  </script>
+  
+  // Expose onclick functions to window
+  window.addDNC = addDNC;
+  window.addTCPAConsent = addTCPAConsent;
+  window.closeLicenseModal = closeLicenseModal;
+  window.generateReport = generateReport;
+  window.importDNC = importDNC;
+  window.openLicenseModal = openLicenseModal;
+  window.removeDNC = removeDNC;
+  window.saveLicense = saveLicense;
+  window.toggleChecklistItem = toggleChecklistItem;
+})();
+</script>
 </body>
 </html>

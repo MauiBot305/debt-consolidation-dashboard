@@ -778,6 +778,9 @@
   </div>
 
   <script>
+(function() {
+  'use strict';
+
   (function() {
     // Pipeline stages
     const PIPELINE_STAGES = [
@@ -1260,14 +1263,17 @@
     }
 
   // Expose functions to window for onclick handlers
-  window.openAddDealModal = openAddDealModal;
-  window.closeAddDealModal = closeAddDealModal;
-  window.removeDealCreditorRow = removeDealCreditorRow;
+})();
+
+  // Expose onclick functions to window
   window.addDealCreditorRow = addDealCreditorRow;
-  window.closeDealDetailPanel = closeDealDetailPanel;
-  window.openDealDetailPanel = openDealDetailPanel;
   window.callDealClient = callDealClient;
-  window.addDeal = addDeal;
-  })();
+  window.closeAddDealModal = closeAddDealModal;
+  window.closeDealDetailPanel = closeDealDetailPanel;
+  window.emailDealClient = emailDealClient;
+  window.openAddDealModal = openAddDealModal;
+  window.openDealDetailPanel = openDealDetailPanel;
+  window.removeDealCreditorRow = removeDealCreditorRow;
+})();
 </script>
 </div>

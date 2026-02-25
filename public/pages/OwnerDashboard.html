@@ -516,6 +516,9 @@
   </div>
 
   <script>
+(function() {
+  'use strict';
+
     (function() {
     document.addEventListener('DOMContentLoaded', function() {
       loadOwnerDashboard();
@@ -737,10 +740,13 @@
     }
 
     // Expose functions to window for onclick handlers
-    window.goToAnalytics = goToAnalytics;
-    window.exportFullReport = exportFullReport;
-    window.goToSettings = goToSettings;
-    })();
-  </script>
+})();
+  
+  // Expose onclick functions to window
+  window.exportFullReport = exportFullReport;
+  window.goToAnalytics = goToAnalytics;
+  window.goToSettings = goToSettings;
+})();
+</script>
 </body>
 </html>

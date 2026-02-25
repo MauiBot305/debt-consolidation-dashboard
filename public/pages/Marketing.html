@@ -178,16 +178,20 @@
 </div>
 
 <script>
-  (function() {
+(function() {
+  'use strict';
 
 
-  // Expose functions to window for onclick handlers
-  window.openCampaignModal = openCampaignModal;
-  window.filterCampaigns = filterCampaigns;
+  // Expose onclick functions to window
+
+
+  // Expose onclick functions to window
   window.closeCampaignModal = closeCampaignModal;
   window.createCampaign = createCampaign;
+  window.filterCampaigns = filterCampaigns;
+  window.openCampaignModal = openCampaignModal;
   window.toggleCampaignStatus = toggleCampaignStatus;
-  })();
+})();
 </script>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>

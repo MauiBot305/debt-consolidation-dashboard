@@ -559,6 +559,9 @@
   </div>
 
   <script>
+(function() {
+  'use strict';
+
   (function() {
     // =====================
     // GLOBAL STATE
@@ -1177,16 +1180,24 @@
     }
 
   // Expose functions to window for onclick handlers
+})();
+
+  // Expose onclick functions to window
+  window.addConference = addConference;
+  window.backspace = backspace;
+  window.closeSMSModal = closeSMSModal;
   window.dialDigit = dialDigit;
+  window.hangup = hangup;
   window.makeCall = makeCall;
-  window.hangupCall = hangupCall;
-  window.toggleMute = toggleMute;
+  window.openSMSModal = openSMSModal;
+  window.saveDisposition = saveDisposition;
+  window.selectContact = selectContact;
+  window.selectDisposition = selectDisposition;
+  window.sendSMS = sendSMS;
   window.toggleHold = toggleHold;
+  window.toggleMute = toggleMute;
   window.toggleRecord = toggleRecord;
   window.transferCall = transferCall;
-  window.loadNextLead = loadNextLead;
-  window.skipLead = skipLead;
-  window.saveDisposition = saveDisposition;
-  })();
+})();
 </script>
 </div>

@@ -167,17 +167,18 @@
 </div>
 
 <script>
-  (function() {
+(function() {
+  'use strict';
 
 
-  // Expose functions to window for onclick handlers
-  window.useTemplate = useTemplate;
+  // Expose onclick functions to window
+
+
+  // Expose onclick functions to window
   window.goToStep = goToStep;
   window.resetImport = resetImport;
-  window.uploadFile = uploadFile;
-  window.validateData = validateData;
-  window.importData = importData;
-  })();
+  window.useTemplate = useTemplate;
+})();
 </script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>

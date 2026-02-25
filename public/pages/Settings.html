@@ -363,20 +363,23 @@
 </div>
 
 <script>
-  (function() {
+(function() {
+  'use strict';
 
 
-  // Expose functions to window for onclick handlers
-  window.switchTab = switchTab;
-  window.saveProfile = saveProfile;
+  // Expose onclick functions to window
+
+
+  // Expose onclick functions to window
+  window.changePassword = changePassword;
+  window.clearData = clearData;
+  window.createBackup = createBackup;
+  window.exportData = exportData;
   window.saveCompany = saveCompany;
   window.saveNotifications = saveNotifications;
-  window.saveIntegrations = saveIntegrations;
-  window.saveSecurity = saveSecurity;
-  window.saveData = saveData;
-  window.saveBilling = saveBilling;
-  window.saveCompliance = saveCompliance;
-  })();
+  window.saveProfile = saveProfile;
+  window.switchTab = switchTab;
+})();
 </script>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>

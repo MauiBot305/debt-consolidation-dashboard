@@ -1110,6 +1110,9 @@
   </div>
 
   <script>
+(function() {
+  'use strict';
+
   (function() {
     // State
     let cases = [];
@@ -1862,14 +1865,26 @@
     }
 
   // Expose functions to window for onclick handlers
-  window.openAddCaseModal = openAddCaseModal;
-  window.selectFilter = selectFilter;
-  window.closeAddCaseModal = closeAddCaseModal;
-  window.removeCreditorRow = removeCreditorRow;
+})();
+
+  // Expose onclick functions to window
+  window.addCreditor = addCreditor;
   window.addCreditorRow = addCreditorRow;
-  window.addCase = addCase;
-  window.showCaseDetail = showCaseDetail;
-  window.closeCaseDetailPanel = closeCaseDetailPanel;
-  })();
+  window.callClient = callClient;
+  window.closeAddCaseModal = closeAddCaseModal;
+  window.closeAddDocumentModal = closeAddDocumentModal;
+  window.closeAddNoteModal = closeAddNoteModal;
+  window.closeAddPaymentModal = closeAddPaymentModal;
+  window.emailClient = emailClient;
+  window.openAddCaseModal = openAddCaseModal;
+  window.openAddDocumentModal = openAddDocumentModal;
+  window.openAddNoteModal = openAddNoteModal;
+  window.openAddPaymentModal = openAddPaymentModal;
+  window.removeCreditorRow = removeCreditorRow;
+  window.selectCase = selectCase;
+  window.selectFilter = selectFilter;
+  window.switchTab = switchTab;
+  window.updateCaseStatus = updateCaseStatus;
+})();
 </script>
 </div>

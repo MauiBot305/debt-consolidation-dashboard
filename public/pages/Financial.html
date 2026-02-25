@@ -737,6 +737,9 @@
   </div>
 
   <script>
+(function() {
+  'use strict';
+
   (function() {
     // State
     let payments = [];
@@ -1073,13 +1076,14 @@
     }
 
   // Expose functions to window for onclick handlers
-  window.resetDateFilter = resetDateFilter;
-  window.openAddPaymentModal = openAddPaymentModal;
-  window.exportCommissionReport = exportCommissionReport;
-  window.saveFeeSchedule = saveFeeSchedule;
+})();
+
+  // Expose onclick functions to window
   window.closeAddPaymentModal = closeAddPaymentModal;
-  window.addPayment = addPayment;
-  window.filterPayments = filterPayments;
-  })();
+  window.exportCommissionReport = exportCommissionReport;
+  window.openAddPaymentModal = openAddPaymentModal;
+  window.resetDateFilter = resetDateFilter;
+  window.saveFeeSchedule = saveFeeSchedule;
+})();
 </script>
 </div>

@@ -149,16 +149,20 @@
 </div>
 
 <script>
-  (function() {
+(function() {
+  'use strict';
 
 
-  // Expose functions to window for onclick handlers
-  window.uploadDocument = uploadDocument;
-  window.sendMessage = sendMessage;
-  window.selectClient = selectClient;
+  // Expose onclick functions to window
+
+
+  // Expose onclick functions to window
   window.acceptOffer = acceptOffer;
   window.rejectOffer = rejectOffer;
-  })();
+  window.selectClient = selectClient;
+  window.sendMessage = sendMessage;
+  window.uploadDocument = uploadDocument;
+})();
 </script>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>

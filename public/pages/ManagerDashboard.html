@@ -422,6 +422,9 @@
   <div class="toast" id="toast"></div>
 
   <script>
+(function() {
+  'use strict';
+
     (function() {
     let agentData = [];
     let sortColumn = 'revenue';
@@ -698,12 +701,15 @@
     }
 
     // Expose functions to window for onclick handlers
-    window.exportTeamReport = exportTeamReport;
-    window.assignLeads = assignLeads;
-    window.reviewCases = reviewCases;
-    window.runComplianceCheck = runComplianceCheck;
-    window.sortTable = sortTable;
-    })();
-  </script>
+})();
+  
+  // Expose onclick functions to window
+  window.assignLeads = assignLeads;
+  window.exportTeamReport = exportTeamReport;
+  window.reviewCases = reviewCases;
+  window.runComplianceCheck = runComplianceCheck;
+  window.sortTable = sortTable;
+})();
+</script>
 </body>
 </html>

@@ -205,13 +205,17 @@
 </div>
 
 <script>
-  (function() {
+(function() {
+  'use strict';
 
 
-  // Expose functions to window for onclick handlers
-  window.switchTab = switchTab;
+  // Expose onclick functions to window
+
+
+  // Expose onclick functions to window
   window.sendChatMessage = sendChatMessage;
-  })();
+  window.switchTab = switchTab;
+})();
 </script>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>

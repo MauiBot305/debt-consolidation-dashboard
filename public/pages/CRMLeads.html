@@ -727,6 +727,9 @@
   </div>
 
   <script>
+(function() {
+  'use strict';
+
   (function() {
     // =====================
     // GLOBAL STATE
@@ -1297,20 +1300,26 @@
     }
 
   // Expose functions to window for onclick handlers
-  window.importCSV = importCSV;
-  window.exportCSV = exportCSV;
-  window.openAddLeadModal = openAddLeadModal;
+})();
+
+  // Expose onclick functions to window
   window.bulkAssign = bulkAssign;
   window.bulkChangeStatus = bulkChangeStatus;
-  window.bulkExport = bulkExport;
   window.bulkDelete = bulkDelete;
-  window.previousPage = previousPage;
-  window.nextPage = nextPage;
-  window.goToPage = goToPage;
+  window.bulkExport = bulkExport;
+  window.callLead = callLead;
   window.closeAddLeadModal = closeAddLeadModal;
-  window.addLead = addLead;
-  window.showLeadDetail = showLeadDetail;
   window.closeDetailPanel = closeDetailPanel;
-  })();
+  window.deleteLead = deleteLead;
+  window.editLead = editLead;
+  window.exportCSV = exportCSV;
+  window.goToPage = goToPage;
+  window.importCSV = importCSV;
+  window.nextPage = nextPage;
+  window.openAddLeadModal = openAddLeadModal;
+  window.previousPage = previousPage;
+  window.showToast = showToast;
+  window.viewLeadDetail = viewLeadDetail;
+})();
 </script>
 </div>

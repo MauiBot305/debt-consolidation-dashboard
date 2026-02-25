@@ -552,6 +552,9 @@
   <div class="toast" id="toast"></div>
 
   <script>
+(function() {
+  'use strict';
+
     (function() {
     let currentRange = 'week';
     let leaderboardData = [];
@@ -907,11 +910,14 @@
       }, 3000);
     }
     // Expose functions to window for onclick handlers
-    window.setDateRange = setDateRange;
-    window.exportDashboard = exportDashboard;
-    window.sortLeaderboard = sortLeaderboard;
-    })();
+})();
 
-  </script>
+  
+  // Expose onclick functions to window
+  window.exportDashboard = exportDashboard;
+  window.setDateRange = setDateRange;
+  window.sortLeaderboard = sortLeaderboard;
+})();
+</script>
 </body>
 </html>

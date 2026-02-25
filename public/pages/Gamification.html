@@ -103,14 +103,18 @@
 </div>
 
 <script>
-  (function() {
+(function() {
+  'use strict';
 
 
-  // Expose functions to window for onclick handlers
+  // Expose onclick functions to window
+
+
+  // Expose onclick functions to window
   window.closeAgentProfile = closeAgentProfile;
-  window.viewAgentProfile = viewAgentProfile;
   window.redeemReward = redeemReward;
-  })();
+  window.viewAgentProfile = viewAgentProfile;
+})();
 </script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>

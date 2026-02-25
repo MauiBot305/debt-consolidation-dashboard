@@ -138,18 +138,22 @@
 </div>
 
 <script>
-  (function() {
+(function() {
+  'use strict';
 
 
-  // Expose functions to window for onclick handlers
-  window.openCreateModal = openCreateModal;
+  // Expose onclick functions to window
+
+
+  // Expose onclick functions to window
   window.closeCreateModal = closeCreateModal;
   window.createAutomation = createAutomation;
-  window.useTemplate = useTemplate;
-  window.toggleAutomation = toggleAutomation;
-  window.testAutomation = testAutomation;
   window.deleteAutomation = deleteAutomation;
-  })();
+  window.openCreateModal = openCreateModal;
+  window.testAutomation = testAutomation;
+  window.toggleAutomation = toggleAutomation;
+  window.useTemplate = useTemplate;
+})();
 </script>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
