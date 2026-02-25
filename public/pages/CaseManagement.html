@@ -1,0 +1,1913 @@
+<div id="case-management-page" class="page-content">
+  <style>
+    /* Orbitron Font Import */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Root Variables */
+    :root {
+      --bg-primary: #0a0f1a;
+      --bg-card: rgba(15, 23, 42, 0.8);
+      --bg-glass: rgba(30, 41, 59, 0.6);
+      --primary: #3B82F6;
+      --primary-glow: rgba(59, 130, 246, 0.3);
+      --accent: #06B6D4;
+      --accent-glow: rgba(6, 182, 212, 0.3);
+      --success: #22C55E;
+      --success-glow: rgba(34, 197, 94, 0.3);
+      --warning: #F59E0B;
+      --warning-glow: rgba(245, 158, 11, 0.3);
+      --danger: #EF4444;
+      --danger-glow: rgba(239, 68, 68, 0.3);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-subtle: rgba(148, 163, 184, 0.1);
+      --border-hover: rgba(148, 163, 184, 0.2);
+    }
+
+    /* Page Container */
+    #case-management-page {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    /* Header */
+    .cm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .cm-header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Glass Card Base */
+    .glass-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Search & Filter Bar */
+    .cm-toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto auto;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .filter-btn, .action-btn {
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover, .action-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      color: white;
+    }
+
+    .action-btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px var(--primary-glow);
+    }
+
+    /* Case List */
+    .case-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .case-item {
+      display: grid;
+      grid-template-columns: auto 2fr 1fr 1fr 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .case-item:hover {
+      border-color: var(--primary);
+      transform: translateX(4px);
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+    }
+
+    .case-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .case-info h4 {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .case-info p {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .case-stat {
+      text-align: center;
+    }
+
+    .case-stat .value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .case-stat .label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .case-status {
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-active { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
+    .status-negotiating { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+    .status-settled { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+
+    /* Case Detail View */
+    .case-detail {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .case-detail.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.5rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Tabbed Interface */
+    .tabs-container {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+
+    .tabs-nav {
+      display: flex;
+      background: rgba(15, 23, 42, 0.5);
+      border-bottom: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+    }
+
+    .tab-indicator {
+      position: absolute;
+      bottom: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 3px 3px 0 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .tab-content {
+      padding: 1.5rem;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* Overview Tab */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .client-card {
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1));
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+    }
+
+    .client-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .client-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .client-name h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .client-name p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .info-item {
+      padding: 0.75rem;
+      background: var(--bg-card);
+      border-radius: 0.5rem;
+    }
+
+    .info-item label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    .info-item span {
+      font-weight: 500;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .stat-card {
+      padding: 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+    }
+
+    .stat-card .number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-card .label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Milestone Tracker */
+    .milestone-section {
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .milestone-section h4 {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .milestone-tracker {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .milestone-tracker::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 10%;
+      right: 10%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--success) 60%, var(--text-muted) 60%);
+      border-radius: 2px;
+      z-index: 0;
+    }
+
+    .milestone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .milestone-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .milestone.completed .milestone-icon {
+      background: var(--success);
+      box-shadow: 0 0 20px var(--success-glow);
+    }
+
+    .milestone.current .milestone-icon {
+      background: var(--primary);
+      box-shadow: 0 0 25px var(--primary-glow);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    .milestone.pending .milestone-icon {
+      background: var(--bg-glass);
+      border: 2px solid var(--text-muted);
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+      50% { box-shadow: 0 0 35px var(--primary-glow); }
+    }
+
+    .milestone-label {
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .milestone.completed .milestone-label { color: var(--success); }
+    .milestone.current .milestone-label { color: var(--primary); }
+    .milestone.pending .milestone-label { color: var(--text-muted); }
+
+    /* Creditor Cards */
+    .creditor-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .creditor-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto auto auto;
+      gap: 1.5rem;
+      align-items: center;
+      padding: 1.25rem;
+      background: var(--bg-card);
+      border-radius: 0.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .creditor-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--warning), var(--danger));
+    }
+
+    .creditor-card.negotiating::before {
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+    }
+
+    .creditor-card.settled::before {
+      background: linear-gradient(180deg, var(--success), var(--success));
+    }
+
+    .creditor-card:hover {
+      transform: translateX(4px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .creditor-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 0.75rem;
+      background: var(--bg-glass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .creditor-info h5 {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .creditor-info p {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .creditor-stat {
+      text-align: right;
+    }
+
+    .creditor-stat .value {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+    }
+
+    .creditor-stat .label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Document Upload */
+    .upload-zone {
+      padding: 3rem 2rem;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(6, 182, 212, 0.05));
+      border: 2px dashed var(--border-subtle);
+      border-radius: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+    }
+
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1));
+      transform: scale(1.02);
+    }
+
+    .upload-zone i {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .upload-zone h4 {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .upload-zone p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .document-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .document-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .document-item:hover {
+      border-color: var(--primary);
+      transform: translateX(4px);
+    }
+
+    .doc-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 0.5rem;
+      background: var(--bg-glass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .doc-info {
+      flex: 1;
+    }
+
+    .doc-info h5 {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .doc-info p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .doc-badge {
+      padding: 0.35rem 0.75rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-pending { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+    .badge-approved { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+    .badge-signed { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
+
+    /* Payment Timeline */
+    .payment-timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .payment-timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.75rem;
+      top: 1.5rem;
+      width: 12px;
+      height: 12px;
+      background: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px var(--bg-primary), 0 0 0 6px var(--primary);
+    }
+
+    .timeline-item:hover {
+      border-color: var(--primary);
+      transform: translateX(4px);
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .timeline-amount {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+      color: var(--success);
+    }
+
+    /* Notes */
+    .notes-editor {
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .notes-textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.5rem;
+      color: var(--text-primary);
+      resize: vertical;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .notes-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .note-item {
+      padding: 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .note-item:hover {
+      border-color: var(--primary);
+    }
+
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .note-author {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .note-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .note-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .modal-header h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.125rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--bg-glass);
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.5rem;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      padding: 1rem 1.5rem 1.5rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px var(--primary-glow);
+    }
+
+    /* Skeleton Loading */
+    .skeleton {
+      background: linear-gradient(90deg, var(--bg-glass) 25%, var(--border-subtle) 50%, var(--bg-glass) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 0.5rem;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Payment Calculator */
+    .calculator {
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1));
+      border: 1px solid var(--border-subtle);
+      border-radius: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .calculator h4 {
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .calc-result {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .calc-item {
+      text-align: center;
+      padding: 1rem;
+      background: var(--bg-card);
+      border-radius: 0.5rem;
+    }
+
+    .calc-item .value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .calc-item .label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+  </style>
+
+  <!-- Case List View -->
+  <div id="caseListView" class="case-list-view">
+    <div class="cm-header">
+      <h1><i data-lucide="briefcase"></i> Case Management</h1>
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="action-btn" onclick="refreshCases()">
+          <i data-lucide="refresh-cw"></i> Refresh
+        </button>
+        <button class="action-btn primary" onclick="openNewCaseModal()">
+          <i data-lucide="plus"></i> New Case
+        </button>
+      </div>
+    </div>
+
+    <div class="cm-toolbar">
+      <div class="search-box">
+        <i data-lucide="search"></i>
+        <input type="text" id="caseSearch" placeholder="Search cases by client name, case ID..." onkeyup="filterCases()">
+      </div>
+      <select class="filter-btn" id="statusFilter" onchange="filterCases()">
+        <option value="">All Status</option>
+        <option value="active">Active</option>
+        <option value="negotiating">In Negotiation</option>
+        <option value="settled">Settled</option>
+      </select>
+      <select class="filter-btn" id="agentFilter" onchange="filterCases()">
+        <option value="">All Agents</option>
+        <option value="Sarah Johnson">Sarah Johnson</option>
+        <option value="Mike Chen">Mike Chen</option>
+        <option value="Jessica Davis">Jessica Davis</option>
+      </select>
+      <select class="filter-btn" id="dateFilter" onchange="filterCases()">
+        <option value="">All Dates</option>
+        <option value="7">Last 7 Days</option>
+        <option value="30">Last 30 Days</option>
+        <option value="90">Last 90 Days</option>
+      </select>
+      <button class="filter-btn" onclick="resetFilters()">
+        <i data-lucide="x"></i> Clear
+      </button>
+    </div>
+
+    <div class="case-list" id="caseList">
+      <!-- Cases will be rendered here -->
+    </div>
+  </div>
+
+  <!-- Case Detail View -->
+  <div id="caseDetailView" class="case-detail">
+    <div class="detail-header">
+      <button class="back-btn" onclick="showCaseList()">
+        <i data-lucide="arrow-left"></i> Back to Cases
+      </button>
+      <div class="quick-actions">
+        <button class="action-btn" onclick="openAddCreditorModal()">
+          <i data-lucide="credit-card"></i> Add Creditor
+        </button>
+        <button class="action-btn" onclick="openLogPaymentModal()">
+          <i data-lucide="dollar-sign"></i> Log Payment
+        </button>
+        <button class="action-btn" onclick="triggerUpload()">
+          <i data-lucide="file-up"></i> Upload Doc
+        </button>
+        <button class="action-btn" onclick="focusNotesTab()">
+          <i data-lucide="sticky-note"></i> Add Note
+        </button>
+        <button class="action-btn" onclick="openScheduleModal()">
+          <i data-lucide="calendar"></i> Schedule
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs Container -->
+    <div class="tabs-container">
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="overview">Overview</button>
+        <button class="tab-btn" data-tab="creditors">Creditors</button>
+        <button class="tab-btn" data-tab="documents">Documents</button>
+        <button class="tab-btn" data-tab="payments">Payments</button>
+        <button class="tab-btn" data-tab="timeline">Timeline</button>
+        <button class="tab-btn" data-tab="notes">Notes</button>
+        <div class="tab-indicator" style="left: 0; width: 16.66%;"></div>
+      </div>
+
+      <!-- Overview Tab -->
+      <div class="tab-content active" id="tab-overview">
+        <div class="overview-grid">
+          <div class="client-card">
+            <div class="client-header">
+              <div class="client-avatar" id="detailAvatar">JD</div>
+              <div class="client-name">
+                <h3 id="detailName">John Doe</h3>
+                <p id="detailId">Case #DC-2024-001</p>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-item">
+                <label>Phone</label>
+                <span id="detailPhone">(555) 123-4567</span>
+              </div>
+              <div class="info-item">
+                <label>Email</label>
+                <span id="detailEmail">john@example.com</span>
+              </div>
+              <div class="info-item">
+                <label>Agent</label>
+                <span id="detailAgent">Sarah Johnson</span>
+              </div>
+              <div class="info-item">
+                <label>Enrolled</label>
+                <span id="detailDate">Jan 15, 2024</span>
+              </div>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="number" id="statTotalDebt">$45,000</div>
+              <div class="label">Total Debt</div>
+            </div>
+            <div class="stat-card">
+              <div class="number" id="statEnrolled">$38,000</div>
+              <div class="label">Enrolled Debt</div>
+            </div>
+            <div class="stat-card">
+              <div class="number" id="statSettled">$12,500</div>
+              <div class="label">Settled</div>
+            </div>
+            <div class="stat-card">
+              <div class="number" id="statProgress">33%</div>
+              <div class="label">Progress</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="milestone-section">
+          <h4><i data-lucide="flag"></i> Case Milestones</h4>
+          <div class="milestone-tracker">
+            <div class="milestone completed">
+              <div class="milestone-icon"><i data-lucide="check"></i></div>
+              <div class="milestone-label">Enrollment</div>
+            </div>
+            <div class="milestone completed">
+              <div class="milestone-icon"><i data-lucide="check"></i></div>
+              <div class="milestone-label">Documents</div>
+            </div>
+            <div class="milestone current">
+              <div class="milestone-icon"><i data-lucide="loader"></i></div>
+              <div class="milestone-label">Negotiation</div>
+            </div>
+            <div class="milestone pending">
+              <div class="milestone-icon"><i data-lucide="handshake"></i></div>
+              <div class="milestone-label">Settlement</div>
+            </div>
+            <div class="milestone pending">
+              <div class="milestone-icon"><i data-lucide="award"></i></div>
+              <div class="milestone-label">Complete</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card" style="padding: 1.5rem;">
+          <h4 style="margin-bottom: 1rem;"><i data-lucide="trending-up"></i> Estimated Completion</h4>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="flex: 1; height: 8px; background: var(--bg-glass); border-radius: 4px; overflow: hidden;">
+              <div id="completionBar" style="width: 33%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 4px; transition: width 0.5s ease;"></div>
+            </div>
+            <span id="completionText" style="font-family: 'Orbitron', sans-serif; font-weight: 600; color: var(--accent);">~8 months</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Creditors Tab -->
+      <div class="tab-content" id="tab-creditors">
+        <div class="creditor-grid" id="creditorList">
+          <!-- Creditors rendered here -->
+        </div>
+      </div>
+
+      <!-- Documents Tab -->
+      <div class="tab-content" id="tab-documents">
+        <div class="upload-zone" id="uploadZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="document.getElementById('fileInput').click()">
+          <i data-lucide="upload-cloud"></i>
+          <h4>Drop documents here</h4>
+          <p>or click to browse • PDF, DOC, JPG up to 10MB</p>
+          <input type="file" id="fileInput" style="display: none;" multiple onchange="handleFileSelect(event)">
+        </div>
+        <div class="document-list" id="documentList">
+          <!-- Documents rendered here -->
+        </div>
+      </div>
+
+      <!-- Payments Tab -->
+      <div class="tab-content" id="tab-payments">
+        <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+          <h4 style="margin-bottom: 1rem;"><i data-lucide="wallet"></i> Trust Account</h4>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+            <div class="stat-card">
+              <div class="number" id="trustBalance" style="color: var(--success);">$4,250</div>
+              <div class="label">Current Balance</div>
+            </div>
+            <div class="stat-card">
+              <div class="number" id="totalPaid">$8,500</div>
+              <div class="label">Total Paid</div>
+            </div>
+            <div class="stat-card">
+              <div class="number" id="nextPayment">$425</div>
+              <div class="label">Next Payment</div>
+            </div>
+            <div class="stat-card">
+              <div class="number" id="nextDueDate">Mar 1</div>
+              <div class="label">Due Date</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+          <h4 style="margin-bottom: 1rem;"><i data-lucide="calendar-clock"></i> Payment Schedule</h4>
+          <div id="paymentSchedule">
+            <!-- Schedule rendered here -->
+          </div>
+        </div>
+
+        <div class="calculator">
+          <h4><i data-lucide="calculator"></i> Payment Calculator</h4>
+          <div class="form-group">
+            <label>Monthly Budget</label>
+            <input type="number" id="calcBudget" placeholder="e.g. 500" onkeyup="calculatePayments()">
+          </div>
+          <div class="calc-result" id="calcResult">
+            <div class="calc-item">
+              <div class="value" id="calcMonths">--</div>
+              <div class="label">Est. Months</div>
+            </div>
+            <div class="calc-item">
+              <div class="value" id="calcTotal">--</div>
+              <div class="label">Total Paid</div>
+            </div>
+            <div class="calc-item">
+              <div class="value" id="calcSavings">--</div>
+              <div class="label">Est. Savings</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline Tab -->
+      <div class="tab-content" id="tab-timeline">
+        <div class="payment-timeline" id="timelineList">
+          <!-- Timeline items rendered here -->
+        </div>
+      </div>
+
+      <!-- Notes Tab -->
+      <div class="tab-content" id="tab-notes">
+        <div class="notes-editor">
+          <div class="form-group">
+            <label>Add Note</label>
+            <textarea class="notes-textarea" id="newNote" placeholder="Type your note here..."></textarea>
+          </div>
+          <div style="display: flex; justify-content: flex-end;">
+            <button class="btn btn-primary" onclick="addNote()">
+              <i data-lucide="plus"></i> Add Note
+            </button>
+          </div>
+        </div>
+        <div id="notesList">
+          <!-- Notes rendered here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Modal Title</h3>
+        <button class="modal-close" onclick="closeModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Modal content -->
+      </div>
+      <div class="modal-footer" id="modalFooter">
+        <!-- Modal buttons -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let currentCase = null;
+    let cases = [];
+    let currentTab = 'overview';
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCases();
+      initTabs();
+    });
+
+    // Tab Navigation
+    function initTabs() {
+      const tabs = document.querySelectorAll('.tab-btn');
+      const indicator = document.querySelector('.tab-indicator');
+      
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+          const tabId = tab.dataset.tab;
+          switchTab(tabId);
+          
+          // Animate indicator
+          const width = 100 / tabs.length;
+          indicator.style.left = `${index * width}%`;
+          indicator.style.width = `${width}%`;
+        });
+      });
+    }
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      
+      // Update buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabId);
+      });
+      
+      // Update content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+      
+      // Re-init icons
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    // Data Management
+    function loadCases() {
+      const stored = localStorage.getItem('debtDB_cases');
+      if (stored) {
+        cases = JSON.parse(stored);
+      } else {
+        // Seed sample data
+        cases = [
+          {
+            id: 'DC-2024-001',
+            name: 'John Doe',
+            email: 'john@example.com',
+            phone: '(555) 123-4567',
+            agent: 'Sarah Johnson',
+            enrolledDate: '2024-01-15',
+            totalDebt: 45000,
+            enrolledDebt: 38000,
+            settledAmount: 12500,
+            status: 'negotiating',
+            creditors: [
+              { name: 'Chase Bank', originalBalance: 15000, currentBalance: 14200, rate: 22.99, status: 'negotiating', offer: 45, date: '2024-03-15' },
+              { name: 'Discover', originalBalance: 8000, currentBalance: 7500, rate: 19.99, status: 'active', offer: null, date: null },
+              { name: 'Capital One', originalBalance: 15000, currentBalance: 0, rate: 24.99, status: 'settled', offer: 35, date: '2024-02-01' }
+            ],
+            documents: [
+              { name: 'Power of Attorney', type: 'POA', date: '2024-01-15', status: 'signed' },
+              { name: 'Hardship Letter', type: 'Hardship', date: '2024-01-16', status: 'approved' },
+              { name: 'Creditor Agreement', type: 'Agreement', date: '2024-02-01', status: 'signed' }
+            ],
+            payments: [
+              { date: '2024-01-01', amount: 425, type: 'Monthly' },
+              { date: '2024-02-01', amount: 425, type: 'Monthly' },
+              { date: '2024-02-15', amount: 5000, type: 'Settlement' },
+              { date: '2024-03-01', amount: 425, type: 'Monthly' },
+              { date: '2024-04-01', amount: 425, type: 'Monthly' }
+            ],
+            notes: [
+              { author: 'Sarah Johnson', avatar: 'SJ', text: 'Client enrolled with 3 creditors. High motivation.', date: '2024-01-15 10:30 AM' },
+              { author: 'Mike Chen', avatar: 'MC', text: 'Capital One settlement approved at 35%. Great result!', date: '2024-02-01 2:15 PM' }
+            ]
+          },
+          {
+            id: 'DC-2024-002',
+            name: 'Jane Smith',
+            email: 'jane@example.com',
+            phone: '(555) 987-6543',
+            agent: 'Mike Chen',
+            enrolledDate: '2024-02-01',
+            totalDebt: 62000,
+            enrolledDebt: 55000,
+            settledAmount: 0,
+            status: 'active',
+            creditors: [
+              { name: 'Bank of America', originalBalance: 25000, currentBalance: 24800, rate: 18.99, status: 'active', offer: null, date: null },
+              { name: 'Citi', originalBalance: 18000, currentBalance: 17900, rate: 21.99, status: 'active', offer: null, date: null },
+              { name: 'Wells Fargo', originalBalance: 12000, currentBalance: 11900, rate: 20.99, status: 'active', offer: null, date: null }
+            ],
+            documents: [
+              { name: 'Power of Attorney', type: 'POA', date: '2024-02-01', status: 'pending' }
+            ],
+            payments: [
+              { date: '2024-02-01', amount: 550, type: 'Monthly' }
+            ],
+            notes: [
+              { author: 'Mike Chen', avatar: 'MC', text: 'New client, just enrolled. Awaiting POA signature.', date: '2024-02-01 9:00 AM' }
+            ]
+          }
+        ];
+        saveCases();
+      }
+      renderCases();
+    }
+
+    function saveCases() {
+      localStorage.setItem('debtDB_cases', JSON.stringify(cases));
+    }
+
+    // Rendering
+    function renderCases() {
+      const list = document.getElementById('caseList');
+      const filtered = getFilteredCases();
+      
+      list.innerHTML = filtered.map(c => `
+        <div class="case-item" onclick="openCase('${c.id}')">
+          <div class="case-avatar">${c.name.split(' ').map(n => n[0]).join('')}</div>
+          <div class="case-info">
+            <h4>${c.name}</h4>
+            <p>${c.id} • ${c.agent}</p>
+          </div>
+          <div class="case-stat">
+            <div class="value">$${c.totalDebt.toLocaleString()}</div>
+            <div class="label">Total Debt</div>
+          </div>
+          <div class="case-stat">
+            <div class="value">$${c.enrolledDebt.toLocaleString()}</div>
+            <div class="label">Enrolled</div>
+          </div>
+          <div class="case-stat">
+            <div class="value">${Math.round((c.settledAmount / c.enrolledDebt) * 100)}%</div>
+            <div class="label">Progress</div>
+          </div>
+          <div class="case-status status-${c.status}">${c.status}</div>
+        </div>
+      `).join('');
+      
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function getFilteredCases() {
+      const search = document.getElementById('caseSearch')?.value.toLowerCase() || '';
+      const status = document.getElementById('statusFilter')?.value || '';
+      const agent = document.getElementById('agentFilter')?.value || '';
+      const days = document.getElementById('dateFilter')?.value || '';
+      
+      return cases.filter(c => {
+        const matchesSearch = !search || c.name.toLowerCase().includes(search) || c.id.toLowerCase().includes(search);
+        const matchesStatus = !status || c.status === status;
+        const matchesAgent = !agent || c.agent === agent;
+        const matchesDate = !days || (new Date() - new Date(c.enrolledDate)) / (1000 * 60 * 60 * 24) <= parseInt(days);
+        return matchesSearch && matchesStatus && matchesAgent && matchesDate;
+      });
+    }
+
+    function filterCases() {
+      renderCases();
+    }
+
+    function resetFilters() {
+      document.getElementById('caseSearch').value = '';
+      document.getElementById('statusFilter').value = '';
+      document.getElementById('agentFilter').value = '';
+      document.getElementById('dateFilter').value = '';
+      renderCases();
+    }
+
+    function refreshCases() {
+      const btn = document.querySelector('[onclick="refreshCases()"]');
+      btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> Loading...';
+      window.lucide?.createIcons();
+      
+      setTimeout(() => {
+        loadCases();
+        btn.innerHTML = '<i data-lucide="refresh-cw"></i> Refresh';
+        window.lucide?.createIcons();
+      }, 500);
+    }
+
+    // Case Detail
+    function openCase(caseId) {
+      currentCase = cases.find(c => c.id === caseId);
+      if (!currentCase) return;
+      
+      // Update detail view
+      document.getElementById('detailAvatar').textContent = currentCase.name.split(' ').map(n => n[0]).join('');
+      document.getElementById('detailName').textContent = currentCase.name;
+      document.getElementById('detailId').textContent = `Case #${currentCase.id}`;
+      document.getElementById('detailPhone').textContent = currentCase.phone;
+      document.getElementById('detailEmail').textContent = currentCase.email;
+      document.getElementById('detailAgent').textContent = currentCase.agent;
+      document.getElementById('detailDate').textContent = new Date(currentCase.enrolledDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      
+      // Stats
+      const progress = Math.round((currentCase.settledAmount / currentCase.enrolledDebt) * 100);
+      document.getElementById('statTotalDebt').textContent = `$${currentCase.totalDebt.toLocaleString()}`;
+      document.getElementById('statEnrolled').textContent = `$${currentCase.enrolledDebt.toLocaleString()}`;
+      document.getElementById('statSettled').textContent = `$${currentCase.settledAmount.toLocaleString()}`;
+      document.getElementById('statProgress').textContent = `${progress}%`;
+      
+      // Completion bar
+      document.getElementById('completionBar').style.width = `${progress}%`;
+      document.getElementById('completionText').textContent = `~${Math.ceil((currentCase.enrolledDebt - currentCase.settledAmount) / 500)} months`;
+      
+      // Render tabs
+      renderCreditors();
+      renderDocuments();
+      renderPayments();
+      renderTimeline();
+      renderNotes();
+      
+      // Switch views
+      document.getElementById('caseListView').style.display = 'none';
+      document.getElementById('caseDetailView').classList.add('active');
+      
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function showCaseList() {
+      document.getElementById('caseListView').style.display = 'block';
+      document.getElementById('caseDetailView').classList.remove('active');
+      currentCase = null;
+    }
+
+    // Creditors Tab
+    function renderCreditors() {
+      if (!currentCase) return;
+      
+      const container = document.getElementById('creditorList');
+      container.innerHTML = currentCase.creditors.map(c => `
+        <div class="creditor-card ${c.status}">
+          <div class="creditor-icon">
+            <i data-lucide="building-2"></i>
+          </div>
+          <div class="creditor-info">
+            <h5>${c.name}</h5>
+            <p>${c.rate}% APR</p>
+          </div>
+          <div class="creditor-stat">
+            <div class="value">$${c.originalBalance.toLocaleString()}</div>
+            <div class="label">Original</div>
+          </div>
+          <div class="creditor-stat">
+            <div class="value" style="color: ${c.currentBalance === 0 ? 'var(--success)' : 'var(--text-primary)'}">$${c.currentBalance.toLocaleString()}</div>
+            <div class="label">Current</div>
+          </div>
+          <div class="creditor-stat">
+            <div class="value" style="color: ${c.offer ? 'var(--success)' : 'var(--text-muted)'}">${c.offer ? c.offer + '%' : '--'}</div>
+            <div class="label">Settlement</div>
+          </div>
+          <div class="case-status status-${c.status}">${c.status}</div>
+        </div>
+      `).join('');
+    }
+
+    // Documents Tab
+    function renderDocuments() {
+      if (!currentCase) return;
+      
+      const container = document.getElementById('documentList');
+      container.innerHTML = currentCase.documents.map(d => `
+        <div class="document-item">
+          <div class="doc-icon">
+            <i data-lucide="${d.type === 'POA' ? 'file-signature' : d.type === 'Hardship' ? 'file-heart' : 'file-text'}"></i>
+          </div>
+          <div class="doc-info">
+            <h5>${d.name}</h5>
+            <p>${d.type} • ${new Date(d.date).toLocaleDateString()}</p>
+          </div>
+          <div class="doc-badge badge-${d.status}">${d.status}</div>
+          <button class="action-btn" style="padding: 0.5rem;">
+            <i data-lucide="download"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      const files = e.dataTransfer.files;
+      processFiles(files);
+    }
+
+    function handleFileSelect(e) {
+      processFiles(e.target.files);
+    }
+
+    function processFiles(files) {
+      Array.from(files).forEach(file => {
+        const doc = {
+          name: file.name,
+          type: 'Document',
+          date: new Date().toISOString().split('T')[0],
+          status: 'pending'
+        };
+        currentCase.documents.push(doc);
+      });
+      saveCases();
+      renderDocuments();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function triggerUpload() {
+      document.getElementById('tab-documents').classList.add('active');
+      switchTab('documents');
+      document.getElementById('fileInput').click();
+    }
+
+    // Payments Tab
+    function renderPayments() {
+      if (!currentCase) return;
+      
+      const totalPaid = currentCase.payments.reduce((sum, p) => sum + p.amount, 0);
+      document.getElementById('trustBalance').textContent = `$${(totalPaid - currentCase.settledAmount * 0.35).toLocaleString()}`;
+      document.getElementById('totalPaid').textContent = `$${totalPaid.toLocaleString()}`;
+      
+      // Payment schedule
+      const schedule = document.getElementById('paymentSchedule');
+      schedule.innerHTML = currentCase.payments.slice().reverse().map(p => `
+        <div class="timeline-item" style="margin-bottom: 0.75rem;">
+          <div class="timeline-header">
+            <span style="font-weight: 500;">${p.type} Payment</span>
+            <span class="timeline-date">${new Date(p.date).toLocaleDateString()}</span>
+          </div>
+          <div class="timeline-amount">+ $${p.amount.toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    function calculatePayments() {
+      const budget = parseFloat(document.getElementById('calcBudget').value) || 0;
+      if (budget <= 0) return;
+      
+      const remaining = currentCase.enrolledDebt - currentCase.settledAmount;
+      const months = Math.ceil(remaining / budget);
+      const savings = remaining * 0.4; // Estimated 40% savings
+      
+      document.getElementById('calcMonths').textContent = months;
+      document.getElementById('calcTotal').textContent = `$${(budget * months).toLocaleString()}`;
+      document.getElementById('calcSavings').textContent = `$${Math.round(savings).toLocaleString()}`;
+    }
+
+    // Timeline Tab
+    function renderTimeline() {
+      if (!currentCase) return;
+      
+      const container = document.getElementById('timelineList');
+      const events = [
+        { date: currentCase.enrolledDate, title: 'Case Enrolled', desc: `Enrolled debt: $${currentCase.enrolledDebt.toLocaleString()}`, icon: 'user-plus' },
+        ...currentCase.payments.map(p => ({ date: p.date, title: `${p.type} Payment`, desc: `$${p.amount.toLocaleString()} added to trust account`, icon: 'dollar-sign' })),
+        ...currentCase.creditors.filter(c => c.status === 'settled').map(c => ({ date: c.date, title: 'Settlement Reached', desc: `${c.name} settled at ${c.offer}%`, icon: 'handshake' })),
+        ...currentCase.documents.map(d => ({ date: d.date, title: `Document ${d.status}`, desc: `${d.name} marked as ${d.status}`, icon: 'file-check' }))
+      ].sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      container.innerHTML = events.map(e => `
+        <div class="timeline-item">
+          <div class="timeline-header">
+            <span style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+              <i data-lucide="${e.icon}"></i> ${e.title}
+            </span>
+            <span class="timeline-date">${new Date(e.date).toLocaleDateString()}</span>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.875rem;">${e.desc}</p>
+        </div>
+      `).join('');
+    }
+
+    // Notes Tab
+    function renderNotes() {
+      if (!currentCase) return;
+      
+      const container = document.getElementById('notesList');
+      container.innerHTML = currentCase.notes.slice().reverse().map(n => `
+        <div class="note-item">
+          <div class="note-header">
+            <div class="note-author">
+              <div class="note-avatar">${n.avatar}</div>
+              <span style="font-weight: 500;">${n.author}</span>
+            </div>
+            <span class="note-time">${n.date}</span>
+          </div>
+          <p style="color: var(--text-secondary);">${n.text}</p>
+        </div>
+      `).join('');
+    }
+
+    function addNote() {
+      const text = document.getElementById('newNote').value.trim();
+      if (!text || !currentCase) return;
+      
+      currentCase.notes.push({
+        author: 'Current User',
+        avatar: 'CU',
+        text: text,
+        date: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })
+      });
+      
+      saveCases();
+      document.getElementById('newNote').value = '';
+      renderNotes();
+    }
+
+    function focusNotesTab() {
+      switchTab('notes');
+      document.getElementById('newNote').focus();
+    }
+
+    // Modals
+    function openModal(title, body, footer) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalBody').innerHTML = body;
+      document.getElementById('modalFooter').innerHTML = footer;
+      document.getElementById('modalOverlay').classList.add('active');
+      window.lucide?.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function openNewCaseModal() {
+      openModal('New Case', `
+        <div class="form-group">
+          <label>Client Name</label>
+          <input type="text" id="newCaseName" placeholder="Full name">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="newCaseEmail" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" id="newCasePhone" placeholder="(555) 000-0000">
+        </div>
+        <div class="form-group">
+          <label>Total Debt</label>
+          <input type="number" id="newCaseDebt" placeholder="Amount">
+        </div>
+      `, `
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="createNewCase()">Create Case</button>
+      `);
+    }
+
+    function createNewCase() {
+      const name = document.getElementById('newCaseName').value;
+      const email = document.getElementById('newCaseEmail').value;
+      const phone = document.getElementById('newCasePhone').value;
+      const debt = parseFloat(document.getElementById('newCaseDebt').value) || 0;
+      
+      if (!name) return;
+      
+      const newCase = {
+        id: `DC-2024-${String(cases.length + 1).padStart(3, '0')}`,
+        name,
+        email,
+        phone,
+        agent: 'Current User',
+        enrolledDate: new Date().toISOString().split('T')[0],
+        totalDebt: debt,
+        enrolledDebt: debt,
+        settledAmount: 0,
+        status: 'active',
+        creditors: [],
+        documents: [],
+        payments: [],
+        notes: []
+      };
+      
+      cases.push(newCase);
+      saveCases();
+      renderCases();
+      closeModal();
+    }
+
+    function openAddCreditorModal() {
+      openModal('Add Creditor', `
+        <div class="form-group">
+          <label>Creditor Name</label>
+          <input type="text" id="creditorName" placeholder="e.g. Chase Bank">
+        </div>
+        <div class="form-group">
+          <label>Original Balance</label>
+          <input type="number" id="creditorBalance" placeholder="Amount">
+        </div>
+        <div class="form-group">
+          <label>Interest Rate</label>
+          <input type="number" step="0.01" id="creditorRate" placeholder="e.g. 22.99">
+        </div>
+      `, `
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="addCreditor()">Add Creditor</button>
+      `);
+    }
+
+    function addCreditor() {
+      const name = document.getElementById('creditorName').value;
+      const balance = parseFloat(document.getElementById('creditorBalance').value) || 0;
+      const rate = parseFloat(document.getElementById('creditorRate').value) || 0;
+      
+      if (!name || !currentCase) return;
+      
+      currentCase.creditors.push({
+        name,
+        originalBalance: balance,
+        currentBalance: balance,
+        rate,
+        status: 'active',
+        offer: null,
+        date: null
+      });
+      
+      saveCases();
+      renderCreditors();
+      closeModal();
+    }
+
+    function openLogPaymentModal() {
+      openModal('Log Payment', `
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" id="paymentAmount" placeholder="0.00">
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="paymentDate" value="${new Date().toISOString().split('T')[0]}">
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select id="paymentType">
+            <option value="Monthly">Monthly Payment</option>
+            <option value="Settlement">Settlement Payment</option>
+            <option value="Additional">Additional Payment</option>
+          </select>
+        </div>
+      `, `
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="logPayment()">Log Payment</button>
+      `);
+    }
+
+    function logPayment() {
+      const amount = parseFloat(document.getElementById('paymentAmount').value) || 0;
+      const date = document.getElementById('paymentDate').value;
+      const type = document.getElementById('paymentType').value;
+      
+      if (!amount || !currentCase) return;
+      
+      currentCase.payments.push({ date, amount, type });
+      saveCases();
+      renderPayments();
+      closeModal();
+    }
+
+    function openScheduleModal() {
+      openModal('Schedule Follow-up', `
+        <div class="form-group">
+          <label>Follow-up Date</label>
+          <input type="datetime-local" id="followupDate">
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea id="followupNotes" placeholder="What needs to be followed up?"></textarea>
+        </div>
+      `, `
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="scheduleFollowup()">Schedule</button>
+      `);
+    }
+
+    function scheduleFollowup() {
+      closeModal();
+      alert('Follow-up scheduled! (This would save to calendar)');
+    }
+
+    // Close modal on overlay click
+    document.getElementById('modalOverlay')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeModal();
+    });
+  </script>
+</div>
