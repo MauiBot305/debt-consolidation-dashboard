@@ -912,6 +912,9 @@ window.DebtDB = (function() {
     getManagerStats,
     getOwnerStats,
     
+    // AUTH
+    getCurrentUser,
+    
     // UTILITIES
     export: exportData,
     import: importData,

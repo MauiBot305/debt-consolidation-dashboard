@@ -250,7 +250,7 @@ const Auth = {
 };
 
 // Toast notification system
-const Toast = {
+window.Toast = window.Toast || {
   show(message, type = 'info') {
     const container = document.getElementById('toastContainer') || this.createContainer();
     
