@@ -555,10 +555,10 @@
   </div>
 
   <!-- Scripts -->
-  <script src="database.js?v=202602242323"></script>
+  <script src="database.js?v=202602250940"></script>
   <script src="voice-api.js?v=202602250100"></script>
-  <script src="demo-seed.js?v=202602242323"></script>
-  <script src="data-import-engine.js?v=202602242323"></script>
+  <script src="demo-seed.js?v=202602250940"></script>
+  <script src="data-import-engine.js?v=202602250940"></script>
   <script>
     // SPA Fix: Force all DOMContentLoaded listeners to be one-time
     // Prevents old page listeners from firing on subsequent navigations
@@ -573,8 +573,8 @@
       };
     })();
   </script>
-  <script src="auth.js?v=202602242323"></script>
-  <script src="page-enhancements.js?v=202602242323"></script>
+  <script src="auth.js?v=202602250940"></script>
+  <script src="page-enhancements.js?v=202602250940"></script>
   <script>
     // Toast Notification System
     window.Toast = window.Toast || {
@@ -1430,10 +1430,8 @@
       }
     };
 
-    // Initialize app on load
-    document.addEventListener('DOMContentLoaded', () => {
-      App.init();
-    });
+    // Initialize app immediately — script is at bottom of page, DOM is ready
+    App.init();
   </script>
 </body>
 </html>
