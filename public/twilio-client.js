@@ -1,3 +1,7 @@
+// M12: Runtime mode detection - use simulator in demo mode, real Twilio in production
+// Set window.DEMO_MODE = false and configure API_SECRET to use real Twilio
+window.DEMO_MODE = (window.DEMO_MODE !== undefined) ? window.DEMO_MODE : true;
+
 /**
  * TWILIO CLIENT WRAPPER - Production-Grade
  * For Debt Consolidation Empire Dashboard

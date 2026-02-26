@@ -147,12 +147,11 @@ window.DebtDB = (function() {
   }
   
   function generateId(type, items) {
-    const maxId = items.reduce((max, item) => {
-      const num = parseInt(item.id.replace(/[^0-9]/g, ''), 10);
-      return num > max ? num : max;
-    }, 0);
-    const nextNum = String(maxId + 1).padStart(3, '0');
-    return `${type}_${nextNum}`;
+    // M15/L3: Non-sequential, collision-resistant IDs
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return type + '_' + crypto.randomUUID().split('-')[0];
+    }
+    return type + '_' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 9);
   }
   
   function matchesFilters(item, filters) {
@@ -284,6 +283,12 @@ window.DebtDB = (function() {
     const validated = validateDeal(data);
     if (!validated) return null;
     
+    // H8: Foreign key validation
+    if (validated.leadId) {
+      const lead = getLead(validated.leadId);
+      if (!lead) { console.error('[DebtDB] addDeal: leadId not found:', validated.leadId); return null; }
+    }
+    
     const deals = getStorage('deals') || [];
     const newDeal = {
       id: generateId('deal', deals),
@@ -347,6 +352,12 @@ window.DebtDB = (function() {
     // FIX 1: Input validation
     const validated = validateCase(data);
     if (!validated) return null;
+    
+    // H8: Foreign key validation
+    if (validated.leadId) {
+      const lead = getLead(validated.leadId);
+      if (!lead) { console.error('[DebtDB] addCase: leadId not found:', validated.leadId); return null; }
+    }
     
     const cases = getStorage('cases') || [];
     const newCase = {
@@ -1120,3 +1131,60 @@ window.DebtDB = (function() {
 })();
 
 // console.log('✅ DebtDB loaded successfully');
+
+// L14: Full data export/import
+DebtDB.exportAll = function() {
+  var data = {};
+  for (var key in localStorage) {
+    if (key.startsWith('debtdb_')) {
+      try { data[key] = JSON.parse(localStorage[key]); } catch(e) { data[key] = localStorage[key]; }
+    }
+  }
+  return JSON.stringify(data);
+};
+
+DebtDB.importAll = function(jsonStr) {
+  try {
+    var data = JSON.parse(jsonStr);
+    for (var key in data) {
+      if (key.startsWith('debtdb_')) {
+        localStorage.setItem(key, JSON.stringify(data[key]));
+      }
+    }
+    return { success: true, keys: Object.keys(data).length };
+  } catch(e) {
+    return { success: false, error: e.message };
+  }
+};
+
+// M22: Batch update with rollback
+DebtDB.batchUpdate = function(operations) {
+  // Snapshot current state
+  var snapshot = {};
+  for (var key in localStorage) {
+    if (key.startsWith('debtdb_')) snapshot[key] = localStorage[key];
+  }
+  try {
+    operations.forEach(function(op) {
+      if (op.type === 'updateLead') DebtDB.updateLead(op.id, op.data);
+      else if (op.type === 'updateDeal') DebtDB.updateDeal(op.id, op.data);
+      else if (op.type === 'updateCase') DebtDB.updateCase(op.id, op.data);
+    });
+    return { success: true, count: operations.length };
+  } catch(e) {
+    // Rollback
+    for (var k in snapshot) localStorage.setItem(k, snapshot[k]);
+    return { success: false, error: e.message, rolledBack: true };
+  }
+};
+
+// L13: Audit logging for CRUD ops (already exists via addAuditEntry, ensure it's called)
+// Note: addActivity already logs CRUD operations in each method.
+
+// L2: Centralized config for phone numbers
+window.APP_CONFIG = window.APP_CONFIG || {
+  companyPhone: '(312) 555-0100',
+  companyName: 'Debt Empire',
+  companyEmail: 'info@debtempire.com',
+  demoMode: true
+};

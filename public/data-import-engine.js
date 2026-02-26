@@ -798,3 +798,35 @@ class DataImportEngine {
 // Export for use in DataImport page
 window.DataImportEngine = DataImportEngine;
 } // end guard
+
+// M13: Integration with DebtDB - import parsed records into the database
+if (window.DataImportEngine) {
+  DataImportEngine.prototype.importToDebtDB = function(parsedRecords, type) {
+    type = type || 'leads';
+    var results = { success: 0, failed: 0, errors: [] };
+    var db = window.DebtDB;
+    if (!db) { return { success: 0, failed: parsedRecords.length, errors: ['DebtDB not loaded'] }; }
+    
+    parsedRecords.forEach(function(record, i) {
+      try {
+        if (type === 'leads') {
+          var result = db.addLead(record);
+          if (result) results.success++;
+          else { results.failed++; results.errors.push('Row ' + (i+1) + ': validation failed'); }
+        } else if (type === 'deals') {
+          var result = db.addDeal(record);
+          if (result) results.success++;
+          else { results.failed++; results.errors.push('Row ' + (i+1) + ': validation failed'); }
+        } else if (type === 'cases') {
+          var result = db.addCase(record);
+          if (result) results.success++;
+          else { results.failed++; results.errors.push('Row ' + (i+1) + ': validation failed'); }
+        }
+      } catch(e) {
+        results.failed++;
+        results.errors.push('Row ' + (i+1) + ': ' + e.message);
+      }
+    });
+    return results;
+  };
+}

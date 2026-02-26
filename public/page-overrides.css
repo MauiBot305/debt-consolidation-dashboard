@@ -1,3 +1,8 @@
+/* page-overrides.css - Layout fixes for SPA fragment pages
+ * These !important overrides handle z-index conflicts, sidebar overlap,
+ * and layout issues when standalone-designed pages are loaded as fragments.
+ * TODO: Refactor pages to use proper CSS scoping to remove !important hacks.
+ */
 /**
  * Page-Specific Overrides
  * Ensures consistency across pages with embedded inline styles
