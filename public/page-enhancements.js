@@ -128,22 +128,7 @@
             </td>
           </tr>
         `;
-        if (window.lucide) if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
-      }
-    });
-    
-    // Look for empty lists
-    const lists = document.querySelectorAll('[data-list], .list-container');
-    lists.forEach(list => {
-      if (list.children.length === 0) {
-        list.innerHTML = `
-          <div class="empty-state">
-            <i data-lucide="search-x" class="empty-state-icon"></i>
-            <h3 class="empty-state-title">No results found</h3>
-            <p class="empty-state-description">Try adjusting your filters or search terms.</p>
-          </div>
-        `;
-        if (window.lucide) if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
+        if (window.lucide) if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide]', e.message); } }
       }
     });
   }

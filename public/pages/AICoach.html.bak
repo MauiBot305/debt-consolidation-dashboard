@@ -330,8 +330,7 @@
     // User message
     const userMsg = document.createElement('div');
     userMsg.className = 'flex justify-end';
-    const safe = typeof sanitizeHTML === "function" ? sanitizeHTML(message) : message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    userMsg.innerHTML = `<div class="bg-blue-500 text-white px-4 py-2 rounded-xl max-w-md">${safe}</div>`;
+    userMsg.innerHTML = `<div class="bg-blue-500 text-white px-4 py-2 rounded-xl max-w-md">${message}</div>`;
     container.appendChild(userMsg);
     
     input.value = '';
@@ -341,8 +340,7 @@
       const aiMsg = document.createElement('div');
       aiMsg.className = 'flex justify-start';
       const response = chatResponses[message.toLowerCase()] || chatResponses.default;
-      const safeResponse = typeof sanitizeHTML === "function" ? sanitizeHTML(response) : response.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      aiMsg.innerHTML = `<div class="bg-slate-700 text-white px-4 py-2 rounded-xl max-w-md">${safeResponse}</div>`;
+      aiMsg.innerHTML = `<div class="bg-slate-700 text-white px-4 py-2 rounded-xl max-w-md">${response}</div>`;
       container.appendChild(aiMsg);
       container.scrollTop = container.scrollHeight;
     }, 500);
@@ -719,7 +717,7 @@
   renderObjections();
   renderTraining();
   renderPerformanceTips();
-  if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide]', e.message); } }
+  if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
 
 // ---- Window Exports ----
   window.sendChatMessage = sendChatMessage;

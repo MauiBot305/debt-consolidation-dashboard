@@ -222,8 +222,9 @@ class TwilioSimulator {
       }
       stats[today].dispositions[call.disposition]++;
 
-      // Count enrolled as conversions
-      if (call.disposition === 'enrolled') {
+      // FIX 16 (LOGIC-V2-015): Count enrolled/interested as conversions (case-insensitive)
+      const d = (call.disposition || '').toLowerCase();
+      if (d === 'enrolled' || d === 'interested') {
         stats[today].conversions++;
       }
     }

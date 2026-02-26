@@ -138,7 +138,12 @@
   </div>
 </div>
 
+<script>(function() {
 
+
+})();</script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
 
 <script>
 (function() {
@@ -229,7 +234,7 @@
     // Settlements
     renderSettlements();
     
-    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide]', e.message); } }
+    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
   }
 
   function renderPaymentHistory() {
@@ -284,7 +289,7 @@
       </div>
     `).join('');
     
-    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide]', e.message); } }
+    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
   }
 
   function renderMessages() {
@@ -310,7 +315,6 @@
   function sendMessage() {
     const input = document.getElementById('newMessage');
     const text = input.value.trim();
-    const safe = typeof sanitizeHTML === "function" ? sanitizeHTML(text) : text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     if (!text) return;
     
     const container = document.getElementById('messagesList');
@@ -319,7 +323,7 @@
     newMsg.innerHTML = `
       <div class="max-w-md bg-blue-500 rounded-xl p-3">
         <div class="text-xs text-blue-200 mb-1">You • Just now</div>
-        <div class="text-white text-sm">${safe}</div>
+        <div class="text-white text-sm">${text}</div>
       </div>
     `;
     container.appendChild(newMsg);
@@ -386,7 +390,7 @@
 
   function initClientPortal() {
     renderClientSelector();
-    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide]', e.message); } }
+    if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
   }
 
   // Initialize

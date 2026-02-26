@@ -31,7 +31,7 @@
     animateStats();
     
     if (window.lucide) {
-      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide]', e.message); } }
     }
   }
 
@@ -94,7 +94,7 @@
     renderCommissionsTable();
     
     if (window.lucide) {
-      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } }; } catch(e) { console.warn('[Lucide] createIcons failed:', e.message); } };
+      if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide]', e.message); } }
     }
   }
 
@@ -376,7 +376,7 @@
     }
   }
 
-  // Export to CSV
+  // FIX 13 (LOGIC-V2-020): Export to CSV with empty check
   function exportToCSV() {
     const data = financialData.payments.map(p => ({
       'Payment ID': p.id,
@@ -386,6 +386,11 @@
       'Status': p.status,
       'Method': p.method
     }));
+
+    if (!data || data.length === 0) {
+      if (typeof Toast !== 'undefined') Toast.warning('No payment data to export');
+      return;
+    }
 
     const csv = [
       Object.keys(data[0]).join(','),
@@ -419,14 +424,14 @@
     }
   }
 
-  // Get Date Range
+  // FIX 12 (LOGIC-V2-019): Get Date Range - non-mutating version
   function getDateRange(range) {
-    const now = new Date();
+    const now = Date.now();
     const ranges = {
-      'today': { start: new Date(now.setHours(0, 0, 0, 0)), end: new Date() },
-      'week': { start: new Date(now.setDate(now.getDate() - 7)), end: new Date() },
-      'month': { start: new Date(now.setMonth(now.getMonth() - 1)), end: new Date() },
-      'year': { start: new Date(now.setFullYear(now.getFullYear() - 1)), end: new Date() }
+      'today': { start: new Date(new Date(now).setHours(0,0,0,0)), end: new Date(now) },
+      'week': { start: new Date(now - 7*24*60*60*1000), end: new Date(now) },
+      'month': { start: new Date(now - 30*24*60*60*1000), end: new Date(now) },
+      'year': { start: new Date(now - 365*24*60*60*1000), end: new Date(now) }
     };
     return ranges[range] || { start: null, end: null };
   }

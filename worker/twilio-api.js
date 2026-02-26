@@ -22,6 +22,24 @@ function checkRateLimit(ip) {
 }
 
 /**
+ * Input validation helpers (SEC-V2-002)
+ */
+function validateCallSid(sid) {
+  if (!sid || !/^CA[0-9a-f]{32}$/i.test(sid)) {
+    throw new Error('Invalid CallSid format');
+  }
+  return sid;
+}
+
+function validatePhoneNumber(num) {
+  const cleaned = (num || '').replace(/[\s\-()]/g, '');
+  if (!/^\+?[1-9]\d{6,14}$/.test(cleaned)) {
+    throw new Error('Invalid phone number');
+  }
+  return cleaned;
+}
+
+/**
  * Authenticate incoming request via Bearer token
  */
 function authenticateRequest(request, env) {
@@ -58,10 +76,14 @@ function generateTwilioJWT(accountSid, apiKeySid, apiKeySecret, identity) {
 
 async function generateAccessToken(env, identity = 'dashboard-agent') {
   const token = await generateTwilioJWT(env.TWILIO_ACCOUNT_SID, env.TWILIO_API_KEY_SID, env.TWILIO_API_KEY_SECRET, identity);
-  return { token, identity, accountSid: env.TWILIO_ACCOUNT_SID };
+  // SEC-V2-009: Remove accountSid from response
+  return { token, identity };
 }
 
 async function sendSMS(env, to, body) {
+  // Validate phone number
+  validatePhoneNumber(to);
+  
   const url = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`;
   const formData = new URLSearchParams();
   formData.append('To', to);
@@ -78,6 +100,9 @@ async function sendSMS(env, to, body) {
 }
 
 async function toggleHold(env, callSid, hold) {
+  // SEC-V2-002: Validate CallSid
+  validateCallSid(callSid);
+  
   const url = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Calls/${callSid}.json`;
   const twiml = hold
     ? '<Response><Play loop="0">http://com.twilio.sounds.music.s3.amazonaws.com/MARKOVICHAMP-Borghestral.mp3</Play></Response>'
@@ -94,6 +119,9 @@ async function toggleHold(env, callSid, hold) {
 }
 
 async function toggleRecording(env, callSid, record) {
+  // SEC-V2-002: Validate CallSid
+  validateCallSid(callSid);
+  
   if (record) {
     const url = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Calls/${callSid}/Recordings.json`;
     const response = await fetch(url, {
@@ -117,8 +145,14 @@ async function toggleRecording(env, callSid, record) {
 }
 
 async function transferCall(env, callSid, to) {
+  // SEC-V2-002: Validate inputs
+  validateCallSid(callSid);
+  validatePhoneNumber(to);
+  
   const url = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Calls/${callSid}.json`;
-  const twiml = `<Response><Dial>${to}</Dial></Response>`;
+  // XML-escape the phone number
+  const escaped = to.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const twiml = `<Response><Dial>${escaped}</Dial></Response>`;
   const formData = new URLSearchParams();
   formData.append('Twiml', twiml);
   const response = await fetch(url, {
@@ -131,6 +165,10 @@ async function transferCall(env, callSid, to) {
 }
 
 async function createConference(env, callSid, thirdPartyNumber) {
+  // SEC-V2-002: Validate inputs
+  validateCallSid(callSid);
+  validatePhoneNumber(thirdPartyNumber);
+  
   const conferenceName = `conf-${Date.now()}`;
   const url1 = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Calls/${callSid}.json`;
   const twiml1 = `<Response><Dial><Conference>${conferenceName}</Conference></Dial></Response>`;
@@ -159,7 +197,13 @@ async function createConference(env, callSid, thirdPartyNumber) {
 }
 
 function generateOutboundTwiML(env, phoneNumber) {
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<Response>\n  <Dial callerId="${env.TWILIO_FROM_NUMBER}" record="record-from-answer">\n    <Number>${phoneNumber}</Number>\n  </Dial>\n</Response>`;
+  // SEC-V2-001: Validate E.164 format
+  if (!phoneNumber || !/^\+?[1-9]\d{6,14}$/.test(phoneNumber.replace(/[\s\-()]/g, ''))) {
+    throw new Error('Invalid phone number format');
+  }
+  // XML-escape
+  const escaped = phoneNumber.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<Response>\n  <Dial callerId="${env.TWILIO_FROM_NUMBER}" record="record-from-answer">\n    <Number>${escaped}</Number>\n  </Dial>\n</Response>`;
 }
 
 /**
