@@ -970,7 +970,10 @@
 
       // Render ticker items
       renderTickerItems() {
-        const agent = DBHelpers.getAgentById(this.session.userId);
+        const agent = DBHelpers ? DBHelpers.getAgentById(this.session.userId) : null;
+        if (!agent || !agent.stats) {
+          return '<span class="text-gray-400 text-xs">Dashboard Ready</span>';
+        }
         return `
           <span class="inline-flex items-center gap-2">
             <i data-lucide="trending-up" class="w-4 h-4 text-green-400"></i>
