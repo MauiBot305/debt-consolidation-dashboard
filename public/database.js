@@ -1230,7 +1230,18 @@ window.DB = window.DebtDB;
 
 window.DBHelpers = {
   getAgentById: function(id) {
-    return window.DebtDB.getAgent(id);
+    let agent = window.DebtDB.getAgent(id);
+    if (!agent) {
+      // Fallback: match by role from session
+      try {
+        const session = JSON.parse(localStorage.getItem('debt_empire_session'));
+        if (session && session.role) {
+          const allAgents = window.DebtDB.getAgents() || [];
+          agent = allAgents.find(a => a.role === session.role);
+        }
+      } catch(e) {}
+    }
+    return agent || null;
   },
   
   formatCurrency: function(amount) {

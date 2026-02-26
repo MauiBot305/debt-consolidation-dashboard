@@ -656,7 +656,7 @@
         toast.classList.add('toast-exit');
         setTimeout(() => {
           toast.remove();
-        }, 300);
+        }, 50);
       },
 
       success(message, duration) {
@@ -976,7 +976,38 @@
 
       // Render ticker items
       renderTickerItems() {
-        const agent = (typeof DBHelpers !== "undefined" && DBHelpers.getAgentById) ? DBHelpers.getAgentById(this.session.userId) : null; if (!agent || !agent.stats) return '<span class="text-gray-400 text-xs">Dashboard Ready</span>';
+        const agent = (typeof DBHelpers !== "undefined" && DBHelpers.getAgentById) ? DBHelpers.getAgentById(this.session.userId) : null;
+        if (!agent || !agent.stats) {
+          // Owner/Manager: show aggregate team stats
+          const allAgents = (typeof window.DebtDB !== 'undefined' && window.DebtDB.getAgents) ? window.DebtDB.getAgents().filter(a => a.role === 'agent') : [];
+          const totalCalls = allAgents.reduce((sum, a) => sum + (a.stats?.callsToday || 0), 0);
+          const totalEnrollments = allAgents.reduce((sum, a) => sum + (a.stats?.enrollments || 0), 0);
+          const totalRevenue = allAgents.reduce((sum, a) => sum + (a.stats?.revenue || 0), 0);
+          const totalCommission = allAgents.reduce((sum, a) => sum + (a.stats?.commission || 0), 0);
+          const fmt = (typeof DBHelpers !== 'undefined' && DBHelpers.formatCurrency) ? DBHelpers.formatCurrency : (v) => '$' + v.toLocaleString();
+          return `
+          <span class="inline-flex items-center gap-2">
+            <i data-lucide="trending-up" class="w-4 h-4 text-green-400"></i>
+            <span class="text-gray-400">Team Calls:</span>
+            <span class="font-bold text-white">${totalCalls}</span>
+          </span>
+          <span class="inline-flex items-center gap-2">
+            <i data-lucide="target" class="w-4 h-4 text-blue-400"></i>
+            <span class="text-gray-400">Enrollments:</span>
+            <span class="font-bold text-white">${totalEnrollments}</span>
+          </span>
+          <span class="inline-flex items-center gap-2">
+            <i data-lucide="dollar-sign" class="w-4 h-4 text-cyan-400"></i>
+            <span class="text-gray-400">Revenue:</span>
+            <span class="font-bold text-white">${fmt(totalRevenue)}</span>
+          </span>
+          <span class="inline-flex items-center gap-2">
+            <i data-lucide="coins" class="w-4 h-4 text-yellow-400"></i>
+            <span class="text-gray-400">Commission:</span>
+            <span class="font-bold text-white">${fmt(totalCommission)}</span>
+          </span>
+          `;
+        }
         return `
           <span class="inline-flex items-center gap-2">
             <i data-lucide="trending-up" class="w-4 h-4 text-green-400"></i>
@@ -1113,7 +1144,7 @@
               if (window.PageEnhancements) {
                 window.PageEnhancements.reinitialize();
               }
-            }, 300);
+            }, 50);
           } else {
             pageContent.innerHTML = `
               <div class="glass-card rounded-2xl p-12 text-center">
