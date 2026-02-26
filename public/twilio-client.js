@@ -568,12 +568,14 @@ class TwilioClient {
    */
   simulateAudioLevel() {
     if (this.isDemoMode) {
-      const interval = setInterval(() => {
+      if (this._audioSimInterval) clearInterval(this._audioSimInterval);
+      this._audioSimInterval = setInterval(() => {
         if (this.state === 'connected') {
           const level = Math.random() * 80 + 20;
           this.triggerCallback('onAudioLevel', level);
         } else {
-          clearInterval(interval);
+          clearInterval(this._audioSimInterval);
+          this._audioSimInterval = null;
         }
       }, 150);
     }

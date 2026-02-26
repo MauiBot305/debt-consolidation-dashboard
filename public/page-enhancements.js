@@ -73,6 +73,7 @@
   // ====================================
   
   function initializeTooltips() {
+    document.querySelectorAll(".tooltip").forEach(t => t.remove());
     // Find all elements with title attribute or data-tooltip
     const tooltipElements = document.querySelectorAll('[title], [data-tooltip]');
     
@@ -169,7 +170,7 @@
   
   function enforceGlassMorphism() {
     // Find divs that look like cards but don't have glass effect
-    const potentialCards = document.querySelectorAll('[class*="card"], [class*="panel"], [class*="container"]');
+    const potentialCards = document.querySelectorAll('.glass-card, .stat-card, .metric-card, .kpi-card, .overview-card, .campaign-card, .deal-card');
     
     potentialCards.forEach(el => {
       const hasGlass = el.classList.contains('glass-card') || 
