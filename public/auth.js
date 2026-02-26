@@ -231,7 +231,7 @@ window.Auth = window.Auth || {
           console.error('App.init() after login failed:', e);
           // Show error UI instead of reload loop
           if (app) {
-            app.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0f1a"><div style="text-align:center"><h2 style="color:#ef4444;font-size:20px;margin-bottom:12px">Dashboard Error</h2><p style="color:#94a3b8;margin-bottom:16px">' + e.message + '</p><button onclick="location.reload()" style="padding:10px 20px;background:#3b82f6;color:white;border:none;border-radius:8px;cursor:pointer">Refresh</button></div></div>';
+            app.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0f1a"><div style="text-align:center"><h2 style="color:#ef4444;font-size:20px;margin-bottom:12px">Dashboard Error</h2><p style="color:#94a3b8;margin-bottom:16px">' + (e.message || "Unknown error").replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</p><button onclick="location.reload()" style="padding:10px 20px;background:#3b82f6;color:white;border:none;border-radius:8px;cursor:pointer">Refresh</button></div></div>';
           }
         }
       }, 500);

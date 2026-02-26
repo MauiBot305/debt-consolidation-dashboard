@@ -75,7 +75,7 @@
         // Sanitize the HTML before setting
         const clean = DOMPurify.sanitize(value, { 
           ADD_TAGS: ['style'],
-          ADD_ATTR: ['onclick', 'onchange', 'oninput', 'onsubmit', 'tabindex', 'role', 'aria-label', 'aria-live', 'data-id', 'data-stage', 'data-status', 'data-lead-id', 'data-deal-id', 'data-page', 'draggable'],
+          ADD_ATTR: ['tabindex', 'role', 'aria-label', 'aria-live', 'aria-expanded', 'aria-hidden', 'data-id', 'data-stage', 'data-status', 'data-lead-id', 'data-deal-id', 'data-page', 'data-log', 'draggable'],
           ALLOW_DATA_ATTR: true
         });
         originalInnerHTMLDescriptor.set.call(this, clean);

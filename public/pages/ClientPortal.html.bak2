@@ -315,7 +315,6 @@
   function sendMessage() {
     const input = document.getElementById('newMessage');
     const text = input.value.trim();
-    const safe = typeof sanitizeHTML === "function" ? sanitizeHTML(text) : text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     if (!text) return;
     
     const container = document.getElementById('messagesList');
@@ -324,7 +323,7 @@
     newMsg.innerHTML = `
       <div class="max-w-md bg-blue-500 rounded-xl p-3">
         <div class="text-xs text-blue-200 mb-1">You • Just now</div>
-        <div class="text-white text-sm">${safe}</div>
+        <div class="text-white text-sm">${text}</div>
       </div>
     `;
     container.appendChild(newMsg);

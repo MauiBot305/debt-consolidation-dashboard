@@ -21,7 +21,7 @@
 /**
  * DebtDB - Complete localStorage Database Abstraction
  * Core Engine for Debt Consolidation Empire Dashboard
- * Version: 2026-02-25
+ * Version: 2026-02-25 V2 Logic Fixes
  * 
  * All data stored with prefix: debtdb_
  * All methods synchronous
@@ -33,26 +33,40 @@ window.DebtDB = (function() {
   'use strict';
   
   const PREFIX = 'debtdb_';
+  // FIX 8 (LOGIC-V2-010): Consistent session expiry
+  const SESSION_TIMEOUT = 2 * 60 * 60 * 1000; // 2 hours
   
   // ==================== UTILITIES ====================
   
+  // FIX 5 (LOGIC-V2-007): Corrupted JSON recovery
   function getStorage(key) {
     try {
       const data = localStorage.getItem(PREFIX + key);
       return data ? JSON.parse(data) : null;
     } catch (e) {
-      console.error(`DebtDB: Error reading ${key}:`, e);
+      console.error(`DebtDB: Corrupted JSON in ${key}:`, e);
+      const raw = localStorage.getItem(PREFIX + key);
+      if (raw) {
+        localStorage.setItem(PREFIX + key + '_corrupted_' + Date.now(), raw);
+        if (typeof Toast !== 'undefined' && Toast.error) {
+          Toast.error(`Data corruption detected in ${key}. Backup saved.`);
+        }
+      }
       return null;
     }
   }
   
+  // FIX 1 (LOGIC-V2-003): setStorage must throw on failure — CRITICAL
   function setStorage(key, value) {
     try {
       localStorage.setItem(PREFIX + key, JSON.stringify(value));
       return true;
     } catch (e) {
-      console.error(`DebtDB: Error writing ${key}:`, e);
-      return false;
+      console.error(`DebtDB: Storage write failed for ${key}:`, e);
+      if (typeof Toast !== 'undefined' && Toast.error) {
+        Toast.error('⚠️ Storage full! Data was NOT saved. Export your data.');
+      }
+      throw new Error(`DebtDB: Storage write failed for ${key}: ${e.message}`);
     }
   }
   
@@ -146,14 +160,15 @@ window.DebtDB = (function() {
     return activity;
   }
   
+  // FIX 2 (LOGIC-V2-004): Full UUID for ID generation
   function generateId(type, items) {
-    // M15/L3: Non-sequential, collision-resistant IDs
     if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-      return type + '_' + crypto.randomUUID().split('-')[0];
+      return type + '_' + crypto.randomUUID();
     }
     return type + '_' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 9);
   }
   
+  // FIX 9 (LOGIC-V2-011): Search only user fields
   function matchesFilters(item, filters) {
     if (!filters) return true;
     
@@ -161,9 +176,9 @@ window.DebtDB = (function() {
       const filterValue = filters[key];
       
       if (key === 'search') {
-        // Global text search across common fields
         const searchStr = filterValue.toLowerCase();
-        const searchable = JSON.stringify(item).toLowerCase();
+        const searchFields = ['name', 'email', 'phone', 'client', 'clientName', 'notes', 'address', 'company'];
+        const searchable = searchFields.map(f => String(item[f] || '')).join(' ').toLowerCase();
         if (!searchable.includes(searchStr)) return false;
       } else if (key === 'minAmount') {
         if (item.amount < filterValue) return false;
@@ -230,6 +245,7 @@ window.DebtDB = (function() {
     return deepCopy(leads[index]);
   }
   
+  // FIX 10 (LOGIC-V2-022): Cascade delete with entityId check
   function deleteLead(id) {
     // Delete lead
     const leads = getStorage('leads') || [];
@@ -252,7 +268,7 @@ window.DebtDB = (function() {
     }
     
     const activities = getStorage('activities') || [];
-    const filteredActivities = activities.filter(a => a.leadId !== id);
+    const filteredActivities = activities.filter(a => a.leadId !== id && a.entityId !== id);
     if (activities.length !== filteredActivities.length) {
       setStorage('activities', filteredActivities);
       // console.log(`[DebtDB] Cleaned up ${activities.length - filteredActivities.length} orphaned activities`);
@@ -403,12 +419,13 @@ window.DebtDB = (function() {
     return true;
   }
   
+  // FIX 11 (LOGIC-V2-021): Note ID collision fix
   function addCaseNote(caseId, note) {
     const caseItem = getCase(caseId);
     if (!caseItem) return null;
     
     const newNote = {
-      id: `note_${Date.now()}`,
+      id: `note_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
       text: note,
       createdAt: new Date().toISOString(),
       createdBy: getCurrentUser()?.id || 'system'
@@ -786,23 +803,24 @@ window.DebtDB = (function() {
   
   // ==================== FINANCIAL ====================
   
+  // FIX 3 (LOGIC-V2-005): Date mutation in getRevenue
   function getRevenue(period) {
     const deals = getDeals();
-    const now = new Date();
+    const now = Date.now();
     let startDate;
     
     switch (period) {
       case 'daily':
-        startDate = new Date(now.setHours(0, 0, 0, 0));
+        startDate = new Date(new Date(now).setHours(0, 0, 0, 0));
         break;
       case 'weekly':
-        startDate = new Date(now.setDate(now.getDate() - 7));
+        startDate = new Date(now - 7 * 24 * 60 * 60 * 1000);
         break;
       case 'monthly':
-        startDate = new Date(now.setMonth(now.getMonth() - 1));
+        startDate = new Date(now - 30 * 24 * 60 * 60 * 1000);
         break;
       case 'yearly':
-        startDate = new Date(now.setFullYear(now.getFullYear() - 1));
+        startDate = new Date(now - 365 * 24 * 60 * 60 * 1000);
         break;
       default:
         startDate = new Date(0);
@@ -832,10 +850,12 @@ window.DebtDB = (function() {
     return deepCopy(newPayment);
   }
   
+  // FIX 4 (LOGIC-V2-006): Commission rate from settings
   function getCommissions(agentId) {
     const deals = getDeals({ agent: agentId });
     const totalRevenue = deals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
-    const commissionRate = 0.10; // 10%
+    const settings = getStorage('settings') || {};
+    const commissionRate = (settings.defaultCommissionRate || 10) / 100;
     return totalRevenue * commissionRate;
   }
   
@@ -989,15 +1009,29 @@ window.DebtDB = (function() {
     return csv;
   }
   
-  
+  // FIX 6 (LOGIC-V2-008): importData validation
   function importData(type, data) {
+    if (!Array.isArray(data)) {
+      console.error('[DebtDB] importData: data must be an array');
+      return false;
+    }
+    const existing = getStorage(type) || [];
+    if (existing.length > 0) {
+      setStorage(type + '_backup_' + Date.now(), existing);
+    }
     setStorage(type, data);
-    addActivity({ type: 'data_imported', data: { type, count: data.length } });
+    addActivity({ type: 'data_imported', data: { type, count: data.length, previousCount: existing.length } });
     return true;
   }
   
+  // FIX 7 (LOGIC-V2-009): reset() backup before destroy
   function reset() {
+    const backup = {};
     const keys = Object.keys(localStorage).filter(k => k.startsWith(PREFIX));
+    keys.forEach(key => {
+      backup[key] = localStorage.getItem(key);
+    });
+    localStorage.setItem('debtdb_pre_reset_backup_' + Date.now(), JSON.stringify(backup));
     keys.forEach(key => localStorage.removeItem(key));
     addActivity({ type: 'database_reset' });
     return true;
@@ -1016,8 +1050,8 @@ window.DebtDB = (function() {
       const sessionData = localStorage.getItem('debt_empire_session');
       if (sessionData) {
         const session = JSON.parse(sessionData);
-        // Check expiry (24h)
-        if (session.timestamp && Date.now() - session.timestamp > 24 * 60 * 60 * 1000) return null;
+        // FIX 8: Use SESSION_TIMEOUT constant
+        if (session.timestamp && Date.now() - session.timestamp > SESSION_TIMEOUT) return null;
         return session;
       }
       const authData = localStorage.getItem('currentUser');
