@@ -737,14 +737,6 @@
   </div>
 
   <script>
-    // Toast fallback wrapper
-    const PageToast = typeof Toast !== 'undefined' ? Toast : {
-      success: (msg) => { if (typeof showToast !== 'undefined') showToast(msg, 'success'); else console.log('SUCCESS:', msg); },
-      error: (msg) => { if (typeof showToast !== 'undefined') showToast(msg, 'error'); else console.error('ERROR:', msg); },
-      warning: (msg) => { if (typeof showToast !== 'undefined') showToast(msg, 'warning'); else console.warn('WARNING:', msg); },
-      info: (msg) => { if (typeof showToast !== 'undefined') showToast(msg, 'info'); else console.info('INFO:', msg); }
-    };
-
 (function() {
 'use strict';
 
@@ -970,7 +962,7 @@
     function exportCommissionReport() {
       const agentId = document.getElementById('commissionAgentSelect').value;
       if (!agentId) {
-        PageToast.warning('Please select an agent');
+        Toast.warning('Please select an agent');
         return;
       }
 
@@ -1002,7 +994,7 @@
       a.download = `commission_report_${agent.name}_${new Date().toISOString().split('T')[0]}.csv`;
       a.click();
 
-      PageToast.success('Commission report exported!');
+      Toast.success('Commission report exported!');
     }
 
     // Save fee schedule
@@ -1017,7 +1009,7 @@
       // Save to localStorage
       localStorage.setItem('debtdb_fee_schedule', JSON.stringify(feeSchedule));
       
-      PageToast.success('Fee schedule saved!');
+      Toast.success('Fee schedule saved!');
     }
 
     // Date filter
@@ -1030,7 +1022,7 @@
         dateFilter.end = end;
         updateKPIs();
         renderRevenueChart();
-        PageToast.success('Date filter applied');
+        Toast.success('Date filter applied');
       }
     }
 
@@ -1040,7 +1032,7 @@
       dateFilter = { start: null, end: null };
       updateKPIs();
       renderRevenueChart();
-      PageToast.success('Date filter reset');
+      Toast.success('Date filter reset');
     }
 
     // Modal
@@ -1074,7 +1066,7 @@
       renderPaymentsTable();
       
       closeAddPaymentModal();
-      PageToast.success('Payment added successfully!');
+      Toast.success('Payment added successfully!');
     }
 
     // Initialize

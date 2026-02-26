@@ -200,6 +200,59 @@
       achievements: ['Quick Learner'],
       currentStreak: 4
     }
+    },
+    {
+      id: 'MGR001',
+      name: 'Sarah Johnson',
+      email: 'manager@demo.com',
+      role: 'manager',
+      phone: '(312) 555-0120',
+      status: 'active',
+      team: 'Sales',
+      stats: {
+        calls_made: 0,
+        deals_closed: 0,
+        revenue_generated: 0,
+        avg_call_duration: 0,
+        callsToday: 0,
+        leadsContacted: 0,
+        enrollments: 0,
+        revenue: 0,
+        commission: 0,
+        avgCallDuration: '0:00',
+        conversionRate: 0
+      },
+      level: 5,
+      points: 5000,
+      achievements: ['Team Leader'],
+      currentStreak: 0
+    },
+    {
+      id: 'OWN001',
+      name: 'Patrick Chinery',
+      email: 'owner@demo.com',
+      role: 'owner',
+      phone: '(312) 555-0100',
+      status: 'active',
+      team: 'Executive',
+      stats: {
+        calls_made: 0,
+        deals_closed: 0,
+        revenue_generated: 0,
+        avg_call_duration: 0,
+        callsToday: 0,
+        leadsContacted: 0,
+        enrollments: 0,
+        revenue: 0,
+        commission: 0,
+        avgCallDuration: '0:00',
+        conversionRate: 0
+      },
+      level: 10,
+      points: 10000,
+      achievements: ['Founder', 'Visionary'],
+      currentStreak: 0
+    }
   ];
   
   agents.forEach(agent => DebtDB.addAgent(agent));

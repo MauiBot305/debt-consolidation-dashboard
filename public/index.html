@@ -675,7 +675,7 @@
   </script>
   <script>
     // DBHelpers shim — bridges index.html references to DebtDB
-    const DBHelpers = {
+    window.DBHelpers = {
       getAgentById(id) {
         if (typeof DebtDB !== 'undefined' && DebtDB.getAgents) {
           const agents = DebtDB.getAgents();
@@ -970,7 +970,7 @@
 
       // Render ticker items
       renderTickerItems() {
-        const agent = DBHelpers.getAgentById(this.session.userId);
+        const agent = (typeof DBHelpers !== "undefined" && DBHelpers.getAgentById) ? DBHelpers.getAgentById(this.session.userId) : null; if (!agent || !agent.stats) return '<span class="text-gray-400 text-xs">Dashboard Ready</span>';
         return `
           <span class="inline-flex items-center gap-2">
             <i data-lucide="trending-up" class="w-4 h-4 text-green-400"></i>
