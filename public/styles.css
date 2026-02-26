@@ -788,3 +788,10 @@ body {
 
 /* LOW-11: Prevent button wrapping at narrow viewports */
 .button-group { flex-wrap: nowrap; overflow-x: auto; }
+
+/* MED-9: WCAG AA contrast fix for small text on dark backgrounds */
+.sidebar .text-gray-400,
+.main-content > header .text-gray-400,
+body > .text-gray-400 {
+  color: #d1d5db !important; /* text-gray-300 equivalent - 7:1 ratio on #0a0f1a */
+}

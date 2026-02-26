@@ -591,7 +591,7 @@ if (typeof window.showToast !== 'function') {
           class="bg-transparent border-none outline-none text-white placeholder-gray-500 text-lg flex-1"
           autocomplete="off"
         >
-        <kbd class="px-2 py-1 bg-gray-800 rounded text-xs text-gray-400">ESC</kbd>
+        <kbd class="px-2 py-1 bg-gray-800 rounded text-xs text-gray-300">ESC</kbd>
       </div>
 
       <!-- Search Results -->
@@ -1412,7 +1412,7 @@ if (document.readyState === 'loading') {
           </button>
 
           <!-- Sidebar -->
-          <aside id="sidebar" class="sidebar fixed left-0 top-0 h-screen w-64 z-40 flex flex-col">
+          <aside id="sidebar" role="navigation" aria-label="Main navigation" class="sidebar fixed left-0 top-0 h-screen w-64 z-40 flex flex-col">
             <!-- Logo -->
             <div class="p-6 flex items-center gap-3">
               <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -1420,14 +1420,14 @@ if (document.readyState === 'loading') {
               </div>
               <div class="sidebar-text">
                 <h1 class="text-xl font-bold text-white font-orbitron">Debt Empire</h1>
-                <p class="text-xs text-gray-400">Management</p>
+                <p class="text-xs text-gray-300">Management</p>
               </div>
             </div>
 
             <div class="section-divider mx-4"></div>
 
             <!-- Navigation -->
-            <nav class="flex-1 overflow-y-auto py-4">
+            <nav class="flex-1 overflow-y-auto py-4" aria-label="Sidebar navigation">
               <div class="space-y-1">
                 ${this.renderNavItems()}
               </div>
@@ -1482,11 +1482,12 @@ if (document.readyState === 'loading') {
                     <i data-lucide="search" class="w-4 h-4 text-gray-500"></i>
                     <input 
                       id="searchInput"
-                      type="text" 
+                      type="text"
+                      aria-label="Search leads, cases, and clients" 
                       placeholder="Search leads, cases, clients..." 
                       class="bg-transparent border-none outline-none text-white placeholder-gray-500 text-sm flex-1"
                     >
-                    <kbd class="px-2 py-1 bg-gray-800 rounded text-xs text-gray-400">⌘K</kbd>
+                    <kbd class="px-2 py-1 bg-gray-800 rounded text-xs text-gray-300">⌘K</kbd>
                   </div>
                 </div>
 
@@ -1504,7 +1505,7 @@ if (document.readyState === 'loading') {
                     </button>
                     
                     <!-- Notification Dropdown -->
-                    <div id="notificationDropdown" class="hidden absolute right-0 top-full mt-2 w-80 glass-card rounded-xl shadow-lg border border-blue-500/20 overflow-hidden z-50">
+                    <div id="notificationDropdown" aria-live="polite" class="hidden absolute right-0 top-full mt-2 w-80 glass-card rounded-xl shadow-lg border border-blue-500/20 overflow-hidden z-50">
                       <div class="p-4 border-b border-gray-800">
                         <div class="flex items-center justify-between">
                           <h3 class="font-semibold text-white">Notifications</h3>
@@ -1520,7 +1521,7 @@ if (document.readyState === 'loading') {
                             </div>
                             <div class="flex-1 min-w-0">
                               <p class="text-sm text-white mb-1">New lead assigned</p>
-                              <p class="text-xs text-gray-400 truncate">John Doe added to your pipeline</p>
+                              <p class="text-xs text-gray-300 truncate">John Doe added to your pipeline</p>
                               <p class="text-xs text-gray-500 mt-1">2 minutes ago</p>
                             </div>
                           </div>
@@ -1532,7 +1533,7 @@ if (document.readyState === 'loading') {
                             </div>
                             <div class="flex-1 min-w-0">
                               <p class="text-sm text-white mb-1">Enrollment completed</p>
-                              <p class="text-xs text-gray-400 truncate">Sarah Smith successfully enrolled</p>
+                              <p class="text-xs text-gray-300 truncate">Sarah Smith successfully enrolled</p>
                               <p class="text-xs text-gray-500 mt-1">15 minutes ago</p>
                             </div>
                           </div>
@@ -1544,7 +1545,7 @@ if (document.readyState === 'loading') {
                             </div>
                             <div class="flex-1 min-w-0">
                               <p class="text-sm text-white mb-1">New message</p>
-                              <p class="text-xs text-gray-400 truncate">Manager commented on your case</p>
+                              <p class="text-xs text-gray-300 truncate">Manager commented on your case</p>
                               <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
                             </div>
                           </div>
@@ -1567,14 +1568,14 @@ if (document.readyState === 'loading') {
             <!-- Breadcrumb Trail -->
             <div id="breadcrumb" class="px-6 py-3 border-b border-gray-800/50">
               <div class="flex items-center gap-2 text-sm">
-                <a href="#dashboard" data-breadcrumb-home class="text-gray-400 hover:text-white transition-colors">Home</a>
+                <a href="#dashboard" data-breadcrumb-home class="text-gray-300 hover:text-white transition-colors">Home</a>
                 <i data-lucide="chevron-right" class="w-4 h-4 text-gray-600"></i>
                 <span id="breadcrumbCurrent" class="text-white font-semibold">Dashboard</span>
               </div>
             </div>
 
             <!-- Page Content -->
-            <div id="pageContent" class="p-6">
+            <div id="pageContent" role="main" class="p-6">
               <!-- Content will be loaded here -->
             </div>
           </main>
@@ -1921,7 +1922,7 @@ if (document.readyState === 'loading') {
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="text-sm text-white mb-1 ${notif.read ? '' : 'font-semibold'}">${notif.title}</p>
-                  <p class="text-xs text-gray-400 truncate">${notif.message}</p>
+                  <p class="text-xs text-gray-300 truncate">${notif.message}</p>
                   <p class="text-xs text-gray-500 mt-1">${timeAgo}</p>
                 </div>
               </div>
@@ -2049,7 +2050,7 @@ if (document.readyState === 'loading') {
                       </div>
                       <div class="flex-1">
                         <p class="text-white font-medium">${lead.name}</p>
-                        <p class="text-sm text-gray-400">${lead.email} • ${lead.phone}</p>
+                        <p class="text-sm text-gray-300">${lead.email} • ${lead.phone}</p>
                         <p class="text-xs text-gray-500 mt-1">Stage: ${lead.stage} • $${lead.totalDebt.toLocaleString()} debt</p>
                       </div>
                     </div>
@@ -2074,7 +2075,7 @@ if (document.readyState === 'loading') {
                       </div>
                       <div class="flex-1">
                         <p class="text-white font-medium">${caseItem.clientName}</p>
-                        <p class="text-sm text-gray-400">${caseItem.id} • ${caseItem.stage}</p>
+                        <p class="text-sm text-gray-300">${caseItem.id} • ${caseItem.stage}</p>
                         <p class="text-xs text-gray-500 mt-1">$${caseItem.totalDebt.toLocaleString()} total debt</p>
                       </div>
                     </div>
@@ -2097,7 +2098,7 @@ if (document.readyState === 'loading') {
                       <img src="${agent.avatar}" alt="${agent.name}" class="w-10 h-10 rounded-full">
                       <div class="flex-1">
                         <p class="text-white font-medium">${agent.name}</p>
-                        <p class="text-sm text-gray-400">${agent.email}</p>
+                        <p class="text-sm text-gray-300">${agent.email}</p>
                         <p class="text-xs text-gray-500 mt-1">${agent.role}</p>
                       </div>
                     </div>
@@ -2122,7 +2123,7 @@ if (document.readyState === 'loading') {
                       </div>
                       <div class="flex-1">
                         <p class="text-white font-medium">${deal.id}</p>
-                        <p class="text-sm text-gray-400">${deal.clientName || 'Unknown'}</p>
+                        <p class="text-sm text-gray-300">${deal.clientName || 'Unknown'}</p>
                         <p class="text-xs text-gray-500 mt-1">${deal.status || 'Pending'}</p>
                       </div>
                     </div>
@@ -2272,6 +2273,15 @@ if (document.readyState === 'loading') {
       }
 
       try {
+        // MED-7: Global error boundary
+        window.onerror = function(msg, src, line, col, err) {
+          console.error('[Global Error]', msg, src, line);
+          return false;
+        };
+        window.addEventListener('unhandledrejection', function(e) {
+          console.error('[Unhandled Promise]', e.reason);
+        });
+
         console.log("[Debt Empire] App.init() starting...");
         App.init();
         bootDone = true;

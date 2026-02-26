@@ -203,8 +203,8 @@
         <h1 class="font-orbitron" style="font-size:1.5rem; font-weight:700; background:linear-gradient(135deg,#3B82F6,#06B6D4); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
           🤖 AI Agent Command Center
         </h1>
-        <span id="aiStatusBadge" style="display:inline-flex; align-items:center; gap:0.3rem; padding:0.3rem 0.75rem; border-radius:9999px; background:rgba(34,197,94,0.15); color:#22C55E; font-size:0.8rem; font-weight:600;">
-          🟢 Online
+        <span id="aiStatusBadge" style="display:inline-flex; align-items:center; gap:0.3rem; padding:0.3rem 0.75rem; border-radius:9999px; background:rgba(245,158,11,0.15); color:#F59E0B; font-size:0.8rem; font-weight:600;">
+          ⏳ Checking...
         </span>
       </div>
       <div style="display:flex; align-items:center; gap:1rem;">
@@ -623,11 +623,18 @@
   async function fetchAgentStatus() {
     const data = await apiGet('/api/agent/status');
     const badge = $('aiStatusBadge');
-    if (badge && data) {
-      const online = data.status === 'online' || data.online;
-      badge.innerHTML = online ? '🟢 Online' : '🔴 Offline';
-      badge.style.background = online ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)';
-      badge.style.color = online ? '#22C55E' : '#EF4444';
+    if (badge) {
+      if (data) {
+        const online = data.status === 'online' || data.online;
+        badge.innerHTML = online ? '🟢 Online' : '🔴 Offline';
+        badge.style.background = online ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)';
+        badge.style.color = online ? '#22C55E' : '#EF4444';
+      } else {
+        // MED-6 fix: Show demo mode when API unavailable
+        badge.innerHTML = '🟡 Demo Mode';
+        badge.style.background = 'rgba(245,158,11,0.15)';
+        badge.style.color = '#F59E0B';
+      }
     }
   }
 
@@ -857,8 +864,33 @@
 
   // --- 5. Caller Memory ---
   async function fetchCallers() {
-    const data = await apiGet('/api/callers');
+    const data = await apiGet("/api/callers");
     callerData = data ? (Array.isArray(data) ? data : (data.callers || [])) : [];
+    // MED-3 fix: Populate with demo data if API returns empty
+    if (callerData.length === 0 && window.DebtDB) {
+      const leads = window.DebtDB.getLeads ? window.DebtDB.getLeads() : [];
+      const calls = window.DebtDB.getCalls ? window.DebtDB.getCalls() : [];
+      const callerMap = {};
+      calls.forEach(function(c) {
+        const key = c.phone || c.leadId || c.leadName;
+        if (!key) return;
+        if (!callerMap[key]) {
+          const lead = leads.find(function(l) { return l.id === c.leadId || l.name === c.leadName; });
+          callerMap[key] = {
+            name: c.leadName || (lead && lead.name) || "Unknown",
+            phone: c.phone || (lead && lead.phone) || key,
+            call_count: 0,
+            last_call: c.createdAt,
+            total_debt: (lead && lead.totalDebt) || 0,
+            sentiment: "neutral",
+            lead_score: Math.floor(Math.random() * 60) + 30
+          };
+        }
+        callerMap[key].call_count++;
+        if (c.createdAt > callerMap[key].last_call) callerMap[key].last_call = c.createdAt;
+      });
+      callerData = Object.values(callerMap);
+    }
     renderCallers(callerData);
   }
 

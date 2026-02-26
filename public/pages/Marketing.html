@@ -224,7 +224,8 @@
     const tbody = document.getElementById('campaignTableBody');
     tbody.innerHTML = campaigns.map(c => {
       const conv = c.conversions || 0;
-      const roi = c.spent > 0 ? (((conv * 1000) - c.spent) / c.spent * 100).toFixed(1) : 0;
+      const revenue = conv * (c.budget / Math.max(c.leads, 1)) * 3; // Revenue = conversions × avg value per lead × multiplier
+      const roi = c.spent > 0 ? (((revenue) - c.spent) / c.spent * 100).toFixed(1) : 0;
       const statusColors = {
         active: 'bg-emerald-500/20 text-emerald-400',
         paused: 'bg-yellow-500/20 text-yellow-400',
@@ -270,9 +271,10 @@
       }
     });
     
-    // Add campaign costs
+    // MED-4 fix: Map campaign costs to lead sources
+    const typeToSource = {"Google Ads":"Google Ads","TV Ad":"TV Ad","Radio":"Radio","Facebook":"Facebook","Direct Mail":"Direct Mail","Referral":"Referral","Website":"Website","email":"email","sms":"sms","social":"Facebook"};
     campaigns.forEach(c => {
-      const source = c.type || 'other';
+      const source = typeToSource[c.type] || c.type || 'other';
       if (sources[source]) {
         sources[source].cost += (c.spent || 0);
       }

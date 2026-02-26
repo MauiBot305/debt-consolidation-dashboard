@@ -521,10 +521,13 @@
     </select>
     <select class="filter-select" id="sourceFilter">
       <option value="">All Sources</option>
-      <option value="web">Web</option>
-      <option value="referral">Referral</option>
-      <option value="social">Social Media</option>
-      <option value="cold-call">Cold Call</option>
+      <option value="Website">Website</option>
+      <option value="Referral">Referral</option>
+      <option value="Facebook">Facebook</option>
+      <option value="Google Ads">Google Ads</option>
+      <option value="TV Ad">TV Ad</option>
+      <option value="Radio">Radio</option>
+      <option value="Direct Mail">Direct Mail</option>
     </select>
     <select class="filter-select" id="priorityFilter">
       <option value="">All Priorities</option>
@@ -628,10 +631,13 @@
           <div class="form-group">
             <label class="form-label">Source</label>
             <select class="form-input" name="source">
-              <option value="web">Web</option>
-              <option value="referral">Referral</option>
-              <option value="social">Social Media</option>
-              <option value="cold-call">Cold Call</option>
+              <option value="Website">Website</option>
+              <option value="Referral">Referral</option>
+              <option value="Facebook">Facebook</option>
+      <option value="Google Ads">Google Ads</option>
+              <option value="TV Ad">TV Ad</option>
+      <option value="Radio">Radio</option>
+      <option value="Direct Mail">Direct Mail</option>
             </select>
           </div>
           <div class="form-group">
@@ -756,7 +762,8 @@
     }
 
     if (document.readyState === 'loading') {
-      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initCRMLeads); } else { initCRMLeads(); }
+      // MED-8: Direct init (SPA fragment, DOM already loaded)
+    initCRMLeads();
     } else {
       initCRMLeads();
     }
@@ -791,7 +798,7 @@
 
     function generateSampleLeads(count) {
       const names = ['John Smith', 'Sarah Johnson', 'Michael Brown', 'Emily Davis', 'David Wilson', 'Jennifer Martinez', 'Robert Taylor', 'Lisa Anderson', 'William Thomas', 'Mary Jackson'];
-      const sources = ['web', 'referral', 'social', 'cold-call'];
+      const sources = ['Google Ads', 'TV Ad', 'Radio', 'Referral', 'Website', 'Facebook', 'Direct Mail'];
       const statuses = ['new', 'contacted', 'qualified', 'enrolled'];
       const priorities = ['low', 'medium', 'high'];
 

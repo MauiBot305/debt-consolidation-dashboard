@@ -1869,7 +1869,8 @@ const PageToast = {
     }
 
     // Initialize on load
-    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initCaseManagement); } else { initCaseManagement(); }
+    // MED-8: Direct init (SPA fragment, DOM already loaded)
+    initCaseManagement();
     
     // Also init immediately if DOM already loaded
     if (document.readyState === 'loading') {

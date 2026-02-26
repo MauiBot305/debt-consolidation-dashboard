@@ -1271,7 +1271,8 @@ const PageToast = {
     }
 
     // Initialize
-    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initDealPipeline); } else { initDealPipeline(); }
+    // MED-8: Direct init (SPA fragment, DOM already loaded)
+    initDealPipeline();
     
     if (document.readyState !== 'loading') {
       initDealPipeline();

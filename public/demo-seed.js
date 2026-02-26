@@ -378,7 +378,7 @@
     for (let i = 0; i < stageDistribution[stage]; i++) {
       dealCounter++;
       
-      const lead = leads[Math.floor(Math.random() * leads.length)];
+      const lead = shuffledLeads[i - 1];
       const enrolledDebt = lead.totalDebt;
       const settlementRate = Math.random() * (0.60 - 0.40) + 0.40; // 40-60%
       const settlementAmount = Math.floor(enrolledDebt * settlementRate);
@@ -415,7 +415,7 @@
   const caseStatuses = ['Active', 'In Progress', 'Pending', 'Completed'];
   
   for (let i = 1; i <= 15; i++) {
-    const lead = leads[Math.floor(Math.random() * leads.length)];
+    const lead = shuffledLeads[i - 1];
     const caseType = caseTypes[Math.floor(Math.random() * caseTypes.length)];
     const status = caseStatuses[Math.floor(Math.random() * caseStatuses.length)];
     
@@ -492,8 +492,10 @@
     }
   ];
   
+  // MED-1 fix: Use unique leads to prevent duplicate phone numbers
+  const shuffledLeads = [...leads].sort(() => 0.5 - Math.random());
   for (let i = 1; i <= 10; i++) {
-    const lead = leads[Math.floor(Math.random() * leads.length)];
+    const lead = shuffledLeads[i - 1];
     const agent = agents.find(a => a.id === lead.agent);
     const transcriptData = callTranscripts[i % callTranscripts.length];
     
@@ -507,6 +509,7 @@
       id: `call_${String(i).padStart(3, '0')}`,
       leadId: lead.id,
       leadName: lead.name,
+      phone: lead.phone,
       agent: agent.id,
       agentName: agent.name,
       direction: callDirections[Math.floor(Math.random() * 2)],
