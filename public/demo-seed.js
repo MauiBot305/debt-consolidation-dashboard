@@ -251,26 +251,6 @@
       points: 10000,
       achievements: ['Founder', 'Visionary'],
       currentStreak: 0
-    },
-      level: 5,
-      points: 5000,
-      achievements: ['Team Leader'],
-      currentStreak: 0
-    },
-      level: 10,
-      points: 10000,
-      achievements: ['Founder', 'Visionary'],
-      currentStreak: 0
-    },
-      level: 5,
-      points: 5000,
-      achievements: ['Team Leader'],
-      currentStreak: 0
-    },
-      level: 10,
-      points: 10000,
-      achievements: ['Founder', 'Visionary'],
-      currentStreak: 0
     }
   ];
   
