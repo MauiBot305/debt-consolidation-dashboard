@@ -255,17 +255,21 @@
 
     // Initialize (immediate execution)
     (function() {
-      initializeCompliance();
-      renderLicenseGrid();
-      renderChecklist();
-      renderTCPATable();
-      renderDNCList();
-      renderAuditLog();
-      updateComplianceScore();
+      try {
+        initializeCompliance();
+        renderLicenseGrid();
+        renderChecklist();
+        renderTCPATable();
+        renderDNCList();
+        renderAuditLog();
+        updateComplianceScore();
+      } catch(e) {
+        console.error('[Compliance] Init error:', e);
+        if (typeof showToast === 'function') showToast('Error loading compliance data', 'error');
+      }
     })();
 
     function initializeCompliance() {
-      try {
       // Initialize compliance data if not exists
       if (!(window.DebtDB?.getComplianceChecklist?.() || []).length) {
         COMPLIANCE_CHECKLIST.forEach(cat => {

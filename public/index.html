@@ -549,6 +549,18 @@
 
   <!-- TODO: CSP (Content Security Policy) - Requires build-time Tailwind compilation to remove cdn.tailwindcss.com and enable strict CSP headers -->
   <!-- TODO: Error Monitoring - Add Sentry or LogRocket for production error tracking. Requires build pipeline integration -->
+<script>
+// HIGH-10: Universal toast wrapper - standardizes showToast/Toast API
+window.toast = function(msg, type) {
+  type = type || 'info';
+  if (typeof window.showToast === 'function') return window.showToast(msg, type);
+  if (typeof window.Toast !== 'undefined' && window.Toast[type]) return window.Toast[type](msg);
+  console.log('[' + type + '] ' + msg);
+};
+if (typeof window.showToast !== 'function') {
+  window.showToast = window.toast;
+}
+</script>
 </head>
 <body>
   <a href="#pageContent" class="skip-link" style="position:absolute;top:-100%;left:0;background:#3b82f6;color:white;padding:12px 24px;z-index:10000;font-size:16px;text-decoration:none;border-radius:0 0 8px 0;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Skip to main content</a>
