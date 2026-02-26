@@ -1708,7 +1708,7 @@ if (document.readyState === 'loading') {
           window.location.hash = pageId;
         }
         // RBAC check
-        const navMeta = this.navItemsById[pageId];
+        let navMeta = this.navItemsById[pageId];
         if (navMeta && navMeta.roles && !navMeta.roles.includes(this.session.role)) {
           console.warn('[RBAC] Role ' + this.session.role + ' cannot access ' + pageId);
           return;
