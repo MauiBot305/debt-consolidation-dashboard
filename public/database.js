@@ -1188,3 +1188,48 @@ window.APP_CONFIG = window.APP_CONFIG || {
   companyEmail: 'info@debtempire.com',
   demoMode: true
 };
+
+// ==================== DB & DBHelpers Global Aliases ====================
+// Backwards compatibility for code expecting DB and DBHelpers
+
+window.DB = window.DebtDB;
+
+window.DBHelpers = {
+  getAgentById: function(id) {
+    return window.DebtDB.getAgent(id);
+  },
+  
+  formatCurrency: function(amount) {
+    if (typeof amount !== 'number') amount = 0;
+    return '$' + amount.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  },
+  
+  formatPhone: function(phone) {
+    if (!phone) return '';
+    const cleaned = phone.replace(/\D/g, '');
+    if (cleaned.length === 10) {
+      return '(' + cleaned.slice(0,3) + ') ' + cleaned.slice(3,6) + '-' + cleaned.slice(6);
+    }
+    return phone;
+  },
+  
+  formatDate: function(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  },
+  
+  formatDateTime: function(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
+    return date.toLocaleString('en-US', { 
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: 'numeric', minute: '2-digit', hour12: true
+    });
+  }
+};
