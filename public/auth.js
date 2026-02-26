@@ -1,4 +1,4 @@
-// v2026-02-25
+// v2026-02-25-fix
 // Authentication Module for Debt Consolidation Empire Dashboard
 
 window.Auth = window.Auth || {
@@ -53,7 +53,7 @@ window.Auth = window.Auth || {
     try {
       const session = JSON.parse(sessionData);
       // DEMO ONLY - Production requires server-side JWT
-    // Check if session is expired (2 hours)
+      // Check if session is expired (2 hours)
       if (Date.now() - session.timestamp > 2 * 60 * 60 * 1000) {
         this.logout();
         return null;
@@ -93,11 +93,31 @@ window.Auth = window.Auth || {
     };
   },
 
+  // Quick login for demo buttons
+  quickLogin(email, password) {
+    const result = this.login(email, password);
+    if (result.success) {
+      window.location.reload();
+    } else {
+      if (window.Toast) window.Toast.error(result.message);
+    }
+  },
+
   // Logout function
   logout() {
     localStorage.removeItem('debt_empire_session');
     window.location.hash = '#login';
     this.showLogin();
+  },
+
+  // Get role badge HTML
+  getRoleBadge(role) {
+    const badges = {
+      owner: '<span class="px-2 py-0.5 text-xs font-bold rounded-full bg-green-500/20 text-green-400 border border-green-500/30">Owner</span>',
+      manager: '<span class="px-2 py-0.5 text-xs font-bold rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">Manager</span>',
+      agent: '<span class="px-2 py-0.5 text-xs font-bold rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">Agent</span>'
+    };
+    return badges[role] || badges.agent;
   },
 
   // Show login page
@@ -184,36 +204,26 @@ window.Auth = window.Auth || {
     // Re-render lucide icons
     if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide]', e.message); } }
 
-    setTimeout(() => toast.classList.remove('translate-x-full'), 100);
-    
-    setTimeout(() => {
-      toast.classList.add('translate-x-full');
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
-  },
-
-  success(message) {
-    this.show(message, 'success');
-  },
-
-  error(message) {
-    this.show(message, 'error');
-  },
-
-  warning(message) {
-    this.show(message, 'warning');
-  },
-
-  info(message) {
-    this.show(message, 'info');
-  },
-
-  createContainer() {
-    const container = document.createElement('div');
-    container.id = 'toastContainer';
-    container.className = 'fixed top-4 right-4 z-50 flex flex-col gap-2';
-    document.body.appendChild(container);
-    return container;
+    // Attach login form handler
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const errorDiv = document.getElementById('loginError');
+        
+        const result = Auth.login(email, password);
+        if (result.success) {
+          window.location.reload();
+        } else {
+          if (errorDiv) {
+            errorDiv.textContent = result.message;
+            errorDiv.classList.remove('hidden');
+          }
+        }
+      });
+    }
   }
 };
 
