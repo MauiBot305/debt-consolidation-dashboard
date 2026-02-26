@@ -773,6 +773,14 @@
       }
 
       leads = (window.DebtDB?.getLeads?.() || []);
+      // Compute DTI ratio if missing
+      leads.forEach(l => {
+        if (l.dtiRatio === undefined && l.totalDebt && l.monthlyIncome) {
+          l.dtiRatio = Math.round((l.totalDebt * 0.02 / l.monthlyIncome) * 100);
+        } else if (l.dtiRatio === undefined) {
+          l.dtiRatio = 0;
+        }
+      });
       // console.log(`✅ Loaded ${leads.length} leads`);
       
       if (leads.length === 0) {

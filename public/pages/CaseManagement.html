@@ -1137,6 +1137,8 @@ const PageToast = {
     // Load cases from DebtDB
     function loadCases() {
       cases = (window.DebtDB?.getCases?.() || []) || [];
+      // Normalize: demo-seed uses type, UI uses caseType
+      cases.forEach(c => { if (!c.caseType && c.type) c.caseType = c.type; });
       
       // If no cases, seed some demo data
       if (cases.length === 0) {
