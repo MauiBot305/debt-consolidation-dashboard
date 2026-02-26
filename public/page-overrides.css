@@ -171,3 +171,35 @@ button:hover,
     padding-right: 16px !important;
   }
 }
+
+/* Compliance Page Styles */
+.glass-card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.score-gauge { text-align: center; padding: 2rem; }
+.gauge-wrapper { position: relative; width: 200px; height: 200px; margin: 0 auto; }
+.gauge-circle { width: 200px; height: 200px; border-radius: 50%; background: conic-gradient(#22c55e var(--score, 0%), #1e293b var(--score, 0%)); display: flex; align-items: center; justify-content: center; }
+.gauge-value { position: relative; z-index: 1; font-size: 3rem; font-weight: 700; color: #fff; }
+.license-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.5rem; }
+.license-cell { padding: 0.5rem; border-radius: 8px; text-align: center; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+.license-cell.active { background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e; color: #22c55e; }
+.license-cell.pending { background: rgba(234, 179, 8, 0.2); border: 1px solid #eab308; color: #eab308; }
+.license-cell.inactive { background: rgba(100, 116, 139, 0.2); border: 1px solid #475569; color: #64748b; }
+.checklist-item { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; background: rgba(30, 41, 59, 0.5); border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; transition: background 0.2s; }
+.checklist-item:hover { background: rgba(30, 41, 59, 0.8); }
+.checklist-item.completed { opacity: 0.7; }
+.dnc-input { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.dnc-input input { flex: 1; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.5rem 1rem; color: #fff; }
+.dnc-input button { padding: 0.5rem 1rem; background: #3b82f6; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+.audit-entry { padding: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.competitive-edge { background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(59, 130, 246, 0.1)); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 12px; padding: 1.5rem; }
+
+/* Dashboard Shared Styles */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.stat-card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; }
+.stat-value { font-size: 2rem; font-weight: 700; color: #fff; }
+.overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+.overview-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1.5rem; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+.kpi-card { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; text-align: center; }
+.revenue-hero { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2)); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 16px; padding: 2rem; text-align: center; }
+.metric-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.25rem; }
+.empire-title { font-family: 'Orbitron', monospace; font-size: 1.5rem; color: #f1c40f; text-shadow: 0 0 10px rgba(241, 196, 15, 0.3); }
