@@ -52,8 +52,9 @@ window.Auth = window.Auth || {
     
     try {
       const session = JSON.parse(sessionData);
-      // Check if session is expired (24 hours)
-      if (Date.now() - session.timestamp > 24 * 60 * 60 * 1000) {
+      // DEMO ONLY - Production requires server-side JWT
+    // Check if session is expired (2 hours)
+      if (Date.now() - session.timestamp > 2 * 60 * 60 * 1000) {
         this.logout();
         return null;
       }
@@ -335,3 +336,32 @@ window.Toast = window.Toast || {
     return container;
   }
 };
+
+// Idle timeout tracking (15 minutes)
+(function() {
+  const IDLE_TIMEOUT = 15 * 60 * 1000;
+  let idleTimer;
+  function resetIdleTimer() {
+    clearTimeout(idleTimer);
+    const session = localStorage.getItem('debt_empire_session');
+    if (session) {
+      try {
+        const s = JSON.parse(session);
+        s.lastActivity = Date.now();
+        localStorage.setItem('debt_empire_session', JSON.stringify(s));
+      } catch(e) {}
+    }
+    idleTimer = setTimeout(function() {
+      if (window.Auth) { window.Auth.logout(); }
+      if (window.Toast) { window.Toast.warning('Session expired due to inactivity'); }
+    }, IDLE_TIMEOUT);
+  }
+  ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(function(evt) {
+    document.addEventListener(evt, resetIdleTimer, { passive: true });
+  });
+  resetIdleTimer();
+})();
+
+// H12: Sensitive data in localStorage - DEMO ONLY
+// In production, sensitive data should be encrypted at rest or stored server-side.
+// localStorage is accessible to any JS running on this origin.

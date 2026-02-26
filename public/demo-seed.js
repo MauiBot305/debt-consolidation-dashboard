@@ -23,7 +23,7 @@
     {
       id: 'agent_001',
       name: 'Michael Rodriguez',
-      email: 'mrodriguez@debtempire.com',
+      email: 'mrodriguez@gmail.com',
       role: 'Senior Debt Consultant',
       phone: '(312) 555-0101',
       status: 'active',
@@ -41,7 +41,7 @@
     {
       id: 'agent_002',
       name: 'Sarah Chen',
-      email: 'schen@debtempire.com',
+      email: 'sarah.chen@outlook.com',
       role: 'Debt Specialist',
       phone: '(312) 555-0102',
       status: 'active',
@@ -59,7 +59,7 @@
     {
       id: 'agent_003',
       name: 'James Thompson',
-      email: 'jthompson@debtempire.com',
+      email: 'james.t@yahoo.com',
       role: 'Debt Consultant',
       phone: '(312) 555-0103',
       status: 'active',
@@ -77,7 +77,7 @@
     {
       id: 'agent_004',
       name: 'Lisa Martinez',
-      email: 'lmartinez@debtempire.com',
+      email: 'lmartinez@hotmail.com',
       role: 'Senior Consultant',
       phone: '(312) 555-0104',
       status: 'active',

@@ -472,18 +472,18 @@ function getMockLeads() {
     {
       id: 'L001',
       name: 'Sarah Mitchell',
-      email: 'sarah.mitchell@email.com',
+      email: 'sarah.mitchell@gmail.com',
       phone: '(555) 234-5678',
       stage: 'New Lead',
       totalDebt: 45000,
       monthlyIncome: 4200,
-      dtiRatio: 89,
+      dtiRatio: 45,
       status: 'active'
     },
     {
       id: 'L002',
       name: 'Michael Chen',
-      email: 'mchen@email.com',
+      email: 'mchen@outlook.com',
       phone: '(555) 345-6789',
       stage: 'Contacted',
       totalDebt: 32000,
@@ -542,3 +542,94 @@ function getMockAgents() {
     }
   ];
 }
+
+/**
+ * Authenticate incoming request via Bearer token
+ */
+function authenticateRequest(request, env) {
+  const authHeader = request.headers.get("Authorization") || "";
+  if (!authHeader.startsWith("Bearer ") || authHeader.slice(7) !== env.API_SECRET) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Main Cloudflare Worker fetch handler
+ */
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const path = url.pathname;
+    const requestId = crypto.randomUUID();
+
+    const allowedOrigins = ["https://debt.alldayautomations.ai", "https://debt-consolidation-dashboard.pages.dev"];
+    const requestOrigin = request.headers.get("Origin") || "";
+    const corsOrigin = allowedOrigins.includes(requestOrigin) ? requestOrigin : allowedOrigins[0];
+    const headers = {
+      "Access-Control-Allow-Origin": corsOrigin,
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "X-Request-ID": requestId,
+      "Content-Type": "application/json"
+    };
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers });
+    }
+
+    // Content-length limit (1MB)
+    const contentLength = parseInt(request.headers.get("content-length") || "0", 10);
+    if (contentLength > 1048576) {
+      return new Response(JSON.stringify({ error: "Payload too large" }), { status: 413, headers });
+    }
+
+    // Health check
+    if (path === "/health" || path === "/") {
+      return new Response(JSON.stringify({ status: "ok", service: "Dashboard API", version: "2.0" }), { headers });
+    }
+
+    // Auth for all /api/ routes
+    if (path.startsWith("/api/")) {
+      if (!authenticateRequest(request, env)) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers });
+      }
+    }
+
+    try {
+      // Route matching
+      if (path === "/api/v1/dashboard/leads/search" || path === "/api/dashboard/leads/search") {
+        return await searchLeads(request, env);
+      }
+      const leadByPhoneMatch = path.match(/^\/api\/(?:v1\/)?dashboard\/leads\/by-phone\/(.+)$/);
+      if (leadByPhoneMatch) return await getLeadByPhone(leadByPhoneMatch[1], env);
+      
+      const leadByIdMatch = path.match(/^\/api\/(?:v1\/)?dashboard\/leads\/([^/]+)$/);
+      if (leadByIdMatch) return await getLeadById(leadByIdMatch[1], env);
+
+      const caseByIdMatch = path.match(/^\/api\/(?:v1\/)?dashboard\/cases\/([^/]+)$/);
+      if (caseByIdMatch) return await getCaseById(caseByIdMatch[1], env);
+
+      if (path.match(/^\/api\/(?:v1\/)?dashboard\/pipeline\/status$/)) return await getPipelineStatus(env);
+      if (path.match(/^\/api\/(?:v1\/)?dashboard\/agents\/available$/)) return await getAvailableAgents(env);
+
+      const agentStatsMatch = path.match(/^\/api\/(?:v1\/)?dashboard\/agents\/([^/]+)\/stats$/);
+      if (agentStatsMatch) return await getAgentStats(agentStatsMatch[1], env);
+
+      if (path.match(/^\/api\/(?:v1\/)?dashboard\/analytics\/summary$/)) return await getAnalyticsSummary(env);
+
+      const complianceMatch = path.match(/^\/api\/(?:v1\/)?dashboard\/compliance\/([^/]+)$/);
+      if (complianceMatch) return await getComplianceStatus(complianceMatch[1], env);
+
+      const scriptsMatch = path.match(/^\/api\/(?:v1\/)?dashboard\/scripts\/([^/]+)$/);
+      if (scriptsMatch) return await getScripts(scriptsMatch[1], env);
+
+      if (path.match(/^\/api\/(?:v1\/)?dashboard\/calls\/log$/)) return await logCall(request, env);
+
+      return new Response(JSON.stringify({ error: "Not found" }), { status: 404, headers });
+    } catch (error) {
+      console.error("Dashboard API error:", error);
+      return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500, headers });
+    }
+  }
+};
