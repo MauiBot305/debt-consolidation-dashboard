@@ -1715,7 +1715,7 @@ if (document.readyState === 'loading') {
         }
         this.loadPage(pageName);
         
-        const navMeta = (this.navItemsById && this.navItemsById[pageId]) || null;
+        navMeta = (this.navItemsById && this.navItemsById[pageId]) || null;
         const label = navMeta?.label || this.getFallbackPageLabel(pageName);
         
         const breadcrumbCurrent = document.getElementById('breadcrumbCurrent');
