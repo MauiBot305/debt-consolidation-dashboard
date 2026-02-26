@@ -438,7 +438,7 @@
 
   // Initialize
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAutomation);
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initAutomation); } else { initAutomation(); }
   } else {
     initAutomation();
   }

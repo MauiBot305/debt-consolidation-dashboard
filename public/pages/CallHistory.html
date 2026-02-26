@@ -506,7 +506,7 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCallHistory);
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initCallHistory); } else { initCallHistory(); }
   } else {
     initCallHistory();
   }

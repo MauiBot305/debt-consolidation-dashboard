@@ -756,7 +756,7 @@
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initCRMLeads);
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initCRMLeads); } else { initCRMLeads(); }
     } else {
       initCRMLeads();
     }

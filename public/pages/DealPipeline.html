@@ -777,7 +777,13 @@
   </div>
 
   <script>
-(function() {
+const PageToast = {
+      success: (m) => (window.Toast?.success || window.showToast || function(m){console.log(m)})(m),
+      warning: (m) => (window.Toast?.warning || window.showToast || function(m){console.log(m)})(m),
+      error: (m) => (window.Toast?.error || window.showToast || function(m){console.log(m)})(m),
+      info: (m) => (window.Toast?.info || window.showToast || function(m){console.log(m)})(m)
+    };
+    (function() {
 'use strict';
 
     // Pipeline stages
@@ -1081,7 +1087,7 @@
         renderPipeline();
         updateStats();
         
-        Toast.success(`Deal moved to ${newStage}`);
+        PageToast.success(`Deal moved to ${newStage}`);
       }
     }
 
@@ -1128,7 +1134,7 @@
       if (container.children.length > 1) {
         row.remove();
       } else {
-        Toast.warning('At least one creditor is required');
+        PageToast.warning('At least one creditor is required');
       }
     }
 
@@ -1168,7 +1174,7 @@
       renderPipeline();
       updateStats();
       
-      Toast.success('Deal created successfully!');
+      PageToast.success('Deal created successfully!');
     }
 
     // Deal detail panel
@@ -1254,18 +1260,18 @@
     }
 
     function callDealClient() {
-      Toast.info('Opening Power Dialer...');
+      PageToast.info('Opening Power Dialer...');
       setTimeout(() => {
         window.location.hash = 'power-dialer';
       }, 1000);
     }
 
     function emailDealClient() {
-      Toast.info('Opening email composer...');
+      PageToast.info('Opening email composer...');
     }
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', initDealPipeline);
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initDealPipeline); } else { initDealPipeline(); }
     
     if (document.readyState !== 'loading') {
       initDealPipeline();

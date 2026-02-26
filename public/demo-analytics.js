@@ -169,7 +169,7 @@ const DEMO_COMPLIANCE = {
     { state: 'CA', status: 'active', expiryDate: '2026-11-15', licenseNumber: 'DCA-CA-2023-15234' },
     { state: 'TX', status: 'active', expiryDate: '2027-01-31', licenseNumber: 'TD-TX-2024-9931' },
     { state: 'NY', status: 'active', expiryDate: '2026-10-01', licenseNumber: 'DP-NY-2023-44521' },
-    { state: 'IL', status: 'pending', expiryDate: '2025-06-30', licenseNumber: 'DCP-IL-2025-0034' },
+    { state: 'IL', status: 'expired', expiryDate: '2025-06-30', licenseNumber: 'DCP-IL-2025-0034' },
     { state: 'PA', status: 'active', expiryDate: '2027-03-15', licenseNumber: 'DSP-PA-2024-7712' },
     { state: 'OH', status: 'active', expiryDate: '2026-09-30', licenseNumber: 'DC-OH-2023-8856' },
     { state: 'GA', status: 'active', expiryDate: '2026-08-31', licenseNumber: 'DCL-GA-2024-2234' },

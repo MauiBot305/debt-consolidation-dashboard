@@ -224,7 +224,7 @@
     let campaigns = window.DebtDB.getCampaigns();
     
     if (filter !== 'all') {
-      campaigns = campaigns.filter(c => c.type === filter);
+      if (filter === 'social') { campaigns = campaigns.filter(c => ['facebook','instagram','google','linkedin','twitter'].includes((c.type||'').toLowerCase())); } else { campaigns = campaigns.filter(c => c.type === filter); }
     }
     
     const tbody = document.getElementById('campaignTableBody');

@@ -17,10 +17,10 @@
   <script src="https://cdn.tailwindcss.com/3.4.17" onload="window.__cdnStatus.tailwind=true;" onerror="console.error('[CDN] Tailwind failed'); window.__cdnStatus.errors.push('tailwind');"></script>
   
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@0.575.0" onload="window.__cdnStatus.lucide=true; window.lucide=lucide;" onerror="console.error('[CDN] Lucide failed'); window.__cdnStatus.errors.push('lucide');"></script>
+  <script src="https://unpkg.com/lucide@0.575.0" integrity="sha384-E9eORdh1ko4jWuV2KAjwubWV8BPNaN3XloblvUmHlyLHmFyj8GFm4NOPOdjEhfN3" crossorigin="anonymous" onload="window.__cdnStatus.lucide=true; window.lucide=lucide;" onerror="console.error('[CDN] Lucide failed'); window.__cdnStatus.errors.push('lucide');"></script>
   
   <!-- SheetJS - Excel Parser -->
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js" onload="window.__cdnStatus.xlsx=true;" onerror="console.error('[CDN] SheetJS failed'); window.__cdnStatus.errors.push('xlsx');"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js" integrity="sha384-7hwyYzxURfZMLwHgvEKrYEmM5tX+1DVWK5iDR4R69bOQeY90Q8B8n9Cobuyqybhw" crossorigin="anonymous" onload="window.__cdnStatus.xlsx=true;" onerror="console.error('[CDN] SheetJS failed'); window.__cdnStatus.errors.push('xlsx');"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   
   <!-- Google Fonts -->
@@ -544,6 +544,9 @@
     };
   </script>
 
+
+  <!-- TODO: CSP (Content Security Policy) - Requires build-time Tailwind compilation to remove cdn.tailwindcss.com and enable strict CSP headers -->
+  <!-- TODO: Error Monitoring - Add Sentry or LogRocket for production error tracking. Requires build pipeline integration -->
 </head>
 <body>
   <a href="#pageContent" class="skip-link" style="position:absolute;top:-100%;left:0;background:#3b82f6;color:white;padding:12px 24px;z-index:10000;font-size:16px;text-decoration:none;border-radius:0 0 8px 0;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Skip to main content</a>
@@ -846,7 +849,7 @@
                       <div class="p-4 border-b border-gray-800">
                         <div class="flex items-center justify-between">
                           <h3 class="font-semibold text-white">Notifications</h3>
-                          <span class="badge-primary badge text-xs">3 new</span>
+                          <span id="notificationCount" class="badge-primary badge text-xs" style="display:none">0 new</span>
                         </div>
                       </div>
                       <div class="max-h-96 overflow-y-auto">
@@ -944,7 +947,7 @@
           { id: 'ai-coach', icon: 'sparkles', label: 'AI Coach', page: 'AICoach', roles: ['agent', 'manager', 'owner'] },
           { id: 'ai-agent', icon: 'bot', label: 'AI Agent', page: 'AIAgentManagement', roles: ['manager', 'owner'] },
           { id: 'automation', icon: 'zap', label: 'Automation', page: 'Automation', roles: ['manager', 'owner'] },
-          { id: 'team', icon: 'users-2', label: 'Team', page: 'TeamManagement', roles: ['manager', 'owner'] },
+          { id: 'team', icon: 'user-cog', label: 'Team', page: 'TeamManagement', roles: ['manager', 'owner'] },
           { id: 'portal', icon: 'globe', label: 'Client Portal', page: 'ClientPortal', roles: ['agent', 'manager', 'owner'] },
           { id: 'data-import', icon: 'database', label: 'Data Import', page: 'DataImport', roles: ['manager', 'owner'] },
           { id: 'settings', icon: 'settings', label: 'Settings', page: 'Settings', roles: ['agent', 'manager', 'owner'] }
@@ -1145,7 +1148,9 @@
           if (navMeta) {
             this.navigateTo(routeId, navMeta.page);
           } else {
-            this.navigateTo('dashboard', 'AgentDashboard');
+            const defaultPages = { owner: 'OwnerDashboard', manager: 'ManagerDashboard', agent: 'AgentDashboard' };
+            const defaultPage = defaultPages[this.session?.role] || 'AgentDashboard';
+            this.navigateTo('dashboard', defaultPage);
           }
         };
 

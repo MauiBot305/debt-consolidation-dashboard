@@ -165,7 +165,7 @@
 
   let aiCallTimers = {};
 
-  document.addEventListener('DOMContentLoaded', function() {
+  (function() {
     loadManagerDashboard();
     // Refresh active calls every 10 seconds
     setInterval(loadActiveCalls, 10000);

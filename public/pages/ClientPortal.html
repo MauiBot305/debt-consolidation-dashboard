@@ -199,6 +199,16 @@
     document.getElementById('clientSelector').style.display = 'none';
     document.getElementById('clientDashboard').style.display = 'block';
     
+    // Add back button if not already present
+    if (!document.getElementById('backToClientList')) {
+      const backBtn = document.createElement('button');
+      backBtn.id = 'backToClientList';
+      backBtn.className = 'text-blue-400 hover:text-blue-300 text-sm mb-4';
+      backBtn.innerHTML = '\u2190 Back to Client List';
+      backBtn.onclick = () => { document.getElementById('clientSelector').style.display=''; document.getElementById('clientDashboard').style.display='none'; };
+      document.getElementById('clientDashboard').prepend(backBtn);
+    }
+    
     renderClientDashboard();
   }
 
@@ -397,7 +407,7 @@
 
   // Initialize
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initClientPortal);
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initClientPortal); } else { initClientPortal(); }
   } else {
     initClientPortal();
   }

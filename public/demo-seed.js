@@ -251,7 +251,6 @@
       points: 10000,
       achievements: ['Founder', 'Visionary'],
       currentStreak: 0
-    }
     },
     {
       id: 'MGR001',
@@ -304,7 +303,6 @@
       points: 10000,
       achievements: ['Founder', 'Visionary'],
       currentStreak: 0
-    }
     },
     {
       id: 'MGR001',

@@ -1109,7 +1109,13 @@
   </div>
 
   <script>
-(function() {
+const PageToast = {
+      success: (m) => (window.Toast?.success || window.showToast || function(m){console.log(m)})(m),
+      warning: (m) => (window.Toast?.warning || window.showToast || function(m){console.log(m)})(m),
+      error: (m) => (window.Toast?.error || window.showToast || function(m){console.log(m)})(m),
+      info: (m) => (window.Toast?.info || window.showToast || function(m){console.log(m)})(m)
+    };
+    (function() {
 'use strict';
 
     // State
@@ -1713,7 +1719,7 @@
       if (container.children.length > 1) {
         row.remove();
       } else {
-        Toast.warning('At least one creditor is required');
+        PageToast.warning('At least one creditor is required');
       }
     }
 
@@ -1765,7 +1771,7 @@
       renderCaseList();
       selectCase(newCase.id);
       
-      Toast.success('Case created successfully!');
+      PageToast.success('Case created successfully!');
     }
 
     function submitAddPayment(e) {
@@ -1788,7 +1794,7 @@
       closeAddPaymentModal();
       renderCaseDetail();
       
-      Toast.success('Payment added successfully!');
+      PageToast.success('Payment added successfully!');
     }
 
     function submitAddNote(e) {
@@ -1805,7 +1811,7 @@
       closeAddNoteModal();
       renderCaseDetail();
       
-      Toast.success('Note added successfully!');
+      PageToast.success('Note added successfully!');
     }
 
     function submitAddDocument(e) {
@@ -1826,19 +1832,19 @@
       closeAddDocumentModal();
       renderCaseDetail();
       
-      Toast.success('Document uploaded successfully!');
+      PageToast.success('Document uploaded successfully!');
     }
 
     // Quick actions
     function callClient() {
-      Toast.info('Opening Power Dialer...');
+      PageToast.info('Opening Power Dialer...');
       setTimeout(() => {
         window.location.hash = 'power-dialer';
       }, 1000);
     }
 
     function emailClient() {
-      Toast.info('Opening email composer...');
+      PageToast.info('Opening email composer...');
     }
 
     function updateCaseStatus() {
@@ -1853,15 +1859,15 @@
       renderCaseDetail();
       renderCaseList();
       
-      Toast.success(`Case status updated to ${nextStatus}`);
+      PageToast.success(`Case status updated to ${nextStatus}`);
     }
 
     function addCreditor() {
-      Toast.info('Add creditor functionality coming soon');
+      PageToast.info('Add creditor functionality coming soon');
     }
 
     // Initialize on load
-    document.addEventListener('DOMContentLoaded', initCaseManagement);
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initCaseManagement); } else { initCaseManagement(); }
     
     // Also init immediately if DOM already loaded
     if (document.readyState === 'loading') {

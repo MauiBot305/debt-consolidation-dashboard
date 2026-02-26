@@ -431,7 +431,13 @@
   }
 
   function changePassword() {
-    showToast('Password changed successfully!', 'success');
+    const curr = document.getElementById('currentPassword')?.value;
+    const newP = document.getElementById('newPassword')?.value;
+    const conf = document.getElementById('confirmPassword')?.value;
+    if (!curr || !newP || !conf) { showToast('Fill all fields', 'error'); return; }
+    if (newP.length < 6) { showToast('Min 6 characters', 'error'); return; }
+    if (newP !== conf) { showToast('Passwords do not match', 'error'); return; }
+    showToast('Password updated', 'success');
   }
 
   function exportData(type) {
@@ -470,7 +476,7 @@
 
   // Initialize
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSettings);
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initSettings); } else { initSettings(); }
   } else {
     initSettings();
   }

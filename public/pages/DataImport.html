@@ -358,7 +358,7 @@
       
       return `
         <tr class="border-b border-slate-700/30">
-          <td class="p-2 text-gray-300">${mapped.name || mapped.firstName + ' ' + mapped.lastName || 'N/A'}</td>
+          <td class="p-2 text-gray-300">${mapped.name || ((mapped.firstName || '') + ' ' + (mapped.lastName || '')).trim() || 'N/A'}</td>
           <td class="p-2 text-gray-300">${mapped.email || 'N/A'}</td>
           <td class="p-2 text-gray-300">${mapped.phone || 'N/A'}</td>
           <td class="p-2 text-gray-300">${mapped.debtAmount || 'N/A'}</td>

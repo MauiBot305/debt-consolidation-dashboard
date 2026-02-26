@@ -358,13 +358,13 @@
     }
 
     /* Forms */
-    .form-group {
+    #financial .form-group {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
-    .form-label {
+    #financial .form-label {
       font-size: 13px;
       color: #94A3B8;
       font-weight: 600;
@@ -372,8 +372,8 @@
       letter-spacing: 0.5px;
     }
 
-    .form-input,
-    .form-select {
+    #financial .form-input,
+    #financial .form-select {
       background: rgba(30, 41, 59, 0.5);
       border: 1px solid rgba(59, 130, 246, 0.2);
       border-radius: 8px;
@@ -384,14 +384,14 @@
       transition: all 0.3s;
     }
 
-    .form-input:focus,
-    .form-select:focus {
+    #financial .form-input:focus,
+    #financial .form-select:focus {
       border-color: rgba(59, 130, 246, 0.5);
       background: rgba(30, 41, 59, 0.7);
     }
 
     /* Buttons */
-    .btn {
+    #financial .btn {
       background: linear-gradient(135deg, #3B82F6, #2563EB);
       border: none;
       border-radius: 8px;
@@ -407,34 +407,34 @@
       justify-content: center;
     }
 
-    .btn:hover {
+    #financial .btn:hover {
       background: linear-gradient(135deg, #2563EB, #1D4ED8);
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
     }
 
-    .btn-secondary {
+    #financial .btn-secondary {
       background: rgba(59, 130, 246, 0.2);
       border: 1px solid rgba(59, 130, 246, 0.4);
       color: #3B82F6;
     }
 
-    .btn-secondary:hover {
+    #financial .btn-secondary:hover {
       background: rgba(59, 130, 246, 0.3);
       box-shadow: none;
     }
 
-    .btn-success {
+    #financial .btn-success {
       background: linear-gradient(135deg, #22C55E, #16A34A);
     }
 
-    .btn-success:hover {
+    #financial .btn-success:hover {
       background: linear-gradient(135deg, #16A34A, #15803D);
       box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
     }
 
     /* Modal */
-    .modal-overlay {
+    #financial .modal-overlay {
       display: none;
       position: fixed;
       top: 0;
@@ -448,11 +448,11 @@
       justify-content: center;
     }
 
-    .modal-overlay.active {
+    #financial .modal-overlay.active {
       display: flex;
     }
 
-    .modal {
+    #financial .modal {
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.95));
       border: 1px solid rgba(59, 130, 246, 0.3);
       border-radius: 20px;
@@ -756,6 +756,7 @@
 
     // Initialize
     function initFinancial() {
+      if (window._financialInitialized) return; window._financialInitialized = true;
       loadData();
       loadAgentsForCommission();
       loadCasesForPayment();
@@ -1077,7 +1078,7 @@
     }
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', initFinancial);
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initFinancial); } else { initFinancial(); }
     
     if (document.readyState !== 'loading') {
       initFinancial();
