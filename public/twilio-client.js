@@ -349,7 +349,7 @@ class TwilioClient {
     try {
       const response = await fetch(`${this.workerUrl}/api/twilio/hold`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (this.apiToken || '') },
         body: JSON.stringify({
           callSid: this.currentCall.id,
           hold: newState
@@ -400,7 +400,7 @@ class TwilioClient {
 
       const response = await fetch(`${this.workerUrl}/api/twilio/sms`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (this.apiToken || '') },
         body: JSON.stringify({ to, message })
       });
 
@@ -434,7 +434,7 @@ class TwilioClient {
     try {
       const response = await fetch(`${this.workerUrl}/api/twilio/conference`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (this.apiToken || '') },
         body: JSON.stringify({
           callSid: this.currentCall.id,
           participant: phoneNumber
@@ -471,7 +471,7 @@ class TwilioClient {
     try {
       const response = await fetch(`${this.workerUrl}/api/twilio/transfer`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (this.apiToken || '') },
         body: JSON.stringify({
           callSid: this.currentCall.id,
           to: phoneNumber
