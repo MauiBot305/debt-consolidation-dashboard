@@ -183,7 +183,6 @@ window.Auth = window.Auth || {
 
     // Re-render lucide icons
     if (typeof lucide !== 'undefined' && lucide.createIcons) { try { lucide.createIcons(); } catch(e) { console.warn('[Lucide]', e.message); } }
-    }
 
     setTimeout(() => toast.classList.remove('translate-x-full'), 100);
     
