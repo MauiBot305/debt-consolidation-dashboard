@@ -744,7 +744,7 @@
     // INITIALIZATION
     // =====================
     function initCRMLeads() {
-      console.log('🚀 CRM Leads initializing...');
+      // console.log('🚀 CRM Leads initializing...');
       
       loadLeads();
       setupFilters();
@@ -773,7 +773,7 @@
       }
 
       leads = (window.DebtDB?.getLeads?.() || []);
-      console.log(`✅ Loaded ${leads.length} leads`);
+      // console.log(`✅ Loaded ${leads.length} leads`);
       
       if (leads.length === 0) {
         // Generate sample data for demo
@@ -929,7 +929,7 @@
     function setupFilters() {
       const inputs = ['searchInput', 'statusFilter', 'sourceFilter', 'priorityFilter'];
       inputs.forEach(id => {
-        document.getElementById(id).addEventListener('input', () => {
+        document.getElementById(id).addEventListener(id === 'searchInput' ? 'input' : 'change', () => {
           currentPage = 1;
           renderLeads();
         });
@@ -1318,7 +1318,7 @@
       if (typeof Toast !== 'undefined') {
         Toast[type](message);
       } else {
-        console.log(`[${type.toUpperCase()}] ${message}`);
+        // console.log(`[${type.toUpperCase()}] ${message}`);
       }
     }
 

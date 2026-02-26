@@ -168,11 +168,13 @@
   (function() {
     loadManagerDashboard();
     // Refresh active calls every 10 seconds
-    setInterval(loadActiveCalls, 10000);
+    if (window._pageIntervals) window._pageIntervals.forEach(clearInterval);
+    window._pageIntervals = [];
+    window._pageIntervals.push(setInterval(loadActiveCalls, 10000));
     // Refresh AI calls every 5 seconds
-    setInterval(loadAICalls, 5000);
+    window._pageIntervals.push(setInterval(loadAICalls, 5000));
     loadAICalls(); // Initial load
-  });
+  })();
 
   async function loadManagerDashboard() {
     await updateOverview();

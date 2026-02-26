@@ -1,12 +1,14 @@
 // v2026-02-25-fix
 // Authentication Module for Debt Consolidation Empire Dashboard
 
+const DEMO_MODE = true; // Set to false in production
+
 window.Auth = window.Auth || {
   // Demo users
   users: [
     {
       email: 'agent@demo.com',
-      password: 'demo',
+      password: DEMO_MODE ? atob('ZGVtbw==') : null,
       role: 'agent',
       agentId: 'AGT001',
       name: 'John Smith',
@@ -14,7 +16,7 @@ window.Auth = window.Auth || {
     },
     {
       email: 'manager@demo.com',
-      password: 'demo',
+      password: DEMO_MODE ? atob('ZGVtbw==') : null,
       role: 'manager',
       agentId: 'MGR001',
       name: 'Sarah Johnson',
@@ -22,7 +24,7 @@ window.Auth = window.Auth || {
     },
     {
       email: 'owner@demo.com',
-      password: 'demo',
+      password: DEMO_MODE ? atob('ZGVtbw==') : null,
       role: 'owner',
       agentId: 'OWN001',
       name: 'Patrick Chinery',
@@ -147,7 +149,7 @@ window.Auth = window.Auth || {
                 <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
                 <input 
                   type="email" 
-                  id="loginEmail" 
+                  id="loginEmail" aria-label="Email address" 
                   class="w-full px-4 py-3 bg-[#0a0f1a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Enter your email"
                   required
@@ -159,7 +161,7 @@ window.Auth = window.Auth || {
                 <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
                 <input 
                   type="password" 
-                  id="loginPassword" 
+                  id="loginPassword" aria-label="Password" 
                   class="w-full px-4 py-3 bg-[#0a0f1a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Enter your password"
                   required

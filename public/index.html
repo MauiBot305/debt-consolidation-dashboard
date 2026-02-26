@@ -19,10 +19,10 @@
   <script src="https://cdn.tailwindcss.com/3.4.17" onload="window.__cdnStatus.tailwind=true;" onerror="console.error('[CDN] Tailwind failed'); window.__cdnStatus.errors.push('tailwind');"></script>
   
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@0.575.0" integrity="sha384-E9eORdh1ko4jWuV2KAjwubWV8BPNaN3XloblvUmHlyLHmFyj8GFm4NOPOdjEhfN3" crossorigin="anonymous" onload="window.__cdnStatus.lucide=true; window.lucide=lucide;" onerror="console.error('[CDN] Lucide failed'); window.__cdnStatus.errors.push('lucide');"></script>
+  <script src="https://unpkg.com/lucide@0.575.0" onload="window.__cdnStatus.lucide=true; window.lucide=lucide;" onerror="console.error('[CDN] Lucide failed'); window.__cdnStatus.errors.push('lucide');"></script>
   
   <!-- SheetJS - Excel Parser -->
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js" integrity="sha384-7hwyYzxURfZMLwHgvEKrYEmM5tX+1DVWK5iDR4R69bOQeY90Q8B8n9Cobuyqybhw" crossorigin="anonymous" onload="window.__cdnStatus.xlsx=true;" onerror="console.error('[CDN] SheetJS failed'); window.__cdnStatus.errors.push('xlsx');"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js" onload="window.__cdnStatus.xlsx=true;" onerror="console.error('[CDN] SheetJS failed'); window.__cdnStatus.errors.push('xlsx');"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   
   <!-- Google Fonts -->
@@ -534,7 +534,7 @@
     }
   </style>
   <!-- DOMPurify for HTML sanitization -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js" integrity="sha512-H+rglffZ6BQLA5cWJPBeu5VsX/MxkVLnaJOa1GBIJRWN5IjkOWwE/2GJgeT+8Oy+/VbxjwQPqQUWVoC62JbAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
   <script>
     // Global HTML sanitizer
     window.sanitizeHTML = function(html) {
@@ -1613,7 +1613,10 @@ if (document.readyState === 'loading') {
             class="nav-item ${this.currentPage === item.id ? 'active' : ''}"
             data-page-id="${item.id}"
             data-page-name="${item.page}"
+            role="button"
+            tabindex="0"
             onclick="App.navigateTo('${item.id}', '${item.page}')"
+            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();App.navigateTo('${item.id}', '${item.page}')}"
           >
             <i data-lucide="${item.icon}" class="w-5 h-5 flex-shrink-0"></i>
             <span class="sidebar-text">${item.label}</span>
@@ -1691,6 +1694,12 @@ if (document.readyState === 'loading') {
         if (currentHash !== pageId) {
           window.location.hash = pageId;
         }
+        // RBAC check
+        const navMeta = this.navItemsById[pageId];
+        if (navMeta && navMeta.roles && !navMeta.roles.includes(this.session.role)) {
+          console.warn('[RBAC] Role ' + this.session.role + ' cannot access ' + pageId);
+          return;
+        }
         this.loadPage(pageName);
         
         const navMeta = (this.navItemsById && this.navItemsById[pageId]) || null;
@@ -1700,6 +1709,9 @@ if (document.readyState === 'loading') {
         if (breadcrumbCurrent) {
           breadcrumbCurrent.textContent = label;
         }
+
+        // LOW-4: Dynamic page title
+        document.title = 'Debt Empire — ' + label;
 
         const breadcrumbHome = document.querySelector('[data-breadcrumb-home]');
         if (breadcrumbHome) {
@@ -1727,6 +1739,10 @@ if (document.readyState === 'loading') {
       // Load page content
       _loadTimer: null,
       async loadPage(pageName) {
+        // Fix 6: Cancel previous fetch to prevent race condition
+        if (this._loadAbort) this._loadAbort.abort();
+        this._loadAbort = new AbortController();
+        const signal = this._loadAbort.signal;
         const pageContent = document.getElementById('pageContent');
         if (!pageContent) {
           console.error('[Debt Empire] pageContent element not found!');
@@ -1745,9 +1761,9 @@ if (document.readyState === 'loading') {
 
         try {
           // Try without .html first (Cloudflare Pages strips extensions), fallback to .html
-          let response = await fetch(`pages/${pageName}`);
+          let response = await fetch(`pages/${pageName}`, { signal });
           if (!response.ok) {
-            response = await fetch(`pages/${pageName}.html`);
+            response = await fetch(`pages/${pageName}.html`, { signal });
           }
           console.log(`[Debt Empire] Page fetch status: ${response.status} for ${pageName}`);
           if (response.ok) {
@@ -2011,10 +2027,10 @@ if (document.readyState === 'loading') {
         if (results.leads.length > 0) {
           html += `
             <div class="p-4">
-              <h3 class="text-sm font-semibold text-gray-400 mb-3">LEADS (${results.leads.length})</h3>
+              <h2 class="text-sm font-semibold text-gray-400 mb-3">LEADS (${results.leads.length})</h2>
               <div class="space-y-2">
                 ${results.leads.slice(0, 5).map(lead => `
-                  <div class="p-3 hover:bg-blue-500/10 rounded-lg cursor-pointer transition-colors" onclick="App.navigateTo('leads', 'CRMLeads'); App.closeSearchModal();">
+                  <div class="p-3 hover:bg-blue-500/10 rounded-lg cursor-pointer transition-colors" role="button" tabindex="0" onclick="App.navigateTo('leads', 'CRMLeads'); App.closeSearchModal();" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();App.navigateTo('leads', 'CRMLeads'); App.closeSearchModal();}">
                     <div class="flex items-center gap-3">
                       <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
                         <i data-lucide="user" class="w-5 h-5 text-blue-400"></i>
@@ -2036,10 +2052,10 @@ if (document.readyState === 'loading') {
         if (results.cases.length > 0) {
           html += `
             <div class="p-4">
-              <h3 class="text-sm font-semibold text-gray-400 mb-3">CASES (${results.cases.length})</h3>
+              <h2 class="text-sm font-semibold text-gray-400 mb-3">CASES (${results.cases.length})</h2>
               <div class="space-y-2">
                 ${results.cases.slice(0, 5).map(caseItem => `
-                  <div class="p-3 hover:bg-cyan-500/10 rounded-lg cursor-pointer transition-colors" onclick="App.navigateTo('cases', 'CaseManagement'); App.closeSearchModal();">
+                  <div class="p-3 hover:bg-cyan-500/10 rounded-lg cursor-pointer transition-colors" role="button" tabindex="0" onclick="App.navigateTo('cases', 'CaseManagement'); App.closeSearchModal();" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();App.navigateTo('cases', 'CaseManagement'); App.closeSearchModal();}">
                     <div class="flex items-center gap-3">
                       <div class="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
                         <i data-lucide="briefcase" class="w-5 h-5 text-cyan-400"></i>
@@ -2061,10 +2077,10 @@ if (document.readyState === 'loading') {
         if (results.agents.length > 0) {
           html += `
             <div class="p-4">
-              <h3 class="text-sm font-semibold text-gray-400 mb-3">AGENTS (${results.agents.length})</h3>
+              <h2 class="text-sm font-semibold text-gray-400 mb-3">AGENTS (${results.agents.length})</h2>
               <div class="space-y-2">
                 ${results.agents.slice(0, 5).map(agent => `
-                  <div class="p-3 hover:bg-green-500/10 rounded-lg cursor-pointer transition-colors" onclick="App.navigateTo('team', 'TeamManagement'); App.closeSearchModal();">
+                  <div class="p-3 hover:bg-green-500/10 rounded-lg cursor-pointer transition-colors" role="button" tabindex="0" onclick="App.navigateTo('team', 'TeamManagement'); App.closeSearchModal();" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();App.navigateTo('team', 'TeamManagement'); App.closeSearchModal();}">
                     <div class="flex items-center gap-3">
                       <img src="${agent.avatar}" alt="${agent.name}" class="w-10 h-10 rounded-full">
                       <div class="flex-1">
@@ -2084,10 +2100,10 @@ if (document.readyState === 'loading') {
         if (results.deals.length > 0) {
           html += `
             <div class="p-4">
-              <h3 class="text-sm font-semibold text-gray-400 mb-3">DEALS (${results.deals.length})</h3>
+              <h2 class="text-sm font-semibold text-gray-400 mb-3">DEALS (${results.deals.length})</h2>
               <div class="space-y-2">
                 ${results.deals.slice(0, 5).map(deal => `
-                  <div class="p-3 hover:bg-yellow-500/10 rounded-lg cursor-pointer transition-colors" onclick="App.navigateTo('pipeline', 'DealPipeline'); App.closeSearchModal();">
+                  <div class="p-3 hover:bg-yellow-500/10 rounded-lg cursor-pointer transition-colors" role="button" tabindex="0" onclick="App.navigateTo('pipeline', 'DealPipeline'); App.closeSearchModal();" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();App.navigateTo('pipeline', 'DealPipeline'); App.closeSearchModal();}">
                     <div class="flex items-center gap-3">
                       <div class="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center">
                         <i data-lucide="dollar-sign" class="w-5 h-5 text-yellow-400"></i>
@@ -2205,6 +2221,8 @@ if (document.readyState === 'loading') {
         if (bootDone) return;
         var app = document.getElementById("app");
         if (app && app.querySelector(".animate-spin")) {
+          // Fix 3: If Auth loaded but no session, show login instead of error
+          if (typeof Auth !== "undefined" && !Auth.getSession()) { Auth.showLogin(); return; }
           var cdnErrors = (window.__cdnStatus && window.__cdnStatus.errors.length > 0)
             ? '<p style="color:#f87171;margin-bottom:16px">Failed CDN: ' + window.__cdnStatus.errors.join(", ") + '</p>'
             : '';
@@ -2263,6 +2281,23 @@ if (document.readyState === 'loading') {
         }
       }
     })();
+
+
+    // LOW-12: Focus trap for modals
+    function trapFocus(modal) {
+      const focusable = modal.querySelectorAll('button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusable.length) focusable[0].focus();
+    }
+
+    // LOW-2: Escape key closes modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.active, [id$="Modal"].active, .modal-overlay').forEach(m => {
+          m.classList.remove('active');
+          m.style.display = 'none';
+        });
+      }
+    });
 
   </script>
 </body>

@@ -1200,12 +1200,16 @@
     fetchConfig();
   }
 
+  // Cleanup previous intervals
+  if (window._pageIntervals) window._pageIntervals.forEach(clearInterval);
+  window._pageIntervals = [];
+
   // Poll active calls every 5s
-  setInterval(fetchActiveCalls, 5000);
+  window._pageIntervals.push(setInterval(fetchActiveCalls, 5000));
   // Timer tick every 1s
-  setInterval(tickTimers, 1000);
+  window._pageIntervals.push(setInterval(tickTimers, 1000));
   // Refresh stats every 30s
-  setInterval(fetchStats, 30000);
+  window._pageIntervals.push(setInterval(fetchStats, 30000));
 
   init();
 })();

@@ -1,3 +1,5 @@
+/* TODO: Light mode toggle — prefers-color-scheme media query planned for v2 */
+
 /**
  * Debt Empire - Global Design System
  * Unified styles for all dashboard pages
@@ -776,3 +778,13 @@ body {
 .z-30 { z-index: 30; }
 .z-40 { z-index: 40; }
 .z-50 { z-index: 50; }
+
+/* LOW-5: Print stylesheet */
+@media print {
+  .sidebar, #mobileMenuBtn, .notification-badge, .ticker-tape { display: none !important; }
+  #pageContent { margin: 0 !important; padding: 0 !important; }
+  body { background: white !important; color: black !important; }
+}
+
+/* LOW-11: Prevent button wrapping at narrow viewports */
+.button-group { flex-wrap: nowrap; overflow-x: auto; }

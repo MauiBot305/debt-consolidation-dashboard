@@ -608,7 +608,7 @@
     // INITIALIZATION
     // =====================
     (async function() {
-      console.log('🚀 Power Dialer initializing...');
+      // console.log('🚀 Power Dialer initializing...');
       
       // Initialize Twilio
       await initializeTwilio();
@@ -658,7 +658,7 @@
 
         // Setup event listeners
         twilioDevice.on('registered', () => {
-          console.log('✅ Twilio Device registered');
+          // console.log('✅ Twilio Device registered');
           showToast('Twilio connected', 'success');
         });
 
@@ -786,7 +786,7 @@
         const result = await response.json();
         
         if (result.status === 'success') {
-          console.log('✅ AI call initiated:', result.call_sid);
+          // console.log('✅ AI call initiated:', result.call_sid);
           showToast('AI Agent is calling ' + formattedNumber, 'success');
           activeCallSid = result.call_sid;
           setCallStatus('AI Agent Calling...', 'connected');
@@ -846,14 +846,14 @@
 
     function setupCallHandlers(call) {
       call.on('accept', () => {
-        console.log('✅ Call accepted');
+        // console.log('✅ Call accepted');
         setCallStatus('Connected', 'connected');
         startCallTimer();
         startAudioVisualizer();
       });
 
       call.on('disconnect', () => {
-        console.log('📴 Call disconnected');
+        // console.log('📴 Call disconnected');
         handleCallEnd();
       });
 
@@ -865,7 +865,7 @@
     }
 
     function handleIncomingCall(call) {
-      console.log('📞 Incoming call:', call.parameters.From);
+      // console.log('📞 Incoming call:', call.parameters.From);
       
       if (confirm(`Incoming call from ${call.parameters.From}. Accept?`)) {
         activeCall = call;
@@ -1420,7 +1420,7 @@
       if (typeof Toast !== 'undefined') {
         Toast[type](message);
       } else {
-        console.log(`[${type.toUpperCase()}] ${message}`);
+        // console.log(`[${type.toUpperCase()}] ${message}`);
       }
     }
 

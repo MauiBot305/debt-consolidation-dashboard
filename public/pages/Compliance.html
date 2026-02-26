@@ -265,6 +265,7 @@
     })();
 
     function initializeCompliance() {
+      try {
       // Initialize compliance data if not exists
       if (!(window.DebtDB?.getComplianceChecklist?.() || []).length) {
         COMPLIANCE_CHECKLIST.forEach(cat => {

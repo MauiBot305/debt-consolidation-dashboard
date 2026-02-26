@@ -506,11 +506,15 @@
   const OWNER_PHONE = '+13059659624';
   let ownerAITimers = {};
 
+  // Cleanup previous intervals
+  if (window._pageIntervals) window._pageIntervals.forEach(clearInterval);
+  window._pageIntervals = [];
+
   // Start AI polling
-  setInterval(loadOwnerAICalls, 5000);
+  window._pageIntervals.push(setInterval(loadOwnerAICalls, 5000));
   loadOwnerAICalls();
   loadCallerIntelligence();
-  setInterval(loadCallerIntelligence, 30000);
+  window._pageIntervals.push(setInterval(loadCallerIntelligence, 30000));
 
   async function loadOwnerAICalls() {
     try {

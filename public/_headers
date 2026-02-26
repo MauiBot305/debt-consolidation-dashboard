@@ -1,3 +1,15 @@
+# ══════════════════════════════════════════════════════════════
+# CSP NOTE: unsafe-inline and unsafe-eval are currently required
+# because all page scripts are inline <script> blocks and some
+# libraries (Tailwind CSS JIT, Alpine.js) use eval().
+#
+# Migration plan:
+#   1. Extract inline scripts to external .js files
+#   2. Add nonce-based CSP for remaining inline scripts
+#   3. Replace eval-dependent libraries (Tailwind → build step)
+#   4. Remove unsafe-inline and unsafe-eval once steps 1-3 done
+# ══════════════════════════════════════════════════════════════
+
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
