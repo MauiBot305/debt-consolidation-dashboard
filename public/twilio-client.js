@@ -29,6 +29,7 @@ class TwilioClient {
     this.callDuration = 0;
     this.currentLead = null;
     this.isDemoMode = false;
+    this._demoMuted = false; // FIX 15 (LOGIC-V2-013): State tracking for demo mute
     
     // Callbacks
     this.callbacks = {
@@ -322,8 +323,9 @@ class TwilioClient {
       this.activeCall.mute(!isMuted);
       return !isMuted;
     } else if (this.isDemoMode) {
-      // Demo mode toggle
-      return Math.random() > 0.5;
+      // FIX 15 (LOGIC-V2-013): State tracking for demo mute toggle
+      this._demoMuted = !this._demoMuted;
+      return this._demoMuted;
     }
 
     return false;
@@ -580,8 +582,9 @@ class TwilioClient {
   /**
    * Call history management
    */
+  // FIX 14 (LOGIC-V2-024): Call history with debtdb_ prefix
   saveCallHistory(call) {
-    let history = JSON.parse(localStorage.getItem('callHistory') || '[]');
+    let history = JSON.parse(localStorage.getItem('debtdb_callHistory') || '[]');
     history.unshift(call);
     
     // Keep only last 100 calls
@@ -589,12 +592,12 @@ class TwilioClient {
       history = history.slice(0, 100);
     }
     
-    localStorage.setItem('callHistory', JSON.stringify(history));
+    localStorage.setItem('debtdb_callHistory', JSON.stringify(history));
     this.updateCallStats(call);
   }
 
   getCallHistory(limit = 20) {
-    const history = JSON.parse(localStorage.getItem('callHistory') || '[]');
+    const history = JSON.parse(localStorage.getItem('debtdb_callHistory') || '[]');
     return history.slice(0, limit);
   }
 
