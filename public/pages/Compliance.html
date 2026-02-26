@@ -253,8 +253,8 @@
     let currentLicenseState = null;
     let tcpaConsents = [];
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
+    // Initialize (immediate execution)
+    (function() {
       initializeCompliance();
       renderLicenseGrid();
       renderChecklist();
@@ -262,7 +262,7 @@
       renderDNCList();
       renderAuditLog();
       updateComplianceScore();
-    });
+    })();
 
     function initializeCompliance() {
       // Initialize compliance data if not exists
