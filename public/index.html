@@ -9,6 +9,8 @@
   <script>
     // CDN load tracking + fallback stubs
     window.__cdnStatus = { tailwind: false, lucide: false, xlsx: false, errors: [] };
+    // Local script load tracking
+    window.__localScriptStatus = { database: false, auth: false, voiceApi: false, demoSeed: false, dataImport: false, pageEnhancements: false, errors: [] };
     window.lucide = window.lucide || { createIcons: function() { console.warn("[Fallback] Lucide CDN failed"); } };
     window.XLSX = window.XLSX || { read: function() { return null; }, utils: { sheet_to_json: function() { return []; } } };
   </script>
@@ -591,13 +593,13 @@
   </div>
 
   <!-- Scripts -->
-  <script src="database.js?v=1772079326"></script>
-  <script src="voice-api.js?v=1772079326"></script>
-  <script src="demo-seed.js?v=1772079326"></script>
-  <script src="data-import-engine.js?v=1772079326"></script>
+  <script src="database.js?v=1772079326" onload="window.__localScriptStatus.database=true;" onerror="console.error('[CRITICAL] database.js failed to load'); window.__localScriptStatus.errors.push('database');"></script>
+  <script src="voice-api.js?v=1772079326" onload="window.__localScriptStatus.voiceApi=true;" onerror="console.warn('[OPTIONAL] voice-api.js failed to load'); window.__localScriptStatus.errors.push('voice-api');"></script>
+  <script src="demo-seed.js?v=1772079326" onload="window.__localScriptStatus.demoSeed=true;" onerror="console.warn('[OPTIONAL] demo-seed.js failed to load'); window.__localScriptStatus.errors.push('demo-seed');"></script>
+  <script src="data-import-engine.js?v=1772079326" onload="window.__localScriptStatus.dataImport=true;" onerror="console.warn('[OPTIONAL] data-import-engine.js failed to load'); window.__localScriptStatus.errors.push('data-import');"></script>
   <!-- DOMContentLoaded patch removed — was causing App.init() to never fire -->
-  <script src="auth.js?v=1772079326"></script>
-  <script src="page-enhancements.js?v=1772079326"></script>
+  <script src="auth.js?v=1772079326" onload="window.__localScriptStatus.auth=true;" onerror="console.error('[CRITICAL] auth.js failed to load'); window.__localScriptStatus.errors.push('auth');"></script>
+  <script src="page-enhancements.js?v=1772079326" onload="window.__localScriptStatus.pageEnhancements=true;" onerror="console.warn('[OPTIONAL] page-enhancements.js failed to load'); window.__localScriptStatus.errors.push('page-enhancements');"></script>
   <script>
     // Toast Notification System
     window.Toast = window.Toast || {
@@ -729,7 +731,7 @@
 
         this.session = Auth.getSession();
         this.render();
-        this.renderNotifications(); // Load notifications from DebtDB
+        try { this.renderNotifications(); } catch(e) { console.warn('[App] renderNotifications skipped:', e.message); }
         this.attachEventListeners();
         this.handleRouting();
 
@@ -1142,7 +1144,7 @@
               
               // Apply universal page enhancements
               if (window.PageEnhancements) {
-                window.PageEnhancements.reinitialize();
+                try { window.PageEnhancements.reinitialize(); } catch(e) { console.warn('[PageEnhancements] reinitialize failed:', e.message); }
               }
             }, 50);
           } else {
@@ -1194,7 +1196,7 @@
 
       // Render Notifications
       renderNotifications() {
-        const notifications = DebtDB.getNotifications();
+        const notifications = (typeof DebtDB !== 'undefined' && DebtDB.getNotifications) ? DebtDB.getNotifications() : [];
         const unreadCount = notifications.filter(n => !n.read).length;
         
         // Update badge
@@ -1260,7 +1262,7 @@
       },
       
       markNotificationRead(notifId) {
-        DebtDB.markNotificationRead(notifId);
+        if (typeof DebtDB !== 'undefined' && DebtDB.markNotificationRead) DebtDB.markNotificationRead(notifId);
         this.renderNotifications();
       },
       
@@ -1561,6 +1563,9 @@
           var cdnErrors = (window.__cdnStatus && window.__cdnStatus.errors.length > 0)
             ? '<p style="color:#f87171;margin-bottom:16px">Failed CDN: ' + window.__cdnStatus.errors.join(", ") + '</p>'
             : '';
+          var localErrors = (window.__localScriptStatus && window.__localScriptStatus.errors.length > 0)
+            ? '<p style="color:#f59e0b;margin-bottom:8px">Failed local scripts: ' + window.__localScriptStatus.errors.join(", ") + '</p>'
+            : '';
           var depStatus = '<p style="color:#64748b;font-size:14px;margin-bottom:20px">' +
             'Auth: ' + (typeof Auth !== "undefined" ? "\u2705" : "\u274c") +
             ' | DB: ' + (typeof DebtDB !== "undefined" ? "\u2705" : "\u274c") +
@@ -1571,7 +1576,7 @@
             '<div style="font-size:48px;margin-bottom:16px">\u26a0\ufe0f</div>' +
             '<h2 style="color:#ef4444;font-size:24px;margin-bottom:12px">Loading Timeout</h2>' +
             '<p style="color:#94a3b8;margin-bottom:8px">The application took too long to load.</p>' +
-            cdnErrors + depStatus +
+            cdnErrors + localErrors + depStatus +
             '<button onclick="location.reload()" style="padding:12px 24px;background:#3b82f6;color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px">\ud83d\udd04 Retry</button>' +
             '</div></div>';
         }
@@ -1581,6 +1586,11 @@
       var issues = [];
       if (typeof Auth === "undefined") issues.push("Auth not loaded");
       if (typeof DebtDB === "undefined") issues.push("Database not loaded");
+      // Log optional script status (non-blocking)
+      if (typeof window.VoiceAPI === "undefined") console.info("[BOOT] VoiceAPI not loaded (optional)");
+      if (typeof window.DemoSeed === "undefined") console.info("[BOOT] DemoSeed not loaded (optional)");
+      if (typeof window.DataImportEngine === "undefined") console.info("[BOOT] DataImportEngine not loaded (optional)");
+      if (typeof window.PageEnhancements === "undefined") console.info("[BOOT] PageEnhancements not loaded (optional)");
       try { localStorage.setItem("__t", "1"); localStorage.removeItem("__t"); } catch(e) { issues.push("localStorage unavailable"); }
       if (issues.length > 0) {
         console.error("[BOOT] Missing dependencies:", issues);
